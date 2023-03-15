@@ -1,0 +1,8 @@
+variables:
+  REGISTRY: 'dealershipclient'
+  SERVICES: 'dealershipclient'
+  K8S_SERVICES: 'dealershipclient'
+
+include:
+  - project: 'sberauto/infra/pipelines'
+    file: '/js.gitlab-ci.yml'
