@@ -2,8 +2,8 @@ import React from 'react'
 
 import { Box } from '@mui/material'
 
-import { DownloadClientDocs } from 'entities/DownloadClientDocs/DownloadClientDocs'
-
+import { theme } from '../../app/theme'
+import { ClientForm } from '../../entities/ClientForm'
 import { useStyles } from './CreateOrderPage.styles'
 
 export function CreateOrderPage() {
@@ -11,8 +11,8 @@ export function CreateOrderPage() {
 
   return (
     <div className={classes.page} data-testid="dealershipPage">
-      <Box width={244}>
-        <DownloadClientDocs />
+      <Box className={classes.loaderContainer}>
+        <ClientForm />
       </Box>
     </div>
   )
