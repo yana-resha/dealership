@@ -5,12 +5,16 @@ import { disableConsole } from 'tests/utils'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as PoSApi from 'shared/api/pointsOfSale.api'
-import * as PoSUtil from 'shared/lib/pointsOfSale.utils'
+import * as PoSUtil from 'common/auth/PointOfSaleAuth/pointsOfSale.utils'
+import * as Router from 'react-router-dom'
 import { useGetVendorListQuery } from 'shared/api/pointsOfSale.api'
 import { PointOfSaleAuth } from '../PointOfSaleAuth'
 
 const mockedUseGetVendorListQuery: jest.SpyInstance = jest.spyOn(PoSApi, 'useGetVendorListQuery')
 const mockedSavePointOfSaleToCookies: jest.SpyInstance = jest.spyOn(PoSUtil, 'savePointOfSaleToCookies')
+jest.mock('react-router-dom', () => ({
+  useNavigate: () => jest.fn(),
+}))
 
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore

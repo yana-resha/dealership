@@ -1,6 +1,9 @@
 import { Vendor } from '@sberauto/authdc-proto/public'
 import Cookies from 'js-cookie'
-import { retrieveLabelForPointOfSale, savePointOfSaleToCookies } from '../pointsOfSale.utils'
+import {
+  retrieveLabelForPointOfSale,
+  savePointOfSaleToCookies,
+} from '../../../common/auth/PointOfSaleAuth/pointsOfSale.utils'
 
 describe('PointOfSaleUtilsTest', () => {
   describe('Строковое представление торговой точки формируется корректно', () => {

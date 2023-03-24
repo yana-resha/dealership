@@ -2124,8 +2124,8 @@
 
 "@sberauto/authdc-proto@0.0.0-dcb-22":
   version "0.0.0-dcb-22"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-0.0.0-dcb-22.tgz#df28746b4ededc48b30783a3ab2e77180ae0378b"
-  integrity sha512-17T17A9iZSvaqD8aKlaeZaQsEWbGmB2pJKxaPcmEwQCaWuQvsvHcNIRuObXIQCvOC0rbtGYqGMcSikcOGJi50w==
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-0.0.0-dcb-22.tgz#8407e7a79aa37a294c28e04b64f3d6c22778002b"
+  integrity sha512-j4aoK1zInK4AfcY8qad8n5FFDsqrNzg/4bKnH2gQOAqV25DKp7EU7551Xxj7Dv9zyiqZvRrCWP2uFc1tgC37zQ==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"

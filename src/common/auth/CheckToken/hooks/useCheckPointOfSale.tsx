@@ -2,33 +2,33 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
-import { COOKIE_USER_TOKEN } from 'common/auth/auth.constants'
+import { COOKIE_POINT_OF_SALE } from 'common/auth/auth.constants'
 import { appRoutePaths } from 'app/Router/Router.utils'
 
 type Timer = any
 
-/** Проверяет наличие токена */
-export const useCheckToken = () => {
-  const [token, setToken] = useState(Cookies.get(COOKIE_USER_TOKEN))
+/** Проверяет наличие выбранной точки продаж */
+export const useCheckPointOfSale = () => {
+  const [point, setPoint] = useState(Cookies.get(COOKIE_POINT_OF_SALE))
 
   const navigate = useNavigate()
 
   const timerRef = useRef<Timer | undefined>()
 
   const redirectToLogin = useCallback(() => {
-    if (window.location.pathname !== appRoutePaths.auth) {
-      navigate(appRoutePaths.auth)
+    if (window.location.pathname !== appRoutePaths.vendorList) {
+      navigate(appRoutePaths.vendorList)
     }
   }, [navigate])
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      const newToken = Cookies.get(COOKIE_USER_TOKEN)
+      const newPoint = Cookies.get(COOKIE_POINT_OF_SALE)
       // eslint-disable-next-line security/detect-possible-timing-attacks
-      if (newToken !== token) {
-        setToken(newToken)
+      if (newPoint !== point) {
+        setPoint(newPoint)
 
-        if (!newToken) {
+        if (!newPoint) {
           redirectToLogin()
         }
       }
@@ -37,7 +37,7 @@ export const useCheckToken = () => {
     return () => {
       clearInterval(timerRef.current)
     }
-  }, [redirectToLogin, token])
+  }, [redirectToLogin, point])
 
-  return !!token
+  return !!point
 }

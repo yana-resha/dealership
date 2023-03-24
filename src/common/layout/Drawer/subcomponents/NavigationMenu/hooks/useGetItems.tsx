@@ -8,6 +8,7 @@ import { ReactComponent as OrderListIconSelected } from 'assets/icons/orderListS
 import { AuthType } from 'common/auth/CheckToken'
 
 import { MenuItem } from './types'
+import { appRoutePaths } from 'app/Router/Router.utils'
 
 type UseGetItemsProps = {
   authType: AuthType
@@ -16,37 +17,29 @@ type UseGetItemsProps = {
 export const useGetItems = (props: UseGetItemsProps): MenuItem[] => {
   const { authType } = props
 
-  const menuItems = useMemo(
-    () => {
-      switch(authType) {
-      case 'auth' : {
-
-        const items: MenuItem[] = ([
+  const menuItems = useMemo(() => {
+    switch (authType) {
+      case 'auth': {
+        const items: MenuItem[] = [
           {
             label: 'Создать заявку',
-            icon: ({ isSelected }) => (
-              isSelected ? <OrderCreateIconSelected /> : <OrderCreateIcon /> 
-            ),
-            path: '/create_order',
+            icon: ({ isSelected }) => (isSelected ? <OrderCreateIconSelected /> : <OrderCreateIcon />),
+            path: appRoutePaths.createOrder,
           },
           {
             label: 'Текущие заявки',
-            icon: ({ isSelected }) => (
-              isSelected ? <OrderListIconSelected /> : <OrderListIcon /> 
-            ),
-            path: '/order_list',
+            icon: ({ isSelected }) => (isSelected ? <OrderListIconSelected /> : <OrderListIcon />),
+            path: appRoutePaths.orderList,
           },
-        ])
+        ]
 
         return items
       }
       default: {
         return []
       }
-      }
-    },
-    [authType],
-  )
+    }
+  }, [authType])
 
   return menuItems
 }

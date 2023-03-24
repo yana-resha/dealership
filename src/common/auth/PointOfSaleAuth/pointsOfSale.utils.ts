@@ -1,6 +1,7 @@
 import { Vendor } from '@sberauto/authdc-proto/public'
 import { FilterOptionsState } from '@mui/material'
 import Cookies from 'js-cookie'
+import { COOKIE_POINT_OF_SALE } from '../auth.constants'
 
 export function pointsOfSaleFilter(options: Vendor[], state: FilterOptionsState<Vendor>) {
   const filteredOptions = options.filter(option =>
@@ -27,6 +28,6 @@ export function retrieveLabelForPointOfSale(option: Vendor) {
 
 export function savePointOfSaleToCookies(option: Vendor | null) {
   if (option != null) {
-    Cookies.set('pointOfSale', JSON.stringify(option))
+    Cookies.set(COOKIE_POINT_OF_SALE, JSON.stringify(option))
   }
 }

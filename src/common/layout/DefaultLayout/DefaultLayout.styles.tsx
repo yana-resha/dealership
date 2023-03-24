@@ -17,7 +17,6 @@ export const useStyles = makeStyles(theme => ({
     },
   },
   main: {
-    marginTop: 64,
     flexGrow: 1,
   },
 }))

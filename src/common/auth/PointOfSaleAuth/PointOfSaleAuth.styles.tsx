@@ -13,6 +13,7 @@ export default makeStyles(theme => ({
     gap: theme.spacing(3),
     borderRadius: 4 * theme.shape.borderRadius,
     boxShadow: `0 4px 16px ${theme.palette.grey[300]}`,
+    backgroundColor: theme.palette.background.default,
   },
 
   backArrow: {

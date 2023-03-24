@@ -7,14 +7,17 @@ import {
   pointsOfSaleFilter,
   retrieveLabelForPointOfSale,
   savePointOfSaleToCookies,
-} from 'shared/lib/pointsOfSale.utils'
+} from 'common/auth/PointOfSaleAuth/pointsOfSale.utils'
 import { Vendor } from '@sberauto/authdc-proto/public'
 import { useGetVendorListQuery } from 'shared/api/pointsOfSale.api'
 import SberTypography from 'shared/ui/SberTypography'
 import useStyles from './PointOfSaleAuth.styles'
+import { useNavigate } from 'react-router-dom'
+import { appRoutePaths, defaultRoute } from 'app/Router/Router.utils'
 
 export function PointOfSaleAuth() {
   const classes = useStyles()
+  const navigate = useNavigate()
 
   const { data, error, isLoading } = useGetVendorListQuery({ userLogin: 'mockLogin' })
   const [chosenOption, setChosenOption] = useState<Vendor | null>(null)
@@ -33,12 +36,17 @@ export function PointOfSaleAuth() {
       setValidationError(true)
     } else {
       savePointOfSaleToCookies(chosenOption)
+      navigate(defaultRoute)
     }
-  }, [chosenOption])
+  }, [chosenOption, navigate])
+
+  const onBackClick = useCallback(() => {
+    navigate(appRoutePaths.auth)
+  }, [navigate])
 
   return (
     <Box className={classes.pointOfSaleFormContainer}>
-      <IconButton className={classes.backArrow} data-testid="backButton">
+      <IconButton className={classes.backArrow} onClick={onBackClick} data-testid="backButton">
         <KeyboardArrowLeft />
       </IconButton>
 
@@ -70,9 +78,13 @@ export function PointOfSaleAuth() {
                 endAdornment: (
                   <InputAdornment position="end">
                     {isLoading ? (
-                      <CircularProgress color="inherit" size={20} data-testid="loadingImg" />
-                    ) : null}
-                    {params.InputProps.endAdornment}
+                      <Box position="absolute" top="calc(50% - 10px)" right={9}>
+                        <CircularProgress color="inherit" size={20} data-testid="loadingImg" />
+                      </Box>
+                    ) : (
+                      params.InputProps.endAdornment
+                    )}
+                    {/* {params.InputProps.endAdornment} */}
                   </InputAdornment>
                 ),
               }}

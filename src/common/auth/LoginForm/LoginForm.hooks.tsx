@@ -3,7 +3,8 @@ import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 
-import { COOKIE_USER_TOKEN } from './LoginForm.constants'
+import { appRoutePaths } from 'app/Router/Router.utils'
+import { COOKIE_USER_TOKEN } from '../auth.constants'
 
 export const useAuthSberId = () => {
   const [isFetch, setIsFetch] = useState(false)
@@ -12,19 +13,19 @@ export const useAuthSberId = () => {
 
   const onGoToSberAuth = useCallback(async () => {
     //TODO: Имитируем запрос на авторизацию https://jira.x.sberauto.com/browse/DCB-2
-    try{
+    try {
       setIsFetch(true)
-      const res = await new Promise((resolve) => {
+      const res = await new Promise(resolve => {
         setTimeout(() => {
           resolve('ok')
         }, 750)
       })
 
-      if(res === 'ok'){
-        Cookies.set(COOKIE_USER_TOKEN, '123') 
-        navigate('/')
+      if (res === 'ok') {
+        Cookies.set(COOKIE_USER_TOKEN, '123')
+        navigate(appRoutePaths.vendorList)
       }
-    } catch(err) {
+    } catch (err) {
       //TODO: Написать логику ошибки авторизации https://jira.x.sberauto.com/browse/DCB-2
     }
 
