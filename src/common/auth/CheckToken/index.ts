@@ -1,1 +1,3 @@
-export { CheckToken } from './CheckToken'
+export { useCheckToken } from './hooks/useCheckToken'
+
+export type { AuthType } from './types'

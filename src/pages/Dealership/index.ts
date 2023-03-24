@@ -1,1 +1,1 @@
-export { Dealership } from './Dealership'
+export { Dealership as DealershipPage } from './Dealership'

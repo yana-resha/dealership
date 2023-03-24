@@ -1,27 +1,21 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import { ThemeProvider } from '@mui/material'
-import { SnackbarProvider } from 'notistack'
 
+import { ThemeProvider } from '@mui/material'
+import { Provider } from 'react-redux'
 import { store } from 'store'
-import { CheckToken } from 'common/auth/CheckToken'
+import { BrowserRouter } from 'react-router-dom'
+
 import { Router } from './Router'
 import { theme } from './theme'
 
 export function App() {
-
   return (
-    <CheckToken>
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <SnackbarProvider>
-            <BrowserRouter basename="/dealership">
-              <Router />
-            </BrowserRouter>
-          </SnackbarProvider>
-        </ThemeProvider>
-      </Provider>
-    </CheckToken>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter basename="/">
+          <Router />
+        </BrowserRouter>
+      </ThemeProvider>
+    </Provider>
   )
 }

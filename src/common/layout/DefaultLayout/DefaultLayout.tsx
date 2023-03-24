@@ -1,39 +1,35 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+
+import { AppBar, Box, Toolbar } from '@mui/material'
 import { Outlet } from 'react-router-dom'
-import { AppBar, Box, Drawer, Toolbar, useMediaQuery } from '@mui/material'
-import { theme } from 'app/theme'
+
+import { Header } from '../Header'
+import { Drawer } from '../Drawer'
 
 import { useStyles } from './DefaultLayout.styles'
-import { Header } from '../Header'
-import { NavigationMenu } from '../NavigationMenu'
 
-export function DefaultLayout() {
+type Props = {
+  isHeader?: boolean
+}
+
+export function DefaultLayout(props: Props) {
+  const { isHeader = true } = props
+
   const classes = useStyles()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
-  const [isNavigationMenuOpened, setNavigationMenuOpened] = useState(false)
-  useEffect(() => setNavigationMenuOpened(false), [isMobile])
 
   return (
     <Box className={classes.globalContainer}>
-      <AppBar className={classes.appBar} position={isMobile ? 'relative' : 'fixed'}>
-        <Toolbar>
-          <Header />
-        </Toolbar>
-      </AppBar>
+      {isHeader && (
+        <AppBar className={classes.appBar} position="fixed">
+          <Toolbar>
+            <Header />
+          </Toolbar>
+        </AppBar>
+      )}
 
-      <Drawer
-        className={classes.navigationMenuDrawer}
-        open={isNavigationMenuOpened}
-        onClose={() => setNavigationMenuOpened(false)}
-        variant={isMobile ? 'temporary' : 'permanent'}
-      >
-        <Toolbar />
-        <NavigationMenu onClose={() => setNavigationMenuOpened(false)} />
-      </Drawer>
+      <Drawer />
 
       <Box className={classes.main} component="main">
-        {!isMobile && <Toolbar />}
         <Outlet />
       </Box>
     </Box>
