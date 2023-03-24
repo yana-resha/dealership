@@ -8,5 +8,4 @@
 
 // export const getAuctionList = () => auctionsApi.getAuctions().then(response => response.data.auctions ?? [])
 
-
 export const getThms = () => ({})

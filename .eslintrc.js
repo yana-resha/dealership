@@ -11,12 +11,14 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:security/recommended',
   ],
-  plugins: ['react', '@typescript-eslint', 'import', 'react-hooks', 'formatjs', 'security'],
+  plugins: ['react', 'prettier', '@typescript-eslint', 'import', 'react-hooks', 'formatjs', 'security'],
   rules: {
     curly: ['error'],
     radix: ['error'],
     semi: ['error', 'never'],
     quotes: ['error', 'single'],
+    indent: ['error', 2],
+    'no-multi-spaces': ['error'],
     'object-curly-spacing': ['error', 'always'],
     'prefer-destructuring': ['error', { object: true, array: false }],
     'eol-last': ['error', 'always'],
@@ -27,7 +29,6 @@ module.exports = {
     'no-empty-pattern': ['warn'],
     'import/newline-after-import': ['warn'],
     'import/no-cycle': [2],
-    'import/order': ['warn', { groups: ['external', 'builtin', 'sibling', 'index'] }],
     'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
     'no-debugger': ['warn'],
     'react/self-closing-comp': ['warn'],
@@ -39,6 +40,7 @@ module.exports = {
     'no-case-declarations': ['off'],
     'jsx-quotes': ['error', 'prefer-double'],
     'react/jsx-curly-brace-presence': ['warn'],
+    'no-mixed-spaces-and-tabs': ['error'],
     'max-len': [
       'error',
       {
@@ -49,7 +51,31 @@ module.exports = {
         ignoreTemplateLiterals: true,
         ignoreStrings: true,
       },
-    ],
+    ],'import/order': [
+      'off',
+      {
+        'groups': ['builtin', 'external', 'internal'],
+        'pathGroups': [
+          {
+            'pattern': 'react',
+            'group': 'external',
+            'position': 'before',
+          },
+          { 'pattern': 'common/**', 'group': 'internal' },
+          { 'pattern': 'pages/**', 'group': 'internal' },
+          { 'pattern': 'shared/**', 'group': 'internal' },
+          { 'pattern': 'store/**', 'group': 'internal' },
+          { 'pattern': 'app/**', 'group': 'internal' },
+          { 'pattern': 'assets/**', 'group': 'internal' },
+        ],
+        'pathGroupsExcludedImportTypes': ['react'],
+        'newlines-between': 'always',
+        'alphabetize': {
+          'order': 'asc',
+          'caseInsensitive': true
+        }
+      }
+    ]
   },
   overrides: [
     {

@@ -1,17 +1,14 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
 
-import { Dealership } from 'pages/Dealership'
-import { DefaultLayout } from 'common/layout/DefaultLayout'
+import { useCheckToken } from 'common/auth/CheckToken'
 
-import { appRoutePaths } from './Router.utils'
+import { AuthRouter } from './Routers/AuthRouter'
+import { MainRouter } from './Routers/MainRouter'
 
-export function Router() {
+export function Router(): JSX.Element {
+  const isAuth = useCheckToken()
+
   return (
-    <Routes>
-      <Route path="/" element={<DefaultLayout />}>
-        <Route path={appRoutePaths.dealership} element={<Dealership />} />
-      </Route>
-    </Routes>
+    isAuth ? <MainRouter /> : <AuthRouter />
   )
 }
