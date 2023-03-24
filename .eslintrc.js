@@ -17,7 +17,6 @@ module.exports = {
     radix: ['error'],
     semi: ['error', 'never'],
     quotes: ['error', 'single'],
-    indent: ['error', 2],
     'no-multi-spaces': ['error'],
     'object-curly-spacing': ['error', 'always'],
     'prefer-destructuring': ['error', { object: true, array: false }],

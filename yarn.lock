@@ -2122,6 +2122,14 @@
   resolved "https://nexus.x.sberauto.com/repository/npm/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
 
+"@sberauto/authdc-proto@0.0.0-dcb-22":
+  version "0.0.0-dcb-22"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-0.0.0-dcb-22.tgz#df28746b4ededc48b30783a3ab2e77180ae0378b"
+  integrity sha512-17T17A9iZSvaqD8aKlaeZaQsEWbGmB2pJKxaPcmEwQCaWuQvsvHcNIRuObXIQCvOC0rbtGYqGMcSikcOGJi50w==
+  dependencies:
+    camelcase-keys "^6.2.2"
+    snakecase-keys "^3.2.1"
+
 "@sinclair/typebox@^0.24.1":
   version "0.24.51"
   resolved "https://nexus.x.sberauto.com/repository/npm/@sinclair/typebox/-/typebox-0.24.51.tgz"
@@ -3686,6 +3694,15 @@ camelcase-keys@8.0.2:
     map-obj "^4.3.0"
     quick-lru "^6.1.1"
     type-fest "^2.13.0"
+
+camelcase-keys@^6.2.2:
+  version "6.2.2"
+  resolved "https://nexus.x.sberauto.com/repository/npm/camelcase-keys/-/camelcase-keys-6.2.2.tgz#5e755d6ba51aa223ec7d3d52f25778210f9dc3c0"
+  integrity sha512-YrwaA0vEKazPBkn0ipTiMpSajYDSe+KjQfrjhcBMxJt/znbvlHd8Pw/Vamaz5EB4Wfhs3SUR3Z9mwRu/P3s3Yg==
+  dependencies:
+    camelcase "^5.3.1"
+    map-obj "^4.0.0"
+    quick-lru "^4.0.1"
 
 camelcase@^5.3.1:
   version "5.3.1"
@@ -7444,7 +7461,7 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-map-obj@^4.1.0, map-obj@^4.3.0:
+map-obj@^4.0.0, map-obj@^4.1.0, map-obj@^4.3.0:
   version "4.3.0"
   resolved "https://nexus.x.sberauto.com/repository/npm/map-obj/-/map-obj-4.3.0.tgz"
   integrity sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==
@@ -8719,6 +8736,11 @@ queue-microtask@^1.2.2:
   resolved "https://nexus.x.sberauto.com/repository/npm/queue-microtask/-/queue-microtask-1.2.3.tgz"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
+quick-lru@^4.0.1:
+  version "4.0.1"
+  resolved "https://nexus.x.sberauto.com/repository/npm/quick-lru/-/quick-lru-4.0.1.tgz#5b8878f113a58217848c6482026c73e1ba57727f"
+  integrity sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==
+
 quick-lru@^5.1.1:
   version "5.1.1"
   resolved "https://nexus.x.sberauto.com/repository/npm/quick-lru/-/quick-lru-5.1.1.tgz"
@@ -9486,6 +9508,14 @@ snakecase-keys@5.4.4:
     snake-case "^3.0.4"
     type-fest "^2.5.2"
 
+snakecase-keys@^3.2.1:
+  version "3.2.1"
+  resolved "https://nexus.x.sberauto.com/repository/npm/snakecase-keys/-/snakecase-keys-3.2.1.tgz#ce5d1a2de8a93c939d7992f76f2743aa59f3d5ad"
+  integrity sha512-CjU5pyRfwOtaOITYv5C8DzpZ8XA/ieRsDpr93HI2r6e3YInC6moZpSQbmUtg8cTk58tq2x3jcG2gv+p1IZGmMA==
+  dependencies:
+    map-obj "^4.1.0"
+    to-snake-case "^1.0.0"
+
 sockjs@^0.3.24:
   version "0.3.24"
   resolved "https://nexus.x.sberauto.com/repository/npm/sockjs/-/sockjs-0.3.24.tgz"
@@ -9959,12 +9989,31 @@ to-fast-properties@^2.0.0:
   resolved "https://nexus.x.sberauto.com/repository/npm/to-fast-properties/-/to-fast-properties-2.0.0.tgz"
   integrity sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==
 
+to-no-case@^1.0.0:
+  version "1.0.2"
+  resolved "https://nexus.x.sberauto.com/repository/npm/to-no-case/-/to-no-case-1.0.2.tgz#c722907164ef6b178132c8e69930212d1b4aa16a"
+  integrity sha512-Z3g735FxuZY8rodxV4gH7LxClE4H0hTIyHNIHdk+vpQxjLm0cwnKXq/OFVZ76SOQmto7txVcwSCwkU5kqp+FKg==
+
 to-regex-range@^5.0.1:
   version "5.0.1"
   resolved "https://nexus.x.sberauto.com/repository/npm/to-regex-range/-/to-regex-range-5.0.1.tgz"
   integrity sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==
   dependencies:
     is-number "^7.0.0"
+
+to-snake-case@^1.0.0:
+  version "1.0.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/to-snake-case/-/to-snake-case-1.0.0.tgz#ce746913897946019a87e62edfaeaea4c608ab8c"
+  integrity sha512-joRpzBAk1Bhi2eGEYBjukEWHOe/IvclOkiJl3DtA91jV6NwQ3MwXA4FHYeqk8BNp/D8bmi9tcNbRu/SozP0jbQ==
+  dependencies:
+    to-space-case "^1.0.0"
+
+to-space-case@^1.0.0:
+  version "1.0.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/to-space-case/-/to-space-case-1.0.0.tgz#b052daafb1b2b29dc770cea0163e5ec0ebc9fc17"
+  integrity sha512-rLdvwXZ39VOn1IxGL3V6ZstoTbwLRckQmn/U8ZDLuWwIXNpuZDhQ3AiRUlhTbOXFVE9C+dR51wM0CBDhk31VcA==
+  dependencies:
+    to-no-case "^1.0.0"
 
 toidentifier@1.0.1:
   version "1.0.1"
