@@ -10,6 +10,7 @@
     "@mui/material": "5.10.17",
     "@mui/styles": "5.10.16",
     "@reduxjs/toolkit": "1.9.1",
+    "@sberauto/authdc-proto": "0.0.0-dcb-22",
     "camelcase-keys": "8.0.2",
     "centrifuge": "2.8.4",
     "classnames": "2.3.2",

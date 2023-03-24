@@ -1,40 +1,18 @@
 import { makeStyles } from '@mui/styles'
 
-import { DARK_NORMAL } from 'shared/palette'
-
 export default makeStyles(theme => ({
   headerContainer: {
     display: 'flex',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: theme.spacing(3),
+    padding: `0 ${theme.spacing(3)} 0 ${theme.spacing(31)}`,
     width: '100%',
-
-    [theme.breakpoints.down('sm')]: {
-      justifyContent: 'space-between',
-    },
-
-    '& p': {
-      color: DARK_NORMAL,
-      fontWeight: 600,
-    },
+    height: theme.spacing(10),
+    borderBottom: `1px solid ${theme.palette.grey[400]}`,
+    color: theme.palette.text.primary,
   },
-  logo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(1),
-    marginLeft: theme.spacing(-1),
-    color: 'inherit',
-    textDecoration: 'none',
 
-    '& svg': {
-      width: 150,
-      height: 24,
-    },
-  },
-  burgerIcon: {
-    fill: DARK_NORMAL,
-  },
-  arrowIcon: {
-    color: DARK_NORMAL,
+  posNumber: {
+    color: theme.palette.grey[600],
   },
 }))
