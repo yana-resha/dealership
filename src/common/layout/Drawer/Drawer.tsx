@@ -8,24 +8,21 @@ import { useCheckToken } from 'common/auth/CheckToken'
 
 import { NavigationMenu } from './subcomponents/NavigationMenu'
 import { useStyles } from './Drawer.styles'
+import { useCheckPointOfSale } from 'common/auth/CheckToken/hooks/useCheckPointOfSale'
 
 export function CustomDrawer() {
   const classes = useStyles()
 
   const isAuth = useCheckToken()
+  const isSelectedPoint = useCheckPointOfSale()
 
   return (
-    <Drawer
-      className={classes.navigationMenuDrawer}
-      open
-      variant="permanent"
-      PaperProps={{ elevation: 8 }}
-    >
+    <Drawer className={classes.navigationMenuDrawer} open variant="permanent" PaperProps={{ elevation: 8 }}>
       <Link className={classes.logo} to="/">
         <SberAutoLogo />
       </Link>
 
-      <NavigationMenu authType={isAuth ? 'auth' : 'no_auth'} />
+      <NavigationMenu authType={isAuth && isSelectedPoint ? 'auth' : 'no_auth'} />
     </Drawer>
   )
 }

@@ -50,31 +50,32 @@ module.exports = {
         ignoreTemplateLiterals: true,
         ignoreStrings: true,
       },
-    ],'import/order': [
+    ],
+    'import/order': [
       'off',
       {
-        'groups': ['builtin', 'external', 'internal'],
-        'pathGroups': [
+        groups: ['builtin', 'external', 'internal'],
+        pathGroups: [
           {
-            'pattern': 'react',
-            'group': 'external',
-            'position': 'before',
+            pattern: 'react',
+            group: 'external',
+            position: 'before',
           },
-          { 'pattern': 'common/**', 'group': 'internal' },
-          { 'pattern': 'pages/**', 'group': 'internal' },
-          { 'pattern': 'shared/**', 'group': 'internal' },
-          { 'pattern': 'store/**', 'group': 'internal' },
-          { 'pattern': 'app/**', 'group': 'internal' },
-          { 'pattern': 'assets/**', 'group': 'internal' },
+          { pattern: 'common/**', group: 'internal' },
+          { pattern: 'pages/**', group: 'internal' },
+          { pattern: 'shared/**', group: 'internal' },
+          { pattern: 'store/**', group: 'internal' },
+          { pattern: 'app/**', group: 'internal' },
+          { pattern: 'assets/**', group: 'internal' },
         ],
-        'pathGroupsExcludedImportTypes': ['react'],
+        pathGroupsExcludedImportTypes: ['react'],
         'newlines-between': 'always',
-        'alphabetize': {
-          'order': 'asc',
-          'caseInsensitive': true
-        }
-      }
-    ]
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+      },
+    ],
   },
   overrides: [
     {

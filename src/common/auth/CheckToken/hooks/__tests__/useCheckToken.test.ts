@@ -1,7 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
+import { COOKIE_USER_TOKEN } from 'common/auth/auth.constants'
 import Cookies from 'js-cookie'
-
-import { COOKIE_USER_TOKEN } from '../../../LoginForm/LoginForm.constants'
 
 import { useCheckToken } from '../useCheckToken'
 

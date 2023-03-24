@@ -5,20 +5,15 @@ import { MemoryRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { ThemeProvider } from '@mui/styles'
 
-import { useCheckToken } from 'common/auth/CheckToken'
+import * as CheckToken from 'common/auth/CheckToken/hooks/useCheckToken'
 import { store } from 'store'
 import { theme } from 'app/theme'
 
 import { Router } from '../Router'
+import * as CheckPoint from 'common/auth/CheckToken/hooks/useCheckPointOfSale'
 
-jest.mock('common/auth/CheckToken', () => {
-  const originalModule = jest.requireActual('common/auth/CheckToken')
-  
-  return {
-    ...originalModule,
-    useCheckToken: jest.fn(),
-  }
-})
+const useCheckToken = jest.spyOn(CheckToken, 'useCheckToken')
+const useCheckPointOfSale = jest.spyOn(CheckPoint, 'useCheckPointOfSale')
 
 const getMockRouter = () => (
   <Provider store={store}>
@@ -30,18 +25,19 @@ const getMockRouter = () => (
   </Provider>
 )
 
-describe('Router component', () => {      
+describe('Router component', () => {
   beforeEach(() => {
     // Переопределяем результаты работы методов перед каждым тестом
-    (useCheckToken as jest.Mock).mockImplementation(() => true)
+    useCheckToken.mockImplementation(() => true)
   })
-  
+
   afterEach(() => {
     jest.clearAllMocks()
   })
-      
+
   it('Проверяем, если пользователь авторизован, то отображается главный рабочий экран', async () => {
-    (useCheckToken as jest.Mock).mockImplementation(() => true)
+    useCheckToken.mockImplementation(() => true)
+    useCheckPointOfSale.mockImplementation(() => true)
 
     render(getMockRouter())
 
@@ -51,7 +47,7 @@ describe('Router component', () => {
   })
 
   it('Проверяем, если пользователь НЕ авторизован, то отображается экран авторизации', async () => {
-    (useCheckToken as jest.Mock).mockImplementation(() => false)
+    useCheckToken.mockImplementation(() => false)
 
     render(getMockRouter())
 
