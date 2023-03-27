@@ -1,7 +1,9 @@
 import React, { useMemo, useCallback } from 'react'
-import cx from 'classnames'
+
 import { Typography, useMediaQuery, useTheme } from '@mui/material'
 import { withStyles } from '@mui/styles'
+import cx from 'classnames'
+
 import { SberTypographyProps, SberautoVariant } from './SberTypography.interface'
 
 const SBSansDisplayFont = 'SBSansDisplay, OpenSans, "Helvetica Neue", Helvetica, Arial, sans-serif'

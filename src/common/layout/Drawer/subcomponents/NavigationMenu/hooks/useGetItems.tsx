@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react'
 
+import { appRoutePaths } from 'app/Router/Router.utils'
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
-import { ReactComponent as OrderListIcon } from 'assets/icons/orderList.svg'
 import { ReactComponent as OrderCreateIconSelected } from 'assets/icons/orderCreateSelected.svg'
+import { ReactComponent as OrderListIcon } from 'assets/icons/orderList.svg'
 import { ReactComponent as OrderListIconSelected } from 'assets/icons/orderListSelected.svg'
-
 import { AuthType } from 'common/auth/CheckToken'
 
 import { MenuItem } from './types'
-import { appRoutePaths } from 'app/Router/Router.utils'
 
 type UseGetItemsProps = {
   authType: AuthType

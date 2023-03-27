@@ -1,16 +1,16 @@
 import React from 'react'
 
-import { render, waitFor, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
 import { ThemeProvider } from '@mui/styles'
-
-import * as CheckToken from 'common/auth/CheckToken/hooks/useCheckToken'
+import { render, waitFor, screen } from '@testing-library/react'
+import { Provider } from 'react-redux'
+import { MemoryRouter } from 'react-router-dom'
 import { store } from 'store'
+
 import { theme } from 'app/theme'
+import * as CheckPoint from 'common/auth/CheckToken/hooks/useCheckPointOfSale'
+import * as CheckToken from 'common/auth/CheckToken/hooks/useCheckToken'
 
 import { Router } from '../Router'
-import * as CheckPoint from 'common/auth/CheckToken/hooks/useCheckPointOfSale'
 
 const useCheckToken = jest.spyOn(CheckToken, 'useCheckToken')
 const useCheckPointOfSale = jest.spyOn(CheckPoint, 'useCheckPointOfSale')

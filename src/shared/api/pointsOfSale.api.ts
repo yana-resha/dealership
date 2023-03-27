@@ -1,6 +1,7 @@
+import { createApi } from '@reduxjs/toolkit/query/react'
 import { GetVendorsListRequest, GetVendorsListResponse, Vendor } from '@sberauto/authdc-proto/public'
 import { appConfig } from 'config'
-import { createApi } from '@reduxjs/toolkit/query/react'
+
 import { defaultBaseQuery } from './helpers/defaultBaseQuery'
 
 export const pointsOfSaleApi = createApi({

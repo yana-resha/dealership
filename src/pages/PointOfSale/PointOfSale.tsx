@@ -1,12 +1,12 @@
 import React from 'react'
 
 import { Paper } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import { Navigate } from 'react-router-dom'
 
 import { appRoutePaths } from 'app/Router/Router.utils'
-import { makeStyles } from '@mui/styles'
-import { PointOfSaleAuth } from 'common/auth/PointOfSaleAuth'
 import { useCheckToken } from 'common/auth/CheckToken'
+import { PointOfSaleAuth } from 'common/auth/PointOfSaleAuth'
 
 const useStyles = makeStyles(theme => ({
   page: {

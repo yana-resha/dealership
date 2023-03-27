@@ -7,7 +7,7 @@ import { MockProviders } from 'tests/mocks'
 import { CustomDrawer } from '../Drawer'
 
 jest.mock('../subcomponents/NavigationMenu', () => ({
-  NavigationMenu: () => <div data-testid="mockNavigationMenu" />
+  NavigationMenu: () => <div data-testid="mockNavigationMenu" />,
 }))
 
 describe('CustomDrawer', () => {
@@ -15,7 +15,7 @@ describe('CustomDrawer', () => {
     render(
       <MockProviders>
         <CustomDrawer />
-      </MockProviders>
+      </MockProviders>,
     )
 
     const navigationMenu = screen.getByTestId('mockNavigationMenu')

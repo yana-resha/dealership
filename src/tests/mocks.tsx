@@ -1,12 +1,12 @@
 import React, { PropsWithChildren } from 'react'
 
-import { Provider } from 'react-redux'
-import { MockStore } from 'redux-mock-store'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { ThemeProvider } from '@mui/material'
+import { Provider } from 'react-redux'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { MockStore } from 'redux-mock-store'
+import { store } from 'store'
 
 import { theme } from 'app/theme'
-import { store } from 'store'
 
 export function ThemeProviderMock({ children }: PropsWithChildren) {
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>
@@ -16,7 +16,7 @@ export function StoreProviderMock({ mockStore, children }: { mockStore?: MockSto
   return <Provider store={mockStore || store}>{children}</Provider>
 }
 
-export function MockProviders ({ children }: React.PropsWithChildren<{}>) {
+export function MockProviders({ children }: React.PropsWithChildren<{}>) {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
@@ -27,4 +27,5 @@ export function MockProviders ({ children }: React.PropsWithChildren<{}>) {
         </MemoryRouter>
       </ThemeProvider>
     </Provider>
-  )}
+  )
+}

@@ -1,5 +1,5 @@
-import { disableConsole } from 'tests/utils'
 import { parseJwt } from 'shared/lib/jwt'
+import { disableConsole } from 'tests/utils'
 
 disableConsole('error')
 

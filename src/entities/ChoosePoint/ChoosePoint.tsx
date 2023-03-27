@@ -1,21 +1,24 @@
 import React, { useCallback, useState } from 'react'
+
 import { KeyboardArrowDown } from '@mui/icons-material'
+import DoneIcon from '@mui/icons-material/Done'
 import { CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { InputAdornment } from '@mui/material'
+import { Vendor } from '@sberauto/authdc-proto/public'
+import { useNavigate } from 'react-router-dom'
+
+import { defaultRoute } from 'app/Router/Router.utils'
+import { theme } from 'app/theme'
 import {
   pointsOfSaleFilter,
   retrieveLabelForPointOfSale,
   savePointOfSaleToCookies,
 } from 'entities/ChoosePoint/ChoosePoint.utils'
-import { Vendor } from '@sberauto/authdc-proto/public'
 import { useGetVendorListQuery } from 'shared/api/pointsOfSale.api'
 import SberTypography from 'shared/ui/SberTypography'
+
 import useStyles from './ChoosePoint.styles'
-import { useNavigate } from 'react-router-dom'
-import { defaultRoute } from 'app/Router/Router.utils'
-import DoneIcon from '@mui/icons-material/Done'
-import { theme } from 'app/theme'
 
 type Props = { value?: Vendor; isHeader?: boolean; onSuccessEditing?: () => void }
 

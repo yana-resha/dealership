@@ -18,7 +18,7 @@ export default makeStyles(theme => ({
 
     '&.MuiListItemText-root': {
       flex: 'none',
-    }
+    },
   },
   logoutBtn: {
     flexDirection: 'column',
@@ -47,29 +47,29 @@ export default makeStyles(theme => ({
     top: 0,
     bottom: 0,
     width: 4,
-    backgroundColor: theme.palette.primary.main
+    backgroundColor: theme.palette.primary.main,
   },
   logoutItem: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 0 
+    bottom: 0,
   },
   list: {
     '&.MuiList-root': {
-      marginTop: theme.spacing(4)
-    }
+      marginTop: theme.spacing(4),
+    },
   },
   tabs: {
     '& .MuiTabs-indicator': {
-      width: 4
+      width: 4,
     },
     '& .MuiTabs-scroller': {
-      marginTop: theme.spacing(4)
+      marginTop: theme.spacing(4),
     },
     '& .MuiTab-root': {
-      fontSize: 16
-    }
+      fontSize: 16,
+    },
   },
   tab: {
     height: 108,
@@ -84,5 +84,5 @@ export default makeStyles(theme => ({
     '&:hover': {
       'background-color': `${alpha(theme.palette.primary.main, 0.1)}`,
     },
-  }
+  },
 }))

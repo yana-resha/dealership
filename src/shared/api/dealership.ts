@@ -6,6 +6,7 @@
 
 // const auctionsApi = createAuctionsAPI(`${appConfig.apiUrl}/auctions`, baseFetch.post)
 
-// export const getAuctionList = () => auctionsApi.getAuctions().then(response => response.data.auctions ?? [])
+// export const getAuctionList = () =>
+//     auctionsApi.getAuctions().then(response => response.data.auctions ?? [])
 
 export const getThms = () => ({})

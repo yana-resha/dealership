@@ -11,7 +11,7 @@ describe('AuthPage', () => {
     render(
       <MockProviders>
         <Auth />
-      </MockProviders>
+      </MockProviders>,
     )
 
     const loginForm = screen.getByTestId('loginForm')

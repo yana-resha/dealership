@@ -1,0 +1,8 @@
+# #!/bin/bash
+. "$(dirname "$0")/_/husky.sh"
+
+# # Проверяем eslint
+node_modules/.bin/eslint src/ --fix
+
+# # Проверяем целостность типов
+yarn tsc --noEmit

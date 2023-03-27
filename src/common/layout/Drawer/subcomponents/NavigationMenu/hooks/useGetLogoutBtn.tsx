@@ -9,20 +9,20 @@ import { MenuItem } from './types'
 type UseGetLogoutBtnProps = {
   authType: AuthType
 }
-  
+
 export const useGetLogoutBtn = (props: UseGetLogoutBtnProps): MenuItem | null => {
   const { authType } = props
 
   const { onLogout } = useLogout()
-    
-  if(authType != 'no_auth') {
+
+  if (authType != 'no_auth') {
     return {
       label: 'Выйти',
       icon: () => <LogoutIcon />,
       path: '/auth',
-      onCallback: onLogout
+      onCallback: onLogout,
     }
   }
-  
+
   return null
 }

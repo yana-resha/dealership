@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom'
 
 import { ReactComponent as SberAutoLogo } from 'assets/icons/sberAutoLogo.svg'
 import { useCheckToken } from 'common/auth/CheckToken'
-
-import { NavigationMenu } from './subcomponents/NavigationMenu'
-import { useStyles } from './Drawer.styles'
 import { useCheckPointOfSale } from 'common/auth/CheckToken/hooks/useCheckPointOfSale'
+
+import { useStyles } from './Drawer.styles'
+import { NavigationMenu } from './subcomponents/NavigationMenu'
 
 export function CustomDrawer() {
   const classes = useStyles()

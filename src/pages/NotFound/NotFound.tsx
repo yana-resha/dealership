@@ -10,14 +10,16 @@ export function NotFound() {
   return (
     <Paper className={classes.page} data-testid="notFound">
       <Typography variant="h1" style={{ color: 'black' }}>
-          404
+        404
       </Typography>
 
       <Typography variant="h6" style={{ color: 'black' }}>
-          Страница не найдена
+        Страница не найдена
       </Typography>
 
-      <Button variant="contained" href="/" style={{ marginTop: 16 }}>Вернуться на главную</Button>
+      <Button variant="contained" href="/" style={{ marginTop: 16 }}>
+        Вернуться на главную
+      </Button>
     </Paper>
   )
 }

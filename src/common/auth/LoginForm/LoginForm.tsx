@@ -4,8 +4,8 @@ import { Avatar, Box, Button, CircularProgress, Typography } from '@mui/material
 
 import { ReactComponent as AvatarLogo } from 'assets/icons/avatar.svg'
 
-import useStyles from './LoginForm.styles'
 import { useAuthSberId } from './LoginForm.hooks'
+import useStyles from './LoginForm.styles'
 
 export function LoginForm() {
   const classes = useStyles()
@@ -18,9 +18,7 @@ export function LoginForm() {
         <AvatarLogo />
       </Avatar>
 
-      <Typography className={classes.formMessage}>
-        Добро пожаловать в СберАвто!
-      </Typography>
+      <Typography className={classes.formMessage}>Добро пожаловать в СберАвто!</Typography>
 
       <Button
         variant="contained"
@@ -29,10 +27,7 @@ export function LoginForm() {
         disabled={isFetch}
         data-testid="loginButton"
       >
-        {!isFetch ?
-          'Войти по Сбер ID' :
-          <CircularProgress color="inherit" size={16} />
-        }
+        {!isFetch ? 'Войти по Сбер ID' : <CircularProgress color="inherit" size={16} />}
       </Button>
     </Box>
   )

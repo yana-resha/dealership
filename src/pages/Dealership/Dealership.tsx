@@ -6,7 +6,7 @@ export function Dealership() {
   const classes = useStyles()
 
   return (
-    <div className={classes.page} data-testid="dealershipPage" >
+    <div className={classes.page} data-testid="dealershipPage">
       <span>DealershipPage</span>
     </div>
   )

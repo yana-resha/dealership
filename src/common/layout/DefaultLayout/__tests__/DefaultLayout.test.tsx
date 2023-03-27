@@ -18,7 +18,7 @@ describe('DefaultLayout', () => {
     render(
       <MockProviders>
         <DefaultLayout />
-      </MockProviders>
+      </MockProviders>,
     )
 
     const outlet = screen.getByTestId('mockOutlet')

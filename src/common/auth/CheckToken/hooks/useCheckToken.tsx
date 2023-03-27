@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
-import { COOKIE_USER_TOKEN } from 'entities/constants/auth.constants'
+
 import { appRoutePaths } from 'app/Router/Router.utils'
+import { COOKIE_USER_TOKEN } from 'entities/constants/auth.constants'
 
 type Timer = any
 
