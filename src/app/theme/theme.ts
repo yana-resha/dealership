@@ -79,13 +79,11 @@ export const theme = createTheme({
           padding: '6px 8px',
           fontSize: 12,
           height: 32,
-          borderRadius: 16,
         },
         containedSizeLarge: {
           padding: '12px 24px',
           fontSize: 16,
           height: 48,
-          borderRadius: 24,
         },
       },
     },
@@ -96,38 +94,38 @@ export const theme = createTheme({
       dark: '#1d9032',
     },
     primary: {
-      main: PRIMARY_MAIN
+      main: PRIMARY_MAIN,
     },
     background: {
       paper: '#F4F4F9',
       default: '#fff',
     },
     text: {
-      primary: DARK_NORMAL
-    }
-  }
+      primary: DARK_NORMAL,
+    },
+  },
 })
 
 /** Добавляем новые наборы цветов в палитру темы */
 declare module '@mui/material/styles' {
   interface Palette {
-    sber: Palette['primary'];
+    sber: Palette['primary']
   }
- 
+
   interface PaletteOptions {
     sber: {
-      main: React.CSSProperties['color'];
-      dark: React.CSSProperties['color'];
-    };
+      main: React.CSSProperties['color']
+      dark: React.CSSProperties['color']
+    }
   }
- 
+
   interface PaletteColor {
-    main: string;
-    dark: string;
+    main: string
+    dark: string
   }
- 
+
   interface SimplePaletteColorOptions {
-    main: string;
-    dark?: string;
+    main: string
+    dark?: string
   }
- }
+}

@@ -1,7 +1,8 @@
 import { Vendor } from '@sberauto/authdc-proto/public'
 import { FilterOptionsState } from '@mui/material'
 import Cookies from 'js-cookie'
-import { COOKIE_POINT_OF_SALE } from '../auth.constants'
+import { COOKIE_POINT_OF_SALE } from '../constants/auth.constants'
+import { compact } from 'lodash'
 
 export function pointsOfSaleFilter(options: Vendor[], state: FilterOptionsState<Vendor>) {
   const filteredOptions = options.filter(option =>
@@ -17,13 +18,15 @@ export function pointsOfSaleFilter(options: Vendor[], state: FilterOptionsState<
 }
 
 export function retrieveLabelForPointOfSale(option: Vendor) {
-  return (
-    `${option?.vendorName} ` +
-    `${option?.vendorCode} ` +
-    `${option?.cityName} ` +
-    `${option?.streetName} ` +
-    `${option?.houseNumber}`
-  )
+  const entities = [
+    option?.vendorName,
+    option?.vendorCode,
+    option?.cityName,
+    option?.streetName,
+    option?.houseNumber,
+  ]
+
+  return compact(entities).join(' ')
 }
 
 export function savePointOfSaleToCookies(option: Vendor | null) {

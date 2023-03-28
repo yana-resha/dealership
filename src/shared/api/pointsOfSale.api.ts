@@ -15,7 +15,7 @@ export const pointsOfSaleApi = createApi({
       }),
       transformResponse: (response: GetVendorsListResponse) => response.vendors ?? [],
       providesTags: ['pointsOfSale'],
-      transformErrorResponse: (error: Vendor[]) => mockResponse() ?? [],
+      transformErrorResponse: () => mockResponse() ?? [],
     }),
   }),
 })

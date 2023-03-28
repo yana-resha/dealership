@@ -7,7 +7,7 @@ import { useCheckToken } from 'common/auth/CheckToken'
 
 import { useStyles } from './Auth.styles'
 import Cookies from 'js-cookie'
-import { COOKIE_USER_TOKEN } from 'common/auth/auth.constants'
+import { COOKIE_USER_TOKEN } from 'entities/constants/auth.constants'
 
 export function Auth() {
   const classes = useStyles()

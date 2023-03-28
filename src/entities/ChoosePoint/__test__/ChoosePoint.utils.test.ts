@@ -1,11 +1,13 @@
 import { Vendor } from '@sberauto/authdc-proto/public'
+import { COOKIE_POINT_OF_SALE } from 'entities/constants/auth.constants'
 import Cookies from 'js-cookie'
-import {
-  retrieveLabelForPointOfSale,
-  savePointOfSaleToCookies,
-} from '../../../common/auth/PointOfSaleAuth/pointsOfSale.utils'
+import { retrieveLabelForPointOfSale, savePointOfSaleToCookies } from '../ChoosePoint.utils'
 
 describe('PointOfSaleUtilsTest', () => {
+  beforeEach(() => {
+    Cookies.remove(COOKIE_POINT_OF_SALE)
+  })
+
   describe('Строковое представление торговой точки формируется корректно', () => {
     it('Строка формируется корректно', () => {
       expect(retrieveLabelForPointOfSale(pointOfSale)).toEqual('Сармат 2002852 Ханты-Мансийск Зябликова 4')
@@ -15,7 +17,14 @@ describe('PointOfSaleUtilsTest', () => {
   describe('Торговая точка корректно сохраняется в Cookies', () => {
     it('Торговая точка сохраняется в Cookies', () => {
       savePointOfSaleToCookies(pointOfSale)
-      expect(Cookies.get('pointOfSale')).toContain('Сармат')
+      expect(Cookies.get(COOKIE_POINT_OF_SALE)).toContain('Сармат')
+    })
+  })
+
+  describe('Торговая точка не сохраняется в Cookies, если нет значения', () => {
+    it('Торговая точка сохраняется в Cookies', () => {
+      savePointOfSaleToCookies(null)
+      expect(Cookies.get(COOKIE_POINT_OF_SALE)).toBeUndefined()
     })
   })
 })

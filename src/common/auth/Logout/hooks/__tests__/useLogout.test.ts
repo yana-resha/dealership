@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react-hooks'
-import { COOKIE_POINT_OF_SALE, COOKIE_USER_TOKEN } from 'common/auth/auth.constants'
+import { COOKIE_POINT_OF_SALE, COOKIE_USER_TOKEN } from 'entities/constants/auth.constants'
 import Cookies from 'js-cookie'
 
 import { useLogout } from '../useLogout'
