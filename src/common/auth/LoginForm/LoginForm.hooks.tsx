@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 
 import { appRoutePaths } from 'app/Router/Router.utils'
-import { COOKIE_USER_TOKEN } from '../auth.constants'
+import { COOKIE_USER_TOKEN } from '../../../entities/constants/auth.constants'
 
 export const useAuthSberId = () => {
   const [isFetch, setIsFetch] = useState(false)

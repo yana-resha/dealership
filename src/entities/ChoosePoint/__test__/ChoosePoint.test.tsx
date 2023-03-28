@@ -6,7 +6,31 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as PoSApi from 'shared/api/pointsOfSale.api'
 import * as PoSUtil from 'entities/ChoosePoint/ChoosePoint.utils'
-import { PointOfSaleAuth } from '../PointOfSaleAuth'
+import { ChoosePoint } from '../ChoosePoint'
+
+const mockResponse = [
+  {
+    vendorCode: '2002852',
+    vendorName: 'Сармат',
+    cityName: 'Ханты-Мансийск',
+    houseNumber: '4',
+    streetName: 'Зябликова',
+  },
+  {
+    vendorCode: '4003390',
+    vendorName: 'ХимкиАвто',
+    cityName: 'Саратов',
+    houseNumber: '2',
+    streetName: 'Симонова',
+  },
+  {
+    vendorCode: '3444920',
+    vendorName: 'СайгакФорд',
+    cityName: 'Москва',
+    houseNumber: '4',
+    streetName: 'Курдюка',
+  },
+]
 
 const mockedUseGetVendorListQuery: jest.SpyInstance = jest.spyOn(PoSApi, 'useGetVendorListQuery')
 const mockedSavePointOfSaleToCookies: jest.SpyInstance = jest.spyOn(PoSUtil, 'savePointOfSaleToCookies')
@@ -26,27 +50,15 @@ const createWrapper = ({ store, children }: WrapperProps) => (
 
 disableConsole('error')
 
-describe('PointOfSaleAuthTest', () => {
-  describe('Все элементы отображаются на форме', () => {
+describe('ChoosePoint', () => {
+  describe('Все элементы отображаются', () => {
     beforeEach(() => {
       mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: mockResponse(),
+        data: mockResponse,
         error: undefined,
         isLoading: false,
       }))
-      render(<PointOfSaleAuth />, { wrapper: createWrapper })
-    })
-
-    it('Отображается кнопка назад', () => {
-      expect(screen.getByTestId('backButton')).toBeInTheDocument()
-    })
-
-    it('Отображается аватарка', () => {
-      expect(screen.getByTestId('avatar')).toBeInTheDocument()
-    })
-
-    it('Отображается текст "Выберите автосалон"', () => {
-      expect(screen.getByText('Выберите автосалон')).toBeInTheDocument()
+      render(<ChoosePoint />, { wrapper: createWrapper })
     })
 
     it('Отображается Автокомплит', () => {
@@ -58,6 +70,30 @@ describe('PointOfSaleAuthTest', () => {
     })
   })
 
+  describe('Если передан пропс isHeader, меняется размер и кнопка', () => {
+    beforeEach(() => {
+      mockedUseGetVendorListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
+        isLoading: false,
+      }))
+      render(<ChoosePoint isHeader />, { wrapper: createWrapper })
+    })
+
+    it('Отображается Автокомплит', () => {
+      expect(screen.getByPlaceholderText('ТТ или адрес')).toBeVisible()
+      expect(screen.getByPlaceholderText('ТТ или адрес')).toHaveClass('MuiInputBase-inputSizeSmall')
+    })
+
+    it('Отображается кнопка иконка', () => {
+      expect(screen.getByTestId('choosePointIconButton')).toBeVisible()
+    })
+
+    it('Не отображается кнопка Войти', async () => {
+      expect(await screen.queryByText('Войти')).not.toBeInTheDocument()
+    })
+  })
+
   describe('Ожидание загрузки автосалонов обрабатывается', () => {
     beforeEach(() => {
       mockedUseGetVendorListQuery.mockImplementation(() => ({
@@ -65,7 +101,7 @@ describe('PointOfSaleAuthTest', () => {
         error: undefined,
         isLoading: true,
       }))
-      render(<PointOfSaleAuth />, { wrapper: createWrapper })
+      render(<ChoosePoint />, { wrapper: createWrapper })
     })
 
     it('Выпадающий список содержит слово "Загрузка..."', () => {
@@ -82,10 +118,10 @@ describe('PointOfSaleAuthTest', () => {
     beforeEach(() => {
       mockedUseGetVendorListQuery.mockImplementation(() => ({
         data: undefined,
-        error: mockResponse(),
+        error: mockResponse,
         isLoading: false,
       }))
-      render(<PointOfSaleAuth />, { wrapper: createWrapper })
+      render(<ChoosePoint />, { wrapper: createWrapper })
     })
 
     it('Все элементы отображаются в выпадающем списке', async () => {
@@ -106,10 +142,10 @@ describe('PointOfSaleAuthTest', () => {
     beforeEach(() => {
       mockedUseGetVendorListQuery.mockImplementation(() => ({
         data: undefined,
-        error: mockResponse(),
+        error: mockResponse,
         isLoading: false,
       }))
-      render(<PointOfSaleAuth />, { wrapper: createWrapper })
+      render(<ChoosePoint />, { wrapper: createWrapper })
     })
 
     it('Сортировка списка выполняется корректно', async () => {
@@ -145,14 +181,39 @@ describe('PointOfSaleAuthTest', () => {
     })
   })
 
+  describe('При нажатии кнопки "Войти" видим корректную модалку', () => {
+    beforeEach(() => {
+      mockedUseGetVendorListQuery.mockImplementation(() => ({
+        data: undefined,
+        error: mockResponse,
+        isLoading: false,
+      }))
+      render(<ChoosePoint />, { wrapper: createWrapper })
+    })
+
+    it('Модальное окно отображается корректно, есть информация о выбранной точке', async () => {
+      const textField = screen.getByPlaceholderText('ТТ или адрес')
+      userEvent.click(textField)
+      userEvent.type(textField, 'Сармат')
+      const option = await screen.findByRole('option')
+      expect(option).not.toBeNull()
+      userEvent.click(option)
+      userEvent.click(screen.getByText('Войти'))
+      expect(screen.getByText('Вы выбрали точку:')).toBeVisible()
+      expect(screen.getByText('Сармат 2002852 Ханты-Мансийск Зябликова 4')).toBeVisible()
+      expect(screen.getByText('Все верно?')).toBeVisible()
+      screen.getAllByRole('button').map((el, i) => expect(el).toHaveTextContent(i === 0 ? 'Да' : 'Нет'))
+    })
+  })
+
   describe('Сохранение выбранной точки в Cookies выполняется корректно', () => {
     beforeEach(() => {
       mockedUseGetVendorListQuery.mockImplementation(() => ({
         data: undefined,
-        error: mockResponse(),
+        error: mockResponse,
         isLoading: false,
       }))
-      render(<PointOfSaleAuth />, { wrapper: createWrapper })
+      render(<ChoosePoint />, { wrapper: createWrapper })
     })
 
     it('Вызывается функция сохранения в Cookies', async () => {
@@ -168,14 +229,63 @@ describe('PointOfSaleAuthTest', () => {
     })
   })
 
+  describe('Если передана функция успешного завершения, она вызывается', () => {
+    const successFn = jest.fn()
+
+    beforeEach(() => {
+      mockedUseGetVendorListQuery.mockImplementation(() => ({
+        data: undefined,
+        error: mockResponse,
+        isLoading: false,
+      }))
+      render(<ChoosePoint onSuccessEditing={successFn} />, { wrapper: createWrapper })
+    })
+
+    it('Вызывается функция успешного завершения', async () => {
+      const textField = screen.getByPlaceholderText('ТТ или адрес')
+      userEvent.click(textField)
+      userEvent.type(textField, 'Химки')
+      const option = await screen.findByRole('option')
+      expect(option).not.toBeNull()
+      userEvent.click(option)
+      userEvent.click(screen.getByText('Войти'))
+      userEvent.click(screen.getByText('Да'))
+      expect(successFn).toBeCalledTimes(1)
+    })
+  })
+
+  describe('Сохранение выбранной точки не выполняется, если нажали "Нет" в модальном окне', () => {
+    beforeEach(() => {
+      mockedUseGetVendorListQuery.mockImplementation(() => ({
+        data: undefined,
+        error: mockResponse,
+        isLoading: false,
+      }))
+      render(<ChoosePoint />, { wrapper: createWrapper })
+    })
+
+    it('Не вызывается функция сохранения в Cookies, происходит очистка автокомплита', async () => {
+      const textField = screen.getByPlaceholderText('ТТ или адрес')
+      userEvent.click(textField)
+      userEvent.type(textField, 'Химки')
+      const option = await screen.findByRole('option')
+      expect(option).not.toBeNull()
+      userEvent.click(option)
+      userEvent.click(screen.getByText('Войти'))
+      userEvent.click(screen.getByText('Нет'))
+      expect(mockedSavePointOfSaleToCookies).toBeCalledTimes(0)
+      expect(screen.getByPlaceholderText('ТТ или адрес')).toHaveTextContent('')
+    })
+  })
+
   describe('Сохранение точки не выполняется, если она не была выбрана', () => {
     beforeEach(() => {
       mockedUseGetVendorListQuery.mockImplementation(() => ({
         data: undefined,
-        error: mockResponse(),
+        error: mockResponse,
         isLoading: false,
       }))
-      render(<PointOfSaleAuth />, { wrapper: createWrapper })
+      render(<ChoosePoint />, { wrapper: createWrapper })
     })
 
     it('Выводится сообщение об ошибке', () => {
@@ -189,31 +299,3 @@ describe('PointOfSaleAuthTest', () => {
     })
   })
 })
-
-function mockResponse() {
-  return JSON.parse(
-    '[\n' +
-      '         {\n' +
-      '            "vendorCode":"2002852",\n' +
-      '            "vendorName":"Сармат",\n' +
-      '            "cityName":"Ханты-Мансийск",\n' +
-      '            "houseNumber":"4",\n' +
-      '            "streetName":"Зябликова"\n' +
-      '         },\n' +
-      '         {\n' +
-      '            "vendorCode":"4003390",\n' +
-      '            "vendorName":"ХимкиАвто",\n' +
-      '            "cityName":"Саратов",\n' +
-      '            "houseNumber":"2",\n' +
-      '            "streetName":"Симонова"\n' +
-      '         },\n' +
-      '         {\n' +
-      '            "vendorCode":"3444920",\n' +
-      '            "vendorName":"СайгакФорд",\n' +
-      '            "cityName":"Москва",\n' +
-      '            "houseNumber":"4",\n' +
-      '            "streetName":"Курдюка"\n' +
-      '         }\n' +
-      '      ]',
-  )
-}

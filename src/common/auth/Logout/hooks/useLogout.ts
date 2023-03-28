@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import Cookies from 'js-cookie'
 
-import { COOKIE_USER_TOKEN, COOKIE_POINT_OF_SALE } from 'common/auth/auth.constants'
+import { COOKIE_USER_TOKEN, COOKIE_POINT_OF_SALE } from 'entities/constants/auth.constants'
 
 export const useLogout = () => {
   const onLogout = useCallback(() => {
