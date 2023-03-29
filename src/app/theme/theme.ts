@@ -53,8 +53,12 @@ export const theme = createTheme({
           lineHeight: '16px',
           letterSpacing: 'normal',
         },
+        text: {
+          padding: 0,
+        },
         contained: {
           boxShadow: 'none',
+          borderRadius: 48,
 
           '&:disabled': {
             backgroundColor: LIGHT_GRAY,
@@ -76,12 +80,17 @@ export const theme = createTheme({
           color: WHITE,
         },
         containedSizeSmall: {
-          padding: '6px 8px',
+          padding: '7px 16px',
           fontSize: 12,
           height: 32,
         },
+        containedSizeMedium: {
+          padding: '10px 24px',
+          fontSize: 14,
+          height: 40,
+        },
         containedSizeLarge: {
-          padding: '12px 24px',
+          padding: '14px 32px',
           fontSize: 16,
           height: 48,
         },

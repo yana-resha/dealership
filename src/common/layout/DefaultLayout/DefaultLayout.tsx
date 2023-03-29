@@ -18,18 +18,20 @@ export function DefaultLayout(props: Props) {
 
   return (
     <Box className={classes.globalContainer}>
-      {isHeader && (
-        <AppBar className={classes.appBar} position="fixed">
-          <Toolbar>
-            <Header />
-          </Toolbar>
-        </AppBar>
-      )}
-
       <Drawer />
 
-      <Box className={classes.main} component="main">
-        <Outlet />
+      <Box display="grid" gridAutoRows="auto 1fr">
+        {isHeader && (
+          <AppBar className={classes.appBar} position="static">
+            <Toolbar>
+              <Header />
+            </Toolbar>
+          </AppBar>
+        )}
+
+        <Box className={classes.main} component="main">
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   )

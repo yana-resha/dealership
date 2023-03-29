@@ -10,130 +10,156 @@ const SBSansDisplayFont = 'SBSansDisplay, OpenSans, "Helvetica Neue", Helvetica,
 
 const style = (): any => ({
   h0: {
-    //H0 SB Sans Display Bold 58 line 74
-    fontFamily: SBSansDisplayFont,
-    fontSize: 58,
-    fontWeight: 'bold',
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
-    textTransform: 'none',
+    '&.MuiTypography-root': {
+      //H0 SB Sans Display Bold 58 line 74
+      fontFamily: SBSansDisplayFont,
+      fontSize: 58,
+      fontWeight: 'bold',
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+      textTransform: 'none',
+    },
   },
   h1: {
-    //H1 SB Sans Display Regular 40 line 50
-    fontFamily: SBSansDisplayFont,
-    fontSize: 40,
-    fontWeight: 400,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 1.25,
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //H1 SB Sans Display Regular 40 line 50
+      fontFamily: SBSansDisplayFont,
+      fontSize: 40,
+      fontWeight: 400,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 1.25,
+      letterSpacing: 'normal',
+    },
   },
   h2: {
-    //H2 SB Sans Display Bold 32 line 44
-    fontFamily: SBSansDisplayFont,
-    fontSize: 32,
-    fontWeight: 600,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 1.38,
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //H2 SB Sans Display Bold 32 line 44
+      fontFamily: SBSansDisplayFont,
+      fontSize: 32,
+      fontWeight: 600,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 1.38,
+      letterSpacing: 'normal',
+    },
   },
   h3: {
-    //H3 SB Sans Display Regular 32 line 44
-    fontFamily: SBSansDisplayFont,
-    fontSize: 32,
-    fontWeight: 400,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 1.38,
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //H3 SB Sans Display Regular 32 line 44
+      fontFamily: SBSansDisplayFont,
+      fontSize: 32,
+      fontWeight: 400,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 1.38,
+      letterSpacing: 'normal',
+    },
   },
   h4: {
-    //H4 SB Sans Display 25 Bold line 32
-    fontFamily: SBSansDisplayFont,
-    fontSize: 25,
-    fontWeight: 'bold',
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //H4 SB Sans Display 25 Bold line 32
+      fontFamily: SBSansDisplayFont,
+      fontSize: 25,
+      fontWeight: 'bold',
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+    },
   },
   h5: {
-    //H5 SB Sans Display Semibold 25 line 32
-    fontFamily: SBSansDisplayFont,
-    fontSize: 25,
-    fontWeight: 600,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //H5 SB Sans Display Semibold 25 line 32
+      fontFamily: SBSansDisplayFont,
+      fontSize: 25,
+      fontWeight: 600,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+    },
   },
   h6: {
-    //H6 SB Sans Text Semibold 19 line 24
-    fontSize: 19,
-    fontWeight: 600,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //H6 SB Sans Text Semibold 19 line 24
+      fontSize: 19,
+      fontWeight: 600,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+    },
   },
   body1: {
-    //Body1 SB Sans Text Regular 19 line 24
-    fontSize: 19,
-    fontWeight: 400,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //Body1 SB Sans Text Regular 19 line 24
+      fontSize: 19,
+      fontWeight: 400,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+    },
   },
   body2: {
-    //Body2 SB Sans Text Semobold 16 line 20
-    fontSize: 16,
-    fontWeight: 600,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //Body2 SB Sans Text Semobold 16 line 20
+      fontSize: 16,
+      fontWeight: 600,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+    },
   },
   body3: {
-    //Body3 SB Sans Text Regular 16 line 20/24
-    fontSize: 16,
-    fontWeight: 400,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //Body3 SB Sans Text Regular 16 line 20/24
+      fontSize: 16,
+      fontWeight: 400,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+    },
   },
   body4: {
-    //Body4 SB Sans Text Semibold 14 line 18
-    fontSize: 14,
-    fontWeight: 600,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
+    '&.MuiTypography-root': {
+      //Body4 SB Sans Text Semibold 14 line 18
+      fontSize: 14,
+      fontWeight: 600,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+    },
   },
   body5: {
-    //Body5 SB Sans Text Regular 14 line 18/20
-    fontSize: 14,
-    fontWeight: 400,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
-    textTransform: 'none',
+    '&.MuiTypography-root': {
+      //Body5 SB Sans Text Regular 14 line 18/20
+      fontSize: 14,
+      fontWeight: 400,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+      textTransform: 'none',
+    },
   },
   body6: {
-    //Body6 SB Sans Text Regular 11 line 14
-    fontSize: 11,
-    fontWeight: 400,
-    fontStretch: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 'normal',
-    letterSpacing: 'normal',
-    color: '#9ca8b4',
+    '&.MuiTypography-root': {
+      //Body6 SB Sans Text Regular 11 line 14
+      fontSize: 11,
+      fontWeight: 400,
+      fontStretch: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+      color: '#9ca8b4',
+    },
   },
 })
 
