@@ -6,9 +6,8 @@ import { useNavigate, useLocation, matchPath } from 'react-router-dom'
 import { AuthType } from 'common/auth/CheckToken'
 
 import { MenuItem } from './hooks/types'
-import { useGetLogoutBtn } from './hooks/useGetLogoutBtn'
 import { useGetItems } from './hooks/useGetItems'
-
+import { useGetLogoutBtn } from './hooks/useGetLogoutBtn'
 import useStyles from './NavigationMenu.styles'
 
 type Props = {

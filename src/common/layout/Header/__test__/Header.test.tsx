@@ -1,10 +1,13 @@
 import React, { PropsWithChildren } from 'react'
-import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
-import { MockStore } from 'redux-mock-store'
-import { disableConsole } from 'tests/utils'
+
 import { Vendor } from '@sberauto/authdc-proto/public'
-import Cookies from 'js-cookie'
 import { render, screen } from '@testing-library/react'
+import Cookies from 'js-cookie'
+import { MockStore } from 'redux-mock-store'
+
+import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
+import { disableConsole } from 'tests/utils'
+
 import { Header } from '../Header'
 
 interface WrapperProps extends PropsWithChildren {

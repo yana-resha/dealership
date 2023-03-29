@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 
-import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
+import { useNavigate } from 'react-router-dom'
 
 import { appRoutePaths } from 'app/Router/Router.utils'
+
 import { COOKIE_USER_TOKEN } from '../../../entities/constants/auth.constants'
 
 export const useAuthSberId = () => {

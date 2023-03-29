@@ -1,8 +1,9 @@
-import { Vendor } from '@sberauto/authdc-proto/public'
 import { FilterOptionsState } from '@mui/material'
+import { Vendor } from '@sberauto/authdc-proto/public'
 import Cookies from 'js-cookie'
-import { COOKIE_POINT_OF_SALE } from '../constants/auth.constants'
 import { compact } from 'lodash'
+
+import { COOKIE_POINT_OF_SALE } from '../constants/auth.constants'
 
 export function pointsOfSaleFilter(options: Vendor[], state: FilterOptionsState<Vendor>) {
   const filteredOptions = options.filter(option =>

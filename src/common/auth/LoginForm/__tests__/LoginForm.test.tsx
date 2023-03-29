@@ -22,7 +22,7 @@ describe('LoginForm', () => {
     render(
       <MockProviders>
         <LoginForm />
-      </MockProviders>
+      </MockProviders>,
     )
 
     const loginForm = screen.getByTestId('loginForm')
@@ -33,7 +33,7 @@ describe('LoginForm', () => {
     render(
       <MockProviders>
         <LoginForm />
-      </MockProviders>
+      </MockProviders>,
     )
 
     const loginButton = screen.getByTestId('loginButton')
@@ -49,7 +49,7 @@ describe('LoginForm', () => {
     render(
       <MockProviders>
         <LoginForm />
-      </MockProviders>
+      </MockProviders>,
     )
 
     const circularProgress = screen.getByRole('progressbar')

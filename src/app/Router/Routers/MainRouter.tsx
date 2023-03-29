@@ -2,9 +2,9 @@ import React from 'react'
 
 import { Routes, Route, Navigate } from 'react-router-dom'
 
+import { DefaultLayout } from 'common/layout/DefaultLayout'
 import { DealershipPage } from 'pages/Dealership'
 import { NotFoundPage } from 'pages/NotFound'
-import { DefaultLayout } from 'common/layout/DefaultLayout'
 
 import { appRoutePaths, defaultRoute } from '../Router.utils'
 

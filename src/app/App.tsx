@@ -2,8 +2,8 @@ import React from 'react'
 
 import { ThemeProvider } from '@mui/material'
 import { Provider } from 'react-redux'
-import { store } from 'store'
 import { BrowserRouter } from 'react-router-dom'
+import { store } from 'store'
 
 import { Router } from './Router'
 import { theme } from './theme'

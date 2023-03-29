@@ -21,7 +21,6 @@ export const useStyles = makeStyles(theme => ({
     flexGrow: 1,
   },
   logo: {
-
     alignItems: 'center',
     gap: theme.spacing(1),
     color: 'inherit',
@@ -49,6 +48,6 @@ export const useStyles = makeStyles(theme => ({
     },
     '&.MuiDrawer-docked': {
       height: '100%',
-    }
+    },
   },
 }))

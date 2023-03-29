@@ -3,9 +3,8 @@ import React from 'react'
 import { AppBar, Box, Toolbar } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 
-import { Header } from '../Header'
 import { Drawer } from '../Drawer'
-
+import { Header } from '../Header'
 import { useStyles } from './DefaultLayout.styles'
 
 type Props = {

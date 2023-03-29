@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
-import Cookies from 'js-cookie'
 import { Vendor } from '@sberauto/authdc-proto/public'
-import useStyles from './Header.styles'
+import Cookies from 'js-cookie'
+
 import { ChoosePoint } from 'entities/ChoosePoint/ChoosePoint'
 import { PointInfo } from 'entities/PointInfo/PointInfo'
+
+import useStyles from './Header.styles'
 
 export function Header() {
   const classes = useStyles()

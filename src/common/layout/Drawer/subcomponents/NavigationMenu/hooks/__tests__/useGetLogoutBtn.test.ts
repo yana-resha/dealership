@@ -10,8 +10,8 @@ jest.mock('common/auth/Logout', () => ({
 
 describe('useGetLogoutBtn', () => {
   beforeEach(() => {
-    const onLogout = jest.fn();
-    (useLogout as jest.Mock).mockImplementation(() => ({ onLogout }))
+    const onLogout = jest.fn()
+    ;(useLogout as jest.Mock).mockImplementation(() => ({ onLogout }))
   })
 
   it('возвращает null для пользователей с типом авторизации no_auth', () => {

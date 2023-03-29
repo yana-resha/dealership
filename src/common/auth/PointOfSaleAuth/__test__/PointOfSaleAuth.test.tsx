@@ -1,11 +1,14 @@
 import React, { PropsWithChildren } from 'react'
-import { ThemeProviderMock, StoreProviderMock } from 'tests/mocks'
-import { MockStore } from 'redux-mock-store'
-import { disableConsole } from 'tests/utils'
+
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import * as PoSApi from 'shared/api/pointsOfSale.api'
+import { MockStore } from 'redux-mock-store'
+
 import * as PoSUtil from 'entities/ChoosePoint/ChoosePoint.utils'
+import * as PoSApi from 'shared/api/pointsOfSale.api'
+import { ThemeProviderMock, StoreProviderMock } from 'tests/mocks'
+import { disableConsole } from 'tests/utils'
+
 import { PointOfSaleAuth } from '../PointOfSaleAuth'
 
 const mockedUseGetVendorListQuery: jest.SpyInstance = jest.spyOn(PoSApi, 'useGetVendorListQuery')

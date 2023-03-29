@@ -2,10 +2,11 @@ import React from 'react'
 
 import { Routes, Route } from 'react-router-dom'
 
-import { AuthPage } from 'pages/Auth'
 import { DefaultLayout } from 'common/layout/DefaultLayout'
-import { appRoutePaths } from '../Router.utils'
+import { AuthPage } from 'pages/Auth'
 import { PointOfSale } from 'pages/PointOfSale/PointOfSale'
+
+import { appRoutePaths } from '../Router.utils'
 
 export function AuthRouter(): JSX.Element {
   return (

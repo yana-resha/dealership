@@ -2,12 +2,12 @@ import React from 'react'
 
 import { render, screen } from '@testing-library/react'
 
-import { NavigationMenu } from '../NavigationMenu'
-import { MenuItem } from '../hooks/types'
 import { MockProviders } from 'tests/mocks'
 
+import { MenuItem } from '../hooks/types'
 import * as UseGetItemsHook from '../hooks/useGetItems'
 import * as UseGetLogoutBtnHook from '../hooks/useGetLogoutBtn'
+import { NavigationMenu } from '../NavigationMenu'
 
 const mockedUseGetItems = jest.spyOn(UseGetItemsHook, 'useGetItems')
 mockedUseGetItems.mockImplementation(jest.fn())
@@ -49,24 +49,24 @@ describe('NavigationMenu', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
-  
+
   it('отображает табы для каждого элемента меню', () => {
     render(
       <MockProviders>
         <NavigationMenu authType={authType} />
-      </MockProviders>
+      </MockProviders>,
     )
-    
+
     const tabs = screen.getAllByRole('tab')
-    
+
     expect(tabs).toHaveLength(mockMenuItems.length)
   })
-  
+
   it('вызывает onCallback для кнопки выхода и перенаправляет на страницу авторизации', () => {
     render(
       <MockProviders>
         <NavigationMenu authType={authType} />
-      </MockProviders>
+      </MockProviders>,
     )
 
     const logoutBtn = screen.getByTestId('logoutBtn')

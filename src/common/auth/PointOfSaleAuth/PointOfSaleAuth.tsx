@@ -1,10 +1,13 @@
 import React, { useCallback } from 'react'
+
 import { KeyboardArrowLeft } from '@mui/icons-material'
 import { Avatar, Box, IconButton, Typography } from '@mui/material'
-import useStyles from './PointOfSaleAuth.styles'
 import { useNavigate } from 'react-router-dom'
+
 import { appRoutePaths } from 'app/Router/Router.utils'
 import { ChoosePoint } from 'entities/ChoosePoint/ChoosePoint'
+
+import useStyles from './PointOfSaleAuth.styles'
 
 export function PointOfSaleAuth() {
   const classes = useStyles()

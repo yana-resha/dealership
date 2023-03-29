@@ -27,7 +27,6 @@ module.exports = {
     'no-unused-vars': ['off'],
     'no-empty-pattern': ['warn'],
     'import/newline-after-import': ['warn'],
-    'import/no-cycle': [2],
     'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
     'no-debugger': ['warn'],
     'react/self-closing-comp': ['warn'],
@@ -40,6 +39,9 @@ module.exports = {
     'jsx-quotes': ['error', 'prefer-double'],
     'react/jsx-curly-brace-presence': ['warn'],
     'no-mixed-spaces-and-tabs': ['error'],
+    'prettier/prettier': ['error'],
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
     'max-len': [
       'error',
       {
@@ -52,7 +54,7 @@ module.exports = {
       },
     ],
     'import/order': [
-      'off',
+      'warn',
       {
         groups: ['builtin', 'external', 'internal'],
         pathGroups: [
@@ -61,12 +63,14 @@ module.exports = {
             group: 'external',
             position: 'before',
           },
-          { pattern: 'common/**', group: 'internal' },
-          { pattern: 'pages/**', group: 'internal' },
-          { pattern: 'shared/**', group: 'internal' },
-          { pattern: 'store/**', group: 'internal' },
-          { pattern: 'app/**', group: 'internal' },
           { pattern: 'assets/**', group: 'internal' },
+          { pattern: 'app/**', group: 'internal' },
+          { pattern: 'pages/**', group: 'internal' },
+          { pattern: 'common/**', group: 'internal' },
+          { pattern: 'entities/**', group: 'internal' },
+          { pattern: 'store/**', group: 'internal' },
+          { pattern: 'shared/**', group: 'internal' },
+          { pattern: 'tests/**', group: 'internal' },
         ],
         pathGroupsExcludedImportTypes: ['react'],
         'newlines-between': 'always',
