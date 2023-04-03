@@ -2,14 +2,13 @@ import { makeStyles } from '@mui/styles'
 
 export const useStyles = makeStyles(theme => ({
   globalContainer: {
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: '198px 1fr',
     height: '100%',
-
-    [theme.breakpoints.down('sm')]: {
-      display: 'unset',
-    },
   },
   appBar: {
+    borderBottom: `1px solid ${theme.palette.grey[400]}`,
+
     '&&': {
       [theme.breakpoints.down('sm')]: {
         zIndex: theme.zIndex.drawer,
