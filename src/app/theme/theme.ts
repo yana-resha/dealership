@@ -1,7 +1,15 @@
 import { createTheme, alpha } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 
-import { BLACK, DARK_NORMAL, LIGHT_GRAY, PRIMARY_DARK, PRIMARY_MAIN, WHITE } from '../../shared/palette'
+import {
+  BLACK,
+  DARK_NORMAL,
+  LIGHT_GRAY,
+  PRIMARY_DARK,
+  PRIMARY_MAIN,
+  WHITE,
+  GRAY_NORMAL,
+} from '../../shared/palette'
 
 // NOTE: Since makeStyles is now exported from @mui/styles package which does not know about
 // Theme in the core package. To fix this, you need to augment the DefaultTheme (empty object)
@@ -16,6 +24,31 @@ export const theme = createTheme({
     fontFamily: '"SBSansText", Arial',
   },
   components: {
+    MuiSwitch: {
+      styleOverrides: {
+        root: {
+          padding: 0,
+          width: '42px',
+          height: '26px',
+        },
+        thumb: {
+          boxSizing: 'border-box',
+          width: 22,
+          height: 22,
+        },
+        track: {
+          height: '26px',
+          borderRadius: '16px',
+          backgroundColor: GRAY_NORMAL,
+          opacity: 1,
+        },
+        switchBase: {
+          padding: 0,
+          margin: 2,
+          transitionDuration: '300ms',
+        },
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         root: {

@@ -7,7 +7,7 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.spacing(2),
+    padding: theme.spacing(6),
 
     [theme.breakpoints.down('sm')]: {
       alignItems: 'unset',
@@ -19,6 +19,5 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 200,
   },
 }))
