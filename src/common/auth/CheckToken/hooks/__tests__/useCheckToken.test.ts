@@ -1,8 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 import Cookies from 'js-cookie'
 
-import { COOKIE_USER_TOKEN } from 'entities/constants/auth.constants'
-
+import { COOKIE_JWT_TOKEN } from '../../../constants'
 import { useCheckToken } from '../useCheckToken'
 
 jest.mock('react-router-dom', () => ({
@@ -13,11 +12,11 @@ jest.useFakeTimers()
 
 describe('useCheckToken', () => {
   afterEach(() => {
-    Cookies.remove(COOKIE_USER_TOKEN)
+    Cookies.remove(COOKIE_JWT_TOKEN)
   })
 
   it('возвращает true, если в куках есть токен', () => {
-    Cookies.set(COOKIE_USER_TOKEN, 'test-token')
+    Cookies.set(COOKIE_JWT_TOKEN, 'test-token')
 
     const { result } = renderHook(() => useCheckToken())
 
@@ -33,7 +32,7 @@ describe('useCheckToken', () => {
   it('обновляет состояние токена при изменении токена в куках', () => {
     const { result } = renderHook(() => useCheckToken())
 
-    Cookies.set(COOKIE_USER_TOKEN, 'new-test-token')
+    Cookies.set(COOKIE_JWT_TOKEN, 'new-test-token')
     jest.advanceTimersByTime(750)
 
     expect(result.current).toBe(true)

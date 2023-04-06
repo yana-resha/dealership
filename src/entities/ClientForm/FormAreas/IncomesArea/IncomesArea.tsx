@@ -3,7 +3,7 @@ import React from 'react'
 import { AttachFileTwoTone } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 
-import { maskDigitsOnly, maskNoRestrictions } from 'shared/masks/InputMasks'
+import { maskDigitsOnly } from 'shared/masks/InputMasks'
 import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'

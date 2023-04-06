@@ -2241,6 +2241,13 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
+"@sberauto/eslint-plugin@1.0.1-alpha.2":
+  version "1.0.1-alpha.2"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/eslint-plugin/-/eslint-plugin-1.0.1-alpha.2.tgz#1682b66e38374d4ab331a1c8944080ae03ec18ca"
+  integrity sha512-P6N+qCF7SmlAqwEqjhJqHvtDE7/eovmpleLViPUaUyWJvrtgxmWihcige1McQiGd5zG0/UgHQat/4yAgMUWIXw==
+  dependencies:
+    requireindex "1.2.0"
+
 "@sinclair/typebox@^0.24.1":
   version "0.24.51"
   resolved "https://nexus.x.sberauto.com/repository/npm/@sinclair/typebox/-/typebox-0.24.51.tgz"
@@ -9379,6 +9386,11 @@ require-from-string@^2.0.2:
   version "2.0.2"
   resolved "https://nexus.x.sberauto.com/repository/npm/require-from-string/-/require-from-string-2.0.2.tgz"
   integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
+
+requireindex@1.2.0:
+  version "1.2.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/requireindex/-/requireindex-1.2.0.tgz#3463cdb22ee151902635aa6c9535d4de9c2ef1ef"
+  integrity sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==
 
 requires-port@^1.0.0:
   version "1.0.0"

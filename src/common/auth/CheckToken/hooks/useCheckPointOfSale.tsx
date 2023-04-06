@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 
-import { appRoutePaths } from 'app/Router/Router.utils'
-import { COOKIE_POINT_OF_SALE } from 'entities/constants/auth.constants'
+import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 
 type Timer = any
 

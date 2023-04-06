@@ -1,9 +1,7 @@
 import React from 'react'
 
-import { Box, FormHelperText, InputLabel, Switch } from '@mui/material'
+import { Box, FormHelperText, InputLabel, Switch, useTheme } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
-
-import { theme } from 'app/theme'
 
 import useStyles from './SwitchInput.styles'
 
@@ -15,10 +13,14 @@ type Props = {
 }
 
 export const SwitchInput = (props: Props) => {
-  const classes = useStyles()
   const { name, label, gridColumn, centered } = props
+
+  const classes = useStyles()
+  const theme = useTheme()
+
   const [field, meta] = useField(name)
   const { setFieldValue } = useFormikContext()
+
   const isError = meta != undefined && meta.touched && meta.error != undefined
 
   function handleSwitch(event: React.ChangeEvent<HTMLInputElement>) {

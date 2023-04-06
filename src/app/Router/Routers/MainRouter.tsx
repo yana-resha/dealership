@@ -7,7 +7,7 @@ import { CreateOrderPage } from 'pages/CreateOrderPage/CreateOrderPage'
 import { DealershipPage } from 'pages/Dealership'
 import { NotFoundPage } from 'pages/NotFound'
 
-import { appRoutePaths, defaultRoute } from '../Router.utils'
+import { appRoutePaths, defaultRoute } from '../../../shared/navigation/routerPath'
 
 export function MainRouter(): JSX.Element {
   return (

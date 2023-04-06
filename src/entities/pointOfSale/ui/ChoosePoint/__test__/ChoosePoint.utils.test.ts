@@ -1,7 +1,7 @@
 import { Vendor } from '@sberauto/authdc-proto/public'
 import Cookies from 'js-cookie'
 
-import { COOKIE_POINT_OF_SALE } from 'entities/constants/auth.constants'
+import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
 
 import { retrieveLabelForPointOfSale, savePointOfSaleToCookies } from '../ChoosePoint.utils'
 

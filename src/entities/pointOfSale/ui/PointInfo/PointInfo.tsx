@@ -1,13 +1,11 @@
 import React, { useMemo } from 'react'
 
 import { KeyboardArrowDown } from '@mui/icons-material'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Vendor } from '@sberauto/authdc-proto/public'
 import Cookies from 'js-cookie'
 import { compact } from 'lodash'
-
-import { theme } from 'app/theme'
 
 const useStyles = makeStyles(theme => ({
   posNumber: {
@@ -25,6 +23,7 @@ type Props = {
 
 export const PointInfo = ({ onButtonClick }: Props) => {
   const classes = useStyles()
+  const theme = useTheme()
   const pointOfSale: Vendor = JSON.parse(Cookies.get('pointOfSale') ?? '{}')
 
   const fullPointInfo = useMemo(() => {

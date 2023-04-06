@@ -3,14 +3,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 
-import { appRoutePaths } from 'app/Router/Router.utils'
-import { COOKIE_USER_TOKEN } from 'entities/constants/auth.constants'
+import { appRoutePaths } from 'shared/navigation/routerPath'
+
+import { COOKIE_JWT_TOKEN } from '../../constants'
 
 type Timer = any
 
 /** Проверяет наличие токена */
 export const useCheckToken = () => {
-  const [token, setToken] = useState(Cookies.get(COOKIE_USER_TOKEN))
+  const [token, setToken] = useState(Cookies.get(COOKIE_JWT_TOKEN))
 
   const navigate = useNavigate()
 
@@ -24,7 +25,7 @@ export const useCheckToken = () => {
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      const newToken = Cookies.get(COOKIE_USER_TOKEN)
+      const newToken = Cookies.get(COOKIE_JWT_TOKEN)
       // eslint-disable-next-line security/detect-possible-timing-attacks
       if (newToken !== token) {
         setToken(newToken)

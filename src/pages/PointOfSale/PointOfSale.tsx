@@ -4,9 +4,9 @@ import { Paper } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Navigate } from 'react-router-dom'
 
-import { appRoutePaths } from 'app/Router/Router.utils'
 import { useCheckToken } from 'common/auth/CheckToken'
-import { PointOfSaleAuth } from 'common/auth/PointOfSaleAuth'
+import { PointOfSaleAuth } from 'common/PointOfSaleAuth'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 
 const useStyles = makeStyles(theme => ({
   page: {

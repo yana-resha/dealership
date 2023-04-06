@@ -4,8 +4,8 @@ import { Box, Typography } from '@mui/material'
 import { Vendor } from '@sberauto/authdc-proto/public'
 import Cookies from 'js-cookie'
 
-import { ChoosePoint } from 'entities/ChoosePoint/ChoosePoint'
-import { PointInfo } from 'entities/PointInfo/PointInfo'
+import { PointInfo } from 'entities/pointOfSale'
+import { ChoosePoint } from 'entities/pointOfSale'
 
 import useStyles from './Header.styles'
 
