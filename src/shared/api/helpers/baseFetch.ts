@@ -1,8 +1,8 @@
-import Cookies from 'js-cookie'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 
-import { SBERAUTO_JWT } from 'shared/lib/jwt'
+import { authToken } from '../token'
 
-type Method =
+export type Method =
   | 'get'
   | 'GET'
   | 'delete'
@@ -22,7 +22,7 @@ type Method =
   | 'unlink'
   | 'UNLINK'
 
-interface Options<RequestType> {
+export interface Options<RequestType> {
   headers?: Record<string, string>
   data?: RequestType
   method?: Method
@@ -39,9 +39,9 @@ const genericRequest = async <RequestType, ResponseType>(
   const {
     headers: additionalHeaders,
     isResponseBlob = false,
-    isReadOnly = false,
     data,
     withCredentials = true,
+    method = 'POST',
     ...opt
   } = options
 
@@ -51,12 +51,13 @@ const genericRequest = async <RequestType, ResponseType>(
   })
 
   if (withCredentials) {
-    headers.append('Authorization', `Bearer ${Cookies.get(SBERAUTO_JWT)}`)
+    headers.append('Authorization', `Bearer ${authToken.jwt.get()}`)
   }
 
-  return fetch(`${url}${isReadOnly ? '?readonly=true' : ''}`, {
+  return fetch(url, {
     body: data ? JSON.stringify(data) : null,
     headers,
+    method,
     ...opt,
   })
     .then(async response => {
@@ -76,12 +77,12 @@ const genericRequest = async <RequestType, ResponseType>(
       if (
         error.errors?.some(
           (error: { code: string }) =>
-            error.code === 'Unauthenticated' && window.location.pathname !== '/login',
+            error.code === 'Unauthenticated' && window.location.pathname !== appRoutePaths.auth,
         )
       ) {
-        window.location.replace('/login')
+        window.location.replace(appRoutePaths.auth)
       } else {
-        return error
+        throw error
       }
     })
 }

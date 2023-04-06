@@ -16,7 +16,7 @@ export const FindApplication = () => {
     passportNumber: '',
     applicationNumber: '',
     applicationUpdateDate: '',
-    statusCodes: [],
+    statuses: [],
   })
   const { error, isLoading } = useFindApplicationsQuery({ vendorCode, ...request })
 

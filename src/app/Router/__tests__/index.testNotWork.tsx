@@ -1,12 +1,13 @@
 import React from 'react'
 
 import { render, waitFor, screen } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 
 import { store } from 'app/store'
-import * as CheckPoint from 'common/auth/CheckToken/hooks/useCheckPointOfSale'
-import * as CheckToken from 'common/auth/CheckToken/hooks/useCheckToken'
+import * as CheckPoint from 'common/auth/hooks/useCheckPointOfSale'
+import * as CheckToken from 'common/auth/hooks/useCheckToken'
 import { MockThemeProviders } from 'tests/mocks'
 
 import { Router } from '../Router'
@@ -14,14 +15,18 @@ import { Router } from '../Router'
 const useCheckToken = jest.spyOn(CheckToken, 'useCheckToken')
 const useCheckPointOfSale = jest.spyOn(CheckPoint, 'useCheckPointOfSale')
 
+const queryClient = new QueryClient()
+
 const getMockRouter = () => (
-  <Provider store={store}>
-    <MockThemeProviders>
-      <MemoryRouter basename="/">
-        <Router />
-      </MemoryRouter>
-    </MockThemeProviders>
-  </Provider>
+  <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
+      <MockThemeProviders>
+        <MemoryRouter basename="/">
+          <Router />
+        </MemoryRouter>
+      </MockThemeProviders>
+    </Provider>
+  </QueryClientProvider>
 )
 
 describe('Router component', () => {

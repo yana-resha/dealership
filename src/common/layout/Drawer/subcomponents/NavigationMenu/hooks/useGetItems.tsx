@@ -4,7 +4,7 @@ import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
 import { ReactComponent as OrderCreateIconSelected } from 'assets/icons/orderCreateSelected.svg'
 import { ReactComponent as OrderListIcon } from 'assets/icons/orderList.svg'
 import { ReactComponent as OrderListIconSelected } from 'assets/icons/orderListSelected.svg'
-import { AuthType } from 'common/auth/CheckToken'
+import { AuthType } from 'common/auth'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { MenuItem } from './types'

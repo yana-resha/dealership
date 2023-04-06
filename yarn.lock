@@ -2233,10 +2233,10 @@
   resolved "https://nexus.x.sberauto.com/repository/npm/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
 
-"@sberauto/authdc-proto@0.0.0-dcb-22":
-  version "0.0.0-dcb-22"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-0.0.0-dcb-22.tgz#8407e7a79aa37a294c28e04b64f3d6c22778002b"
-  integrity sha512-j4aoK1zInK4AfcY8qad8n5FFDsqrNzg/4bKnH2gQOAqV25DKp7EU7551Xxj7Dv9zyiqZvRrCWP2uFc1tgC37zQ==
+"@sberauto/authdc-proto@0.0.0-dcb-24":
+  version "0.0.0-dcb-24"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-0.0.0-dcb-24.tgz#1f1f70735c3b40970147f1ad0a0d5f07d2bf5479"
+  integrity sha512-FWIiTvZOTX9urwnKpQ2fYxFjs/xgVLl66MHVjy/Hm7sYgrEg8IngSfW5XE10sxbm1d33u0MFxMA2Lo4BjR5wbQ==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
@@ -2250,8 +2250,8 @@
 
 "@sberauto/loanapplifecycledc-proto@0.0.0-dcb-74":
   version "0.0.0-dcb-74"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.0.0-dcb-74.tgz#9895a80f930f2d1c4b1ff155e8ca2e332c98eaad"
-  integrity sha512-+ETFv3C8twH2Lci2fhEJtn9BQy8AhUEnM6efHcYQq+2ScD5H/S0cCrDoi+cDqyzR3JT9IPgshOckKAe+g8ACPA==
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.0.0-dcb-74.tgz#c960fd036cdd5db1c442931eb1299ab6bce20417"
+  integrity sha512-Wkc08otp6RZ1u+6aXiDejsF0HvgkkCnFPRi3l+0dKKbnwmsSFTdKdF45oHKE5EO5oV/nixXtXThgg5Vnkz8lng==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
@@ -3776,7 +3776,7 @@ broadcast-channel@^2.1.8:
     rimraf "2.6.3"
     unload "2.2.0"
 
-broadcast-channel@^3.1.0:
+broadcast-channel@^3.1.0, broadcast-channel@^3.4.1:
   version "3.7.0"
   resolved "https://nexus.x.sberauto.com/repository/npm/broadcast-channel/-/broadcast-channel-3.7.0.tgz#2dfa5c7b4289547ac3f6705f9c00af8723889937"
   integrity sha512-cIAKJXAxGJceNZGTZSBzMxzyOn72cVgPnKx4dc6LRjQgbaJUQqhy5rzL3zbMxkMWsGKkv2hSFkPRMEXfoMZ2Mg==
@@ -7659,6 +7659,14 @@ map-obj@^4.0.0, map-obj@^4.1.0, map-obj@^4.3.0:
   resolved "https://nexus.x.sberauto.com/repository/npm/map-obj/-/map-obj-4.3.0.tgz"
   integrity sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==
 
+match-sorter@^6.0.2:
+  version "6.3.1"
+  resolved "https://nexus.x.sberauto.com/repository/npm/match-sorter/-/match-sorter-6.3.1.tgz#98cc37fda756093424ddf3cbc62bfe9c75b92bda"
+  integrity sha512-mxybbo3pPNuA+ZuCUhm5bwNkXrJTbsk5VWbR5wiwz/GC6LIiegBGn2w3O08UG/jdbYLinw51fSQ5xNU1U3MgBw==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    remove-accents "0.4.2"
+
 mdn-data@2.0.14:
   version "2.0.14"
   resolved "https://nexus.x.sberauto.com/repository/npm/mdn-data/-/mdn-data-2.0.14.tgz"
@@ -9097,6 +9105,15 @@ react-number-format@5.1.2:
   dependencies:
     prop-types "^15.7.2"
 
+react-query@3.35.0:
+  version "3.35.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/react-query/-/react-query-3.35.0.tgz#f807ba8497f8d6218a73e81a977e44ea786a7267"
+  integrity sha512-mRBJdpELLV+snzyXDsXM5ZEXM+HYt05L7st6ihSXr3nHX+4ULFr30mDjsziZvx0oF5dhlSDB8aMdvG6Ah4Bukg==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+    broadcast-channel "^3.4.1"
+    match-sorter "^6.0.2"
+
 react-redux@8.0.5:
   version "8.0.5"
   resolved "https://nexus.x.sberauto.com/repository/npm/react-redux/-/react-redux-8.0.5.tgz"
@@ -9373,6 +9390,11 @@ relateurl@^0.2.7:
   version "0.2.7"
   resolved "https://nexus.x.sberauto.com/repository/npm/relateurl/-/relateurl-0.2.7.tgz"
   integrity sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==
+
+remove-accents@0.4.2:
+  version "0.4.2"
+  resolved "https://nexus.x.sberauto.com/repository/npm/remove-accents/-/remove-accents-0.4.2.tgz#0a43d3aaae1e80db919e07ae254b285d9e1c7bb5"
+  integrity sha512-7pXIJqJOq5tFgG1A2Zxti3Ht8jJF337m4sowbuHsW30ZnkQFnDzy9qBNhgzX8ZLW4+UBcXiiR7SwR6pokHsxiA==
 
 renderkid@^3.0.0:
   version "3.0.0"

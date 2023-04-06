@@ -1,3 +1,5 @@
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+
 export type PreparedTableData = {
   applicationNumber: string
   applicationUpdateDate: string
@@ -7,5 +9,5 @@ export type PreparedTableData = {
   decisionTerm: string
   //NOTE: непонятно что отвечает за иконку уточнить
   isDC: boolean
-  status: string
+  status: StatusCode
 }

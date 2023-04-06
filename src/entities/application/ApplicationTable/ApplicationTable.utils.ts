@@ -1,3 +1,5 @@
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+
 import { PreparedTableData } from './ApplicationTable.types'
 
 export const getCellsChildrens = (row: PreparedTableData) =>
@@ -9,4 +11,4 @@ export const getCellsChildrens = (row: PreparedTableData) =>
     acc.push({ name: key, value })
 
     return acc
-  }, [] as { name: string; value: string | boolean }[])
+  }, [] as { name: string; value: string | boolean | StatusCode }[])

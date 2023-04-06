@@ -10,6 +10,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '10',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     accountFlag: true,
     contractPrintFlag: false,
@@ -26,6 +27,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '44',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     accountFlag: false,
     contractPrintFlag: true,
@@ -42,6 +44,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '16',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     accountFlag: false,
     contractPrintFlag: false,
@@ -58,6 +61,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '10',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     accountFlag: true,
     contractPrintFlag: false,
@@ -74,6 +78,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '44',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     accountFlag: false,
     contractPrintFlag: true,
@@ -90,6 +95,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '16',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     accountFlag: false,
     contractPrintFlag: false,
@@ -106,6 +112,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '10',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     accountFlag: true,
     contractPrintFlag: false,
@@ -122,6 +129,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '44',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     accountFlag: false,
     contractPrintFlag: true,
@@ -138,6 +146,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '16',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     accountFlag: false,
     contractPrintFlag: false,
@@ -154,6 +163,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '10',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     accountFlag: true,
     contractPrintFlag: false,
@@ -170,6 +180,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '44',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     accountFlag: false,
     contractPrintFlag: true,
@@ -186,6 +197,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '16',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     accountFlag: false,
     contractPrintFlag: false,
@@ -202,6 +214,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '10',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     accountFlag: true,
     contractPrintFlag: false,
@@ -218,6 +231,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '44',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     accountFlag: false,
     contractPrintFlag: true,
@@ -234,6 +248,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '16',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     accountFlag: false,
     contractPrintFlag: false,
@@ -250,6 +265,7 @@ export const dataMock: Application[] = [
     vendorCode: '2003023272',
     source: 'Сбол',
     decisionTerm: '10',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     accountFlag: true,
     contractPrintFlag: false,
@@ -267,6 +283,7 @@ export const preparedMock = [
     fullName: 'Медведев Али Денисович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     vendorCode: '2003023272',
   },
@@ -277,6 +294,7 @@ export const preparedMock = [
     fullName: 'Карасева Мелания Данииловна',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     vendorCode: '2003023272',
   },
@@ -287,6 +305,7 @@ export const preparedMock = [
     fullName: 'Смирнов Александр Александрович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     vendorCode: '2003023272',
   },
@@ -297,6 +316,7 @@ export const preparedMock = [
     fullName: 'Медведев Али Денисович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     vendorCode: '2003023272',
   },
@@ -307,6 +327,7 @@ export const preparedMock = [
     fullName: 'Карасева Мелания Данииловна',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     vendorCode: '2003023272',
   },
@@ -317,6 +338,7 @@ export const preparedMock = [
     fullName: 'Смирнов Александр Александрович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     vendorCode: '2003023272',
   },
@@ -327,6 +349,7 @@ export const preparedMock = [
     fullName: 'Медведев Али Денисович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     vendorCode: '2003023272',
   },
@@ -337,6 +360,7 @@ export const preparedMock = [
     fullName: 'Карасева Мелания Данииловна',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     vendorCode: '2003023272',
   },
@@ -347,6 +371,7 @@ export const preparedMock = [
     fullName: 'Смирнов Александр Александрович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     vendorCode: '2003023272',
   },
@@ -357,6 +382,7 @@ export const preparedMock = [
     fullName: 'Медведев Али Денисович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     vendorCode: '2003023272',
   },
@@ -367,6 +393,7 @@ export const preparedMock = [
     fullName: 'Карасева Мелания Данииловна',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     vendorCode: '2003023272',
   },
@@ -377,6 +404,7 @@ export const preparedMock = [
     fullName: 'Смирнов Александр Александрович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     vendorCode: '2003023272',
   },
@@ -387,6 +415,7 @@ export const preparedMock = [
     fullName: 'Медведев Али Денисович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     vendorCode: '2003023272',
   },
@@ -397,6 +426,7 @@ export const preparedMock = [
     fullName: 'Карасева Мелания Данииловна',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'canceled',
     vendorCode: '2003023272',
   },
@@ -407,6 +437,7 @@ export const preparedMock = [
     fullName: 'Смирнов Александр Александрович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'rejected',
     vendorCode: '2003023272',
   },
@@ -417,6 +448,7 @@ export const preparedMock = [
     fullName: 'Медведев Али Денисович',
     isDC: true,
     source: 'Сбол',
+    //@ts-ignore поправить в ветке со статусами
     status: 'approved',
     vendorCode: '2003023272',
   },

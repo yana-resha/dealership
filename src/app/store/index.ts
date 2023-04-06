@@ -6,6 +6,7 @@ import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync
 
 import { appLifeCycleApi } from 'common/findApplication/FindApplication/FindApplication.api'
 import { tabsSlice } from 'entities/tabManagement'
+import { userSlice } from 'entities/user'
 import { pointsOfSaleApi } from 'shared/api/pointsOfSale.api'
 
 // Настройки для сохранения редьюсера в локалСторадж
@@ -15,10 +16,16 @@ const persistTabsConfig = {
   whitelist: ['openTabs'],
 }
 
+const persistDefaultConfig = (key: string) => ({
+  key,
+  storage,
+})
+
 const rootReducer = combineReducers({
   [tabsSlice.name]: persistReducer(persistTabsConfig, tabsSlice.reducer),
   [pointsOfSaleApi.reducerPath]: pointsOfSaleApi.reducer,
   [appLifeCycleApi.reducerPath]: appLifeCycleApi.reducer,
+  [userSlice.name]: persistReducer(persistDefaultConfig(userSlice.name), userSlice.reducer),
 })
 
 // Помогает синхронизировать состояние между вкладками, на пример для блока дублирующей вкладки

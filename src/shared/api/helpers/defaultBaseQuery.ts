@@ -1,7 +1,9 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 
-import { getJwt } from 'shared/lib/jwt'
 import { transformRequestData, transformResponseData } from 'shared/lib/utils'
+import { appRoutePaths } from 'shared/navigation/routerPath'
+
+import { authToken } from '../token'
 
 type Method =
   | 'get'
@@ -54,7 +56,7 @@ export const defaultBaseQuery =
     unknown
   > =>
   async ({ url, method = 'POST', body, options, responseHandler }) => {
-    const jwt = getJwt()
+    const jwt = authToken.jwt.get()
     // const userSessionId = getUserSessionId()
 
     const headers: Record<string, string> = {}
@@ -76,8 +78,8 @@ export const defaultBaseQuery =
           return responseHandler(response)
         }
 
-        if (response.status === 401 && window.location.pathname !== '/login') {
-          window.location.replace('/login')
+        if (response.status === 401 && window.location.pathname !== appRoutePaths.auth) {
+          window.location.replace(appRoutePaths.auth)
 
           return
         }

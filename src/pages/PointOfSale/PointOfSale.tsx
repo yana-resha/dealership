@@ -4,7 +4,7 @@ import { Paper } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Navigate } from 'react-router-dom'
 
-import { useCheckToken } from 'common/auth/CheckToken'
+import { useCheckToken } from 'common/auth'
 import { PointOfSaleAuth } from 'common/PointOfSaleAuth'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
