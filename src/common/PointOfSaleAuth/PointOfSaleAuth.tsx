@@ -4,8 +4,8 @@ import { KeyboardArrowLeft } from '@mui/icons-material'
 import { Avatar, Box, IconButton, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
-import { appRoutePaths } from 'app/Router/Router.utils'
-import { ChoosePoint } from 'entities/ChoosePoint/ChoosePoint'
+import { ChoosePoint } from 'entities/pointOfSale'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import useStyles from './PointOfSaleAuth.styles'
 

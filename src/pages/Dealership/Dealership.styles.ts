@@ -1,7 +1,5 @@
 import { makeStyles } from '@mui/styles'
 
-import { WHITE } from 'shared/palette'
-
 export const useStyles = makeStyles(theme => ({
   page: {
     display: 'flex',
@@ -12,7 +10,7 @@ export const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       alignItems: 'unset',
       padding: 0,
-      backgroundColor: WHITE,
+      backgroundColor: theme.palette.background.default,
     },
   },
   loaderContainer: {

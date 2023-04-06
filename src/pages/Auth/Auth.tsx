@@ -2,8 +2,8 @@ import { Paper } from '@mui/material'
 import Cookies from 'js-cookie'
 
 import { useCheckToken } from 'common/auth/CheckToken'
+import { COOKIE_JWT_TOKEN } from 'common/auth/constants'
 import { LoginForm } from 'common/auth/LoginForm'
-import { COOKIE_USER_TOKEN } from 'entities/constants/auth.constants'
 
 import { useStyles } from './Auth.styles'
 
@@ -13,7 +13,7 @@ export function Auth() {
   const isAuth = useCheckToken()
 
   if (isAuth) {
-    Cookies.remove(COOKIE_USER_TOKEN)
+    Cookies.remove(COOKIE_JWT_TOKEN)
   }
 
   return (

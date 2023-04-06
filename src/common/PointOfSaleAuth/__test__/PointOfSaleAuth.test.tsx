@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MockStore } from 'redux-mock-store'
 
-import * as PoSUtil from 'entities/ChoosePoint/ChoosePoint.utils'
+import * as PoSUtil from 'entities/pointOfSale/ui/ChoosePoint/ChoosePoint.utils'
 import * as PoSApi from 'shared/api/pointsOfSale.api'
 import { ThemeProviderMock, StoreProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'

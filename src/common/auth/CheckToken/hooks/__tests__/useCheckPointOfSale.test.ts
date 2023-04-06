@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 import Cookies from 'js-cookie'
 
-import { COOKIE_POINT_OF_SALE } from 'entities/constants/auth.constants'
+import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale'
 
 import { useCheckPointOfSale } from '../useCheckPointOfSale'
 

@@ -2,28 +2,35 @@ import React, { useCallback, useState } from 'react'
 
 import { KeyboardArrowDown } from '@mui/icons-material'
 import DoneIcon from '@mui/icons-material/Done'
-import { CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material'
+import {
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  useTheme,
+} from '@mui/material'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { InputAdornment } from '@mui/material'
 import { Vendor } from '@sberauto/authdc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
-import { defaultRoute } from 'app/Router/Router.utils'
-import { theme } from 'app/theme'
+import { useGetVendorListQuery } from 'shared/api/pointsOfSale.api'
+import { defaultRoute } from 'shared/navigation/routerPath'
+import SberTypography from 'shared/ui/SberTypography'
+
+import useStyles from './ChoosePoint.styles'
 import {
   pointsOfSaleFilter,
   retrieveLabelForPointOfSale,
   savePointOfSaleToCookies,
-} from 'entities/ChoosePoint/ChoosePoint.utils'
-import { useGetVendorListQuery } from 'shared/api/pointsOfSale.api'
-import SberTypography from 'shared/ui/SberTypography'
-
-import useStyles from './ChoosePoint.styles'
+} from './ChoosePoint.utils'
 
 type Props = { value?: Vendor; isHeader?: boolean; onSuccessEditing?: () => void }
 
 export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   const classes = useStyles()
+  const theme = useTheme()
   const navigate = useNavigate()
 
   const {

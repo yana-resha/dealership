@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Box, Typography } from '@mui/material'
 
-import { maskDigitsOnly, maskNoRestrictions, maskOnlyCyrillicNoDigits } from 'shared/masks/InputMasks'
+import { maskDigitsOnly, maskOnlyCyrillicNoDigits } from 'shared/masks/InputMasks'
 import { DateInput } from 'shared/ui/DateInput/DateInput'
 import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'

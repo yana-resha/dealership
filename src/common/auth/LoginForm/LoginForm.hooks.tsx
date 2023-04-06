@@ -3,9 +3,8 @@ import { useCallback, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 
-import { appRoutePaths } from 'app/Router/Router.utils'
-
-import { COOKIE_USER_TOKEN } from '../../../entities/constants/auth.constants'
+import { COOKIE_JWT_TOKEN } from 'common/auth/constants'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 
 export const useAuthSberId = () => {
   const [isFetch, setIsFetch] = useState(false)
@@ -23,7 +22,7 @@ export const useAuthSberId = () => {
       })
 
       if (res === 'ok') {
-        Cookies.set(COOKIE_USER_TOKEN, '123')
+        Cookies.set(COOKIE_JWT_TOKEN, '123')
         navigate(appRoutePaths.vendorList)
       }
     } catch (err) {

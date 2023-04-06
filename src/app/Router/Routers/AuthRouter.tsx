@@ -6,7 +6,7 @@ import { DefaultLayout } from 'common/layout/DefaultLayout'
 import { AuthPage } from 'pages/Auth'
 import { PointOfSale } from 'pages/PointOfSale/PointOfSale'
 
-import { appRoutePaths } from '../Router.utils'
+import { appRoutePaths } from '../../../shared/navigation/routerPath'
 
 export function AuthRouter(): JSX.Element {
   return (

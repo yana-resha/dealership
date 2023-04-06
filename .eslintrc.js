@@ -11,7 +11,16 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:security/recommended',
   ],
-  plugins: ['react', 'prettier', '@typescript-eslint', 'import', 'react-hooks', 'formatjs', 'security'],
+  plugins: [
+    'react',
+    'prettier',
+    '@typescript-eslint',
+    'import',
+    'react-hooks',
+    'formatjs',
+    'security',
+    '@sberauto',
+  ],
   rules: {
     curly: ['error'],
     radix: ['error'],
@@ -80,6 +89,7 @@ module.exports = {
         },
       },
     ],
+    '@sberauto/imports-from-index-only': ['warn'],
   },
   overrides: [
     {

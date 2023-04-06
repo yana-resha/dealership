@@ -1,14 +1,13 @@
 import React from 'react'
 
-import { ThemeProvider } from '@mui/styles'
 import { render, waitFor, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
-import { store } from 'store'
 
-import { theme } from 'app/theme'
+import { store } from 'app/store'
 import * as CheckPoint from 'common/auth/CheckToken/hooks/useCheckPointOfSale'
 import * as CheckToken from 'common/auth/CheckToken/hooks/useCheckToken'
+import { MockThemeProviders } from 'tests/mocks'
 
 import { Router } from '../Router'
 
@@ -17,11 +16,11 @@ const useCheckPointOfSale = jest.spyOn(CheckPoint, 'useCheckPointOfSale')
 
 const getMockRouter = () => (
   <Provider store={store}>
-    <ThemeProvider theme={theme}>
+    <MockThemeProviders>
       <MemoryRouter basename="/">
         <Router />
       </MemoryRouter>
-    </ThemeProvider>
+    </MockThemeProviders>
   </Provider>
 )
 

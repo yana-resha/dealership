@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Box, Button } from '@mui/material'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
