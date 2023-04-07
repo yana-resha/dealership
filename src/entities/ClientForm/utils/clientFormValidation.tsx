@@ -44,7 +44,7 @@ function getMinPassportDate() {
   return minPassportDate
 }
 
-export const clientFormValidationSchema = {
+export const clientFormValidationSchema = Yup.object().shape({
   clientName: Yup.string()
     .required('Поле обязательно для заполнения')
     .test('nameIsCorrect', 'Введите корректное ФИО', clientNameIsCorrect),
@@ -69,7 +69,10 @@ export const clientFormValidationSchema = {
   divisionCode: Yup.string().required('Поле обязательно для заполнения').min(6, 'Введите данные полностью'),
   issuedBy: Yup.string().required('Поле обязательно для заполнения'),
   registrationAddress: Yup.string().required('Поле обязательно для заполнения'),
-  livingAddress: Yup.string().required('Поле обязательно для заполнения'),
+  livingAddress: Yup.string().when('regAddrIsLivingAddr', {
+    is: 0,
+    then: schema => schema.required('Поле обязательно для заполнения'),
+  }),
   regDate: Yup.date()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Дата слишком ранняя'),
@@ -94,4 +97,4 @@ export const clientFormValidationSchema = {
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Дата слишком ранняя'),
   anketaSigned: Yup.number().min(1, 'Необходимо подписать анкету'),
-}
+})

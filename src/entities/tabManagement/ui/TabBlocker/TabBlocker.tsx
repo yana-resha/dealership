@@ -39,7 +39,7 @@ const TabBlocker = (props: Props) => {
     <>
       {children}
 
-      {isBlock && (
+      {isBlock && process.env.NODE_ENV !== 'development' && (
         <Box className={classes.main}>
           <Box className={classes.box} data-testid="blockedMessageAboutTabDuplicate">
             <SberTypography className={classes.message} component="h2" sberautoVariant="h2">

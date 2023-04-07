@@ -2235,7 +2235,7 @@
 
 "@sberauto/authdc-proto@0.0.0-dcb-22":
   version "0.0.0-dcb-22"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-0.0.0-dcb-22.tgz"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-0.0.0-dcb-22.tgz#8407e7a79aa37a294c28e04b64f3d6c22778002b"
   integrity sha512-j4aoK1zInK4AfcY8qad8n5FFDsqrNzg/4bKnH2gQOAqV25DKp7EU7551Xxj7Dv9zyiqZvRrCWP2uFc1tgC37zQ==
   dependencies:
     camelcase-keys "^6.2.2"
@@ -2247,6 +2247,14 @@
   integrity sha512-P6N+qCF7SmlAqwEqjhJqHvtDE7/eovmpleLViPUaUyWJvrtgxmWihcige1McQiGd5zG0/UgHQat/4yAgMUWIXw==
   dependencies:
     requireindex "1.2.0"
+
+"@sberauto/loanapplifecycledc-proto@0.0.0-dcb-74":
+  version "0.0.0-dcb-74"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.0.0-dcb-74.tgz#dbaf6034b4fb0f85f78a380f0407c4bdb96cc556"
+  integrity sha512-B6y7RDl0n/8NlfNaCO3lP9Ns+wnOcAFTVYgIqI+HQULISfBucNnWGVn84xzi31zsstyN4rztNPCd4i/UVIsfyQ==
+  dependencies:
+    camelcase-keys "^6.2.2"
+    snakecase-keys "^3.2.1"
 
 "@sinclair/typebox@^0.24.1":
   version "0.24.51"

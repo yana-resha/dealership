@@ -18,7 +18,7 @@ export const SwitchInput = (props: Props) => {
   const classes = useStyles()
   const theme = useTheme()
 
-  const [field, meta] = useField(name)
+  const [, meta] = useField(name)
   const { setFieldValue } = useFormikContext()
 
   const isError = meta != undefined && meta.touched && meta.error != undefined

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 
 import { Box, InputLabel, TextField } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
@@ -9,16 +9,14 @@ type Props = {
   name: string
   label: string
   placeholder: string
-  mask: any
+  mask: (number: string, unmasked?: boolean) => string
   gridColumn?: string
 }
 
 export const MaskedInput = (props: Props) => {
   const classes = useStyles()
   const { name, label, placeholder, mask, gridColumn } = props
-  const ref = useRef(null)
   const [field, meta] = useField(name)
-  const { onChange, value, ...fieldProps } = field
   const { setFieldValue } = useFormikContext()
   const isError = meta != undefined && meta.touched && meta.error != undefined
 
@@ -27,13 +25,13 @@ export const MaskedInput = (props: Props) => {
   }
 
   const configTextField = {
-    value: mask(value),
+    ...field,
+    value: mask(field.value),
     id: name,
     onChange: handleChange,
     placeholder: placeholder,
     error: isError,
     helperText: isError ? meta.error : '',
-    ...fieldProps,
   }
 
   return (
@@ -41,7 +39,7 @@ export const MaskedInput = (props: Props) => {
       <InputLabel htmlFor={name} className={classes.inputLabel}>
         {label}
       </InputLabel>
-      <TextField inputRef={ref} className={classes.textField} {...configTextField} />
+      <TextField className={classes.textField} {...configTextField} />
     </Box>
   )
 }

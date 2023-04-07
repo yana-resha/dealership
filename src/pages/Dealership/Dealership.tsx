@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { FindApplication } from 'common/findApplication/FindApplication/FindApplication'
+
 import { useStyles } from './Dealership.styles'
 
 export function Dealership() {
@@ -7,7 +9,7 @@ export function Dealership() {
 
   return (
     <div className={classes.page} data-testid="dealershipPage">
-      <span>DealershipPage</span>
+      <FindApplication />
     </div>
   )
 }

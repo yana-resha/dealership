@@ -18,6 +18,7 @@
     "@mui/x-date-pickers": "6.0.2",
     "@reduxjs/toolkit": "1.9.1",
     "@sberauto/authdc-proto": "0.0.0-dcb-22",
+    "@sberauto/loanapplifecycledc-proto": "0.0.0-dcb-74",
     "camelcase-keys": "8.0.2",
     "centrifuge": "2.8.4",
     "classnames": "2.3.2",
@@ -96,6 +97,11 @@
   "jest": {
     "transformIgnorePatterns": [
       "<rootDir>/bower_components/js-base64"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "**/?(*.)(spec|test).{js,jsx,ts,tsx}",
+      "!**/*.mock.*"
     ]
   }
 }
