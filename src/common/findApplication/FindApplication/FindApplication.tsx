@@ -10,6 +10,7 @@ import { StatusFilter } from 'entities/application/StatusFilter/StatusFilter'
 import { getPointOfSaleFromCookies } from 'shared/utils/getPointOfSaleFromCookies'
 
 import { PreparedTableData } from '../../../entities/application/ApplicationTable/ApplicationTable.types'
+import { ClientDetailedDossier } from '../ClientDetailedDossier/ClientDetailedDossier'
 
 export const FindApplication = () => {
   const { vendorCode } = getPointOfSaleFromCookies()
@@ -25,6 +26,8 @@ export const FindApplication = () => {
     statuses: [],
   })
   const { error, isLoading } = useFindApplicationsQuery({ vendorCode, ...request })
+  const [detailedApplicationId, setDetailedApplicationId] = useState<string | undefined>(undefined)
+  const [page, setPage] = useState(1)
 
   const onSubmit = (values: FindApplicationsReq) => {
     const newValue = { ...request, ...values }
@@ -38,11 +41,27 @@ export const FindApplication = () => {
     setRequest(newValue)
   }
 
-  return (
+  const getDetailedDossier = (applicationId: string, page: number) => {
+    setPage(page)
+    setDetailedApplicationId(applicationId)
+  }
+
+  const onBackButton = () => {
+    setDetailedApplicationId(undefined)
+  }
+
+  return detailedApplicationId ? (
+    <ClientDetailedDossier applicationId={detailedApplicationId} onBackButton={onBackButton} />
+  ) : (
     <>
       <ApplicationFilters onSubmitClick={onSubmit} />
       <StatusFilter onChange={setStatuses} />
-      <ApplicationTable data={(error ?? []) as PreparedTableData[]} isLoading={isLoading} />
+      <ApplicationTable
+        data={(error ?? []) as PreparedTableData[]}
+        isLoading={isLoading}
+        getDetailedDossier={getDetailedDossier}
+        startPage={page}
+      />
     </>
   )
 }

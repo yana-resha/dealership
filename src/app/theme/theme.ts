@@ -38,6 +38,27 @@ export const theme = createTheme({
           padding: 0,
           margin: 2,
           transitionDuration: '300ms',
+          '&.Mui-checked': {
+            transform: 'translateX(16px)',
+            color: 'WHITE',
+            '& + .MuiSwitch-track': {
+              backgroundColor: '#17A131',
+              opacity: 1,
+              border: 0,
+            },
+            '&.Mui-disabled + .MuiSwitch-track': {
+              opacity: 0.5,
+            },
+          },
+          '&.Mui-focusVisible .MuiSwitch-thumb': {
+            border: '6px solid WHITE',
+          },
+          '&.Mui-disabled .MuiSwitch-thumb': {
+            color: '#9CA8B4',
+          },
+          '&.Mui-disabled + .MuiSwitch-track': {
+            opacity: 0.7,
+          },
         },
       },
     },
@@ -123,6 +144,20 @@ export const theme = createTheme({
     },
   },
   palette: {
+    status: {
+      initial: '#0000FF',
+      processed: '#FF8C00',
+      approved: '#228B22',
+      finallyApproved: '#008000',
+      formation: '#008000',
+      rejected: '#8B0000',
+      canceledDeal: '#D3D3D3',
+      canceled: '#D3D3D3',
+      signed: '#008000',
+      authorized: '#00FF00',
+      financed: '#00FF7F',
+      error: '#FF0000',
+    },
     sber: {
       main: '#17A131',
       dark: '#1d9032',
@@ -149,6 +184,7 @@ declare module '@mui/material/styles' {
   interface Palette {
     sber: Palette['primary']
     colors: Palette['primary']
+    status: Palette['primary']
   }
 
   interface PaletteOptions {
@@ -159,16 +195,57 @@ declare module '@mui/material/styles' {
     colors: {
       blueGray: React.CSSProperties['color']
     }
+    status: {
+      initial: React.CSSProperties['color']
+      processed: React.CSSProperties['color']
+      approved: React.CSSProperties['color']
+      finallyApproved: React.CSSProperties['color']
+      formation: React.CSSProperties['color']
+      rejected: React.CSSProperties['color']
+      canceledDeal: React.CSSProperties['color']
+      canceled: React.CSSProperties['color']
+      signed: React.CSSProperties['color']
+      authorized: React.CSSProperties['color']
+      financed: React.CSSProperties['color']
+      error: React.CSSProperties['color']
+    }
   }
 
   interface PaletteColor {
     main: string
     dark: string
     blueGray: string
+    draft: string
+    refused: string
+    manual: string
+    initial: string
+    processed: string
+    approved: string
+    finallyApproved: string
+    formation: string
+    rejected: string
+    canceledDeal: string
+    canceled: string
+    signed: string
+    authorized: string
+    financed: string
+    error: string
   }
 
   interface SimplePaletteColorOptions {
     main: string
     dark?: string
+    initial?: string
+    processed?: string
+    approved?: string
+    finallyApproved?: string
+    formation?: string
+    rejected?: string
+    canceledDeal?: string
+    canceled?: string
+    signed?: string
+    authorized?: string
+    financed?: string
+    error?: string
   }
 }

@@ -2,9 +2,11 @@ import { makeStyles } from '@mui/styles'
 
 export const useStyles = makeStyles(theme => ({
   page: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    // NOTE: При display: flex ломается ресайз окна в браузере Сафари.
+    // Содердимое сжимается при уменьшении экрана, но не расширяется обратно при его увеличении.
+    // display: 'flex',
+    // flexDirection: 'column',
+    // alignItems: 'center',
     padding: theme.spacing(7, 6),
 
     [theme.breakpoints.down('sm')]: {

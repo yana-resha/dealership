@@ -1,6 +1,7 @@
 import { Box, Button, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Form, Formik, FormikErrors } from 'formik'
+import { DateTime } from 'luxon'
 
 import { maskCyrillicAndDigits } from 'shared/masks/InputMasks'
 import { DateInput } from 'shared/ui/DateInput/DateInput'
@@ -37,7 +38,7 @@ export const ApplicationFilters = ({ onSubmitClick }: Props) => {
     } else {
       onSubmitClick({
         onlyUserApplicationsFlag: values.isMyApplication,
-        applicationUpdateDate: values.applicationUpdateDate,
+        applicationUpdateDate: DateTime.fromJSDate(new Date(values.applicationUpdateDate)).toISODate(),
       })
     }
   }
