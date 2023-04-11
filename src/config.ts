@@ -11,5 +11,5 @@ const env = <T extends string>(key: string): T => {
 }
 
 export const appConfig = {
-  apiUrl: env('REACT_APP_API_URL'),
+  apiUrl: env('REACT_APP_APIX_URL'),
 }

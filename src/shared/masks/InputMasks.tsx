@@ -1,24 +1,33 @@
 import IMask from 'imask'
 
-export const maskNoRestrictions = (number: string, unmasked?: boolean) => {
+export const maskNoRestrictions = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: /.*/,
   })
-  masked.resolve(`${number}`)
+  masked.resolve(`${value}`)
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
-export const maskOnlyCyrillicNoDigits = (number: string, unmasked?: boolean) => {
+export const maskOnlyCyrillicNoDigits = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: /^[а-яА-ЯёЁ -]*$/,
   })
-  masked.resolve(`${number}`)
+  masked.resolve(`${value}`)
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
-export const maskFullName = (number: string, unmasked?: boolean) => {
+export const maskCyrillicAndDigits = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: /^[а-яА-ЯёЁ0-9\s-]+$/,
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskFullName = (value: string) => {
   const masked = IMask.createMask({
     mask: '{capitalLetter}{namePart}{ }{capitalLetter}{namePart}{ }{capitalLetter}{namePart}',
     blocks: {
@@ -33,34 +42,34 @@ export const maskFullName = (number: string, unmasked?: boolean) => {
       },
     },
   })
-  masked.resolve(`${number}`)
+  masked.resolve(`${value}`)
 
   return masked.value
 }
 
-export const maskDigitsOnly = (number: string, unmasked?: boolean) => {
+export const maskDigitsOnly = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: /^[0-9]+$/,
   })
-  masked.resolve(`${number}`)
+  masked.resolve(`${value}`)
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
-export const maskDivisionCode = (number: string, unmasked?: boolean) => {
+export const maskDivisionCode = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: '000-000',
   })
-  masked.resolve(`${number}`)
+  masked.resolve(`${value}`)
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
-export const maskPassport = (number: string, unmasked?: boolean) => {
+export const maskPassport = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: '0000 000000',
   })
-  masked.resolve(`${number}`)
+  masked.resolve(`${value}`)
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
@@ -74,7 +83,7 @@ export const maskPhoneNumber = (number: string, unmasked?: boolean) => {
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
-export const maskEmail = (number: string, unmasked?: boolean) => {
+export const maskEmail = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: '{email}{@}{email}',
     blocks: {
@@ -83,7 +92,7 @@ export const maskEmail = (number: string, unmasked?: boolean) => {
       },
     },
   })
-  masked.resolve(`${number}`)
+  masked.resolve(`${value}`)
 
   return unmasked ? masked.unmaskedValue : masked.value
 }

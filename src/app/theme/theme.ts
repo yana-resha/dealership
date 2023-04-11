@@ -1,7 +1,7 @@
 import { createTheme, alpha } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 
-import { BLACK, DARK_NORMAL, LIGHT_GRAY, PRIMARY_DARK, PRIMARY_MAIN, WHITE, GRAY_NORMAL } from './palette'
+import { BLACK, DARK_NORMAL, GRAY_NORMAL, LIGHT_GRAY, PRIMARY_DARK, PRIMARY_MAIN, WHITE } from './palette'
 
 // NOTE: Since makeStyles is now exported from @mui/styles package which does not know about
 // Theme in the core package. To fix this, you need to augment the DefaultTheme (empty object)
@@ -136,6 +136,7 @@ export const theme = createTheme({
     },
     text: {
       primary: DARK_NORMAL,
+      secondary: GRAY_NORMAL,
     },
   },
 })

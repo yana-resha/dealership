@@ -22,5 +22,9 @@ export default makeStyles(theme => ({
       padding: `${theme.spacing(1, 1, 1, 2)}`,
       backgroundColor: theme.palette.common.white,
     },
+
+    '& .MuiFormHelperText-root.Mui-error': {
+      whiteSpace: 'pre-wrap',
+    },
   },
 }))

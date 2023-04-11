@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react'
-
 import { Box, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
 
@@ -25,14 +23,6 @@ export function PassportArea() {
   const { values } = useFormikContext<ClientData>()
   const hasNameChanged = values.hasNameChanged == 1
   const isRegAddrNotLivingAddr = values.regAddrIsLivingAddr == 0
-
-  useEffect(() => {
-    if (isRegAddrNotLivingAddr) {
-      values.livingAddress = ''
-    } else {
-      values.livingAddress = '-'
-    }
-  }, [isRegAddrNotLivingAddr])
 
   return (
     <Box className={classes.gridContainer}>

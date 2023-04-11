@@ -1,6 +1,5 @@
 import { Box, Button } from '@mui/material'
 import { Form, Formik } from 'formik'
-import * as Yup from 'yup'
 
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
@@ -28,7 +27,7 @@ export function ClientForm() {
     <Box className={classes.formContainer}>
       <Formik
         initialValues={configInitialValues}
-        validationSchema={Yup.object().shape(clientFormValidationSchema)}
+        validationSchema={clientFormValidationSchema}
         onSubmit={onSubmit}
       >
         <Form className={classes.clientForm}>
