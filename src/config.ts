@@ -11,5 +11,10 @@ const env = <T extends string>(key: string): T => {
 }
 
 export const appConfig = {
+  appUrl: env('REACT_APP_APP_URL'),
+  // apiUrl: env('REACT_APP_API_URL'),
   apiUrl: env('REACT_APP_APIX_URL'),
+  apixUrl: env('REACT_APP_APIX_URL'),
+  sberTeamIdUrl: env('REACT_APP_SBER_TEAM_ID_URL'),
+  env: env<'dev' | 'stage' | 'prod'>('REACT_APP_ENVIROMENT'),
 }

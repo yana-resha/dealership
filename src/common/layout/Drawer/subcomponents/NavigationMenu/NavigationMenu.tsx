@@ -3,7 +3,7 @@ import React, { useCallback } from 'react'
 import { Box, Button, ListItemText, Tab, Tabs } from '@mui/material'
 import { useNavigate, useLocation, matchPath } from 'react-router-dom'
 
-import { AuthType } from 'common/auth/CheckToken'
+import { AuthType } from 'common/auth'
 
 import { MenuItem } from './hooks/types'
 import { useGetItems } from './hooks/useGetItems'

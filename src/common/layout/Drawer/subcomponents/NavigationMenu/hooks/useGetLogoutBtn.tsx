@@ -1,8 +1,7 @@
 import React from 'react'
 
 import { ReactComponent as LogoutIcon } from 'assets/icons/logout.svg'
-import { AuthType } from 'common/auth/CheckToken'
-import { useLogout } from 'common/auth/Logout'
+import { useLogout, AuthType } from 'common/auth'
 
 import { MenuItem } from './types'
 

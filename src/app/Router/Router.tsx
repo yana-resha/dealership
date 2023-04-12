@@ -1,7 +1,5 @@
-import React from 'react'
-
-import { useCheckToken } from 'common/auth/CheckToken'
-import { useCheckPointOfSale } from 'common/auth/CheckToken/hooks/useCheckPointOfSale'
+import { useCheckToken } from 'common/auth'
+import { useCheckPointOfSale } from 'common/auth'
 
 import { AuthRouter } from './Routers/AuthRouter'
 import { MainRouter } from './Routers/MainRouter'

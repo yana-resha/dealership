@@ -1,4 +1,4 @@
-import { Application } from '@sberauto/loanapplifecycledc-proto/public'
+import { Application, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { compact } from 'lodash'
 
 import { PreparedTableData } from 'entities/application/ApplicationTable/ApplicationTable.types'
@@ -32,6 +32,6 @@ export const transformResToTableData = (data: Application[]): PreparedTableData[
       decisionTerm: decisionTerm ?? '',
       //NOTE: непонятно что отвечает за иконку уточнить
       isDC: true,
-      status: status ?? '',
+      status: status ?? StatusCode.STATUS_CODE_ERROR,
     }
   })

@@ -6,6 +6,7 @@ import Cookies from 'js-cookie'
 
 import { PointInfo } from 'entities/pointOfSale'
 import { ChoosePoint } from 'entities/pointOfSale'
+import { UserInfo } from 'entities/user'
 
 import useStyles from './Header.styles'
 
@@ -34,10 +35,7 @@ export function Header() {
         <ChoosePoint value={pointOfSale} isHeader onSuccessEditing={removeEditing} />
       )}
 
-      <Box minWidth={200} textAlign="right">
-        <Typography>{creditExpert.name}</Typography>
-        <Typography>{creditExpert.phoneNumber}</Typography>
-      </Box>
+      <UserInfo />
     </div>
   )
 }

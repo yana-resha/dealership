@@ -63,6 +63,7 @@ module.exports = {
             group: 'external',
             position: 'before',
           },
+          { pattern: 'config/**', group: 'internal' },
           { pattern: 'assets/**', group: 'internal' },
           { pattern: 'app/**', group: 'internal' },
           { pattern: 'pages/**', group: 'internal' },

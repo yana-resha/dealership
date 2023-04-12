@@ -1,9 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks'
 import Cookies from 'js-cookie'
 
+import { useCheckPointOfSale } from 'common/auth'
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale'
-
-import { useCheckPointOfSale } from '../useCheckPointOfSale'
 
 jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
