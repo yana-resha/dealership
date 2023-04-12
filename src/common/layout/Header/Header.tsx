@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react'
 
-import { Box, Typography } from '@mui/material'
 import { Vendor } from '@sberauto/authdc-proto/public'
 import Cookies from 'js-cookie'
 
@@ -14,10 +13,6 @@ export function Header() {
   const classes = useStyles()
   const [isEdit, setIsEdit] = useState(false)
   const pointOfSale: Vendor = JSON.parse(Cookies.get('pointOfSale') ?? '{}')
-  const creditExpert = {
-    name: 'Михаил Терентьев',
-    phoneNumber: '+7 800 555 3535',
-  }
 
   const setEditing = useCallback(() => {
     setIsEdit(true)
