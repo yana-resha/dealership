@@ -11,6 +11,7 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material'
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ApplicationStatus } from '../ApplicationStatus/ApplicationStatus'
 import { applicationHeaders } from './ApplicationTable.config'
@@ -69,9 +70,7 @@ export const ApplicationTable = ({ data, isLoading }: Props) => {
               >
                 {getCellsChildrens(row).map(cell => (
                   <TableCell key={cell.name} align="left" className={styles.bodyCell}>
-                    {cell.name === 'status' && typeof cell.value === 'string' && (
-                      <ApplicationStatus status={cell.value} />
-                    )}
+                    {cell.name === 'status' && <ApplicationStatus status={cell.value as StatusCode} />}
 
                     {cell.name === 'isDC' && cell.value && <MailOutline htmlColor="#DADADA" />}
 

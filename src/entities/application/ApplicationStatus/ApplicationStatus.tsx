@@ -1,59 +1,34 @@
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+
 import { Status } from 'shared/ui/Status/Status'
 
-const getStatus = (
-  status?: string,
-  contractSignedFlag?: boolean,
-  contractFinancingFlag?: boolean,
-  contractFinancedFlag?: boolean,
-  accountFlag?: boolean,
-  contractPrintFlag?: boolean,
-) => {
-  if (status) {
-    const isFinallyApproved = !!accountFlag && !contractPrintFlag && status === 'approved'
-    const isFormation = !contractSignedFlag && !!contractPrintFlag && status === 'approved'
-    const isCanceledDeal = !!contractSignedFlag && status === 'canceled'
-    const isCanceled = !contractSignedFlag && status === 'canceled'
-    const isSigned =
-      !!contractSignedFlag && !contractFinancingFlag && !contractFinancedFlag && status === 'approved'
-    const isProcessed = !!contractFinancingFlag && !contractFinancedFlag && status === 'approved'
-    const isFinanced = !contractFinancingFlag && !!contractFinancedFlag && status === 'approved'
-    const isApproved =
-      !contractFinancingFlag &&
-      !contractFinancedFlag &&
-      !contractSignedFlag &&
-      !contractPrintFlag &&
-      !accountFlag &&
-      status === 'approved'
-
-    switch (true) {
-      case status === 'initial':
-        return PreparedStatus.initial
-      case status === 'processed':
-        return PreparedStatus.processed
-      case isApproved:
-        return PreparedStatus.approved
-      case isFinallyApproved:
-        return PreparedStatus.finallyApproved
-      case isFormation:
-        return PreparedStatus.formation
-      case status === 'rejected':
-        return PreparedStatus.rejected
-      case isCanceledDeal:
-        return PreparedStatus.canceledDeal
-      case isCanceled:
-        return PreparedStatus.canceled
-      case isSigned:
-        return PreparedStatus.signed
-      case isProcessed:
-        return PreparedStatus.processed
-      case isFinanced:
-        return PreparedStatus.financed
-      default:
-        return PreparedStatus.error
-    }
+const getStatus = (status: StatusCode) => {
+  switch (status) {
+    case StatusCode.STATUS_CODE_INITIAL:
+      return PreparedStatus.initial
+    case StatusCode.STATUS_CODE_PROCESSED:
+      return PreparedStatus.processed
+    case StatusCode.STATUS_CODE_APPROVED:
+      return PreparedStatus.approved
+    case StatusCode.STATUS_CODE_FINALLY_APPROVED:
+      return PreparedStatus.finallyApproved
+    case StatusCode.STATUS_CODE_FORMATION:
+      return PreparedStatus.formation
+    case StatusCode.STATUS_CODE_REJECTED:
+      return PreparedStatus.rejected
+    case StatusCode.STATUS_CODE_CANCELED_DEAL:
+      return PreparedStatus.canceledDeal
+    case StatusCode.STATUS_CODE_CANCELED:
+      return PreparedStatus.canceled
+    case StatusCode.STATUS_CODE_SIGNED:
+      return PreparedStatus.signed
+    case StatusCode.STATUS_CODE_FINANCED:
+      return PreparedStatus.financed
+    case StatusCode.STATUS_CODE_AUTHORIZED:
+      return PreparedStatus.authorized
+    default:
+      return PreparedStatus.error
   }
-
-  return PreparedStatus.error
 }
 
 enum PreparedStatus {
@@ -73,14 +48,14 @@ enum PreparedStatus {
 
 //FIXME: Брать цвета из темы
 export const statusListItems: Record<string, string> = {
-  [PreparedStatus.initial]: '#0000FF',
-  [PreparedStatus.processed]: '#FF8C00',
-  [PreparedStatus.approved]: '#228B22',
+  [PreparedStatus.initial]: '#0B6B9D',
+  [PreparedStatus.processed]: '#FF971E',
+  [PreparedStatus.approved]: '#17A131',
   [PreparedStatus.finallyApproved]: '#008000',
   [PreparedStatus.formation]: '#008000',
-  [PreparedStatus.rejected]: '#8B0000',
+  [PreparedStatus.rejected]: '#FF2E43',
   [PreparedStatus.canceledDeal]: '#D3D3D3',
-  [PreparedStatus.canceled]: '#D3D3D3',
+  [PreparedStatus.canceled]: '#D7DCE1',
   [PreparedStatus.signed]: '#008000',
   [PreparedStatus.authorized]: '#00FF00',
   [PreparedStatus.financed]: '#00FF7F',
@@ -88,7 +63,7 @@ export const statusListItems: Record<string, string> = {
 }
 
 type Props = {
-  status: string
+  status: StatusCode
 }
 
 export const ApplicationStatus = ({ status }: Props) => {

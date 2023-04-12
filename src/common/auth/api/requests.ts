@@ -1,9 +1,4 @@
-import {
-  GetTokenRequest,
-  createAuthDc,
-  GetStateAndNonceRequest,
-  RefreshAuthByTokenRequest,
-} from '@sberauto/authdc-proto/public'
+import { GetTokenRequest, createAuthDc, RefreshAuthByTokenRequest } from '@sberauto/authdc-proto/public'
 import { appConfig } from 'config'
 
 import { Rest } from 'shared/api/client/client'
