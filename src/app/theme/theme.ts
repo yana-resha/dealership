@@ -138,6 +138,9 @@ export const theme = createTheme({
       primary: DARK_NORMAL,
       secondary: GRAY_NORMAL,
     },
+    colors: {
+      blueGray: '#ECF1FA',
+    },
   },
 })
 
@@ -145,6 +148,7 @@ export const theme = createTheme({
 declare module '@mui/material/styles' {
   interface Palette {
     sber: Palette['primary']
+    colors: Palette['primary']
   }
 
   interface PaletteOptions {
@@ -152,11 +156,15 @@ declare module '@mui/material/styles' {
       main: React.CSSProperties['color']
       dark: React.CSSProperties['color']
     }
+    colors: {
+      blueGray: React.CSSProperties['color']
+    }
   }
 
   interface PaletteColor {
     main: string
     dark: string
+    blueGray: string
   }
 
   interface SimplePaletteColorOptions {

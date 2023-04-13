@@ -11,7 +11,16 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:security/recommended',
   ],
-  plugins: ['react', 'prettier', '@typescript-eslint', 'import', 'react-hooks', 'formatjs', 'security'],
+  plugins: [
+    'react',
+    'prettier',
+    '@typescript-eslint',
+    'import',
+    'react-hooks',
+    'formatjs',
+    'security',
+    '@sberauto',
+  ],
   rules: {
     curly: ['error'],
     radix: ['error'],
@@ -87,6 +96,7 @@ module.exports = {
       files: ['**/*.ts?(x)'],
       rules: {
         '@typescript-eslint/no-unused-vars': ['warn'],
+        '@sberauto/imports-from-index-only': ['warn'],
       },
     },
   ],

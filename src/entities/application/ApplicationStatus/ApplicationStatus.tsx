@@ -31,14 +31,15 @@ const getStatus = (status: StatusCode) => {
   }
 }
 
-enum PreparedStatus {
+//FIXME: не стала выносить что бы не плодить конфликты, вынесено в https://gitlab.com/sberauto/front/dealershipclient/-/merge_requests/34
+export enum PreparedStatus {
   initial = 'Черновик',
   processed = 'Ожидает решение',
   approved = 'Предварительно одобрен',
   finallyApproved = 'Кредит одобрен',
   formation = 'Формирование КД',
   rejected = 'Отказ',
-  canceledDeal = 'Кд Отменен',
+  canceledDeal = 'КД Отменен',
   canceled = 'Отменен',
   signed = 'КД подписан',
   authorized = 'Ожидание финансирования',
