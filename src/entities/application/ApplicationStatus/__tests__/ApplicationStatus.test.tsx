@@ -52,8 +52,8 @@ describe('ApplicationStatus', () => {
     it('canceledDeal', () => {
       render(<ApplicationStatus status={StatusCode.STATUS_CODE_CANCELED_DEAL} />)
 
-      expect(screen.getByText('Кд Отменен')).toBeInTheDocument()
-      expect(screen.getByText('Кд Отменен')).toHaveStyle('background-color: rgb(211, 211, 211)')
+      expect(screen.getByText('КД Отменен')).toBeInTheDocument()
+      expect(screen.getByText('КД Отменен')).toHaveStyle('background-color: rgb(211, 211, 211)')
     })
     it('finallyApproved', () => {
       render(<ApplicationStatus status={StatusCode.STATUS_CODE_FINALLY_APPROVED} />)

@@ -1,21 +1,27 @@
-import { FindApplicationsRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { FormikErrors } from 'formik'
+import { zipObject } from 'lodash'
 import { DateTime } from 'luxon'
 
-import { applicationFiltersValues } from './ApplicationFilters.types'
+import { applicationFiltersValues, FindApplicationsReq } from './ApplicationFilters.types'
 
 const PASSPORT_NUMBER_LENGTH = 10
 const APPLICATION_NUMBER_LENGTH = 12
+const FULL_NAME_LENGTH = 3
 const standardError =
   'Формат ввода данных: \n Паспорт - ХХХХ ХХХХХХ \n Номер заявки - ХХХХХХХХХХХХ \n ФИО - Фамилия Имя Отчество'
 
 export const validateFiltersFields = (
   values: applicationFiltersValues,
-  onSubmit: (req: Omit<FindApplicationsRequest, 'vendorCode'>) => void,
+  onSubmit: (req: FindApplicationsReq) => void,
   setErrors: (errors: FormikErrors<applicationFiltersValues>) => void,
 ) => {
-  const applicationUpdateDate = DateTime.fromJSDate(new Date(values.applicationUpdateDate)).toISODate()
-  const noSpacing = values.findApplication.replace(/ /g, '')
+  const {
+    findApplication,
+    applicationUpdateDate: updateDate,
+    isMyApplication: onlyUserApplicationsFlag,
+  } = values
+  const applicationUpdateDate = DateTime.fromJSDate(new Date(updateDate)).toISODate()
+  const noSpacing = findApplication.replace(/ /g, '')
 
   //Если значение полностью числовое
   if (!isNaN(parseInt(noSpacing, 10))) {
@@ -25,7 +31,7 @@ export const validateFiltersFields = (
       const passportSeries = noSpacing.substring(0, 4)
       const passportNumber = noSpacing.substring(3, 6)
       onSubmit({
-        //FIXME: добавить findApplication и isMyApplication
+        onlyUserApplicationsFlag,
         passportNumber,
         passportSeries,
         applicationUpdateDate,
@@ -34,7 +40,7 @@ export const validateFiltersFields = (
     } else if (noSpacing.length === APPLICATION_NUMBER_LENGTH) {
       //отправляем на бекенд с остальными введенными параметрами
       onSubmit({
-        //FIXME: добавить findApplication и isMyApplication
+        onlyUserApplicationsFlag,
         applicationNumber: noSpacing,
         applicationUpdateDate,
       })
@@ -51,11 +57,23 @@ export const validateFiltersFields = (
       setErrors({ findApplication: standardError })
       //И в нем отсутствуют цифры
     } else {
-      //отправляем на бекенд с остальными введенными параметрами
-      onSubmit({
-        //FIXME: добавить findApplication и isMyApplication
-        applicationUpdateDate,
-      })
+      const fullName = ['firstName', 'lastName', 'middleName']
+      const fullValuesName = findApplication.split(' ')
+
+      //И в значениях присутствуют имя фамилия и отчество
+      if (fullValuesName.length >= FULL_NAME_LENGTH) {
+        //по умолчанию считаем что первое слово - фамилия, второе - имя, а все что дальше отчество
+        const values = [fullValuesName[0], fullValuesName[1], fullValuesName.slice(2).join(' ')]
+        //отправляем на бекенд с остальными введенными параметрами
+        onSubmit({
+          onlyUserApplicationsFlag,
+          applicationUpdateDate,
+          ...zipObject(fullName, values),
+        })
+      } else {
+        //Устанавливаем ошибку
+        setErrors({ findApplication: standardError })
+      }
     }
   }
 }

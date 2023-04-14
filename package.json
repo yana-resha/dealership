@@ -5,7 +5,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "TZ=UTC react-scripts test --passWithNoTests --env=jsdom",
+    "test": "TZ=UTC react-scripts test --passWithNoTests --env=jsdom  --runInBand --logHeapUsage",
     "eject": "react-scripts eject",
     "prepare": "husky install"
   },

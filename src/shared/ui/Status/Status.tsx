@@ -6,9 +6,10 @@ import { theme } from 'app/theme'
 
 type Props = {
   bgColor?: string
+  color?: string
 }
 
-export const Status = ({ bgColor, children }: PropsWithChildren<Props>) => (
+export const Status = ({ bgColor, color, children }: PropsWithChildren<Props>) => (
   <Box
     bgcolor={bgColor ?? theme.palette.sber.main}
     py={0.625}
@@ -16,7 +17,7 @@ export const Status = ({ bgColor, children }: PropsWithChildren<Props>) => (
     lineHeight="18px"
     width="fit-content"
     borderRadius={1}
-    color={theme.palette.common.white}
+    color={color ?? theme.palette.common.white}
     whiteSpace="nowrap"
   >
     {children}
