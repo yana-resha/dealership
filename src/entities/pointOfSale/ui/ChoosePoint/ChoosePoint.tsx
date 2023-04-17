@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { InputAdornment } from '@mui/material'
-import { Vendor } from '@sberauto/authdc-proto/public'
+import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
 import { useGetVendorListQuery } from 'shared/api/pointsOfSale.api'

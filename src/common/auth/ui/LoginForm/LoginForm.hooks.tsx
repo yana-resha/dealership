@@ -49,13 +49,13 @@ export const useCheckAuthRedirect = (onReject: (title: string, text: string) => 
         setSearchParams(new URLSearchParams(''))
 
         const data = await getToken({ authCode: code, state })
-        if (!data.jwtAccesToken || !data.refreshToken) {
+        if (!data.jwtAccessToken || !data.refreshToken) {
           throw new Error('Invalid response data')
         }
 
         // Делаем небольшую паузу, что бы у пользователя перед глазами не мерцал экран
         await sleep(1000)
-        authToken.jwt.save(data.jwtAccesToken)
+        authToken.jwt.save(data.jwtAccessToken)
         authToken.refresh.save(data.refreshToken)
         navigate(appRoutePaths.vendorList)
       } catch (err) {

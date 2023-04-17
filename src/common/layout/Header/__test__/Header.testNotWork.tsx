@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 
-import { Vendor } from '@sberauto/authdc-proto/public'
+import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 import Cookies from 'js-cookie'
 import { MockStore } from 'redux-mock-store'
