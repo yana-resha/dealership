@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { KeyboardArrowDown } from '@mui/icons-material'
 import { Box, Button, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { Vendor } from '@sberauto/authdc-proto/public'
+import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import Cookies from 'js-cookie'
 import { compact } from 'lodash'
 

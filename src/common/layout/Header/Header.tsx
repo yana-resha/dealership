@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import { Vendor } from '@sberauto/authdc-proto/public'
+import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import Cookies from 'js-cookie'
 
 import { PointInfo } from 'entities/pointOfSale'

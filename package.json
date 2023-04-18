@@ -17,7 +17,7 @@
     "@mui/styles": "5.10.16",
     "@mui/x-date-pickers": "6.0.2",
     "@reduxjs/toolkit": "1.9.1",
-    "@sberauto/authdc-proto": "0.0.0-dcb-24",
+    "@sberauto/authdc-proto": "^0.0.0-dcb-24",
     "@sberauto/loanapplifecycledc-proto": "0.0.0-dcb-74",
     "camelcase-keys": "8.0.2",
     "centrifuge": "2.8.4",

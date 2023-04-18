@@ -17,14 +17,14 @@ export function mockStartAuthSessionResponse(): GetStateAndNonceResponse {
 
 export function mockGetTokenResponse(): GetTokenResponse {
   return {
-    jwtAccesToken: 'test_jwtAccesToken',
+    jwtAccessToken: 'test_jwtAccessToken',
     refreshToken: 'test_refreshToken',
   }
 }
 
 export function mockGetRefreshTokenResponse(): RefreshAuthByTokenResponse {
   return {
-    jwtAccesToken: 'test_jwtAccesToken',
+    jwtAccessToken: 'test_jwtAccessToken',
     refreshToken: 'test_refreshToken',
   }
 }

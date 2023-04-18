@@ -5,11 +5,11 @@ branch=$(git branch | grep '*' | sed 's/* //')
 commit_editmsg=$1
 commit_msg=$(cat $commit_editmsg)
 
-checkBranchName() {
+checkCommitSemantic() {
     if ! echo "$commit_msg" | grep -qE "^$branch \| "; then
         echo "ERROR: Commit message does not start with branch name '$branch'. Commit mesage example '$branch | description'"
         exit 1
     fi
 }
 
-# checkBranchName
+# checkCommitSemantic

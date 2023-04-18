@@ -1,5 +1,5 @@
 import { FilterOptionsState } from '@mui/material'
-import { Vendor } from '@sberauto/authdc-proto/public'
+import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import Cookies from 'js-cookie'
 import { compact } from 'lodash'
 

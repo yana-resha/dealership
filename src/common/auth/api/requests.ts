@@ -31,10 +31,10 @@ export const refreshAuthByToken = (params: RefreshAuthByTokenRequest) =>
   authDcApi
     .refreshAuthByToken({ data: params })
     .then(response => {
-      if (!response.data.jwtAccesToken || !response.data.refreshToken) {
+      if (!response.data.jwtAccessToken || !response.data.refreshToken) {
         throw new Error('Invalid response data')
       }
-      authToken.jwt.save(response.data.jwtAccesToken)
+      authToken.jwt.save(response.data.jwtAccessToken)
       authToken.refresh.save(response.data.refreshToken)
 
       return response.data ?? {}
@@ -42,11 +42,11 @@ export const refreshAuthByToken = (params: RefreshAuthByTokenRequest) =>
     .catch(() => {
       const response = { data: mockGetRefreshTokenResponse() }
 
-      if (!response.data.jwtAccesToken || !response.data.refreshToken) {
+      if (!response.data.jwtAccessToken || !response.data.refreshToken) {
         throw new Error('Invalid response data')
       }
 
-      authToken.jwt.save(response.data.jwtAccesToken)
+      authToken.jwt.save(response.data.jwtAccessToken)
       authToken.refresh.save(response.data.refreshToken)
 
       return response.data ?? {}

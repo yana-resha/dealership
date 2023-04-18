@@ -1,5 +1,9 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { GetVendorsListRequest, GetVendorsListResponse, Vendor } from '@sberauto/authdc-proto/public'
+import {
+  GetVendorsListRequest,
+  GetVendorsListResponse,
+  Vendor,
+} from '@sberauto/loanapplifecycledc-proto/public'
 import { appConfig } from 'config'
 
 import { defaultBaseQuery } from './helpers/defaultBaseQuery'
