@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { render, waitFor, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
@@ -14,6 +14,9 @@ import { Router } from '../Router'
 
 const useCheckToken = jest.spyOn(CheckToken, 'useCheckToken')
 const useCheckPointOfSale = jest.spyOn(CheckPoint, 'useCheckPointOfSale')
+
+jest.mock('../Routers/MainRouter')
+jest.mock('../Routers/AuthRouter')
 
 const queryClient = new QueryClient()
 
@@ -45,18 +48,13 @@ describe('Router component', () => {
 
     render(getMockRouter())
 
-    await waitFor(() => expect(screen.getByTestId('dealershipPage')).toBeInTheDocument(), {
-      timeout: 1000,
-    })
+    expect(await screen.findByTestId('dealershipPage')).toBeInTheDocument()
   })
-
   it('Проверяем, если пользователь НЕ авторизован, то отображается экран авторизации', async () => {
     useCheckToken.mockImplementation(() => false)
 
     render(getMockRouter())
 
-    await waitFor(() => expect(screen.getByTestId('authPage')).toBeInTheDocument(), {
-      timeout: 1000,
-    })
+    expect(await screen.findByTestId('authPage')).toBeInTheDocument()
   })
 })

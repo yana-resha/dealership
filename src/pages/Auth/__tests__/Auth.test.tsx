@@ -6,6 +6,8 @@ import { MockProviders } from 'tests/mocks'
 
 import { Auth } from '../Auth'
 
+jest.mock('common/auth/ui/LoginForm/LoginForm.tsx')
+
 describe('AuthPage', () => {
   it('отрисовывает форму авторизации', () => {
     render(

@@ -23,10 +23,6 @@ export default makeStyles(theme => ({
     color: theme.palette.primary.main,
   },
 
-  attachFileIcon: {
-    transform: 'rotate(45deg)',
-  },
-
   switchConfirm: {
     gridColumn: 'span 5',
     marginTop: theme.spacing(4),
