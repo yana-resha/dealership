@@ -1,5 +1,5 @@
 import { useCheckToken } from 'common/auth'
-import { useCheckPointOfSale } from 'common/auth'
+import { useCheckPointOfSale } from 'entities/pointOfSale'
 
 import { AuthRouter } from './Routers/AuthRouter'
 import { MainRouter } from './Routers/MainRouter'

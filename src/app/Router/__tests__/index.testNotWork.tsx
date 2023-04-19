@@ -6,8 +6,8 @@ import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 
 import { store } from 'app/store'
-import * as CheckPoint from 'common/auth/hooks/useCheckPointOfSale'
 import * as CheckToken from 'common/auth/hooks/useCheckToken'
+import * as CheckPoint from 'entities/pointOfSale/hooks/useCheckPointOfSale'
 import { MockThemeProviders } from 'tests/mocks'
 
 import { Router } from '../Router'

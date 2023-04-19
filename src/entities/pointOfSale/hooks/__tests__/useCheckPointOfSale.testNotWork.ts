@@ -1,8 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 import Cookies from 'js-cookie'
 
-import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale'
-
+import { COOKIE_POINT_OF_SALE } from '../../constants'
 import { useCheckPointOfSale } from '../useCheckPointOfSale'
 
 jest.mock('react-router-dom', () => ({

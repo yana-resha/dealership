@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Box, Skeleton, Typography } from '@mui/material'
+import { useQuery } from 'react-query'
 
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
@@ -13,25 +14,23 @@ export function UserInfo() {
   const creditExpert = useAppSelector(state => slUserMainInfo(state))
   const dispatch = useAppDispatch()
 
+  const {
+    data: user,
+    error,
+    isLoading,
+  } = useQuery(['getUser'], () => getUser({}), {
+    cacheTime: Infinity,
+  })
+
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const user = await getUser({})
-
-        dispatch(setUserInfo(user))
-      } catch (err) {
-        console.log('getUser.err', err)
-      }
+    if (user) {
+      dispatch(setUserInfo(user))
     }
-
-    fetch()
-  }, [dispatch])
-
-  const isLoading = !creditExpert.name && !creditExpert.phoneNumber
+  }, [dispatch, user])
 
   return (
     <Box minWidth={200} textAlign="right">
-      {isLoading ? (
+      {isLoading || !!error ? (
         <>
           <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
           <Skeleton variant="text" sx={{ fontSize: '1rem' }} />

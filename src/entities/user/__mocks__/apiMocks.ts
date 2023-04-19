@@ -1,7 +1,7 @@
-import { GetUserRequest } from '@sberauto/authdc-proto/public'
+import { GetUserResponse } from '@sberauto/authdc-proto/public'
 
 //TODO DCB-126: Убрать мок после интеграции
-export function mockGetUserResponse(): GetUserRequest {
+export function mockGetUserResponse(): GetUserResponse {
   return {
     login: 'johndoe',
     employeeId: '123456',
