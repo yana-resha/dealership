@@ -17,6 +17,25 @@ export function transformResponseData(responseData: any) {
   return responseData
 }
 
+export function formatNumber(number: number) {
+  return new Intl.NumberFormat('ru-RU').format(number) + ' руб.'
+}
+
+export function formatTerm(term: number) {
+  if (term == 1) {
+    return `${term} год`
+  }
+  if (term > 1 && term < 5) {
+    return `${term} года`
+  }
+
+  return `${term} лет`
+}
+
+export function formatPassport(passport: string) {
+  return `${passport.slice(0, 2)} ${passport.slice(2, 4)} ${passport.slice(4)}`
+}
+
 type CamelToSnakeCase<S extends string> = S extends `${infer T}${infer U}`
   ? `${T extends Capitalize<T> ? '_' : ''}${Lowercase<T>}${CamelToSnakeCase<U>}`
   : S

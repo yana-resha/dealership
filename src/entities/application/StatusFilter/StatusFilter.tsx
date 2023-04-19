@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { uniq } from 'lodash'
 
-import { PreparedStatus } from '../ApplicationStatus/ApplicationStatus'
+import { PreparedStatus } from '../application.utils'
 
 const useStyles = makeStyles(theme => ({
   buttonWrapper: {

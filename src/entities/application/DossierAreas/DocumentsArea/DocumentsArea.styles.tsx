@@ -1,0 +1,18 @@
+import { makeStyles } from '@mui/styles'
+
+export const useStyles = makeStyles(theme => ({
+  blockContainer: {
+    display: 'grid',
+    width: '100%',
+    gap: theme.spacing(3),
+    gridTemplateColumns: '1fr',
+    alignItems: 'center',
+  },
+
+  documentsBlock: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: 'max-content',
+    gap: theme.spacing(3),
+  },
+}))

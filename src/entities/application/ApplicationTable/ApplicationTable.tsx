@@ -22,14 +22,16 @@ import { TablePaginationActions } from './TablePaginationActions/TablePagination
 
 type Props = {
   data: PreparedTableData[]
+  getDetailedDossier: (index: string, page: number) => void
+  startPage: number
   isLoading?: boolean
 }
 
 const ROWS_PER_PAGE = 6
 
-export const ApplicationTable = ({ data, isLoading }: Props) => {
+export const ApplicationTable = ({ data, getDetailedDossier, startPage, isLoading }: Props) => {
   const styles = useStyles()
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(startPage)
   const emptyRows =
     page === Math.ceil(data.length / ROWS_PER_PAGE)
       ? Math.max(0, ROWS_PER_PAGE - (data.length % ROWS_PER_PAGE))
@@ -66,7 +68,7 @@ export const ApplicationTable = ({ data, isLoading }: Props) => {
               <TableRow
                 key={row.applicationNumber}
                 className={styles.bodyRow}
-                onClick={() => console.log('applicationNumber: ', row.applicationNumber)}
+                onClick={() => getDetailedDossier(row.applicationNumber, page)}
               >
                 {getCellsChildrens(row).map(cell => (
                   <TableCell key={cell.name} align="left" className={styles.bodyCell}>

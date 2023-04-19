@@ -24,11 +24,7 @@ export const SwitchInput = (props: Props) => {
   const isError = meta != undefined && meta.touched && meta.error != undefined
 
   function handleSwitch(event: React.ChangeEvent<HTMLInputElement>) {
-    if (event.target.checked) {
-      setFieldValue(name, 1)
-    } else {
-      setFieldValue(name, 0)
-    }
+    setFieldValue(name, event.target.checked)
   }
 
   const configureSwitch = {
