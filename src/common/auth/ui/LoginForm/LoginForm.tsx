@@ -1,24 +1,27 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 
 import { Avatar, Box, Button, CircularProgress, Collapse, Typography } from '@mui/material'
 
 import { ReactComponent as AvatarLogo } from 'assets/icons/avatar.svg'
 import SberTypography from 'shared/ui/SberTypography'
+import { useSnackbarErrorContext } from 'shared/ui/SnackbarErrorProvider/SnackbarErrorProvider'
 
 import { useCheckAuthRedirect, useGetAuthLink } from './LoginForm.hooks'
 import useStyles from './LoginForm.styles'
-import SnackbarError, { SnackbarErrorRef } from './SnackbarError/SnackbarError'
 
 export function LoginForm() {
   const classes = useStyles()
 
-  const snackbarRef = useRef<SnackbarErrorRef>(null)
+  const snackbarRef = useSnackbarErrorContext()
 
-  const showError = useCallback((title: string, text: string) => {
-    if (snackbarRef.current) {
-      snackbarRef.current.show(title, text)
-    }
-  }, [])
+  const showError = useCallback(
+    (title: string, text: string) => {
+      if (snackbarRef) {
+        snackbarRef.show(title, text)
+      }
+    },
+    [snackbarRef],
+  )
 
   const { authLink, isLoading: authLinkLoading, error } = useGetAuthLink()
   const { isLoading: redirectLoading } = useCheckAuthRedirect(showError)
@@ -53,8 +56,6 @@ export function LoginForm() {
           Произошла неизвестная ошибка! Перезагрузите страницу и попробуйте снова
         </SberTypography>
       </Collapse>
-
-      <SnackbarError ref={snackbarRef} />
     </Box>
   )
 }

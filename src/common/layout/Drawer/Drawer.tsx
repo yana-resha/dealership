@@ -4,7 +4,8 @@ import { Drawer } from '@mui/material'
 import { Link } from 'react-router-dom'
 
 import { ReactComponent as SberAutoLogo } from 'assets/icons/sberAutoLogo.svg'
-import { useCheckToken, useCheckPointOfSale } from 'common/auth'
+import { useCheckToken } from 'common/auth'
+import { useCheckPointOfSale } from 'entities/pointOfSale'
 
 import { useStyles } from './Drawer.styles'
 import { NavigationMenu } from './subcomponents/NavigationMenu'

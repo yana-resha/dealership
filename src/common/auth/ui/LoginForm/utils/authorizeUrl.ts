@@ -3,10 +3,12 @@ import { appConfig } from 'config'
 
 import { toSnakecaseKeysData } from 'shared/lib/utils'
 
-function encodeGetParams(p: Record<string, string | undefined>) {
-  const validParts = Object.entries(p).filter(p => typeof p[1] === 'string') as [string, string][]
+function encodeGetParams(params: Record<string, string | undefined>) {
+  const validParts = Object.entries(params).filter(
+    (param): param is [string, string] => typeof param[1] === 'string',
+  )
 
-  return validParts.map(kv => kv.map(encodeURIComponent).join('=')).join('&')
+  return validParts.map(param => param.map(encodeURIComponent).join('=')).join('&')
 }
 
 /* Формируем ссылку на страницу авторизации TeamID */
@@ -27,6 +29,7 @@ export const authorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: Get
     nonce,
   })
 
+  /** Если хотя бы один параметр из списка пустой, то флаг примет значение true */
   const isNotNullable = Object.values(params).reduce((prev, item) => !!item && prev, true)
   if (!isNotNullable) {
     return undefined
