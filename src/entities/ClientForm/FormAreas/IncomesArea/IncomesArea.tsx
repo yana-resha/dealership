@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { AttachFileTwoTone } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 
+import { ReactComponent as AttachFileTwoTone } from 'assets/icons/attach.svg'
 import { maskDigitsOnly } from 'shared/masks/InputMasks'
 import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
@@ -67,7 +67,7 @@ export function IncomesArea() {
       <Box gridColumn="span 4" />
 
       <Box className={classes.textButtonContainer} gridColumn="span 7">
-        <AttachFileTwoTone className={classes.attachFileIcon} />
+        <AttachFileTwoTone />
         <Typography>Загрузить 2ндфл</Typography>
       </Box>
     </Box>

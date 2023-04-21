@@ -12,6 +12,8 @@ jest.mock('react-router-dom', () => ({
 
   Outlet: () => <div data-testid="mockOutlet" />,
 }))
+jest.mock('../../Drawer')
+jest.mock('../../Header')
 
 describe('DefaultLayout', () => {
   it('отрисовывает компонент Outlet', () => {

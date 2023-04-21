@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 
-import { Close } from '@mui/icons-material'
 import { Avatar, CircularProgress, IconButton, Link } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Box } from '@mui/system'
 
+import { ReactComponent as Close } from 'assets/icons/close.svg'
 import documentIcon from 'assets/icons/document.svg'
 
 import SberTypography from '../SberTypography'

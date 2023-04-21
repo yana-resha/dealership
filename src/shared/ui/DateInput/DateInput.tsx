@@ -1,11 +1,12 @@
 import React from 'react'
 
-import { CalendarTodayOutlined } from '@mui/icons-material'
 import { Box, InputLabel } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { useField, useFormikContext } from 'formik'
 import { DateTime } from 'luxon'
+
+import { ReactComponent as CalendarTodayOutlined } from 'assets/icons/calendar.svg'
 
 import useStyles from './DateInput.styles'
 

@@ -59,7 +59,7 @@ describe('DateInputTest', () => {
     })
 
     it('При нажатии на иконку открывается календарь', () => {
-      userEvent.click(screen.getByTestId('CalendarTodayOutlinedIcon'))
+      userEvent.click(screen.getAllByRole('button')[0])
       expect(screen.getByTestId('sentinelStart')).toBeInTheDocument()
       expect(screen.getByTestId('sentinelEnd')).toBeInTheDocument()
     })

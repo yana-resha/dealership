@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react'
 
 import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Cookies from 'js-cookie'
 import { MockStore } from 'redux-mock-store'
 
@@ -13,6 +14,9 @@ import { Header } from '../Header'
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
+
+jest.mock('entities/pointOfSale')
+jest.mock('entities/user/ui/UserInfo/UserInfo.tsx')
 
 const createWrapper = ({ store, children }: WrapperProps) => (
   <StoreProviderMock mockStore={store}>
@@ -29,14 +33,17 @@ describe('HeaderTest', () => {
       render(<Header />, { wrapper: createWrapper })
     })
 
-    it('В хэдере присутствует номер торговой точки', () => {
-      expect(screen.getByText(/2002852/)).toBeInTheDocument()
+    it('В хэдере присутствует информация о торговой точке', () => {
+      expect(screen.getByTestId('pointInfo')).toBeInTheDocument()
     })
 
-    it('В хэдере присутствует название и адрес торговой точки', () => {
-      expect(screen.getByText(/Сармат/)).toBeInTheDocument()
-      expect(screen.getByText(/Ханты-Мансийск/)).toBeInTheDocument()
-      expect(screen.getByText(/Зябликова/)).toBeInTheDocument()
+    it('В хэдере присутствует информация о пользователе', () => {
+      expect(screen.getByTestId('userInfo')).toBeInTheDocument()
+    })
+
+    it('При нажатии на кнопку появляется компонент ChoosePoint', async () => {
+      userEvent.click(screen.getByTestId('pointInfo'))
+      expect(await screen.findByTestId('choosePoint')).toBeInTheDocument()
     })
   })
 })

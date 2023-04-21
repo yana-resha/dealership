@@ -22,6 +22,10 @@ export default makeStyles(theme => ({
 
   pointsOfSaleAutocomplete: {
     padding: 0,
+    '& .MuiAutocomplete-popupIndicator': {
+      width: '28px',
+      height: '28px',
+    },
   },
 
   autocompleteTextField: {
