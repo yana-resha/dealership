@@ -1,0 +1,1 @@
+export { ClientDetailedDossier } from './ClientDetailedDossier'

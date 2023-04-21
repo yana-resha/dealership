@@ -6,7 +6,8 @@ import { ReactComponent as AvatarLogo } from 'assets/icons/avatar.svg'
 import SberTypography from 'shared/ui/SberTypography'
 import { useSnackbarErrorContext } from 'shared/ui/SnackbarErrorProvider/SnackbarErrorProvider'
 
-import { useCheckAuthRedirect, useGetAuthLink } from './LoginForm.hooks'
+import { useCheckAuthRedirect } from './hooks/useCheckAuthRedirect'
+import { useGetAuthLink } from './hooks/useGetAuthLink'
 import useStyles from './LoginForm.styles'
 
 export function LoginForm() {

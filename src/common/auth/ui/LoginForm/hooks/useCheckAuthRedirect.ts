@@ -1,34 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { appConfig } from 'config'
-import { useQuery } from 'react-query'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { getStateAndNonce, getToken } from 'common/auth/api/requests'
+import { getToken } from 'common/auth/api/requests'
+import { authToken } from 'shared/api/token'
 import { sleep } from 'shared/lib/sleep'
 import { appRoutePaths } from 'shared/navigation/routerPath'
-
-import { authToken } from '../../../../shared/api/token'
-import { authorizeUrl } from './utils/authorizeUrl'
-
-/** Генерируем ссылку на авторизацию в TeamID */
-export const useGetAuthLink = () => {
-  const { data, error, isLoading } = useQuery(['getStateAndNonce'], () => getStateAndNonce(), {
-    retry: false,
-    cacheTime: Infinity,
-  })
-
-  const authLink = useMemo(() => {
-    //NOTE: что бы не блочить авторизацию на деве пока нет заглушки временно ориентируемся на среду
-    if (appConfig.env !== 'prod') {
-      return appConfig.appUrl + '/auth?code=test_code&state=test_state'
-    } else {
-      return data ? authorizeUrl(data) : undefined
-    }
-  }, [data])
-
-  return { authLink, isLoading, error }
-}
 
 /** Отслеживаем обратный редирект с TeamID и запрашиваем токены */
 export const useCheckAuthRedirect = (onReject: (title: string, text: string) => void) => {
@@ -70,7 +47,8 @@ export const useCheckAuthRedirect = (onReject: (title: string, text: string) => 
         setIsLoading(false)
       }
     }
-  }, [code, state, navigate, onReject, setSearchParams])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code, state])
 
   useEffect(() => {
     fetchData()

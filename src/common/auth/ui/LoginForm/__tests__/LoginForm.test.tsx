@@ -4,10 +4,14 @@ import { render, screen } from '@testing-library/react'
 
 import { MockProviders } from 'tests/mocks'
 
+import * as useCheckAuthRedirectHooks from '../hooks/useCheckAuthRedirect'
+import * as LoginFormHooks from '../hooks/useGetAuthLink'
 import { LoginForm } from '../LoginForm'
-import * as LoginFormHooks from '../LoginForm.hooks'
+
+jest.mock('shared/ui/SnackbarErrorProvider/SnackbarErrorProvider')
 
 const mockedUseGetAuthLink = jest.spyOn(LoginFormHooks, 'useGetAuthLink')
+const mockUseCheckAuthRedirect = jest.spyOn(useCheckAuthRedirectHooks, 'useCheckAuthRedirect')
 mockedUseGetAuthLink.mockImplementation(jest.fn())
 
 const authLink = 'www.link.ru'
@@ -18,6 +22,9 @@ describe('LoginForm', () => {
       isLoading: false,
       error: undefined,
       authLink,
+    }))
+    mockUseCheckAuthRedirect.mockImplementation(() => ({
+      isLoading: false,
     }))
   })
 
@@ -43,12 +50,25 @@ describe('LoginForm', () => {
     expect(loginButton).toBeInTheDocument()
   })
 
-  it('отображает индикатор загрузки в кнопке, когда isLoading равно true', () => {
+  it('отображает индикатор загрузки в кнопке, когда UseGetAuthLink.isLoading равно true', () => {
     mockedUseGetAuthLink.mockImplementation(() => ({
       isLoading: true,
       error: undefined,
       authLink: '',
     }))
+
+    render(
+      <MockProviders>
+        <LoginForm />
+      </MockProviders>,
+    )
+
+    const circularProgress = screen.getByRole('progressbar')
+    expect(circularProgress).toBeInTheDocument()
+  })
+
+  it('отображает индикатор загрузки в кнопке, когда UseCheckAuthRedirect.isLoading равно true', () => {
+    mockUseCheckAuthRedirect.mockImplementation(() => ({ isLoading: true }))
 
     render(
       <MockProviders>
@@ -66,6 +86,9 @@ describe('LoginForm', () => {
       error: undefined,
       authLink,
     }))
+    mockUseCheckAuthRedirect.mockImplementation(() => ({
+      isLoading: false,
+    }))
 
     render(
       <MockProviders>
@@ -75,6 +98,36 @@ describe('LoginForm', () => {
 
     const textBtn = screen.getByText('Войти по Сбер ID')
     expect(textBtn).toBeInTheDocument()
+  })
+
+  it('Проверяем что были вызван хук получения ссылки', () => {
+    mockedUseGetAuthLink.mockImplementation(() => ({
+      isLoading: false,
+      error: undefined,
+      authLink,
+    }))
+
+    render(
+      <MockProviders>
+        <LoginForm />
+      </MockProviders>,
+    )
+
+    expect(mockedUseGetAuthLink).toBeCalled()
+  })
+
+  it('Проверяем что были вызван хук получения токена', () => {
+    mockUseCheckAuthRedirect.mockImplementation(() => ({
+      isLoading: false,
+    }))
+
+    render(
+      <MockProviders>
+        <LoginForm />
+      </MockProviders>,
+    )
+
+    expect(mockUseCheckAuthRedirect).toBeCalled()
   })
 
   it('отображает сообщение об ошибке если error', () => {

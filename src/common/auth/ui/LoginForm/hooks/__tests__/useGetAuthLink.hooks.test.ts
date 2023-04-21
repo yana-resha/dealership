@@ -3,8 +3,8 @@ import { renderHook } from '@testing-library/react-hooks'
 
 import { MockProviders } from 'tests/mocks'
 
-import * as AuthApi from '../../../api/requests'
-import { useGetAuthLink } from '../LoginForm.hooks'
+import * as AuthApi from '../../../../api/requests'
+import { useGetAuthLink } from '../useGetAuthLink'
 
 jest.mock('js-cookie', () => ({
   remove: jest.fn(),

@@ -33,7 +33,7 @@ export const useCheckToken = () => {
           redirectToLogin()
         }
       }
-    }, 750)
+    }, 500)
 
     return () => {
       clearInterval(timerRef.current)
