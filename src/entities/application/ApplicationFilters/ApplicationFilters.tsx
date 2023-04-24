@@ -4,9 +4,9 @@ import { Form, Formik, FormikErrors } from 'formik'
 import { DateTime } from 'luxon'
 
 import { maskCyrillicAndDigits } from 'shared/masks/InputMasks'
-import { DateInput } from 'shared/ui/DateInput/DateInput'
-import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
-import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
+import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
+import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
+import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { applicationFiltersValues, FindApplicationsReq } from './ApplicationFilters.types'
 import { validateFiltersFields } from './ApplicationFilters.utils'
@@ -56,7 +56,7 @@ export const ApplicationFilters = ({ onSubmitClick }: Props) => {
         <Form>
           <Box display="flex" gap={3}>
             <Box flex={4}>
-              <MaskedInput
+              <MaskedInputFormik
                 name="findApplication"
                 label="Найти заявку"
                 placeholder="Серия и номер паспорта, ФИО, Номер заявки"
@@ -64,9 +64,9 @@ export const ApplicationFilters = ({ onSubmitClick }: Props) => {
               />
             </Box>
             <Box flex={2}>
-              <DateInput name="applicationUpdateDate" label="Дата создания заявки" />
+              <DateInputFormik name="applicationUpdateDate" label="Дата создания заявки" />
             </Box>
-            <SwitchInput name="isMyApplication" label="Мои заявки" centered />
+            <SwitchInputFormik name="isMyApplication" label="Мои заявки" centered />
           </Box>
           <Box width={155} mt={4} className={styles.buttonWrapper}>
             <Button type="submit" fullWidth variant="contained">

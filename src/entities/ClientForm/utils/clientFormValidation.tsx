@@ -59,11 +59,13 @@ export const clientFormValidationSchema = Yup.object().shape({
   familyStatus: Yup.string().required('Поле обязательно для заполнения'),
   passport: Yup.string().required('Поле обязательно для заполнения').min(10, 'Введите данные полностью'),
   birthDate: Yup.date()
+    .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Превышен максимальный возраст')
     .max(getMaxBirthDate(), `Минимальный возраст ${minAge} год`),
   birthPlace: Yup.string().required('Поле обязательно для заполнения'),
   passportDate: Yup.date()
+    .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinPassportDate(), 'Дата слишком ранняя'),
   divisionCode: Yup.string().required('Поле обязательно для заполнения').min(6, 'Введите данные полностью'),
@@ -74,6 +76,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     then: schema => schema.required('Поле обязательно для заполнения'),
   }),
   regDate: Yup.date()
+    .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Дата слишком ранняя'),
   phoneType: Yup.string().required('Поле обязательно для заполнения'),
@@ -89,12 +92,14 @@ export const clientFormValidationSchema = Yup.object().shape({
   secondDocumentType: Yup.string().required('Поле обязательно для заполнения'),
   secondDocumentNumber: Yup.string().required('Поле обязательно для заполнения'),
   secondDocumentDate: Yup.date()
+    .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Дата слишком ранняя'),
   secondDocumentIssuedBy: Yup.string().required('Поле обязательно для заполнения'),
   occupation: Yup.string().required('Поле обязательно для заполнения'),
   employmentDate: Yup.date()
+    .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Дата слишком ранняя'),
-  anketaSigned: Yup.number().min(1, 'Необходимо подписать анкету'),
+  // anketaSigned: Yup.number().min(1, 'Необходимо подписать анкету'),
 })

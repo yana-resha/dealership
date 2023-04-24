@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material'
 import { Form, Formik } from 'formik'
 
-import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
+import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { DownloadClientDocs } from '../DownloadClientDocs'
 import { useStyles } from './ClientForm.styles'
@@ -42,7 +42,7 @@ export function ClientForm() {
           <JobArea />
 
           <Box className={classes.buttonsContainer} gridColumn="span 2" gridRow="7">
-            <SwitchInput name="anketaSigned" label="Анкета подписана" gridColumn="span 15" />
+            <SwitchInputFormik name="anketaSigned" label="Анкета подписана" gridColumn="span 15" />
             <Button className={classes.button} variant="outlined">
               Распечатать
             </Button>

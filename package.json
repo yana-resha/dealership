@@ -15,7 +15,7 @@
     "@mui/icons-material": "5.10.16",
     "@mui/material": "5.10.17",
     "@mui/styles": "5.10.16",
-    "@mui/x-date-pickers": "6.0.2",
+    "@mui/x-date-pickers": "6.2.1",
     "@reduxjs/toolkit": "1.9.1",
     "@sberauto/authdc-proto": "^0.0.0-dcb-24",
     "@sberauto/loanapplifecycledc-proto": "0.0.0-dcb-74",

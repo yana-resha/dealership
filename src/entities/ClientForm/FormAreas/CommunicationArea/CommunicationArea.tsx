@@ -3,8 +3,8 @@ import React from 'react'
 import { Box, Typography } from '@mui/material'
 
 import { maskEmail, maskPhoneNumber } from 'shared/masks/InputMasks'
-import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
-import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
+import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
+import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
 import useStyles from './CommunicationArea.styles'
 
@@ -17,14 +17,14 @@ export function CommunicationArea() {
         <Typography className={classes.areaLabel}>Связь с клиентом</Typography>
       </Box>
 
-      <SelectInput
+      <SelectInputFormik
         name="phoneType"
         label="Тип телефона"
         placeholder="-"
         options={['Основной', 'Рабочий', 'Дополнительный']}
         gridColumn="span 8"
       />
-      <MaskedInput
+      <MaskedInputFormik
         name="phoneNumber"
         label="Телефон"
         placeholder="-"
@@ -37,7 +37,7 @@ export function CommunicationArea() {
       </Typography>
       <Box gridColumn="span 10" />
 
-      <MaskedInput name="email" label="Email" placeholder="-" mask={maskEmail} gridColumn="span 16" />
+      <MaskedInputFormik name="email" label="Email" placeholder="-" mask={maskEmail} gridColumn="span 16" />
     </Box>
   )
 }

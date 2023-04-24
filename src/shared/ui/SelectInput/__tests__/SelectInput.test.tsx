@@ -3,11 +3,9 @@ import React, { PropsWithChildren } from 'react'
 import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Form, Formik } from 'formik'
 import { MockStore } from 'redux-mock-store'
-import * as Yup from 'yup'
 
-import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
+import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { SelectInput } from '../SelectInput'
@@ -16,20 +14,7 @@ interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
-let validationSchema = Yup.object().shape({})
-
-const createWrapper = ({ store, children }: WrapperProps) => (
-  <StoreProviderMock mockStore={store}>
-    <ThemeProviderMock>
-      <Formik initialValues={{ testSelectName: '' }} validationSchema={validationSchema} onSubmit={() => {}}>
-        <Form>
-          {children}
-          <Button type="submit">Submit</Button>
-        </Form>
-      </Formik>
-    </ThemeProviderMock>
-  </StoreProviderMock>
-)
+const createWrapper = ({ children }: WrapperProps) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 disableConsole('error')
 
@@ -38,7 +23,6 @@ describe('SelectInputTest', () => {
     beforeEach(() => {
       render(
         <SelectInput
-          name="testSelectName"
           placeholder="Тестовый placeholder"
           label="Тестовый select"
           options={['Первая', 'Вторая', 'Третья']}
@@ -62,7 +46,6 @@ describe('SelectInputTest', () => {
     beforeEach(() => {
       render(
         <SelectInput
-          name="testSelectName"
           placeholder="Тестовый placeholder"
           label="Тестовый select"
           options={['Первая', 'Вторая', 'Третья']}
@@ -88,15 +71,13 @@ describe('SelectInputTest', () => {
 
   describe('SelectInput валидируется', () => {
     beforeEach(() => {
-      validationSchema = Yup.object().shape({
-        testSelectName: Yup.string().required('Поле обязательно для заполнения'),
-      })
       render(
         <SelectInput
-          name="testSelectName"
           placeholder="Тестовый placeholder"
           label="Тестовый select"
           options={['Первая', 'Вторая', 'Третья']}
+          isError={true}
+          errorMessage="Поле обязательно для заполнения"
         />,
         {
           wrapper: createWrapper,
@@ -104,9 +85,8 @@ describe('SelectInputTest', () => {
       )
     })
 
-    it('Отображается сообщение об ошибке, если поле обязательное', async () => {
-      userEvent.click(screen.getByText('Submit'))
-      expect(await screen.findByText('Поле обязательно для заполнения')).toBeInTheDocument()
+    it('Отображается сообщение об ошибке', () => {
+      expect(screen.getByText('Поле обязательно для заполнения')).toBeInTheDocument()
     })
   })
 })

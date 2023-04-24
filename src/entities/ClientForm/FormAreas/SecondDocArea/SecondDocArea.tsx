@@ -3,9 +3,9 @@ import React from 'react'
 import { Box, Typography } from '@mui/material'
 
 import { maskDigitsOnly, maskOnlyCyrillicNoDigits } from 'shared/masks/InputMasks'
-import { DateInput } from 'shared/ui/DateInput/DateInput'
-import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
-import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
+import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
+import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
+import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
 import useStyles from './SecondDocArea.styles'
 
@@ -18,7 +18,7 @@ export function SecondDocArea() {
         <Typography className={classes.areaLabel}>Второй документ</Typography>
       </Box>
 
-      <SelectInput
+      <SelectInputFormik
         name="secondDocumentType"
         label="Тип второго документа"
         placeholder="-"
@@ -27,16 +27,16 @@ export function SecondDocArea() {
       />
       <Box gridColumn="span 4" />
 
-      <MaskedInput
+      <MaskedInputFormik
         name="secondDocumentNumber"
         label="Серия и номер"
         placeholder="-"
         mask={maskDigitsOnly}
         gridColumn="span 6"
       />
-      <DateInput name="secondDocumentDate" label="Дата выдачи второго документа" gridColumn="span 6" />
+      <DateInputFormik name="secondDocumentDate" label="Дата выдачи второго документа" gridColumn="span 6" />
 
-      <MaskedInput
+      <MaskedInputFormik
         name="secondDocumentIssuedBy"
         label="Кем выдан"
         placeholder="-"
