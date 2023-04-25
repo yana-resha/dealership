@@ -22,27 +22,33 @@ import { TablePaginationActions } from './TablePaginationActions/TablePagination
 
 type Props = {
   data: PreparedTableData[]
-  getDetailedDossier: (index: string, page: number) => void
-  startPage: number
+  onClickRow: (index: string, page: number) => void
+  startPage?: number
   isLoading?: boolean
+  rowsPerPage?: number
 }
 
 const ROWS_PER_PAGE = 6
 
-export const ApplicationTable = ({ data, getDetailedDossier, startPage, isLoading }: Props) => {
+export const ApplicationTable = ({
+  data,
+  onClickRow,
+  startPage = 1,
+  isLoading,
+  rowsPerPage: rowsPerPageProp,
+}: Props) => {
+  const rowsPerPage = rowsPerPageProp ? rowsPerPageProp : ROWS_PER_PAGE
   const styles = useStyles()
   const [page, setPage] = useState(startPage)
   const emptyRows =
-    page === Math.ceil(data.length / ROWS_PER_PAGE)
-      ? Math.max(0, ROWS_PER_PAGE - (data.length % ROWS_PER_PAGE))
-      : 0
+    page === Math.ceil(data.length / rowsPerPage) ? Math.max(0, rowsPerPage - (data.length % rowsPerPage)) : 0
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage)
   }
 
   return (
-    <Table size="small">
+    <Table size="small" data-testid="applicationTable">
       {isLoading ? (
         <TableHead>
           <TableRow>
@@ -64,11 +70,11 @@ export const ApplicationTable = ({ data, getDetailedDossier, startPage, isLoadin
           </TableHead>
 
           <TableBody>
-            {data.slice((page - 1) * ROWS_PER_PAGE, (page - 1) * ROWS_PER_PAGE + ROWS_PER_PAGE).map(row => (
+            {data.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage).map(row => (
               <TableRow
                 key={row.applicationNumber}
                 className={styles.bodyRow}
-                onClick={() => getDetailedDossier(row.applicationNumber, page)}
+                onClick={() => onClickRow(row.applicationNumber, page)}
               >
                 {getCellsChildrens(row).map(cell => (
                   <TableCell key={cell.name} align="left" className={styles.bodyCell}>
@@ -87,25 +93,27 @@ export const ApplicationTable = ({ data, getDetailedDossier, startPage, isLoadin
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                colSpan={applicationHeaders.length}
-                count={data.length}
-                rowsPerPageOptions={[ROWS_PER_PAGE]}
-                rowsPerPage={ROWS_PER_PAGE}
-                page={page}
-                classes={{
-                  root: styles.pagination,
-                  toolbar: styles.toolbar,
-                }}
-                labelDisplayedRows={() => <></>}
-                labelRowsPerPage=""
-                onPageChange={handleChangePage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
+          {rowsPerPage > 0 && (
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  colSpan={applicationHeaders.length}
+                  count={data.length}
+                  rowsPerPageOptions={[rowsPerPage]}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  classes={{
+                    root: styles.pagination,
+                    toolbar: styles.toolbar,
+                  }}
+                  labelDisplayedRows={() => <></>}
+                  labelRowsPerPage=""
+                  onPageChange={handleChangePage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          )}
         </>
       )}
     </Table>

@@ -1,41 +1,12 @@
 import * as Yup from 'yup'
 
-const minAge = 21
-const maxAge = 65
-
-function clientNameIsCorrect(value: string | undefined) {
-  if (value == undefined) {
-    return false
-  }
-  const nameParts = value.trim().split(' ')
-  if (nameParts.length == 3) {
-    return true
-  }
-
-  return false
-}
-
-function clientNameIsCorrectOptional(value: string | undefined) {
-  if (value == undefined || value == '') {
-    return true
-  }
-
-  return clientNameIsCorrect(value)
-}
-
-function getMaxBirthDate() {
-  const maxBirthDay = new Date()
-  maxBirthDay.setFullYear(maxBirthDay.getFullYear() - minAge)
-
-  return maxBirthDay
-}
-
-function getMinBirthDate() {
-  const minBirthDay = new Date()
-  minBirthDay.setFullYear(minBirthDay.getFullYear() - maxAge)
-
-  return minBirthDay
-}
+import {
+  clientNameIsCorrect,
+  clientNameIsCorrectOptional,
+  getMaxBirthDate,
+  getMinBirthDate,
+  MIN_AGE,
+} from 'shared/utils/clientFormValidation'
 
 function getMinPassportDate() {
   const minPassportDate = getMinBirthDate()
@@ -62,7 +33,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Превышен максимальный возраст')
-    .max(getMaxBirthDate(), `Минимальный возраст ${minAge} год`),
+    .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`),
   birthPlace: Yup.string().required('Поле обязательно для заполнения'),
   passportDate: Yup.date()
     .nullable()

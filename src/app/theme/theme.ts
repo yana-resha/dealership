@@ -175,6 +175,7 @@ export const theme = createTheme({
     },
     colors: {
       blueGray: '#ECF1FA',
+      white: WHITE,
     },
   },
 })
@@ -194,6 +195,7 @@ declare module '@mui/material/styles' {
     }
     colors: {
       blueGray: React.CSSProperties['color']
+      white: React.CSSProperties['color']
     }
     status: {
       initial: React.CSSProperties['color']
@@ -215,6 +217,7 @@ declare module '@mui/material/styles' {
     main: string
     dark: string
     blueGray: string
+    white: string
     draft: string
     refused: string
     manual: string
