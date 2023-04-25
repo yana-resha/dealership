@@ -10,7 +10,7 @@ import { StatusFilter } from 'entities/application/StatusFilter/StatusFilter'
 import { getPointOfSaleFromCookies } from 'shared/utils/getPointOfSaleFromCookies'
 
 import { PreparedTableData } from '../../../entities/application/ApplicationTable/ApplicationTable.types'
-import { ClientDetailedDossier } from '../ClientDetailedDossier/ClientDetailedDossier'
+import { ClientDetailedDossier } from '../ClientDetailedDossier'
 
 export const FindApplication = () => {
   const { vendorCode } = getPointOfSaleFromCookies()

@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom'
 
 import { DefaultLayout } from 'common/layout/DefaultLayout'
 import { AuthPage } from 'pages/Auth'
-import { PointOfSale } from 'pages/PointOfSale/PointOfSale'
+import { PointOfSale } from 'pages/PointOfSale'
 
 import { appRoutePaths } from '../../../shared/navigation/routerPath'
 

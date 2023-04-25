@@ -8,9 +8,7 @@ import { disableConsole } from 'tests/utils'
 
 import { ClientForm } from '../ClientForm'
 
-jest.mock('../../DownloadClientDocs/DownloadClientDocs', () => ({
-  DownloadClientDocs: () => <div data-testid="downloadCreditDocs" />,
-}))
+jest.mock('../../DownloadClientDocs')
 jest.mock('shared/ui/DateInput/DateInput', () => ({
   DateInput: ({ label }: any) => <span>{label}</span>,
 }))

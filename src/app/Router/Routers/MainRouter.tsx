@@ -3,7 +3,7 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
 import { DefaultLayout } from 'common/layout/DefaultLayout'
-import { CreateOrderPage } from 'pages/CreateOrderPage/CreateOrderPage'
+import { CreateOrderPage } from 'pages/CreateOrderPage'
 import { DealershipPage } from 'pages/Dealership'
 import { NotFoundPage } from 'pages/NotFound'
 

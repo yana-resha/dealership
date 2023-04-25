@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik'
 
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
-import { DownloadClientDocs } from '../DownloadClientDocs/DownloadClientDocs'
+import { DownloadClientDocs } from '../DownloadClientDocs'
 import { useStyles } from './ClientForm.styles'
 import { CommunicationArea } from './FormAreas/CommunicationArea/CommunicationArea'
 import { IncomesArea } from './FormAreas/IncomesArea/IncomesArea'

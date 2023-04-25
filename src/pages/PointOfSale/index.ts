@@ -1,0 +1,1 @@
+export { PointOfSale } from './PointOfSale'

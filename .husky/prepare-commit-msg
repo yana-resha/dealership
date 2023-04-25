@@ -6,10 +6,13 @@ commit_editmsg=$1
 commit_msg=$(cat $commit_editmsg)
 
 checkCommitSemantic() {
-    if ! echo "$commit_msg" | grep -qE "^$branch \| "; then
-        echo "ERROR: Commit message does not start with branch name '$branch'. Commit mesage example '$branch | description'"
-        exit 1
+    echo "$commit_msg"
+    if ! echo "$commit_msg" | grep -qE "rebas"; then
+        if ! echo "$commit_msg" | grep -qE "^$branch \| "; then
+            echo "ERROR: Commit message does not start with branch name '$branch'. Commit mesage example '$branch | description'"
+            exit 1
+        fi
     fi
 }
 
-# checkCommitSemantic
+checkCommitSemantic

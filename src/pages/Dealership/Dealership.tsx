@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FindApplication } from 'common/findApplication/FindApplication/FindApplication'
+import { FindApplication } from 'common/findApplication/FindApplication'
 
 import { useStyles } from './Dealership.styles'
 
