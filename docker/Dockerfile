@@ -18,14 +18,19 @@ RUN yarn build
 
 FROM registry.gitlab.com/sberauto/infra/base-images/nginx:1.23.3-alpine-slim-4ecd22be as finnaly
 RUN rm -f /etc/nginx/conf.d/default.conf \
- && rm -rf /usr/share/nginx/html/*
+ && rm -rf /usr/share/nginx/html/* \
+ && chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /etc/nginx \
+ && sed -i "/user  nginx;/d" /etc/nginx/nginx.conf \
+ && sed -i "s#/var/run/nginx.pid#/tmp/nginx.pid#" /etc/nginx/nginx.conf
 
 COPY nginx-default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /dealershipclient/build /usr/share/nginx/html
+COPY --chown=nginx:nginx --from=build /dealershipclient/build /usr/share/nginx/html
+COPY start.sh /start.sh
 
-RUN apk --no-cache add busybox
-
-EXPOSE 80
-ADD start.sh /start.sh
 RUN chmod 755 /start.sh
+
+EXPOSE 8080
+
+USER nginx
+
 CMD ["/bin/sh", "/start.sh"]
