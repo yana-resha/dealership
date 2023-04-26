@@ -1040,7 +1040,7 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
-"@babel/runtime@^7.20.13", "@babel/runtime@^7.21.0", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2":
+"@babel/runtime@^7.21.0", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2":
   version "7.21.0"
   resolved "https://nexus.x.sberauto.com/repository/npm/@babel/runtime/-/runtime-7.21.0.tgz#5b55c9d394e5fcf304909a8b00c07dc217b56673"
   integrity sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==
@@ -1213,13 +1213,6 @@
   version "2.16.0"
   resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/date-fns/-/date-fns-2.16.0.tgz#bd5e09b6ecb47ee55e593fc3a87e7b2caaa3da40"
   integrity sha512-bfm5FJjucqlrnQcXDVU5RD+nlGmL3iWgkHTq3uAZWVIuBu6dDmGa3m8a6zo2VQQpu8ambq9H22UyUpn7590joA==
-  dependencies:
-    "@date-io/core" "^2.16.0"
-
-"@date-io/dayjs@^2.16.0":
-  version "2.16.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/dayjs/-/dayjs-2.16.0.tgz#0d2c254ad8db1306fdc4b8eda197cb53c9af89dc"
-  integrity sha512-y5qKyX2j/HG3zMvIxTobYZRGnd1FUW2olZLS0vTj7bEkBQkjd2RO7/FEwDY03Z1geVGlXKnzIATEVBVaGzV4Iw==
   dependencies:
     "@date-io/core" "^2.16.0"
 
@@ -2055,16 +2048,15 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/x-date-pickers@6.0.2":
-  version "6.0.2"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@mui/x-date-pickers/-/x-date-pickers-6.0.2.tgz#277e14e2a8dd0983d395e72a486b0544bd1c08c9"
-  integrity sha512-FfGLOqRnv1PTOyRpZjVMy2+0se2O0z8OjXG239GnMBna2Xj6G1UMHwfGqYT5oCbNor6uej+5f+p4h/9fcOFNuw==
+"@mui/x-date-pickers@6.2.1":
+  version "6.2.1"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@mui/x-date-pickers/-/x-date-pickers-6.2.1.tgz#1511bf440673fc98428c08f108be45630d26c6e0"
+  integrity sha512-pLSqzxJWgO2MV6so8A4LEGr1nDQuKJugKKP32Ej/YXGqUfW3CS1bHoYeuavO+Y/5JH4qnf7BPvcGEVXIjqTGTA==
   dependencies:
-    "@babel/runtime" "^7.20.13"
+    "@babel/runtime" "^7.21.0"
     "@date-io/core" "^2.16.0"
     "@date-io/date-fns" "^2.16.0"
     "@date-io/date-fns-jalali" "^2.16.0"
-    "@date-io/dayjs" "^2.16.0"
     "@date-io/hijri" "^2.16.1"
     "@date-io/jalaali" "^2.16.1"
     "@date-io/luxon" "^2.16.1"

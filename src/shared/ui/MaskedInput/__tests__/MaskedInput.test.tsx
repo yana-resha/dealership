@@ -1,15 +1,12 @@
 import React, { PropsWithChildren } from 'react'
 
-import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Form, Formik } from 'formik'
-import * as mockFormik from 'formik'
 import { MockStore } from 'redux-mock-store'
 import * as Yup from 'yup'
 
 import { maskPhoneNumber } from 'shared/masks/InputMasks'
-import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
+import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { MaskedInput } from '../MaskedInput'
@@ -18,24 +15,7 @@ interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
-let validationSchema = Yup.object().shape({})
-
-const createWrapper = ({ store, children }: WrapperProps) => (
-  <StoreProviderMock mockStore={store}>
-    <ThemeProviderMock>
-      <Formik
-        initialValues={{ testMaskedInputName: '' }}
-        validationSchema={validationSchema}
-        onSubmit={() => {}}
-      >
-        <Form>
-          {children}
-          <Button type="submit">Submit</Button>
-        </Form>
-      </Formik>
-    </ThemeProviderMock>
-  </StoreProviderMock>
-)
+const createWrapper = ({ children }: WrapperProps) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 disableConsole('error')
 
@@ -44,7 +24,6 @@ describe('MaskedInputTest', () => {
     beforeEach(() => {
       render(
         <MaskedInput
-          name="testMaskedInputName"
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
           mask={maskPhoneNumber}
@@ -68,7 +47,6 @@ describe('MaskedInputTest', () => {
     beforeEach(() => {
       render(
         <MaskedInput
-          name="testMaskedInputName"
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
           mask={maskPhoneNumber}
@@ -94,15 +72,9 @@ describe('MaskedInputTest', () => {
     const mockedSetFieldValue = jest.fn()
 
     beforeEach(() => {
-      jest.spyOn(mockFormik, 'useFormikContext').mockImplementation(
-        () =>
-          ({
-            setFieldValue: mockedSetFieldValue,
-          } as any),
-      )
       render(
         <MaskedInput
-          name="testMaskedInputName"
+          onChange={mockedSetFieldValue}
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
           mask={maskPhoneNumber}
@@ -111,10 +83,6 @@ describe('MaskedInputTest', () => {
           wrapper: createWrapper,
         },
       )
-    })
-
-    afterEach(() => {
-      jest.restoreAllMocks()
     })
 
     it('При вводе текста в MaskedInput вызывается setFieldValue', () => {
@@ -125,15 +93,13 @@ describe('MaskedInputTest', () => {
 
   describe('MaskedInput валидируется', () => {
     beforeEach(() => {
-      validationSchema = Yup.object().shape({
-        testMaskedInputName: Yup.string().required('Поле обязательно для заполнения'),
-      })
       render(
         <MaskedInput
-          name="testMaskedInputName"
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
           mask={maskPhoneNumber}
+          isError={true}
+          errorMessage="Поле обязательно для заполнения"
         />,
         {
           wrapper: createWrapper,
@@ -141,9 +107,8 @@ describe('MaskedInputTest', () => {
       )
     })
 
-    it('Отображается сообщение об ошибке, если поле обязательное', async () => {
-      userEvent.click(screen.getByText('Submit'))
-      expect(await screen.findByText('Поле обязательно для заполнения')).toBeInTheDocument()
+    it('Отображается сообщение об ошибке', () => {
+      expect(screen.getByText('Поле обязательно для заполнения')).toBeInTheDocument()
     })
   })
 })

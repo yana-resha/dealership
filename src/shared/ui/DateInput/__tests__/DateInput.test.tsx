@@ -1,13 +1,10 @@
 import React, { PropsWithChildren } from 'react'
 
-import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Form, Formik } from 'formik'
 import { MockStore } from 'redux-mock-store'
-import * as Yup from 'yup'
 
-import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
+import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { DateInput } from '../DateInput'
@@ -16,27 +13,14 @@ interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
-let validationSchema = Yup.object().shape({})
-
-const createWrapper = ({ store, children }: WrapperProps) => (
-  <StoreProviderMock mockStore={store}>
-    <ThemeProviderMock>
-      <Formik initialValues={{ testDateName: '' }} validationSchema={validationSchema} onSubmit={() => {}}>
-        <Form>
-          {children}
-          <Button type="submit">Submit</Button>
-        </Form>
-      </Formik>
-    </ThemeProviderMock>
-  </StoreProviderMock>
-)
+const createWrapper = ({ children }: WrapperProps) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 disableConsole('error')
 
 describe('DateInputTest', () => {
   describe('DateInput отображается', () => {
     beforeEach(() => {
-      render(<DateInput name="testDateName" label="Тестовая дата" />, { wrapper: createWrapper })
+      render(<DateInput label="Тестовая дата" />, { wrapper: createWrapper })
     })
 
     it('Label для DateInput отображается', () => {
@@ -50,7 +34,7 @@ describe('DateInputTest', () => {
 
   describe('DateInput работает корректно', () => {
     beforeEach(() => {
-      render(<DateInput name="testDateName" label="Тестовая дата" />, { wrapper: createWrapper })
+      render(<DateInput label="Тестовая дата" />, { wrapper: createWrapper })
     })
 
     it('Value использует кириллицу', () => {
@@ -67,15 +51,14 @@ describe('DateInputTest', () => {
 
   describe('DateInput валидируется', () => {
     beforeEach(() => {
-      validationSchema = Yup.object().shape({
-        testDateName: Yup.date().required('Поле обязательно для заполнения'),
-      })
-      render(<DateInput name="testDateName" label="Тестовая дата" />, { wrapper: createWrapper })
+      render(
+        <DateInput isError={true} errorMessage="Поле обязательно для заполнения" label="Тестовая дата" />,
+        { wrapper: createWrapper },
+      )
     })
 
-    it('Отображается сообщение об ошибке, если поле обязательное', async () => {
-      userEvent.click(screen.getByText('Submit'))
-      expect(await screen.findByText('Поле обязательно для заполнения')).toBeInTheDocument()
+    it('Отображается сообщение об ошибке', () => {
+      expect(screen.getByText('Поле обязательно для заполнения')).toBeInTheDocument()
     })
   })
 })

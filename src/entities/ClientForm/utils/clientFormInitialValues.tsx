@@ -5,9 +5,9 @@ export interface ClientData {
   numOfChildren: string
   familyStatus: string
   passport: string
-  birthDate: Date | string
+  birthDate: Date | null
   birthPlace: string
-  passportDate: Date | string
+  passportDate: Date | null
   divisionCode: string
   issuedBy: string
   registrationAddress: string
@@ -15,7 +15,7 @@ export interface ClientData {
   regAddrIsLivingAddr: number
   livingAddress: string
   livingNotKladr: number
-  regDate: Date | string
+  regDate: Date | null
   phoneType: string
   phoneNumber: string
   email: string
@@ -30,10 +30,10 @@ export interface ClientData {
   extracts: number
   secondDocumentType: string
   secondDocumentNumber: string
-  secondDocumentDate: Date | string
+  secondDocumentDate: Date | null
   secondDocumentIssuedBy: string
   occupation: string
-  employmentDate: Date | string
+  employmentDate: Date | null
   employerName: string
   employerPhone: string
   employerAddress: string
@@ -49,9 +49,9 @@ export const configInitialValues: ClientData = {
   numOfChildren: '',
   familyStatus: '',
   passport: '',
-  birthDate: '',
+  birthDate: null,
   birthPlace: '',
-  passportDate: '',
+  passportDate: null,
   divisionCode: '',
   issuedBy: '',
   registrationAddress: '',
@@ -59,7 +59,7 @@ export const configInitialValues: ClientData = {
   regAddrIsLivingAddr: 0,
   livingAddress: '',
   livingNotKladr: 0,
-  regDate: '',
+  regDate: null,
   phoneType: '',
   phoneNumber: '',
   email: '',
@@ -74,10 +74,10 @@ export const configInitialValues: ClientData = {
   extracts: 0,
   secondDocumentType: '',
   secondDocumentNumber: '',
-  secondDocumentDate: '',
+  secondDocumentDate: null,
   secondDocumentIssuedBy: '',
   occupation: '',
-  employmentDate: '',
+  employmentDate: null,
   employerName: '',
   employerPhone: '',
   employerAddress: '',

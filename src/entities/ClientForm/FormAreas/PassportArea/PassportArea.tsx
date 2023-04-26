@@ -9,10 +9,10 @@ import {
   maskNoRestrictions,
   maskPassport,
 } from 'shared/masks/InputMasks'
-import { DateInput } from 'shared/ui/DateInput/DateInput'
-import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
-import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
-import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
+import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
+import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
+import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
+import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { ClientData } from '../../utils/clientFormInitialValues'
 import useStyles from './PassportArea.styles'
@@ -30,11 +30,17 @@ export function PassportArea() {
         <Typography className={classes.areaLabel}>Паспортные данные</Typography>
       </Box>
 
-      <MaskedInput name="clientName" label="ФИО" placeholder="-" mask={maskFullName} gridColumn="span 12" />
-      <SwitchInput name="hasNameChanged" label="Менялось" gridColumn="span 4" centered />
+      <MaskedInputFormik
+        name="clientName"
+        label="ФИО"
+        placeholder="-"
+        mask={maskFullName}
+        gridColumn="span 12"
+      />
+      <SwitchInputFormik name="hasNameChanged" label="Менялось" centered gridColumn="span 4" />
 
       {hasNameChanged && (
-        <MaskedInput
+        <MaskedInputFormik
           name="clientFormerName"
           label="Предыдущее ФИО"
           placeholder="-"
@@ -44,14 +50,14 @@ export function PassportArea() {
       )}
       {hasNameChanged && <Box gridColumn="span 4" />}
 
-      <MaskedInput
+      <MaskedInputFormik
         name="numOfChildren"
         label="Количество детей"
         placeholder="-"
         mask={maskDigitsOnly}
         gridColumn="span 4"
       />
-      <SelectInput
+      <SelectInputFormik
         name="familyStatus"
         label="Семейное положение"
         placeholder="-"
@@ -59,7 +65,7 @@ export function PassportArea() {
         gridColumn="span 8"
       />
 
-      <MaskedInput
+      <MaskedInputFormik
         name="passport"
         label="Серия и номер паспорта"
         placeholder="-"
@@ -68,8 +74,8 @@ export function PassportArea() {
       />
       <Box gridColumn="span 10" />
 
-      <DateInput name="birthDate" label="День рождения" gridColumn="span 6" />
-      <MaskedInput
+      <DateInputFormik name="birthDate" label="День рождения" gridColumn="span 6" />
+      <MaskedInputFormik
         name="birthPlace"
         label="Место рождения"
         placeholder="-"
@@ -77,8 +83,8 @@ export function PassportArea() {
         gridColumn="span 10"
       />
 
-      <DateInput name="passportDate" label="Дата выдачи" gridColumn="span 6" />
-      <MaskedInput
+      <DateInputFormik name="passportDate" label="Дата выдачи" gridColumn="span 6" />
+      <MaskedInputFormik
         name="divisionCode"
         label="Код подразделения"
         placeholder="-"
@@ -86,7 +92,7 @@ export function PassportArea() {
         gridColumn="span 6"
       />
 
-      <MaskedInput
+      <MaskedInputFormik
         name="issuedBy"
         label="Кем выдан"
         placeholder="-"
@@ -94,22 +100,22 @@ export function PassportArea() {
         gridColumn="span 16"
       />
 
-      <MaskedInput
+      <MaskedInputFormik
         name="registrationAddress"
         label="Адрес по регистрации (КЛАДР)"
         placeholder="-"
         mask={maskNoRestrictions}
         gridColumn="span 12"
       />
-      <SwitchInput name="regNotKladr" label="Не КЛАДР" gridColumn="span 4" centered />
+      <SwitchInputFormik name="regNotKladr" label="Не КЛАДР" gridColumn="span 4" centered />
 
-      <SwitchInput
+      <SwitchInputFormik
         name="regAddrIsLivingAddr"
         label="Адрес проживания совпадает с адресом регистрации"
         gridColumn="span 16"
       />
       {isRegAddrNotLivingAddr && (
-        <MaskedInput
+        <MaskedInputFormik
           name="livingAddress"
           label="Адрес проживания"
           placeholder="-"
@@ -118,10 +124,10 @@ export function PassportArea() {
         />
       )}
       {isRegAddrNotLivingAddr && (
-        <SwitchInput name="livingNotKladr" label="Не КЛАДР" gridColumn="span 4" centered />
+        <SwitchInputFormik name="livingNotKladr" label="Не КЛАДР" gridColumn="span 4" centered />
       )}
 
-      <DateInput name="regDate" label="Дата регист. по прописке" gridColumn="span 6" />
+      <DateInputFormik name="regDate" label="Дата регист. по прописке" gridColumn="span 6" />
     </Box>
   )
 }
