@@ -2,12 +2,7 @@ import { Application, StatusCode } from '@sberauto/loanapplifecycledc-proto/publ
 import { compact } from 'lodash'
 
 import { PreparedTableData } from 'entities/application/ApplicationTable/ApplicationTable.types'
-
-const getFullName = (firstName?: string, lastName?: string, middleName?: string) => {
-  const nameArr = [lastName, firstName, middleName]
-
-  return compact(nameArr).join(' ')
-}
+import { getFullName } from 'shared/utils/clientNameTransform'
 
 export const transformResToTableData = (data: Application[]): PreparedTableData[] =>
   data.map(application => {

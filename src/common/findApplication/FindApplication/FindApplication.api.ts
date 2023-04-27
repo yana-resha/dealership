@@ -1,3 +1,6 @@
+// TODO DCB-193: данный api используется в разных местах:
+// в common/findApplication/FindApplication и в common/OrderSearching.
+// Сделать рефакторинг - вынести в shared
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { FindApplicationsResponse, FindApplicationsRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { appConfig } from 'config'

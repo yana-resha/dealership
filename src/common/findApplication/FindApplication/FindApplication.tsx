@@ -59,7 +59,7 @@ export const FindApplication = () => {
       <ApplicationTable
         data={(error ?? []) as PreparedTableData[]}
         isLoading={isLoading}
-        getDetailedDossier={getDetailedDossier}
+        onClickRow={getDetailedDossier}
         startPage={page}
       />
     </>
