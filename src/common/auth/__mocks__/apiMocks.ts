@@ -1,10 +1,6 @@
-import {
-  GetStateAndNonceResponse,
-  GetTokenResponse,
-  RefreshAuthByTokenResponse,
-} from '@sberauto/authdc-proto/public'
+import { GetTokenResponse, RefreshAuthByTokenResponse } from '@sberauto/authdc-proto/public'
+import { GetStateAndNonceResponse } from '@sberauto/authsberteamid-proto/public'
 
-//TODO DCB-126: Убрать мок после интеграции
 export function mockStartAuthSessionResponse(): GetStateAndNonceResponse {
   return {
     state: 'test_state',
@@ -17,14 +13,14 @@ export function mockStartAuthSessionResponse(): GetStateAndNonceResponse {
 
 export function mockGetTokenResponse(): GetTokenResponse {
   return {
-    jwtAccessToken: 'test_jwtAccessToken',
+    accessJwt: 'test_accessJwt',
     refreshToken: 'test_refreshToken',
   }
 }
 
 export function mockGetRefreshTokenResponse(): RefreshAuthByTokenResponse {
   return {
-    jwtAccessToken: 'test_jwtAccessToken',
+    accessJwt: 'test_accessJwt',
     refreshToken: 'test_refreshToken',
   }
 }

@@ -1,7 +1,9 @@
 import { render } from '@testing-library/react'
 
 import { Rest } from 'shared/api/client/client'
+import { MockProviders } from 'tests/mocks'
 
+import * as requests from '../../../api/requests'
 import * as useLogoutHooks from '../../../hooks/useLogout'
 import { AuthProvider } from '../AuthProvider'
 
@@ -14,16 +16,21 @@ describe('AuthProvider', () => {
   const useLogoutMock = jest.spyOn(useLogoutHooks, 'useLogout')
   const onLogoutMock = jest.fn()
 
+  const refreshAuthByTokenMock = jest.spyOn(requests, 'refreshAuthByToken')
+
   beforeEach(() => {
     // Устанавливаем возвращаемое значение для refreshAuthByToken
     useLogoutMock.mockImplementation(() => ({ onLogout: onLogoutMock }))
+    jest.clearAllMocks()
   })
 
   it('должен настроить клиент Rest с правильной функцией обновления токена', async () => {
     render(
-      <AuthProvider>
-        <div>Дочерний компонент</div>
-      </AuthProvider>,
+      <MockProviders>
+        <AuthProvider>
+          <div>Дочерний компонент</div>
+        </AuthProvider>
+      </MockProviders>,
     )
 
     expect(Rest.setRefresh).toHaveBeenCalledTimes(1)
@@ -31,14 +38,27 @@ describe('AuthProvider', () => {
 
   it('должен настроить клиент Rest с правильной функцией logout-а', () => {
     render(
-      <AuthProvider>
-        <div>Дочерний компонент</div>
-      </AuthProvider>,
+      <MockProviders>
+        <AuthProvider>
+          <div>Дочерний компонент</div>
+        </AuthProvider>
+      </MockProviders>,
     )
 
-    // Ожидаем, что функция Rest.setLogout была вызвана
     expect(Rest.setLogout).toHaveBeenCalledTimes(1)
-    // Ожидаем, что функция Rest.setLogout была вызвана с правильным аргументом
     expect(Rest.setLogout).toHaveBeenCalledWith(onLogoutMock)
+  })
+
+  it('должен настроить клиент Rest с правильной функцией logout-а', () => {
+    render(
+      <MockProviders>
+        <AuthProvider>
+          <div>Дочерний компонент</div>
+        </AuthProvider>
+      </MockProviders>,
+    )
+
+    expect(Rest.setRefresh).toHaveBeenCalledTimes(1)
+    expect(Rest.setRefresh).toHaveBeenCalledWith(refreshAuthByTokenMock)
   })
 })

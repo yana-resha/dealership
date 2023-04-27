@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
 import { Box, Skeleton, Typography } from '@mui/material'
-import { useQuery } from 'react-query'
 
+import { useGetUser } from 'entities/user/api/useRequest'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
@@ -14,13 +14,7 @@ export function UserInfo() {
   const creditExpert = useAppSelector(state => slUserMainInfo(state))
   const dispatch = useAppDispatch()
 
-  const {
-    data: user,
-    error,
-    isLoading,
-  } = useQuery(['getUser'], () => getUser({}), {
-    cacheTime: Infinity,
-  })
+  const { data: user, error, isLoading } = useGetUser()
 
   useEffect(() => {
     if (user) {

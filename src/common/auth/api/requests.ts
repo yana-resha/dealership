@@ -1,52 +1,27 @@
-import { GetTokenRequest, createAuthDc, RefreshAuthByTokenRequest } from '@sberauto/authdc-proto/public'
-import { appConfig } from 'config'
+import { GetTokenRequest, createAuthDc } from '@sberauto/authdc-proto/public'
+import { createAuthSberTeamID, GetStateAndNonceRequest } from '@sberauto/authsberteamid-proto/public'
 
+import { appConfig } from 'config'
 import { Rest } from 'shared/api/client/client'
 import { authToken } from 'shared/api/token'
 
-import {
-  mockGetRefreshTokenResponse,
-  mockGetTokenResponse,
-  mockStartAuthSessionResponse,
-} from '../__mocks__/apiMocks'
+const authDcApi = createAuthDc(`${appConfig.apiUrl}/authdc`, Rest.request)
+const createAuthSberTeamIdApi = createAuthSberTeamID(`${appConfig.apiUrl}/authsberteamid`, Rest.request)
 
-const authDcApi = createAuthDc(`${appConfig.apiUrl}/auth`, Rest.request)
+export const getStateAndNonce = (params: GetStateAndNonceRequest) =>
+  createAuthSberTeamIdApi.getStateAndNonce(params).then(response => response.data ?? {})
 
-//TODO DCB-126: Убрать мок из ответа
-export const getStateAndNonce = () =>
-  authDcApi
-    .getStateAndNonce()
-    .then(response => response.data ?? {})
-    .catch(() => mockStartAuthSessionResponse())
-
-//TODO DCB-126: Убрать мок из блока catch
 export const getToken = (params: GetTokenRequest) =>
-  authDcApi
-    .getToken({ data: params })
-    .then(response => response.data ?? {})
-    .catch(() => mockGetTokenResponse())
+  authDcApi.getToken({ data: params }).then(response => response.data ?? {})
 
-//TODO DCB-126: Убрать мок из блока catch
-export const refreshAuthByToken = (params: RefreshAuthByTokenRequest) =>
+export const refreshAuthByToken = () =>
   authDcApi
-    .refreshAuthByToken({ data: params })
+    .refreshAuthByToken({ data: { refreshToken: authToken.refresh.get() ?? undefined } })
     .then(response => {
-      if (!response.data.jwtAccessToken || !response.data.refreshToken) {
+      if (!response.data.accessJwt || !response.data.refreshToken) {
         throw new Error('Invalid response data')
       }
-      authToken.jwt.save(response.data.jwtAccessToken)
-      authToken.refresh.save(response.data.refreshToken)
-
-      return response.data ?? {}
-    })
-    .catch(() => {
-      const response = { data: mockGetRefreshTokenResponse() }
-
-      if (!response.data.jwtAccessToken || !response.data.refreshToken) {
-        throw new Error('Invalid response data')
-      }
-
-      authToken.jwt.save(response.data.jwtAccessToken)
+      authToken.jwt.save(response.data.accessJwt)
       authToken.refresh.save(response.data.refreshToken)
 
       return response.data ?? {}

@@ -17,14 +17,36 @@ interface AuthToken {
 /** Методы работы с токенами */
 export const authToken: AuthToken = {
   jwt: {
-    save: jwtToken => Cookies.set(COOKIE_JWT_TOKEN, jwtToken),
+    save: jwtToken => {
+      /** На бэке не умеют настраивать время жизни токена,
+       * попросили пока захардкодить вот такой контроллер на фронте
+       *
+       * Если пользователь не проявлял активности в течении часа,
+       * то мы сбрасываем токены и заставляем пользователя перелогиниться
+       */
+      const currentData = new Date()
+      const expiredData = new Date(currentData.getTime() + 1000 * 65 * 60)
+
+      Cookies.set(COOKIE_JWT_TOKEN, jwtToken, { expires: new Date(expiredData) }) // secure: true
+    },
     get: () => Cookies.get(COOKIE_JWT_TOKEN) ?? null,
     delete: () => Cookies.remove(COOKIE_JWT_TOKEN),
   },
   refresh: {
-    save: refreshToken => localStorage.setItem(COOKIE_REFRESH_TOKEN, refreshToken),
-    get: () => localStorage.getItem(COOKIE_REFRESH_TOKEN),
-    delete: () => localStorage.removeItem(COOKIE_REFRESH_TOKEN),
+    save: refreshToken => {
+      /** На бэке не умеют настраивать время жизни токена,
+       * попросили пока захардкодить вот такой контроллер на фронте
+       *
+       * Если пользователь не проявлял активности в течении часа,
+       * то мы сбрасываем токены и заставляем пользователя перелогиниться
+       */
+      const currentData = new Date()
+      const expiredData = new Date(currentData.getTime() + 1000 * 65 * 60)
+
+      Cookies.set(COOKIE_REFRESH_TOKEN, refreshToken, { expires: new Date(expiredData) }) // secure: true
+    },
+    get: () => Cookies.get(COOKIE_REFRESH_TOKEN) ?? null,
+    delete: () => Cookies.remove(COOKIE_REFRESH_TOKEN),
   },
 }
 

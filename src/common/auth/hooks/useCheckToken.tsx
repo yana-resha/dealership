@@ -28,7 +28,6 @@ export const useCheckToken = () => {
       // eslint-disable-next-line security/detect-possible-timing-attacks
       if (newToken !== token) {
         setToken(newToken)
-
         if (!newToken) {
           redirectToLogin()
         }

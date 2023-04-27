@@ -5,6 +5,7 @@ const USER_SESSION_ID_COOKIE = 'user_session_id'
 
 export const getUserSessionId = () => {
   let sessionId = Cookies.get(USER_SESSION_ID_COOKIE)
+
   if (!sessionId) {
     sessionId = String(uuidv4())
     Cookies.set(USER_SESSION_ID_COOKIE, sessionId)

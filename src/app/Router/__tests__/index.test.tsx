@@ -6,13 +6,13 @@ import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 
 import { store } from 'app/store'
-import * as CheckToken from 'common/auth/hooks/useCheckToken'
+import * as authContext from 'common/auth/ui/AuthProvider/context'
 import * as CheckPoint from 'entities/pointOfSale/hooks/useCheckPointOfSale'
 import { MockThemeProviders } from 'tests/mocks'
 
 import { Router } from '../Router'
 
-const useCheckToken = jest.spyOn(CheckToken, 'useCheckToken')
+const useAuthContextMock = jest.spyOn(authContext, 'useAuthContext')
 const useCheckPointOfSale = jest.spyOn(CheckPoint, 'useCheckPointOfSale')
 
 jest.mock('../Routers/MainRouter')
@@ -35,7 +35,7 @@ const getMockRouter = () => (
 describe('Router component', () => {
   beforeEach(() => {
     // Переопределяем результаты работы методов перед каждым тестом
-    useCheckToken.mockImplementation(() => true)
+    useAuthContextMock.mockImplementation(() => ({ isAuth: true }))
   })
 
   afterEach(() => {
@@ -43,7 +43,7 @@ describe('Router component', () => {
   })
 
   it('Проверяем, если пользователь авторизован, то отображается главный рабочий экран', async () => {
-    useCheckToken.mockImplementation(() => true)
+    useAuthContextMock.mockImplementation(() => ({ isAuth: true }))
     useCheckPointOfSale.mockImplementation(() => true)
 
     render(getMockRouter())
@@ -51,7 +51,7 @@ describe('Router component', () => {
     expect(await screen.findByTestId('dealershipPage')).toBeInTheDocument()
   })
   it('Проверяем, если пользователь НЕ авторизован, то отображается экран авторизации', async () => {
-    useCheckToken.mockImplementation(() => false)
+    useAuthContextMock.mockImplementation(() => ({ isAuth: false }))
 
     render(getMockRouter())
 

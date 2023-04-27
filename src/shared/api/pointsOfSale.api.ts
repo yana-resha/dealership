@@ -4,18 +4,19 @@ import {
   GetVendorsListResponse,
   Vendor,
 } from '@sberauto/loanapplifecycledc-proto/public'
+
 import { appConfig } from 'config'
 
 import { defaultBaseQuery } from './helpers/defaultBaseQuery'
 
 export const pointsOfSaleApi = createApi({
   reducerPath: 'pointsOfSaleApi',
-  baseQuery: defaultBaseQuery({ baseUrl: `${appConfig.apiUrl}` }),
+  baseQuery: defaultBaseQuery({ baseUrl: `${appConfig.apiUrl}/loanapplifecycledc` }),
   tagTypes: ['pointsOfSale'],
   endpoints: build => ({
-    getVendorList: build.query<Vendor[], GetVendorsListRequest>({
+    getVendorsList: build.query<Vendor[], GetVendorsListRequest>({
       query: body => ({
-        url: '/getVendorList',
+        url: '/getVendorsList',
         body,
       }),
       transformResponse: (response: GetVendorsListResponse) => response.vendors ?? [],
@@ -25,7 +26,7 @@ export const pointsOfSaleApi = createApi({
   }),
 })
 
-export const { useGetVendorListQuery } = pointsOfSaleApi
+export const { useGetVendorsListQuery } = pointsOfSaleApi
 
 async function mockResponse() {
   const sleep = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

@@ -1,7 +1,7 @@
 import { CheckIfSberClientRequest, createLoanAppLifeCycleDc } from '@sberauto/loanapplifecycledc-proto/public'
-import { appConfig } from 'config'
 import { useMutation } from 'react-query'
 
+import { appConfig } from 'config'
 import { Rest } from 'shared/api/client/client'
 
 const loanAppLifeCycleDcApi = createLoanAppLifeCycleDc(`${appConfig.apiUrl}`, Rest.request)

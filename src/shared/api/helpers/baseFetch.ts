@@ -1,3 +1,4 @@
+import { getUserSessionId } from 'shared/lib/getUserSessionId'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { authToken } from '../token'
@@ -44,6 +45,8 @@ const genericRequest = async <RequestType, ResponseType>(
     method = 'POST',
     ...opt
   } = options
+  const userSessionId = getUserSessionId()
+  const jwt = authToken.jwt.get()
 
   const headers = new Headers({
     'Content-Type': 'application/json',
@@ -51,7 +54,10 @@ const genericRequest = async <RequestType, ResponseType>(
   })
 
   if (withCredentials) {
-    headers.append('Authorization', `Bearer ${authToken.jwt.get()}`)
+    headers.append('Authorization', `Bearer ${jwt}`)
+  }
+  if (userSessionId) {
+    // headers.append('X-Session-Id', userSessionId)
   }
 
   return fetch(url, {

@@ -1042,8 +1042,8 @@
 
 "@babel/runtime@^7.21.0", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2":
   version "7.21.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@babel/runtime/-/runtime-7.21.0.tgz#5b55c9d394e5fcf304909a8b00c07dc217b56673"
-  integrity "sha1-W1XJ05Tl/PMEkJqLAMB9whe1ZnM= sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@babel/runtime/-/runtime-7.21.0.tgz"
+  integrity sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==
   dependencies:
     regenerator-runtime "^0.13.11"
 
@@ -1199,48 +1199,48 @@
 
 "@date-io/core@^2.16.0":
   version "2.16.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/core/-/core-2.16.0.tgz#7871bfc1d9bca9aa35ad444a239505589d0f22f6"
-  integrity "sha1-eHG/wdm8qao1rURKI5UFWJ0PIvY= sha512-DYmSzkr+jToahwWrsiRA2/pzMEtz9Bq1euJwoOuYwuwIYXnZFtHajY2E6a1VNVDc9jP8YUXK1BvnZH9mmT19Zg=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/core/-/core-2.16.0.tgz"
+  integrity sha512-DYmSzkr+jToahwWrsiRA2/pzMEtz9Bq1euJwoOuYwuwIYXnZFtHajY2E6a1VNVDc9jP8YUXK1BvnZH9mmT19Zg==
 
 "@date-io/date-fns-jalali@^2.16.0":
   version "2.16.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/date-fns-jalali/-/date-fns-jalali-2.16.0.tgz#0e2916c287e00d708a6f9f6d6e6c44ec377994c5"
-  integrity "sha1-DikWwofgDXCKb59tbmxE7Dd5lMU= sha512-MNVvGYwRiBydbvY7gvZM14W2kosIG29G1Ekw5qmYWOXkIIFngh6ZvV7/uVGDCW+gqlIeSz/XitZXA9n8RO0tJw=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/date-fns-jalali/-/date-fns-jalali-2.16.0.tgz"
+  integrity sha512-MNVvGYwRiBydbvY7gvZM14W2kosIG29G1Ekw5qmYWOXkIIFngh6ZvV7/uVGDCW+gqlIeSz/XitZXA9n8RO0tJw==
   dependencies:
     "@date-io/core" "^2.16.0"
 
 "@date-io/date-fns@^2.16.0":
   version "2.16.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/date-fns/-/date-fns-2.16.0.tgz#bd5e09b6ecb47ee55e593fc3a87e7b2caaa3da40"
-  integrity "sha1-vV4Jtuy0fuVeWT/DqH57LKqj2kA= sha512-bfm5FJjucqlrnQcXDVU5RD+nlGmL3iWgkHTq3uAZWVIuBu6dDmGa3m8a6zo2VQQpu8ambq9H22UyUpn7590joA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/date-fns/-/date-fns-2.16.0.tgz"
+  integrity sha512-bfm5FJjucqlrnQcXDVU5RD+nlGmL3iWgkHTq3uAZWVIuBu6dDmGa3m8a6zo2VQQpu8ambq9H22UyUpn7590joA==
   dependencies:
     "@date-io/core" "^2.16.0"
 
 "@date-io/hijri@^2.16.1":
   version "2.16.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/hijri/-/hijri-2.16.1.tgz#a5e7e5b875e0ac8719c235eaf51d4188f21ea193"
-  integrity "sha1-pefluHXgrIcZwjXq9R1BiPIeoZM= sha512-6BxY0mtnqj5cBiXluRs3uWN0mSJwGw0AB2ZxqtEHvBFoiSYEojW51AETnfPIWpdvDsBn+WAC7QrfBvQZnoyIkQ=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/hijri/-/hijri-2.16.1.tgz"
+  integrity sha512-6BxY0mtnqj5cBiXluRs3uWN0mSJwGw0AB2ZxqtEHvBFoiSYEojW51AETnfPIWpdvDsBn+WAC7QrfBvQZnoyIkQ==
   dependencies:
     "@date-io/moment" "^2.16.1"
 
 "@date-io/jalaali@^2.16.1":
   version "2.16.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/jalaali/-/jalaali-2.16.1.tgz#c53323fc429f8fe6ab205d36c003d6de071f17e8"
-  integrity "sha1-xTMj/EKfj+arIF02wAPW3gcfF+g= sha512-GLw87G/WJ1DNrQHW8p/LqkqAqTUSqBSRin0H1pRPwCccB5Fh7GT64sadjzEvjW56lPJ0aq2vp5yI2eIjZajfrw=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/jalaali/-/jalaali-2.16.1.tgz"
+  integrity sha512-GLw87G/WJ1DNrQHW8p/LqkqAqTUSqBSRin0H1pRPwCccB5Fh7GT64sadjzEvjW56lPJ0aq2vp5yI2eIjZajfrw==
   dependencies:
     "@date-io/moment" "^2.16.1"
 
 "@date-io/luxon@^2.16.1":
   version "2.16.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/luxon/-/luxon-2.16.1.tgz#b08786614cb58831c729a15807753011e4acb966"
-  integrity "sha1-sIeGYUy1iDHHKaFYB3UwEeSsuWY= sha512-aeYp5K9PSHV28946pC+9UKUi/xMMYoaGelrpDibZSgHu2VWHXrr7zWLEr+pMPThSs5vt8Ei365PO+84pCm37WQ=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/luxon/-/luxon-2.16.1.tgz"
+  integrity sha512-aeYp5K9PSHV28946pC+9UKUi/xMMYoaGelrpDibZSgHu2VWHXrr7zWLEr+pMPThSs5vt8Ei365PO+84pCm37WQ==
   dependencies:
     "@date-io/core" "^2.16.0"
 
 "@date-io/moment@^2.16.1":
   version "2.16.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/moment/-/moment-2.16.1.tgz#ec6e0daa486871e0e6412036c6f806842a0eeed4"
-  integrity "sha1-7G4NqkhoceDmQSA2xvgGhCoO7tQ= sha512-JkxldQxUqZBfZtsaCcCMkm/dmytdyq5pS1RxshCQ4fHhsvP5A7gSqPD22QbVXMcJydi3d3v1Y8BQdUKEuGACZQ=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@date-io/moment/-/moment-2.16.1.tgz"
+  integrity sha512-JkxldQxUqZBfZtsaCcCMkm/dmytdyq5pS1RxshCQ4fHhsvP5A7gSqPD22QbVXMcJydi3d3v1Y8BQdUKEuGACZQ==
   dependencies:
     "@date-io/core" "^2.16.0"
 
@@ -2039,8 +2039,8 @@
 
 "@mui/utils@^5.11.13":
   version "5.11.13"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@mui/utils/-/utils-5.11.13.tgz#8d7317f221e8973200764820fa7f2a622dbc7150"
-  integrity "sha1-jXMX8iHolzIAdkgg+n8qYi28cVA= sha512-5ltA58MM9euOuUcnvwFJqpLdEugc9XFsRR8Gt4zZNb31XzMfSKJPR4eumulyhsOTK1rWf7K4D63NKFPfX0AxqA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@mui/utils/-/utils-5.11.13.tgz"
+  integrity sha512-5ltA58MM9euOuUcnvwFJqpLdEugc9XFsRR8Gt4zZNb31XzMfSKJPR4eumulyhsOTK1rWf7K4D63NKFPfX0AxqA==
   dependencies:
     "@babel/runtime" "^7.21.0"
     "@types/prop-types" "^15.7.5"
@@ -2050,7 +2050,7 @@
 
 "@mui/x-date-pickers@6.2.1":
   version "6.2.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@mui/x-date-pickers/-/x-date-pickers-6.2.1.tgz#1511bf440673fc98428c08f108be45630d26c6e0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@mui/x-date-pickers/-/x-date-pickers-6.2.1.tgz"
   integrity sha512-pLSqzxJWgO2MV6so8A4LEGr1nDQuKJugKKP32Ej/YXGqUfW3CS1bHoYeuavO+Y/5JH4qnf7BPvcGEVXIjqTGTA==
   dependencies:
     "@babel/runtime" "^7.21.0"
@@ -2225,10 +2225,18 @@
   resolved "https://nexus.x.sberauto.com/repository/npm/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
   integrity "sha1-i+NqH2bzJlOJ6QtfnJliFGdY9yg= sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg=="
 
-"@sberauto/authdc-proto@^0.0.0-dcb-24":
-  version "0.0.0-dcb-24"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-0.0.0-dcb-24.tgz#fa97160c32f0e74305a3a2a205535eb1a33fa8fa"
-  integrity sha512-7Q922QmcF7aEc7JDN/Ro1jricseHy9uWqLr6BJy8Aw733sMc4rsYlUTwTwn9TQtk1FwRAHe5UejIUtLslEO9fg==
+"@sberauto/authdc-proto@1.0.4":
+  version "1.0.4"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-1.0.4.tgz#bc571cd7de0bff8760afaab99f9488a0f6d7bede"
+  integrity sha512-rUPICua0mkdIwxdOnuzC2LLixFOSRKR1y/P2DGfJIN0sp2EmiIA9c53ABPTUU/74lF6g7SnjIseRPD9ljWmDcw==
+  dependencies:
+    camelcase-keys "^6.2.2"
+    snakecase-keys "^3.2.1"
+
+"@sberauto/authsberteamid-proto@1.0.0":
+  version "1.0.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authsberteamid-proto/-/authsberteamid-proto-1.0.0.tgz#41a9881eb00510ef0504bd08d501f0cbf1578472"
+  integrity sha512-s/sfgaiNciSx350yHpk1hPKdf1Nx9HnwBPBk2+lhAWhhIjMdNd287O2f4MqUzzwiGV8IGrcCRpY42Lgf1t7Utg==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
@@ -2242,8 +2250,8 @@
 
 "@sberauto/loanapplifecycledc-proto@0.0.0-dcb-74":
   version "0.0.0-dcb-74"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.0.0-dcb-74.tgz#791bda1d0dcacf1decdcee7686c9e208681dc191"
-  integrity "sha1-eRvaHQ3Kzx3s3O52hsniCGgdwZE= sha512-g1cQv49QK8Fk3gG4oc4JrRya6945ukZZmQIDlEdYaG2YS3Ow+FwKmlDaZcpdDxhNKKsUEA32RmkUAByLMwXLMA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.0.0-dcb-74.tgz"
+  integrity sha512-R1B+Rc/wCLFcm4PArrQKsPVylmlAa6M7VVM7dSztuoKLHZe0uUHX4n9ZH7c9voDmF+9tnEDvBSiTzKv0HrXjFA==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
@@ -2757,8 +2765,8 @@
 
 "@types/redux-logger@3.0.8":
   version "3.0.8"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@types/redux-logger/-/redux-logger-3.0.8.tgz#1fb6d26917bb198792bb1cf57feb31cae1532c5d"
-  integrity "sha1-H7bSaRe7GYeSuxz1f+sxyuFTLF0= sha512-zM+cxiSw6nZtRbxpVp9SE3x/X77Z7e7YAfHD1NkxJyJbAGSXJGF0E9aqajZfPOa/sTYnuwutmlCldveExuCeLw=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@types/redux-logger/-/redux-logger-3.0.8.tgz"
+  integrity sha512-zM+cxiSw6nZtRbxpVp9SE3x/X77Z7e7YAfHD1NkxJyJbAGSXJGF0E9aqajZfPOa/sTYnuwutmlCldveExuCeLw==
   dependencies:
     redux "^4.0.0"
 
@@ -2771,8 +2779,8 @@
 
 "@types/redux-state-sync@3.1.5":
   version "3.1.5"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@types/redux-state-sync/-/redux-state-sync-3.1.5.tgz#e2a6da46a6d6606f7bb3b5837215299d42554248"
-  integrity "sha1-4qbaRqbWYG97s7WDchUpnUJVQkg= sha512-NtcV94bmZNFMmcjgYzjK9WHN/0NVHyH4OO/a4sAd4WG1ywcVZA5vdczjPQZLC1IVMRBi693b3FWsWB7wELL+tg=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/@types/redux-state-sync/-/redux-state-sync-3.1.5.tgz"
+  integrity sha512-NtcV94bmZNFMmcjgYzjK9WHN/0NVHyH4OO/a4sAd4WG1ywcVZA5vdczjPQZLC1IVMRBi693b3FWsWB7wELL+tg==
   dependencies:
     broadcast-channel "^2.1.8"
     redux "^4.0.1"
@@ -3682,8 +3690,8 @@ bfj@^7.0.2:
 
 big-integer@^1.6.16:
   version "1.6.51"
-  resolved "https://nexus.x.sberauto.com/repository/npm/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
-  integrity "sha1-DfkqXZiAVg0/8tX9ICRciJ0TBoY= sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/big-integer/-/big-integer-1.6.51.tgz"
+  integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
 big.js@^5.2.2:
   version "5.2.2"
@@ -3757,8 +3765,8 @@ braces@^3.0.2, braces@~3.0.2:
 
 broadcast-channel@^2.1.8:
   version "2.3.4"
-  resolved "https://nexus.x.sberauto.com/repository/npm/broadcast-channel/-/broadcast-channel-2.3.4.tgz#cede8a9cded517c7273063582da71fa4f809ee2c"
-  integrity "sha1-zt6KnN7VF8cnMGNYLacfpPgJ7iw= sha512-cx1/dSb6KZ9HW1VtlqM/HLPjrdyzkKoteVmUpLXEpra00mDQW/F9ieDkoavuZMoh9/hC/6OplGzCERsZBfz/Wg=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/broadcast-channel/-/broadcast-channel-2.3.4.tgz"
+  integrity sha512-cx1/dSb6KZ9HW1VtlqM/HLPjrdyzkKoteVmUpLXEpra00mDQW/F9ieDkoavuZMoh9/hC/6OplGzCERsZBfz/Wg==
   dependencies:
     "@babel/runtime" "^7.6.2"
     detect-node "^2.0.4"
@@ -3770,8 +3778,8 @@ broadcast-channel@^2.1.8:
 
 broadcast-channel@^3.1.0, broadcast-channel@^3.4.1:
   version "3.7.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/broadcast-channel/-/broadcast-channel-3.7.0.tgz#2dfa5c7b4289547ac3f6705f9c00af8723889937"
-  integrity "sha1-Lfpce0KJVHrD9nBfnACvhyOImTc= sha512-cIAKJXAxGJceNZGTZSBzMxzyOn72cVgPnKx4dc6LRjQgbaJUQqhy5rzL3zbMxkMWsGKkv2hSFkPRMEXfoMZ2Mg=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/broadcast-channel/-/broadcast-channel-3.7.0.tgz"
+  integrity sha512-cIAKJXAxGJceNZGTZSBzMxzyOn72cVgPnKx4dc6LRjQgbaJUQqhy5rzL3zbMxkMWsGKkv2hSFkPRMEXfoMZ2Mg==
   dependencies:
     "@babel/runtime" "^7.7.2"
     detect-node "^2.1.0"
@@ -4481,8 +4489,8 @@ dedent@^0.7.0:
 
 deep-diff@^0.3.5:
   version "0.3.8"
-  resolved "https://nexus.x.sberauto.com/repository/npm/deep-diff/-/deep-diff-0.3.8.tgz#c01de63efb0eec9798801d40c7e0dae25b582c84"
-  integrity "sha1-wB3mPvsO7JeYgB1Ax+Da4ltYLIQ= sha512-yVn6RZmHiGnxRKR9sJb3iVV2XTF1Ghh2DiWRZ3dMnGc43yUdWWF/kX6lQyk3+P84iprfWKU/8zFTrlkvtFm1ug=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/deep-diff/-/deep-diff-0.3.8.tgz"
+  integrity sha512-yVn6RZmHiGnxRKR9sJb3iVV2XTF1Ghh2DiWRZ3dMnGc43yUdWWF/kX6lQyk3+P84iprfWKU/8zFTrlkvtFm1ug==
 
 deep-equal@^2.0.5:
   version "2.1.0"
@@ -6025,8 +6033,8 @@ ignore@^5.2.0:
 
 imask@^6.4.3:
   version "6.4.3"
-  resolved "https://nexus.x.sberauto.com/repository/npm/imask/-/imask-6.4.3.tgz#b81b247043807995e048f559e98930c2fec8004a"
-  integrity "sha1-uBskcEOAeZXgSPVZ6Ykwwv7IAEo= sha512-aH2GHemGkr3cbRBfhogHMIx05eUxdHrZNlKTTLmz8VxpSopuHHJ8+85FsDlBVQqxPlDLhZuwj4lpHHWbLOdBSw=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/imask/-/imask-6.4.3.tgz"
+  integrity sha512-aH2GHemGkr3cbRBfhogHMIx05eUxdHrZNlKTTLmz8VxpSopuHHJ8+85FsDlBVQqxPlDLhZuwj4lpHHWbLOdBSw==
 
 immer@^9.0.16, immer@^9.0.7:
   version "9.0.16"
@@ -7243,8 +7251,8 @@ js-sdsl@^4.1.4:
 
 js-sha3@0.8.0:
   version "0.8.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/js-sha3/-/js-sha3-0.8.0.tgz#b9b7a5da73afad7dedd0f8c463954cbde6818840"
-  integrity "sha1-ubel2nOvrX3t0PjEY5VMveaBiEA= sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/js-sha3/-/js-sha3-0.8.0.tgz"
+  integrity sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
@@ -7653,8 +7661,8 @@ map-obj@^4.0.0, map-obj@^4.1.0, map-obj@^4.3.0:
 
 match-sorter@^6.0.2:
   version "6.3.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/match-sorter/-/match-sorter-6.3.1.tgz#98cc37fda756093424ddf3cbc62bfe9c75b92bda"
-  integrity "sha1-mMw3/adWCTQk3fPLxiv+nHW5K9o= sha512-mxybbo3pPNuA+ZuCUhm5bwNkXrJTbsk5VWbR5wiwz/GC6LIiegBGn2w3O08UG/jdbYLinw51fSQ5xNU1U3MgBw=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/match-sorter/-/match-sorter-6.3.1.tgz"
+  integrity sha512-mxybbo3pPNuA+ZuCUhm5bwNkXrJTbsk5VWbR5wiwz/GC6LIiegBGn2w3O08UG/jdbYLinw51fSQ5xNU1U3MgBw==
   dependencies:
     "@babel/runtime" "^7.12.5"
     remove-accents "0.4.2"
@@ -7711,13 +7719,13 @@ micromatch@^4.0.2, micromatch@^4.0.4, micromatch@^4.0.5:
 
 microseconds@0.1.0:
   version "0.1.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/microseconds/-/microseconds-0.1.0.tgz#47dc7bcf62171b8030e2152fd82f12a6894a7119"
-  integrity "sha1-R9x7z2IXG4Aw4hUv2C8SpolKcRk= sha512-yF2K4aHXKxO4OGhW7Ek2KLgKEAFbSblBLKlF6KzwQUhjK7+uAzatRr6fZ82bftdnuDQrkBHAJp5s8quj1ME3wA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/microseconds/-/microseconds-0.1.0.tgz"
+  integrity sha512-yF2K4aHXKxO4OGhW7Ek2KLgKEAFbSblBLKlF6KzwQUhjK7+uAzatRr6fZ82bftdnuDQrkBHAJp5s8quj1ME3wA==
 
 microseconds@0.2.0:
   version "0.2.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/microseconds/-/microseconds-0.2.0.tgz#233b25f50c62a65d861f978a4a4f8ec18797dc39"
-  integrity "sha1-Izsl9Qxipl2GH5eKSk+OwYeX3Dk= sha512-n7DHHMjR1avBbSpsTBj6fmMGh2AGrifVV4e+WYc3Q9lO+xnSZ3NyhcBND3vzzatt05LFhoKFRxrIyklmLlUtyA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/microseconds/-/microseconds-0.2.0.tgz"
+  integrity sha512-n7DHHMjR1avBbSpsTBj6fmMGh2AGrifVV4e+WYc3Q9lO+xnSZ3NyhcBND3vzzatt05LFhoKFRxrIyklmLlUtyA==
 
 mime-db@1.52.0, "mime-db@>= 1.43.0 < 2":
   version "1.52.0"
@@ -7809,8 +7817,8 @@ multicast-dns@^7.2.5:
 
 nano-time@1.0.0:
   version "1.0.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/nano-time/-/nano-time-1.0.0.tgz#b0554f69ad89e22d0907f7a12b0993a5d96137ef"
-  integrity "sha1-sFVPaa2J4i0JB/ehKwmTpdlhN+8= sha512-flnngywOoQ0lLQOTRNexn2gGSNuM9bKj9RZAWSzhQ+UJYaAFG9bac4DW9VHjUAzrOaIcajHybCTHe/bkvozQqA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/nano-time/-/nano-time-1.0.0.tgz"
+  integrity sha512-flnngywOoQ0lLQOTRNexn2gGSNuM9bKj9RZAWSzhQ+UJYaAFG9bac4DW9VHjUAzrOaIcajHybCTHe/bkvozQqA==
   dependencies:
     big-integer "^1.6.16"
 
@@ -8006,8 +8014,8 @@ object.values@^1.1.0, object.values@^1.1.5, object.values@^1.1.6:
 
 oblivious-set@1.0.0:
   version "1.0.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/oblivious-set/-/oblivious-set-1.0.0.tgz#c8316f2c2fb6ff7b11b6158db3234c49f733c566"
-  integrity "sha1-yDFvLC+2/3sRthWNsyNMSfczxWY= sha512-z+pI07qxo4c2CulUHCDf9lcqDlMSo72N/4rLUpRXf6fu+q8vjt8y0xS+Tlf8NTJDdTXHbdeO1n3MlbctwEoXZw=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/oblivious-set/-/oblivious-set-1.0.0.tgz"
+  integrity sha512-z+pI07qxo4c2CulUHCDf9lcqDlMSo72N/4rLUpRXf6fu+q8vjt8y0xS+Tlf8NTJDdTXHbdeO1n3MlbctwEoXZw==
 
 obuf@^1.0.0, obuf@^1.1.2:
   version "1.1.2"
@@ -9069,8 +9077,8 @@ react-fast-compare@^2.0.1:
 
 react-imask@6.4.3:
   version "6.4.3"
-  resolved "https://nexus.x.sberauto.com/repository/npm/react-imask/-/react-imask-6.4.3.tgz#845de954e03e98179a23b92722ed3661cbd11037"
-  integrity "sha1-hF3pVOA+mBeaI7knIu02YcvREDc= sha512-5WyCbubQErO8Wr/zLDyUyC1zCqQXP979QXW6BNirUGsM1VxFmVG0nNfXA1PSXlgdbaXWBiBj+VJBvg/8BDzieA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/react-imask/-/react-imask-6.4.3.tgz"
+  integrity sha512-5WyCbubQErO8Wr/zLDyUyC1zCqQXP979QXW6BNirUGsM1VxFmVG0nNfXA1PSXlgdbaXWBiBj+VJBvg/8BDzieA==
   dependencies:
     imask "^6.4.3"
     prop-types "^15.7.2"
@@ -9099,8 +9107,8 @@ react-number-format@5.1.2:
 
 react-query@3.35.0:
   version "3.35.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/react-query/-/react-query-3.35.0.tgz#f807ba8497f8d6218a73e81a977e44ea786a7267"
-  integrity "sha1-+Ae6hJf41iGKc+gal35E6nhqcmc= sha512-mRBJdpELLV+snzyXDsXM5ZEXM+HYt05L7st6ihSXr3nHX+4ULFr30mDjsziZvx0oF5dhlSDB8aMdvG6Ah4Bukg=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/react-query/-/react-query-3.35.0.tgz"
+  integrity sha512-mRBJdpELLV+snzyXDsXM5ZEXM+HYt05L7st6ihSXr3nHX+4ULFr30mDjsziZvx0oF5dhlSDB8aMdvG6Ah4Bukg==
   dependencies:
     "@babel/runtime" "^7.5.5"
     broadcast-channel "^3.4.1"
@@ -9263,8 +9271,8 @@ redent@^3.0.0:
 
 redux-logger@3.0.6:
   version "3.0.6"
-  resolved "https://nexus.x.sberauto.com/repository/npm/redux-logger/-/redux-logger-3.0.6.tgz#f7555966f3098f3c88604c449cf0baf5778274bf"
-  integrity "sha1-91VZZvMJjzyIYExEnPC69XeCdL8= sha512-JoCIok7bg/XpqA1JqCqXFypuqBbQzGQySrhFzewB7ThcnysTO30l4VCst86AuB9T9tuT03MAA56Jw2PNhRSNCg=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/redux-logger/-/redux-logger-3.0.6.tgz"
+  integrity sha512-JoCIok7bg/XpqA1JqCqXFypuqBbQzGQySrhFzewB7ThcnysTO30l4VCst86AuB9T9tuT03MAA56Jw2PNhRSNCg==
   dependencies:
     deep-diff "^0.3.5"
 
@@ -9277,13 +9285,13 @@ redux-mock-store@1.5.4:
 
 redux-persist@6.0.0:
   version "6.0.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/redux-persist/-/redux-persist-6.0.0.tgz#b4d2972f9859597c130d40d4b146fecdab51b3a8"
-  integrity "sha1-tNKXL5hZWXwTDUDUsUb+zatRs6g= sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/redux-persist/-/redux-persist-6.0.0.tgz"
+  integrity sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==
 
 redux-state-sync@3.1.4:
   version "3.1.4"
-  resolved "https://nexus.x.sberauto.com/repository/npm/redux-state-sync/-/redux-state-sync-3.1.4.tgz#b3a0a92a0c26d05b798c3e39e0ef215031a41323"
-  integrity "sha1-s6CpKgwm0Ft5jD454O8hUDGkEyM= sha512-nhJBzaXVXPXvUhQJ7m0LdoXBnrcw+cTYQ8bzW9DeJKdq6UNYynXwQWAlVUvsbT/hDV+vB6BC4DMLXkUVGpF2yQ=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/redux-state-sync/-/redux-state-sync-3.1.4.tgz"
+  integrity sha512-nhJBzaXVXPXvUhQJ7m0LdoXBnrcw+cTYQ8bzW9DeJKdq6UNYynXwQWAlVUvsbT/hDV+vB6BC4DMLXkUVGpF2yQ==
   dependencies:
     broadcast-channel "^3.1.0"
 
@@ -9385,8 +9393,8 @@ relateurl@^0.2.7:
 
 remove-accents@0.4.2:
   version "0.4.2"
-  resolved "https://nexus.x.sberauto.com/repository/npm/remove-accents/-/remove-accents-0.4.2.tgz#0a43d3aaae1e80db919e07ae254b285d9e1c7bb5"
-  integrity "sha1-CkPTqq4egNuRngeuJUsoXZ4ce7U= sha512-7pXIJqJOq5tFgG1A2Zxti3Ht8jJF337m4sowbuHsW30ZnkQFnDzy9qBNhgzX8ZLW4+UBcXiiR7SwR6pokHsxiA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/remove-accents/-/remove-accents-0.4.2.tgz"
+  integrity sha512-7pXIJqJOq5tFgG1A2Zxti3Ht8jJF337m4sowbuHsW30ZnkQFnDzy9qBNhgzX8ZLW4+UBcXiiR7SwR6pokHsxiA==
 
 renderkid@^3.0.0:
   version "3.0.0"
@@ -9411,8 +9419,8 @@ require-from-string@^2.0.2:
 
 requireindex@1.2.0:
   version "1.2.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/requireindex/-/requireindex-1.2.0.tgz#3463cdb22ee151902635aa6c9535d4de9c2ef1ef"
-  integrity "sha1-NGPNsi7hUZAmNapslTXU3pwu8e8= sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/requireindex/-/requireindex-1.2.0.tgz"
+  integrity sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==
 
 requires-port@^1.0.0:
   version "1.0.0"
@@ -9487,8 +9495,8 @@ reusify@^1.0.4:
 
 rimraf@2.6.3:
   version "2.6.3"
-  resolved "https://nexus.x.sberauto.com/repository/npm/rimraf/-/rimraf-2.6.3.tgz#b2d104fe0d8fb27cf9e0a1cda8262dd3833c6cab"
-  integrity "sha1-stEE/g2Psnz54KHNqCYt04M8bKs= sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/rimraf/-/rimraf-2.6.3.tgz"
+  integrity sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==
   dependencies:
     glob "^7.1.3"
 
@@ -10465,8 +10473,8 @@ universalify@^2.0.0:
 
 unload@2.2.0:
   version "2.2.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/unload/-/unload-2.2.0.tgz#ccc88fdcad345faa06a92039ec0f80b488880ef7"
-  integrity "sha1-zMiP3K00X6oGqSA57A+AtIiIDvc= sha512-B60uB5TNBLtN6/LsgAf3udH9saB5p7gqJwcFfbOEZ8BcBHnGwCf6G/TGiEqkRAxX7zAFIUtzdrXQSdL3Q/wqNA=="
+  resolved "https://nexus.x.sberauto.com/repository/npm/unload/-/unload-2.2.0.tgz"
+  integrity sha512-B60uB5TNBLtN6/LsgAf3udH9saB5p7gqJwcFfbOEZ8BcBHnGwCf6G/TGiEqkRAxX7zAFIUtzdrXQSdL3Q/wqNA==
   dependencies:
     "@babel/runtime" "^7.6.2"
     detect-node "^2.0.4"

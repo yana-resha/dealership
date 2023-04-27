@@ -1,6 +1,6 @@
-import { GetStateAndNonceResponse } from '@sberauto/authdc-proto/public'
-import { appConfig } from 'config'
+import { GetStateAndNonceResponse } from '@sberauto/authsberteamid-proto/public'
 
+import { appConfig } from 'config'
 import { toSnakecaseKeysData } from 'shared/lib/utils'
 
 function encodeGetParams(params: Record<string, string | undefined>) {
@@ -13,7 +13,7 @@ function encodeGetParams(params: Record<string, string | undefined>) {
 
 /* Формируем ссылку на страницу авторизации TeamID */
 export const authorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: GetStateAndNonceResponse) => {
-  /* TODO DCB-126: может быть SUID | SIAM - нужно проверить при интеграции. */
+  /* TODO DCB-181: может быть SUID | SIAM - нужно проверить при интеграции. */
   const realm = 'SUID'
   const path = `/auth/realms/${realm}/protocol/openidconnect/auth`
 
@@ -21,9 +21,9 @@ export const authorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: Get
     clientId,
     redirectUri,
     responseType: 'code',
-    /* TODO DCB-126: соединителем может выступать '+' или ' ' - нужно проверить при интеграции. */
+    /* TODO DCB-181: соединителем может выступать '+' или ' ' - нужно проверить при интеграции. */
     scope,
-    /* TODO DCB-126: значение по умолчанию, можно не указывать. Проверить работу без этого параметра. */
+    /* TODO DCB-181: значение по умолчанию, можно не указывать. Проверить работу без этого параметра. */
     responseMode: 'fragment',
     state,
     nonce,

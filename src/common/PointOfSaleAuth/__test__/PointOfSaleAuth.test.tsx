@@ -11,7 +11,14 @@ import { disableConsole } from 'tests/utils'
 
 import { PointOfSaleAuth } from '../PointOfSaleAuth'
 
-const mockedUseGetVendorListQuery: jest.SpyInstance = jest.spyOn(PoSApi, 'useGetVendorListQuery')
+jest.mock('entities/user/api/useRequest', () => ({
+  useGetUser: () => ({ data: { firstName: 'firstName', lastName: 'lastName' } }),
+}))
+jest.mock('common/auth', () => ({
+  useLogout: () => ({ onLogout: jest.fn() }),
+}))
+
+const mockedUseGetVendorsListQuery: jest.SpyInstance = jest.spyOn(PoSApi, 'useGetVendorsListQuery')
 const mockedSavePointOfSaleToCookies: jest.SpyInstance = jest.spyOn(PoSUtil, 'savePointOfSaleToCookies')
 jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
@@ -32,7 +39,7 @@ disableConsole('error')
 describe('PointOfSaleAuthTest', () => {
   describe('Все элементы отображаются на форме', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
         data: mockResponse(),
         error: undefined,
         isLoading: false,
@@ -42,10 +49,6 @@ describe('PointOfSaleAuthTest', () => {
 
     it('Отображается кнопка назад', () => {
       expect(screen.getByTestId('backButton')).toBeInTheDocument()
-    })
-
-    it('Отображается аватарка', () => {
-      expect(screen.getByTestId('avatar')).toBeInTheDocument()
     })
 
     it('Отображается текст "Выберите автосалон"', () => {
@@ -63,7 +66,7 @@ describe('PointOfSaleAuthTest', () => {
 
   describe('Ожидание загрузки автосалонов обрабатывается', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
         data: undefined,
         error: undefined,
         isLoading: true,
@@ -83,9 +86,9 @@ describe('PointOfSaleAuthTest', () => {
 
   describe('Список автосалонов успешно подгружается в Автокомплит', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse(),
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse(),
+        error: undefined,
         isLoading: false,
       }))
       render(<PointOfSaleAuth />, { wrapper: createWrapper })
@@ -107,9 +110,9 @@ describe('PointOfSaleAuthTest', () => {
 
   describe('Взаимодействие со списком салонов выполняется корректно', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse(),
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse(),
+        error: undefined,
         isLoading: false,
       }))
       render(<PointOfSaleAuth />, { wrapper: createWrapper })
@@ -150,9 +153,9 @@ describe('PointOfSaleAuthTest', () => {
 
   describe('Сохранение выбранной точки в Cookies выполняется корректно', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse(),
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse(),
+        error: undefined,
         isLoading: false,
       }))
       render(<PointOfSaleAuth />, { wrapper: createWrapper })
@@ -173,9 +176,9 @@ describe('PointOfSaleAuthTest', () => {
 
   describe('Сохранение точки не выполняется, если она не была выбрана', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse(),
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse(),
+        error: undefined,
         isLoading: false,
       }))
       render(<PointOfSaleAuth />, { wrapper: createWrapper })

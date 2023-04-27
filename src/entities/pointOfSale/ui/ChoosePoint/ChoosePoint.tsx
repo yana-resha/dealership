@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import {
+  AutocompleteRenderInputParams,
   CircularProgress,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,7 +17,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { ReactComponent as DoneIcon } from 'assets/icons/done.svg'
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
-import { useGetVendorListQuery } from 'shared/api/pointsOfSale.api'
+import { useGetVendorsListQuery } from 'shared/api/pointsOfSale.api'
 import { defaultRoute } from 'shared/navigation/routerPath'
 import SberTypography from 'shared/ui/SberTypography'
 
@@ -33,11 +35,7 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   const theme = useTheme()
   const navigate = useNavigate()
 
-  const {
-    // data,
-    error,
-    isLoading,
-  } = useGetVendorListQuery({ userLogin: 'mockLogin' })
+  const { data, error, isLoading } = useGetVendorsListQuery({})
   const [chosenOption, setChosenOption] = useState<Vendor | null>(value ?? null)
   const [validationError, setValidationError] = useState<boolean>(false)
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
@@ -70,6 +68,69 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
     navigate(defaultRoute)
   }, [navigate, chosenOption, onSuccessEditing])
 
+  const calculateIsOptionEqualToValue = useCallback(
+    (option: Vendor, value: Vendor) => option.vendorCode === value.vendorCode,
+    [],
+  )
+
+  const getOptionLabel = useCallback((option: Vendor) => retrieveLabelForPointOfSale(option), [])
+
+  const renderInput = useCallback(
+    (params: AutocompleteRenderInputParams) => (
+      <TextField
+        error={validationError}
+        className={classes.autocompleteTextField}
+        {...params}
+        size={isHeader ? 'small' : 'medium'}
+        InputProps={{
+          ...params.InputProps,
+          endAdornment: (
+            <InputAdornment position="end">
+              {isLoading ? (
+                <Box position="absolute" top="calc(50% - 10px)" right={9}>
+                  <CircularProgress color="inherit" size={20} data-testid="loadingImg" />
+                </Box>
+              ) : (
+                params.InputProps.endAdornment
+              )}
+            </InputAdornment>
+          ),
+        }}
+        placeholder="ТТ или адрес"
+      />
+    ),
+    [classes.autocompleteTextField, isHeader, isLoading, validationError],
+  )
+
+  const errorMessage = useMemo(() => {
+    if (error) {
+      return 'Произошла неизвестная ошибка! Перезагрузите страницу и попробуйте снова'
+    }
+    /* в хедере не показываем текст ошибки, согласовано с Максимом Мезенцевым (дизайнер) */
+    if (validationError && !isHeader) {
+      return 'Необходимо выбрать автосалон'
+    }
+
+    return undefined
+  }, [error, isHeader, validationError])
+
+  const renderError = useCallback(
+    (errorMessage: string | undefined) => {
+      if (!errorMessage) {
+        return null
+      }
+
+      return (
+        <Collapse in={!!errorMessage} timeout="auto" unmountOnExit>
+          <SberTypography className={classes.errorMessage} component="span" sberautoVariant="body5">
+            {errorMessage}
+          </SberTypography>
+        </Collapse>
+      )
+    },
+    [classes.errorMessage],
+  )
+
   return (
     <>
       <Box className={classes.autocompleteContainer}>
@@ -80,44 +141,16 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
           loading={isLoading}
           fullWidth
           value={chosenOption}
-          isOptionEqualToValue={(option, value) => option.vendorCode === value.vendorCode}
+          isOptionEqualToValue={calculateIsOptionEqualToValue}
           loadingText="Загрузка..."
-          options={(error as Vendor[]) ?? []}
-          getOptionLabel={option => retrieveLabelForPointOfSale(option)}
+          options={data ?? []}
+          getOptionLabel={getOptionLabel}
           filterOptions={pointsOfSaleFilter}
           onChange={handleAutocompleteOptionChange}
           onFocus={disableErrorState}
-          renderInput={params => (
-            <TextField
-              error={validationError}
-              className={classes.autocompleteTextField}
-              {...params}
-              size={isHeader ? 'small' : 'medium'}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {isLoading ? (
-                      <Box position="absolute" top="calc(50% - 10px)" right={9}>
-                        <CircularProgress color="inherit" size={20} data-testid="loadingImg" />
-                      </Box>
-                    ) : (
-                      params.InputProps.endAdornment
-                    )}
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="ТТ или адрес"
-            />
-          )}
+          renderInput={renderInput}
         />
-
-        {/* в хедере не показываем текст ошибки, согласовано с Максимом Мезенцевым */}
-        {validationError && !isHeader && (
-          <SberTypography className={classes.errorMessage} component="span" sberautoVariant="body5">
-            Необходимо выбрать автосалон
-          </SberTypography>
-        )}
+        {renderError(errorMessage)}
       </Box>
 
       {isHeader ? (
@@ -131,7 +164,12 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
           <DoneIcon width="17px" color={theme.palette.text.primary} />
         </Button>
       ) : (
-        <Button variant="contained" className={classes.loginButton} onClick={validatePointOfSale}>
+        <Button
+          variant="contained"
+          className={classes.loginButton}
+          onClick={validatePointOfSale}
+          disabled={!!error}
+        >
           Войти
         </Button>
       )}
@@ -145,11 +183,12 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
             )}
             <DialogContentText>Все верно?</DialogContentText>
           </DialogContent>
+
           <DialogActions>
-            <Button variant="contained" autoFocus onClick={onAgree}>
+            <Button variant="contained" autoFocus onClick={onAgree} className={classes.dialogBtn}>
               Да
             </Button>
-            <Button variant="outlined" onClick={onDisagree}>
+            <Button variant="outlined" onClick={onDisagree} className={classes.dialogBtn}>
               Нет
             </Button>
           </DialogActions>

@@ -1,7 +1,7 @@
 import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import Cookies from 'js-cookie'
 
-import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale'
+import { COOKIE_POINT_OF_SALE } from '../constants'
 
 export const getPointOfSaleFromCookies = (): Vendor => {
   const cookie = Cookies.get(COOKIE_POINT_OF_SALE)
