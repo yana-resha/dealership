@@ -24,7 +24,7 @@ export const MaskedInput = (props: Props) => {
 
   useEffect(() => {
     if (value !== fieldValue) {
-      setFieldValue(value || fieldValue)
+      setFieldValue(value ?? fieldValue)
     }
   }, [value])
 

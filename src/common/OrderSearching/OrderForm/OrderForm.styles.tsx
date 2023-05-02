@@ -35,7 +35,7 @@ export const useStyles = makeStyles(theme => ({
     '&.MuiTypography-root': {
       fontSize: '25px',
       fontWeight: '600',
-      lineHeight: theme.spacing(4),
+      lineHeight: '32px',
     },
   },
 
@@ -43,7 +43,7 @@ export const useStyles = makeStyles(theme => ({
     '&.MuiTypography-root': {
       fontSize: '19px',
       fontWeight: '600',
-      lineHeight: theme.spacing(3),
+      lineHeight: '24px',
     },
   },
 

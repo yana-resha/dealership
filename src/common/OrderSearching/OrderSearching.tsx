@@ -4,9 +4,9 @@ import { CheckIfSberClientResponse } from '@sberauto/loanapplifecycledc-proto/pu
 
 import { OrderData, OrderForm } from 'common/OrderSearching/OrderForm'
 import { ApplicationTable } from 'entities/application/ApplicationTable/ApplicationTable'
-import { NoMatchesModal } from 'entities/NoMatchesModal'
 
 import { useFindApplications } from './hooks/useFindApplications'
+import { NoMatchesModal } from './NoMatchesModal/NoMatchesModal'
 import { useCheckIfSberClientMutation } from './OrderSearching.api'
 
 type Props = {

@@ -1,8 +1,6 @@
 import { makeStyles } from '@mui/styles'
 import { Property } from 'csstype'
 
-import { WHITE } from 'app/theme/palette'
-
 export const useStyles = makeStyles(theme => ({
   modalWrapper: {
     padding: theme.spacing(4),
@@ -58,9 +56,7 @@ export const useStyles = makeStyles(theme => ({
     position: ('absolute' + '!important') as Property.Position,
     padding: theme.spacing(0.5) + '!important',
 
-    '& svg': {
-      width: '16px',
-      height: '16px',
+    '& path': {
       fill: theme.palette.colors.white,
     },
   },
