@@ -96,3 +96,13 @@ export const maskEmail = (value: string, unmasked?: boolean) => {
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
+
+export const maskOnlyNumbersWithSeparator = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: Number,
+    thousandsSeparator: ' ',
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}

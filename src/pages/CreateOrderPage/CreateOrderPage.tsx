@@ -4,6 +4,7 @@ import { Box, Step, StepIcon, StepLabel, Stepper, Typography } from '@mui/materi
 
 import { ClientDetailedDossier } from 'common/findApplication/ClientDetailedDossier/ClientDetailedDossier'
 import { OrderSearching } from 'common/OrderSearching'
+import { OrderSettings } from 'common/OrderSettings'
 
 import { ClientForm } from '../../entities/ClientForm'
 import { useStyles } from './CreateOrderPage.styles'
@@ -35,7 +36,7 @@ const steps = [
 export function CreateOrderPage() {
   const classes = useStyles()
 
-  const [currentStepIdx, setCurrentStepIdx] = useState(0)
+  const [currentStepIdx, setCurrentStepIdx] = useState(1)
   const currentStep = useMemo(() => steps[currentStepIdx], [currentStepIdx])
 
   const handleStepChange = useCallback(
@@ -85,6 +86,7 @@ export function CreateOrderPage() {
           {currentStep.label === StepKey.OrderSearchingForm && (
             <OrderSearching nextStep={nextStep} onApplicationOpen={handleApplicationOpen} />
           )}
+          {currentStep.label === StepKey.OrderSettings && <OrderSettings nextStep={nextStep} />}
           {currentStep.label === StepKey.ClientForm && <ClientForm />}
         </Box>
       )}
