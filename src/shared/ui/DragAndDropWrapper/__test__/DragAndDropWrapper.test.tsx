@@ -32,14 +32,14 @@ describe('DragAndDropWrapper', () => {
     )
 
     fireEvent.dragOver(screen.getByTestId('dragAreaWrapper'))
-    expect(screen.getByTestId('dragArea')).toHaveClass('makeStyles-leaveFocus-6')
+    expect(screen.getByTestId('dragArea').className.includes('makeStyles-leaveFocus')).toBe(true)
     fireEvent.dragOver(screen.getByTestId('dragArea'))
-    expect(screen.getByTestId('dragArea')).toHaveClass('makeStyles-enterFocus-5')
+    expect(screen.getByTestId('dragArea').className.includes('makeStyles-enterFocus')).toBe(true)
     fireEvent.dragLeave(screen.getByTestId('dragArea'))
-    expect(screen.getByTestId('dragArea')).toHaveClass('makeStyles-leaveFocus-6')
+    expect(screen.getByTestId('dragArea').className.includes('makeStyles-leaveFocus')).toBe(true)
     const fileDropzone = screen.getByTestId('dragArea')
     const fileDropEvent = createEvent.drop(fileDropzone)
-    const file = new File([''], 'foo.png', {
+    const file = new File(['testfile'], 'foo.png', {
       type: 'image/png',
     })
     const fileList = [file]

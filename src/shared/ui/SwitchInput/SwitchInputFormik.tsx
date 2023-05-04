@@ -10,11 +10,12 @@ type Props = {
   label: string
   gridColumn?: string
   centered?: boolean
+  disabled?: boolean
   afterChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export const SwitchInputFormik = (props: Props) => {
-  const { name, label, gridColumn, centered, afterChange } = props
+  const { name, label, gridColumn, centered, disabled, afterChange } = props
   const { value, isError, error, onChange } = useFormikWrapper(name)
 
   return (
@@ -22,6 +23,7 @@ export const SwitchInputFormik = (props: Props) => {
       <SwitchInput
         label={label}
         centered={centered}
+        disabled={disabled}
         afterChange={afterChange}
         id={name}
         value={value}

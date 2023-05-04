@@ -4,7 +4,7 @@ export default makeStyles(theme => ({
   gridContainer: {
     gap: '24px',
     display: 'grid',
-    gridTemplateColumns: 'repeat(17, 1fr)',
+    gridTemplateColumns: 'repeat(16, minmax(0, 1fr))',
     transition: theme.transitions.create([]),
   },
 
@@ -16,6 +16,11 @@ export default makeStyles(theme => ({
     },
   },
 
+  switchesContainer: {
+    display: 'flex',
+    gap: theme.spacing(3),
+  },
+
   textButtonContainer: {
     display: 'flex',
     gap: theme.spacing(2),
@@ -23,12 +28,10 @@ export default makeStyles(theme => ({
     color: theme.palette.primary.main,
   },
 
-  switchConfirm: {
-    gridColumn: 'span 5',
-    marginTop: theme.spacing(4),
-    [theme.breakpoints.down('lg')]: {
-      gridColumn: 'span 16',
-      marginTop: 0,
-    },
+  docsUploaderContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: theme.spacing(3),
   },
 }))

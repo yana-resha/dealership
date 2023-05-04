@@ -8,20 +8,12 @@ import { DateTime } from 'luxon'
 import { ReactComponent as CalendarTodayOutlined } from 'assets/icons/calendar.svg'
 
 import useStyles from './DateInput.styles'
+import { DateInputProps } from './dateInput.types'
 
 const YEAR_INPUT_COMPLETED = 1000
 const DATE_FORMAT = 'dd.MM.yyyy'
 
-type Props = {
-  label: string
-  value?: Date | null
-  onChange?: (value: Date | null) => void
-  isError?: boolean
-  errorMessage?: string
-  id?: string
-  disabled?: boolean
-}
-export const DateInput = (props: Props) => {
+export const DateInput = (props: DateInputProps) => {
   const classes = useStyles()
   const { value, onChange, isError, errorMessage, id, label, disabled } = props
   const [fieldValue, setFieldValue] = useState<DateTime | null>(

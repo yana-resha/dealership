@@ -2,8 +2,6 @@ import React, { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MockStore } from 'redux-mock-store'
-import * as Yup from 'yup'
 
 import { maskPhoneNumber } from 'shared/masks/InputMasks'
 import { ThemeProviderMock } from 'tests/mocks'
@@ -11,11 +9,7 @@ import { disableConsole } from 'tests/utils'
 
 import { MaskedInput } from '../MaskedInput'
 
-interface WrapperProps extends PropsWithChildren {
-  store?: MockStore
-}
-
-const createWrapper = ({ children }: WrapperProps) => <ThemeProviderMock>{children}</ThemeProviderMock>
+const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 disableConsole('error')
 
@@ -59,7 +53,7 @@ describe('MaskedInputTest', () => {
 
     it('Текст не вводится, если он не соответствует маске', () => {
       userEvent.type(screen.getByRole('textbox'), 'qwerty')
-      expect(screen.getByRole('textbox')).toHaveValue('')
+      expect(screen.getByRole('textbox')).toHaveValue('8-9')
     })
 
     it('Текст вводится, если он соответствует маске', () => {

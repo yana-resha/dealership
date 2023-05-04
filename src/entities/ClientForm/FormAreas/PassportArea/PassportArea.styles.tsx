@@ -4,8 +4,7 @@ export default makeStyles(theme => ({
   gridContainer: {
     gap: '24px',
     display: 'grid',
-    gridTemplateColumns: 'repeat(17, 1fr)',
-    transition: theme.transitions.create([]),
+    gridTemplateColumns: 'repeat(16, minmax(0, 1fr))',
   },
 
   areaLabel: {

@@ -3,34 +3,38 @@ import React, { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import { MockStore } from 'redux-mock-store'
 
-import { StoreProviderMock, ThemeProviderMock, formFields } from 'tests/mocks'
+import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { ClientForm } from '../ClientForm'
 
-jest.mock('../../DownloadClientDocs')
-jest.mock('shared/ui/DateInput/DateInput', () => ({
-  DateInput: ({ label }: any) => <span>{label}</span>,
+jest.mock('../FormAreas/PassportArea/PassportArea', () => ({
+  PassportArea: () => <div data-testid="passportArea" />,
 }))
-jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
-  SwitchInput: ({ label }: any) => <span>{label}</span>,
+jest.mock('../FormAreas/CommunicationArea/CommunicationArea', () => ({
+  CommunicationArea: () => <div data-testid="communicationArea" />,
 }))
-jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({
-  MaskedInput: ({ label }: any) => <span>{label}</span>,
+jest.mock('../FormAreas/IncomesArea/IncomesArea', () => ({
+  IncomesArea: () => <div data-testid="incomesArea" />,
 }))
-jest.mock('shared/ui/SelectInput/SelectInput', () => ({
-  SelectInput: ({ label }: any) => <span>{label}</span>,
+jest.mock('../FormAreas/SecondDocArea/SecondDocArea', () => ({
+  SecondDocArea: () => <div data-testid="secondDocArea" />,
+}))
+jest.mock('../FormAreas/JobArea/JobArea', () => ({
+  JobArea: () => <div data-testid="jobArea" />,
+}))
+jest.mock('../FormAreas/QuestionnaireUploadArea/QuestionnaireUploadArea', () => ({
+  QuestionnaireUploadArea: () => <div data-testid="questionnaireUploadArea" />,
+}))
+jest.mock('../FormAreas/FraudDialog/FraudDialog', () => ({
+  FraudDialog: () => <div data-testid="fraudDialog" />,
 }))
 
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
-const createWrapper = ({ store, children }: WrapperProps) => (
-  <StoreProviderMock mockStore={store}>
-    <ThemeProviderMock>{children}</ThemeProviderMock>
-  </StoreProviderMock>
-)
+const createWrapper = ({ children }: WrapperProps) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 disableConsole('error')
 
@@ -40,48 +44,44 @@ describe('ClientFormTest', () => {
       render(<ClientForm />, { wrapper: createWrapper })
     })
 
-    for (const fieldName of formFields) {
-      it(`Поле "${fieldName}" присутствует на форме`, () => {
-        expect(screen.getByText(`${fieldName}`)).toBeInTheDocument()
-      })
-    }
-
-    it('Поле "Предыдущее ФИО" отсутствует на форме', () => {
-      expect(screen.queryByText('Предыдущее ФИО')).not.toBeInTheDocument()
+    it('Отображается блок "Паспортные данные"', () => {
+      expect(screen.getByTestId('passportArea')).toBeInTheDocument()
     })
 
-    it('Поле "Кем выдан" для документов присутствует на форме 2 раза', () => {
-      expect(screen.getAllByText('Кем выдан')).toHaveLength(2)
+    it('Отображается блок "Связь с клиентом"', () => {
+      expect(screen.getByTestId('communicationArea')).toBeInTheDocument()
     })
 
-    it('Поле "Не КЛАДР" присутствует на форме два раза', () => {
-      expect(screen.getAllByText('Не КЛАДР')).toHaveLength(2)
+    it('Отображается блок "Доходы"', () => {
+      expect(screen.getByTestId('incomesArea')).toBeInTheDocument()
     })
-  })
 
-  describe('Валидации на форме работают корректно', () => {
-    test.todo(
-      'Включить тестирование валидаций после выполнения задачи DCB-140 (Рефакторинг shared элементов формы)',
-    )
-    //   beforeEach(() => {
-    //     render(<ClientForm />, { wrapper: createWrapper })
-    //     userEvent.click(screen.getByText('Отправить'))
-    //   })
-    //
-    //   it('Валидируется верное количество обязательных полей', async () => {
-    //     render(<ClientForm />, { wrapper: createWrapper })
-    //   })
-    //
-    //   it('Валидируется даты выдачи второго документа', async () => {
-    //     const inputSecondDocumentDate = document.getElementById('secondDocumentDate')!
-    //     userEvent.type(inputSecondDocumentDate, '10101900')
-    //     expect(await screen.findByText('Дата слишком ранняя')).toBeInTheDocument()
-    //   })
-    //
-    //   it('Валидируется даты устройства на работу', async () => {
-    //     const inputEmploymentDate = document.getElementById('employmentDate')!
-    //     userEvent.type(inputEmploymentDate, '10101900')
-    //     expect(await screen.findByText('Дата слишком ранняя')).toBeInTheDocument()
-    //   })
+    it('Отображается блок "Второй документ"', () => {
+      expect(screen.getByTestId('secondDocArea')).toBeInTheDocument()
+    })
+
+    it('Отображается блок "Работа"', () => {
+      expect(screen.getByTestId('jobArea')).toBeInTheDocument()
+    })
+
+    it('Отображается загрузчик анкеты', () => {
+      expect(screen.getByTestId('questionnaireUploadArea')).toBeInTheDocument()
+    })
+
+    it('Отображается специальная отметка', () => {
+      expect(screen.getByTestId('jobArea')).toBeInTheDocument()
+    })
+
+    it('Отображается кнопка "Сохранить черновик"', () => {
+      expect(screen.getByText('Сохранить черновик')).toBeInTheDocument()
+    })
+
+    it('Отображается кнопка "Распечатать"', () => {
+      expect(screen.getByText('Распечатать')).toBeInTheDocument()
+    })
+
+    it('Отображается кнопка "Отправить"', () => {
+      expect(screen.getByText('Отправить')).toBeInTheDocument()
+    })
   })
 })

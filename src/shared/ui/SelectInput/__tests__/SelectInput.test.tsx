@@ -3,18 +3,13 @@ import React, { PropsWithChildren } from 'react'
 import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MockStore } from 'redux-mock-store'
 
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { SelectInput } from '../SelectInput'
 
-interface WrapperProps extends PropsWithChildren {
-  store?: MockStore
-}
-
-const createWrapper = ({ children }: WrapperProps) => <ThemeProviderMock>{children}</ThemeProviderMock>
+const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 disableConsole('error')
 
