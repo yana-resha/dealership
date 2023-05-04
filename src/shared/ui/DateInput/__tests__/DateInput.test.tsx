@@ -9,11 +9,7 @@ import { disableConsole } from 'tests/utils'
 
 import { DateInput } from '../DateInput'
 
-interface WrapperProps extends PropsWithChildren {
-  store?: MockStore
-}
-
-const createWrapper = ({ children }: WrapperProps) => <ThemeProviderMock>{children}</ThemeProviderMock>
+const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 disableConsole('error')
 

@@ -76,7 +76,7 @@ export const maskPassport = (value: string, unmasked?: boolean) => {
 
 export const maskPhoneNumber = (number: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
-    mask: '8-900-000-00-00',
+    mask: '{8}-{9}00-000-00-00',
   })
   masked.resolve(`${number}`)
 

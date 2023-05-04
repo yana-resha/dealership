@@ -3,28 +3,16 @@ import React, { useEffect, useState } from 'react'
 import { Box, InputLabel, TextField } from '@mui/material'
 
 import useStyles from './MaskedInput.styles'
+import { MaskedInputProps } from './maskedInput.types'
 
-type Props = {
-  label: string
-  placeholder: string
-  mask: (number: string, unmasked?: boolean) => string
-  value?: string
-  onChange?: (value: string) => void
-  isError?: boolean
-  errorMessage?: string
-  id?: string
-  readonly?: boolean
-  disabled?: boolean
-}
-
-export const MaskedInput = (props: Props) => {
+export const MaskedInput = (props: MaskedInputProps) => {
   const classes = useStyles()
   const { label, placeholder, mask, value, onChange, isError, errorMessage, id, readonly, disabled } = props
   const [fieldValue, setFieldValue] = useState(value || '')
 
   useEffect(() => {
-    if (value !== fieldValue) {
-      setFieldValue(value ?? fieldValue)
+    if (value && value !== fieldValue) {
+      setFieldValue(value)
     }
   }, [value])
 
@@ -39,6 +27,7 @@ export const MaskedInput = (props: Props) => {
     onChange: handleChange,
     placeholder: placeholder,
     disabled: disabled,
+    autoComplete: 'off',
     inputProps: {
       readOnly: readonly,
     },

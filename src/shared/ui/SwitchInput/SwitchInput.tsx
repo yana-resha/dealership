@@ -3,20 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { Box, FormHelperText, InputLabel, Switch, useTheme } from '@mui/material'
 
 import useStyles from './SwitchInput.styles'
+import { SwitchInputProps } from './switchInput.types'
 
-type Props = {
-  label: string
-  value?: boolean
-  onChange?: (value: boolean) => void
-  isError?: boolean
-  errorMessage?: string
-  id?: string
-  centered?: boolean
-  afterChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
-
-export const SwitchInput = (props: Props) => {
-  const { label, value, onChange, isError, errorMessage, id, centered, afterChange } = props
+export const SwitchInput = (props: SwitchInputProps) => {
+  const { label, value, onChange, isError, errorMessage, id, centered, disabled, afterChange } = props
 
   const classes = useStyles()
   const theme = useTheme()
@@ -24,8 +14,8 @@ export const SwitchInput = (props: Props) => {
   const [fieldValue, setFieldValue] = useState(value || false)
 
   useEffect(() => {
-    if (value !== fieldValue) {
-      setFieldValue(value ?? fieldValue)
+    if (value != undefined && value !== fieldValue) {
+      setFieldValue(value)
     }
   }, [value])
 
@@ -38,6 +28,7 @@ export const SwitchInput = (props: Props) => {
   const configureSwitch = {
     id: id,
     checked: fieldValue,
+    disabled: disabled,
     onChange: handleSwitch,
   }
 

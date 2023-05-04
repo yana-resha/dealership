@@ -3,21 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { Box, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 
 import useStyles from './SelectInput.styles'
+import { SelectInputProps } from './selectInput.types'
 
-type Props = {
-  label: string
-  placeholder: string
-  options: string[]
-  value?: string
-  onChange?: (value: string) => void
-  isError?: boolean
-  errorMessage?: string
-  id?: string
-  emptyAvailable?: boolean
-  disabled?: boolean
-}
-
-export const SelectInput = (props: Props) => {
+export const SelectInput = (props: SelectInputProps) => {
   const classes = useStyles()
   const {
     label,
@@ -34,8 +22,8 @@ export const SelectInput = (props: Props) => {
   const [fieldValue, setFieldValue] = useState(value || '')
 
   useEffect(() => {
-    if (value !== fieldValue) {
-      setFieldValue(value ?? fieldValue)
+    if (value && value !== fieldValue) {
+      setFieldValue(value)
     }
   }, [value])
 

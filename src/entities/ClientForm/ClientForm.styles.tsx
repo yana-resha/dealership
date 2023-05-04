@@ -10,30 +10,28 @@ export const useStyles = makeStyles(theme => ({
   },
 
   clientForm: {
-    display: 'grid',
+    display: 'flex',
+    flexDirection: 'column',
     gap: theme.spacing(3),
-    gridTemplateColumns: '1fr 244px',
   },
 
-  clientDocuments: {
-    width: '244px',
-    gridColumn: '-2',
-    gridRow: 'span 5',
-    marginTop: theme.spacing(8),
+  buttonsArea: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: theme.spacing(3),
   },
 
   buttonsContainer: {
-    display: 'grid',
-    gap: '24px',
-    gridTemplateColumns: 'repeat(17, 1fr)',
-    alignItems: 'center',
+    display: 'flex',
+    gap: theme.spacing(3),
   },
 
   button: {
-    height: '48px',
-    width: '189px',
     '&.MuiButton-root': {
       borderRadius: 12 * theme.shape.borderRadius,
+      height: '48px',
+      minWidth: '189px',
+      fontSize: '16px',
     },
   },
 }))

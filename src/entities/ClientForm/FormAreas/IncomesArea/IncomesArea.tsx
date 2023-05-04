@@ -1,17 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Box, Typography } from '@mui/material'
+import { useFormikContext } from 'formik'
 
-import { ReactComponent as AttachFileTwoTone } from 'assets/icons/attach.svg'
 import { maskDigitsOnly } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
+import { ClientData } from '../../config/clientFormInitialValues'
+import { IncomeProofUploadArea } from '../IncomeProofUploadArea/IncomeProofUploadArea'
 import useStyles from './IncomesArea.styles'
 
 export function IncomesArea() {
   const classes = useStyles()
+  const { values, setFieldValue } = useFormikContext<ClientData>()
+  const { incomeConfirmation } = values
+
+  useEffect(() => {
+    if (!incomeConfirmation) {
+      setFieldValue('ndfl2File', null)
+      setFieldValue('ndfl3File', null)
+      setFieldValue('bankStatementFile', null)
+    }
+  }, [incomeConfirmation, setFieldValue])
 
   return (
     <Box className={classes.gridContainer}>
@@ -24,52 +36,42 @@ export function IncomesArea() {
         label="Среднемесячный доход"
         placeholder="-"
         mask={maskDigitsOnly}
-        gridColumn="span 6"
+        gridColumn="span 4"
       />
       <MaskedInputFormik
         name="additionalIncome"
         label="Дополнительный личный доход"
         placeholder="-"
         mask={maskDigitsOnly}
-        gridColumn="span 6"
+        gridColumn="span 4"
       />
-      <Box className={classes.switchConfirm}>
-        <SwitchInputFormik name="incomeConfirmed" label="Подтверждение" />
-      </Box>
+      <SwitchInputFormik name="incomeConfirmation" label="Подтверждение" centered gridColumn="span 8" />
+
+      {incomeConfirmation && <IncomeProofUploadArea />}
 
       <MaskedInputFormik
         name="familyIncome"
         label="Доход семьи без дохода заявит."
         placeholder="-"
         mask={maskDigitsOnly}
-        gridColumn="span 6"
+        gridColumn="span 4"
       />
       <MaskedInputFormik
         name="expenses"
         label="Общие расходы"
         placeholder="-"
         mask={maskDigitsOnly}
-        gridColumn="span 6"
+        gridColumn="span 4"
       />
-
+      <Box gridColumn="span 8" />
       <SelectInputFormik
         name="relatedToPublic"
         label="Принадлежность клиента к категории публичных лиц"
         placeholder="-"
         options={['Нет', 'Да']}
-        gridColumn="span 12"
+        gridColumn="span 7"
       />
-      <Box gridColumn="span 4" />
-
-      <SwitchInputFormik name="ndfl2" label="2ндфл" gridColumn="span 3" />
-      <SwitchInputFormik name="ndfl3" label="3ндфл" gridColumn="span 3" />
-      <SwitchInputFormik name="extracts" label="Выписки" gridColumn="span 3" />
-      <Box gridColumn="span 4" />
-
-      <Box className={classes.textButtonContainer} gridColumn="span 7">
-        <AttachFileTwoTone />
-        <Typography>Загрузить 2ндфл</Typography>
-      </Box>
+      <Box gridColumn="span 9" />
     </Box>
   )
 }
