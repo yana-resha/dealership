@@ -97,10 +97,98 @@ export const maskEmail = (value: string, unmasked?: boolean) => {
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
-export const maskOnlyNumbersWithSeparator = (value: string, unmasked?: boolean) => {
+export const maskOnlyDigitsWithSeparator = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: Number,
     thousandsSeparator: ' ',
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskVin = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: /^[A-Z0-9\s]{1,17}$/,
+    prepare: (str: string) => str.toUpperCase(),
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskPercent = (value: string) => {
+  const SEPARATOR = '.'
+  const masked = IMask.createMask({
+    mask: new RegExp(`^[0-9${SEPARATOR}]+$`),
+  })
+  masked.resolve(`${value}`)
+
+  const sections = masked.value.split(SEPARATOR).reduce<string[]>((acc, cur) => {
+    if (acc.length < 2 && cur) {
+      acc.push(cur)
+    }
+
+    return acc
+  }, [])
+  if (!sections[0]) {
+    return ''
+  }
+  if (parseInt(sections[0], 10) > 100) {
+    const suffix = sections[0].slice(2)
+    sections[0] = sections[0].slice(0, 2)
+    sections[1] = suffix + (sections[1] || '')
+  }
+  if (sections[1]) {
+    sections[1] = sections[1].slice(0, 2)
+  }
+  if (masked.value.includes(SEPARATOR) && !sections[1]) {
+    return sections[0] + SEPARATOR
+  }
+
+  return sections.join(SEPARATOR)
+}
+
+export const maskBankIdentificationCode = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '000000000',
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskBankAccountNumber = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '0000 0000 0000 0000 0000',
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskСarPassportId = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '00 aa 000000',
+    prepare: (str: string) => {
+      const character = str.toUpperCase()
+      const regex = /[А-Я0-9]/
+
+      if (!regex.test(character)) {
+        return ''
+      }
+
+      return character
+    },
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskElectronicСarPassportId = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '000 0000 0000 0000',
   })
   masked.resolve(`${value}`)
 

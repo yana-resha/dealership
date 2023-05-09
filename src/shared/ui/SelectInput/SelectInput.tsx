@@ -38,6 +38,7 @@ export const SelectInput = (props: SelectInputProps) => {
     onChange: handleChange,
     disabled: disabled,
     error: isError,
+    'data-testid': id,
   }
 
   return (
@@ -50,11 +51,17 @@ export const SelectInput = (props: SelectInputProps) => {
           <MenuItem disabled={!emptyAvailable} selected value="">
             <span className={classes.placeholder}>{placeholder}</span>
           </MenuItem>
-          {options.map(option => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
+          {options.map(option =>
+            typeof option === 'string' ? (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ) : (
+              <MenuItem key={option.label} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ),
+          )}
         </Select>
         {isError && (
           <FormHelperText className={classes.helperText} error>

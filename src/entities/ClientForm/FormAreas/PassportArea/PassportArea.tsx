@@ -146,7 +146,7 @@ export function PassportArea() {
         placeholder="-"
         mask={maskNoRestrictions}
         gridColumn="span 12"
-        readonly
+        InputProps={{ readOnly: true }}
       />
       <SwitchInputFormik
         name="regNotKladr"
@@ -176,7 +176,7 @@ export function PassportArea() {
           placeholder="-"
           mask={maskNoRestrictions}
           gridColumn="span 12"
-          readonly
+          InputProps={{ readOnly: true }}
         />
       )}
       {!regAddrIsLivingAddr && (

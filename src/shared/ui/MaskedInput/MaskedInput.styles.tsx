@@ -18,9 +18,12 @@ export default makeStyles(theme => ({
 
   textField: {
     width: '100%',
-    '& .MuiOutlinedInput-input': {
-      padding: `${theme.spacing(1, 1, 1, 2)}`,
+    '& .MuiOutlinedInput-root': {
       backgroundColor: theme.palette.common.white,
+    },
+
+    '& .MuiOutlinedInput-input': {
+      padding: theme.spacing(1, 1, 1, 2),
     },
 
     '& .MuiFormHelperText-root.Mui-error': {

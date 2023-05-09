@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { MaskedInputProps } from '../maskedInput.types'
 
 export const MockedMaskedInput = (props: MaskedInputProps) => {
-  const { label, isError, errorMessage, id, mask, disabled, readonly, value, onChange, placeholder } = props
+  const { label, isError, errorMessage, id, mask, disabled, value, onChange, placeholder, InputProps } = props
   const [fieldValue, setFieldValue] = useState(value || '')
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -22,7 +22,7 @@ export const MockedMaskedInput = (props: MaskedInputProps) => {
           placeholder={placeholder}
           onChange={handleChange}
           disabled={disabled}
-          readOnly={readonly}
+          readOnly={InputProps?.readOnly}
         />
         {label}
       </label>

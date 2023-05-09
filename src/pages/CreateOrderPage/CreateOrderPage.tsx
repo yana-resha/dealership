@@ -3,11 +3,12 @@ import { useCallback, useMemo, useState } from 'react'
 import { Box, Step, StepIcon, StepLabel, Stepper, Typography } from '@mui/material'
 
 import { ClientDetailedDossier } from 'common/findApplication/ClientDetailedDossier/ClientDetailedDossier'
-import { OrderSearching } from 'common/OrderSearching'
-import { OrderSettings } from 'common/OrderSettings'
 
 import { ClientForm } from '../../entities/ClientForm'
 import { useStyles } from './CreateOrderPage.styles'
+import { FullOrderSettings } from './FullOrderSettings'
+import { OrderSearching } from './OrderSearching'
+import { OrderSettings } from './OrderSettings'
 
 enum StepKey {
   OrderSearchingForm = 'orderSearchingForm',
@@ -36,7 +37,7 @@ const steps = [
 export function CreateOrderPage() {
   const classes = useStyles()
 
-  const [currentStepIdx, setCurrentStepIdx] = useState(1)
+  const [currentStepIdx, setCurrentStepIdx] = useState(2)
   const currentStep = useMemo(() => steps[currentStepIdx], [currentStepIdx])
 
   const handleStepChange = useCallback(
@@ -56,9 +57,14 @@ export function CreateOrderPage() {
     setDetailedApplicationId(applicationId)
   }
 
+  // Временное решение для отображения FullOrderSettings
+  const shouldShowFullCalculator = true
+
   return (
     <div className={classes.page} data-testid="dealershipPage">
-      {detailedApplicationId ? (
+      {shouldShowFullCalculator ? (
+        <FullOrderSettings />
+      ) : detailedApplicationId ? (
         <ClientDetailedDossier applicationId={detailedApplicationId} onBackButton={onBackButton} />
       ) : (
         <Box className={classes.loaderContainer}>

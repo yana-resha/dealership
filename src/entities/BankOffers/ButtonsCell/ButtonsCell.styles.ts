@@ -16,7 +16,7 @@ export default makeStyles(theme => ({
 
   tooltip: {
     padding: theme.spacing(1) + '!important',
-    maxWidth: '150px' + '!important',
+    maxWidth: '150px!important',
     fontSize: '12px',
     lineHeight: '14px',
     backgroundColor: theme.palette.background.default + '!important',
