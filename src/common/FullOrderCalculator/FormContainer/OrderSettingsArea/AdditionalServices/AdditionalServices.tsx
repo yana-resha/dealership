@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 import { FieldArray, useField } from 'formik'
 import { v4 as uuidv4 } from 'uuid'
 
-import { AdditionalServicesContainer, useAdditionalServiceIds } from 'entities/orderCalculator'
+import { AdditionalServicesContainer, useAdditionalServiceIds } from 'entities/OrderCalculator'
 
 import { AdditionalServiceItem } from './AdditionalServiceItem/AdditionalServiceItem'
 import useStyles from './AdditionalServices.styles'

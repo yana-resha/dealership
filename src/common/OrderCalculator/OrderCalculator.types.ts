@@ -1,4 +1,4 @@
-import { FormFieldNameMap } from 'entities/orderCalculator'
+import { FormFieldNameMap } from 'entities/OrderCalculator'
 
 type InitialAdditionalServiceData = {
   productType: string

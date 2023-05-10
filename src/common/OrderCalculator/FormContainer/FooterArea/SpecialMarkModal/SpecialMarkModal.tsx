@@ -14,7 +14,7 @@ import cx from 'classnames'
 import { useField, useFormikContext } from 'formik'
 
 import { ReactComponent as CloseIcon } from 'assets/icons/close.svg'
-import { FormFieldNameMap } from 'entities/orderCalculator'
+import { FormFieldNameMap } from 'entities/OrderCalculator'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
 import { SPECIAL_MARK_OPTIONS } from './SpecialMarkModal.config'

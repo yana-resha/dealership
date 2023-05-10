@@ -2,7 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '
 import { FieldArray, useField } from 'formik'
 
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
-import { useAdditionalServiceIds } from 'entities/orderCalculator'
+import { useAdditionalServiceIds } from 'entities/OrderCalculator'
 
 import { AdditionalServiceItem } from './AdditionalServiceItem/AdditionalServiceItem'
 import useStyles from './AdditionalServices.styles'
@@ -12,10 +12,15 @@ type Props = {
   options: string[]
   name: string
   productLabel: string
+  isError: boolean
+  errorMessage?: string
   disabled?: boolean
 }
 
-export function AdditionalServices({ title, options, name, productLabel, disabled = false }: Props) {
+const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка при получении данных. Перезагрузите страницу'
+
+export function AdditionalServices(props: Props) {
+  const { title, options, name, productLabel, isError, errorMessage, disabled = false } = props
   const classes = useStyles()
   const [field] = useField(name)
   const { ids, changeIds } = useAdditionalServiceIds()
@@ -27,6 +32,9 @@ export function AdditionalServices({ title, options, name, productLabel, disable
           <Typography className={classes.title}>{title}</Typography>
         </Box>
       </AccordionSummary>
+      {isError && (
+        <Typography className={classes.errorMessage}>{errorMessage || DEFAULT_ERROR_MESSAGE}</Typography>
+      )}
       <AccordionDetails>
         <FieldArray name={name}>
           {arrayHelpers => (
@@ -41,6 +49,7 @@ export function AdditionalServices({ title, options, name, productLabel, disable
                   arrayHelpers={arrayHelpers}
                   arrayLength={arr.length}
                   changeIds={changeIds}
+                  isError={isError}
                 />
               ))}
             </Box>

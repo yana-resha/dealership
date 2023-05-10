@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
-import { AreaFooter, CAR_CONDITIONS, carYears, FormFieldNameMap } from 'entities/orderCalculator'
+import { AreaFooter, CAR_CONDITIONS, carYears, FormFieldNameMap } from 'entities/OrderCalculator'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useGetCarListQuery } from 'shared/api/dictionaryDc/dictionaryDc.api'
 import { usePrevious } from 'shared/hooks/usePrevious'

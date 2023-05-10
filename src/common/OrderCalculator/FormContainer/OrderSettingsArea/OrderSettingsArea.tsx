@@ -1,9 +1,11 @@
 import { Box } from '@mui/material'
+import { useQuery } from 'react-query'
 
 import { creditProducts } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
 import { additionalEquipments } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
-import { dealerAdditionalServices } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
-import { FormFieldNameMap, LOAN_TERM } from 'entities/orderCalculator'
+import { FormFieldNameMap, LOAN_TERM } from 'entities/OrderCalculator'
+import { getVendorOptions } from 'entities/OrderCalculator/api/requests'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -15,8 +17,20 @@ import useStyles from './OrderSettingsArea.styles'
 type Props = {
   disabled: boolean
 }
+
 export function OrderSettingsArea({ disabled }: Props) {
   const classes = useStyles()
+  const vendorCode = getPointOfSaleFromCookies().vendorCode || ''
+  const additionalEquipmentIsError = false
+  const bankOptionsIsError = false
+  const { data: vendorOptions, isError: vendorOptionsIsError } = useQuery(
+    ['getVendorOptions'],
+    () => getVendorOptions({ vendorCode: vendorCode }),
+    {
+      cacheTime: Infinity,
+    },
+  )
+  const dealerAdditionalServices = vendorOptions?.options?.map(option => option.optionName || '') || []
 
   return (
     <CollapsibleFormAreaContainer
@@ -54,12 +68,15 @@ export function OrderSettingsArea({ disabled }: Props) {
         options={additionalEquipments}
         name={FormFieldNameMap.additionalEquipments}
         productLabel="Вид оборудования"
+        isError={additionalEquipmentIsError}
       />
       <AdditionalServices
         title="Дополнительные услуги дилера"
         options={dealerAdditionalServices}
         name={FormFieldNameMap.dealerAdditionalServices}
         productLabel="Тип продукта"
+        isError={vendorOptionsIsError}
+        errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
       />
       <AdditionalServices
         disabled
@@ -67,6 +84,7 @@ export function OrderSettingsArea({ disabled }: Props) {
         options={[]}
         name={FormFieldNameMap.bankAdditionalServices}
         productLabel="Тип продукта"
+        isError={bankOptionsIsError}
       />
     </CollapsibleFormAreaContainer>
   )

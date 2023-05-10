@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { ArrayHelpers } from 'formik'
 
-import { useAdditionalServices } from 'entities/orderCalculator'
+import { useAdditionalServices } from 'entities/OrderCalculator'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
@@ -19,6 +19,7 @@ interface Props {
   arrayHelpers: ArrayHelpers
   arrayLength: number
   changeIds: (idx: number, changingOption: string, minItems?: number) => void
+  isError: boolean
 }
 
 export function AdditionalServiceItem({
@@ -29,6 +30,7 @@ export function AdditionalServiceItem({
   arrayLength,
   arrayHelpers,
   changeIds,
+  isError,
 }: Props) {
   const classes = useStyles()
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
@@ -47,6 +49,7 @@ export function AdditionalServiceItem({
         placeholder="-"
         options={options}
         gridColumn="span 2"
+        disabled={isError}
       />
       <MaskedInputFormik
         name={`${namePrefix}productCost`}
@@ -54,15 +57,18 @@ export function AdditionalServiceItem({
         placeholder="-"
         mask={maskOnlyDigitsWithSeparator}
         gridColumn="span 1"
+        disabled={isError}
       />
 
       <Box className={classes.switchContainer} gridColumn="span 1">
-        <SwitchInputFormik name={`${namePrefix}isCredit`} label="В кредит" />
+        <SwitchInputFormik name={`${namePrefix}isCredit`} label="В кредит" disabled={isError} />
       </Box>
-      <Box className={classes.btnContainer} gridColumn="span 1">
-        <CloseSquareBtn onClick={removeItem} />
-        <AddingSquareBtn onClick={addItem} />
-      </Box>
+      {!isError && (
+        <Box className={classes.btnContainer} gridColumn="span 1">
+          <CloseSquareBtn onClick={removeItem} />
+          <AddingSquareBtn onClick={addItem} />
+        </Box>
+      )}
     </Box>
   )
 }

@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 
-import { ChangingIdsOption } from 'entities/orderCalculator/constants'
+import { ChangingIdsOption } from 'entities/OrderCalculator/constants'
 import { disableConsole } from 'tests/utils'
 
 import { useAdditionalServiceIds } from '../useAdditionalServiceIds'

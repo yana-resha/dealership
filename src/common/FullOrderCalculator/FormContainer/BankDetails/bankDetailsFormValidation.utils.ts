@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-import { FormFieldNameMap } from 'entities/orderCalculator'
+import { FormFieldNameMap } from 'entities/OrderCalculator'
 import { FieldMessages } from 'shared/constatnts/fieldMessages'
 
 export const bankDetailsFormValidation = {

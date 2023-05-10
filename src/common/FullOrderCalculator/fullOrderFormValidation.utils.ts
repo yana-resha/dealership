@@ -5,7 +5,7 @@ import {
   baseFormValidation,
   additionalServiceBaseValidation,
   CAR_PASSPORT_TYPE,
-} from 'entities/orderCalculator'
+} from 'entities/OrderCalculator'
 import { FieldMessages } from 'shared/constatnts/fieldMessages'
 
 import {

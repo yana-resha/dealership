@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 import { IsClientRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { Formik } from 'formik'
 
-import { fullInitialValueMap } from 'entities/orderCalculator'
+import { fullInitialValueMap } from 'entities/OrderCalculator'
 
 import { FormContainer } from './FormContainer/FormContainer'
 import { useStyles } from './FullOrderCalculator.styles'
