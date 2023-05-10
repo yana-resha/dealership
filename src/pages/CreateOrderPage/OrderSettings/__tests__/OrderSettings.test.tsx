@@ -3,6 +3,9 @@ import { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
+import * as dictionaryDc from 'shared/api/dictionaryDc/dictionaryDc.api'
+import { carBrands } from 'shared/api/dictionaryDc/dictionaryDc.mock'
+import { prepearCars } from 'shared/lib/prepearCars'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -15,12 +18,16 @@ const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{child
 disableConsole('error')
 
 const mockedUseCalculateCreditMutation = jest.spyOn(OrderSettingsApi, 'useCalculateCreditMutation')
+const mockedUseGetCarListQuery = jest.spyOn(dictionaryDc, 'useGetCarListQuery')
 
 describe('OrderSettings', () => {
   const nextStep = jest.fn()
   beforeEach(() => {
     mockedUseCalculateCreditMutation.mockImplementation((() => ({
       mutateAsync: () => Promise.resolve(dataMock),
+    })) as any)
+    mockedUseGetCarListQuery.mockImplementation((() => ({
+      data: prepearCars(carBrands),
     })) as any)
     render(<OrderSettings nextStep={nextStep} />, {
       wrapper: createWrapper,
@@ -36,9 +43,9 @@ describe('OrderSettings', () => {
     window.HTMLElement.prototype.scrollIntoView = () => null
 
     const orderСalculatorForm = document.querySelector('[data-testid="orderСalculatorForm"]')!
-
     const carBrandInput = orderСalculatorForm.querySelector('#carBrand')!
-    userEvent.type(carBrandInput, 'Fiat{enter}')
+    userEvent.type(carBrandInput, 'BMW{enter}')
+
     const carModelInput = orderСalculatorForm.querySelector('#carModel')!
     userEvent.type(carModelInput, '1 series{enter}')
     const carCostInput = orderСalculatorForm.querySelector('#carCost')!
@@ -49,7 +56,7 @@ describe('OrderSettings', () => {
     const submitBtn = screen.getByText('Показать')
     userEvent.click(submitBtn)
 
-    expect(screen.getByTestId('orderСalculatorForm')).toBeInTheDocument()
+    expect(await screen.queryAllByText('Поле обязательно для заполнения')).toHaveLength(0)
     expect(await screen.findByTestId('bankOffersTable')).toBeInTheDocument()
   })
 })

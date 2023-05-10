@@ -1,17 +1,17 @@
 import { useCallback } from 'react'
 
 import { Box } from '@mui/material'
+import { IsClientRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { Formik } from 'formik'
 
 import { fullInitialValueMap } from 'entities/orderCalculator'
-import { OrderData } from 'pages/CreateOrderPage/OrderSearching/OrderForm'
 
 import { FormContainer } from './FormContainer/FormContainer'
 import { useStyles } from './FullOrderCalculator.styles'
 import { fullOrderFormValidationSchema } from './fullOrderFormValidation.utils'
 
 type Props = {
-  onSubmit: (data: OrderData) => void
+  onSubmit: (data: IsClientRequest) => void
   onChangeForm: () => void
 }
 

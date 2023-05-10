@@ -27,7 +27,7 @@ describe('OrderSearching', () => {
     mockedUseFindApplications.mockImplementation(() => ({
       isSuccessFindApplicationsQuery: false,
       isErrorFindApplicationsQuery: false,
-      orderData: undefined,
+      IsClientRequest: undefined,
     }))
     render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
       wrapper: createWrapper,
@@ -42,7 +42,7 @@ describe('OrderSearching', () => {
     mockedUseFindApplications.mockImplementation(() => ({
       isSuccessFindApplicationsQuery: false,
       isErrorFindApplicationsQuery: true,
-      orderData: undefined,
+      IsClientRequest: undefined,
     }))
     render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
       wrapper: createWrapper,
@@ -58,7 +58,7 @@ describe('OrderSearching', () => {
     mockedUseFindApplications.mockImplementation(() => ({
       isSuccessFindApplicationsQuery: true,
       isErrorFindApplicationsQuery: false,
-      orderData: applicationTabledataMock,
+      IsClientRequest: applicationTabledataMock,
     }))
     render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
       wrapper: createWrapper,
@@ -74,7 +74,7 @@ describe('OrderSearching', () => {
     mockedUseFindApplications.mockImplementation(() => ({
       isSuccessFindApplicationsQuery: false,
       isErrorFindApplicationsQuery: true,
-      orderData: undefined,
+      IsClientRequest: undefined,
     }))
     const mockedUseCheckIfSberClientMutation = jest.spyOn(OrderSearchingApi, 'useCheckIfSberClientMutation')
     mockedUseCheckIfSberClientMutation.mockImplementation((() => ({
