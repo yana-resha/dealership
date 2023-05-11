@@ -19,7 +19,7 @@
     "@reduxjs/toolkit": "1.9.1",
     "@sberauto/authdc-proto": "1.0.4",
     "@sberauto/authsberteamid-proto": "1.0.0",
-    "@sberauto/loanapplifecycledc-proto": "0.1.0",
+    "@sberauto/loanapplifecycledc-proto": "1.0.0",
     "@sberauto/dictionarydc-proto": "1.0.0",
     "camelcase-keys": "8.0.2",
     "centrifuge": "2.8.4",

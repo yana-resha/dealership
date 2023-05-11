@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 
 import * as dictionaryDc from 'shared/api/dictionaryDc/dictionaryDc.api'
 import { carBrands } from 'shared/api/dictionaryDc/dictionaryDc.mock'
+import * as getCreditProductListApi from 'shared/api/getCreditProductList.api'
 import { prepearCars } from 'shared/lib/prepearCars'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
@@ -16,9 +17,9 @@ import { dataMock } from './OrderSettings.test.mock'
 const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
 
 disableConsole('error')
-
 const mockedUseCalculateCreditMutation = jest.spyOn(OrderSettingsApi, 'useCalculateCreditMutation')
 const mockedUseGetCarListQuery = jest.spyOn(dictionaryDc, 'useGetCarListQuery')
+const mockedUseGetCreditProductListQuery = jest.spyOn(getCreditProductListApi, 'useGetCreditProductListQuery')
 
 describe('OrderSettings', () => {
   const nextStep = jest.fn()
@@ -29,6 +30,13 @@ describe('OrderSettings', () => {
     mockedUseGetCarListQuery.mockImplementation((() => ({
       data: prepearCars(carBrands),
     })) as any)
+
+    mockedUseGetCreditProductListQuery.mockImplementation(((params: any, options: any) => ({
+      data: getCreditProductListApi.creditProductListRsDataMock,
+      isError: false,
+      isFetching: false,
+    })) as any)
+
     render(<OrderSettings nextStep={nextStep} />, {
       wrapper: createWrapper,
     })
@@ -50,6 +58,9 @@ describe('OrderSettings', () => {
     userEvent.type(carModelInput, '1 series{enter}')
     const carCostInput = orderСalculatorForm.querySelector('#carCost')!
     userEvent.type(carCostInput, '1000000')
+    const getproductListBtn = screen.getByText('Рассчитать')
+    userEvent.click(getproductListBtn)
+
     const initialPaymentInput = orderСalculatorForm.querySelector('#initialPayment')!
     userEvent.type(initialPaymentInput, '1000')
 

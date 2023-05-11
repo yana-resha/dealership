@@ -12,7 +12,6 @@ type Props = {
 export function OrderSettings({ nextStep }: Props) {
   const [bankOffers, setBankOffers] = useState<PreparedTableData[]>([])
   const calculateCreditMutation = useCalculateCreditMutation()
-
   const clearBankOfferList = useCallback(() => {
     if (!bankOffers.length) {
       return

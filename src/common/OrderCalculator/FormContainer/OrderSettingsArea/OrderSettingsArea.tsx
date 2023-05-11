@@ -1,21 +1,38 @@
 import { Box } from '@mui/material'
 
+import { creditProducts } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
+import { additionalEquipments } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
+import { dealerAdditionalServices } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
 import { FormFieldNameMap, LOAN_TERM } from 'entities/orderCalculator'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
-import { additionalEquipments, dealerAdditionalServices } from '../../__tests__/OrderCalculator.mock'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
 import useStyles from './OrderSettingsArea.styles'
 
-export function OrderSettingsArea() {
+type Props = {
+  disabled: boolean
+}
+export function OrderSettingsArea({ disabled }: Props) {
   const classes = useStyles()
 
   return (
-    <CollapsibleFormAreaContainer title="Параметры кредита">
+    <CollapsibleFormAreaContainer
+      title="Параметры кредита"
+      disabled={disabled}
+      shouldExpanded={disabled ? false : undefined}
+    >
       <Box className={classes.gridContainer}>
+        <SelectInputFormik
+          name={FormFieldNameMap.creditProduct}
+          label="Кредитный продукт"
+          placeholder="-"
+          options={creditProducts}
+          gridColumn="span 2"
+          emptyAvailable
+        />
         <MaskedInputFormik
           name={FormFieldNameMap.initialPayment}
           label="Первоначальный взнос"

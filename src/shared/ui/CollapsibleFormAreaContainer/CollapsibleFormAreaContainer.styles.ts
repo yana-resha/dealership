@@ -3,8 +3,9 @@ import { makeStyles } from '@mui/styles'
 export default makeStyles(theme => ({
   accordionContainer: {
     boxShadow: 'none!important',
-    margin: 0 + '!important',
+    margin: '0!important',
     padding: theme.spacing(0, 3),
+    backgroundColor: 'inherit!important',
 
     '& > .MuiAccordionSummary-root': {
       padding: theme.spacing(3, 0),
@@ -33,7 +34,7 @@ export default makeStyles(theme => ({
 
     '&:not(:first-child):before': {
       display: 'block!important',
-      opacity: 1 + '!important',
+      opacity: '1!important',
     },
   },
 
