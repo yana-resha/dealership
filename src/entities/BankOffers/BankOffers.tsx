@@ -1,15 +1,15 @@
 import { forwardRef } from 'react'
 
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 
 import { ADDITIONAL_CELL_NAME, BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
 import useStyles from './BankOffers.styles'
-import { PreparedTableData } from './BankOffers.types'
 import { getCellsChildrens, prepareData } from './BankOffers.utils'
 import { ButtonsCell } from './ButtonsCell/ButtonsCell'
 
 type Props = {
-  data: PreparedTableData[]
+  data: CalculatedProduct[]
   onRowClick: () => void
 }
 
@@ -34,7 +34,7 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
         <TableBody>
           {!!preparedData &&
             preparedData.map(row => (
-              <TableRow key={row.id} className={classes.bodyRow}>
+              <TableRow key={row.productCode} className={classes.bodyRow}>
                 {getCellsChildrens(row).map(cell => (
                   <TableCell
                     key={cell.name}

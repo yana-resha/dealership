@@ -18,7 +18,7 @@ describe('OrderCalculator', () => {
 
   describe('Форма отображается корректно', () => {
     beforeEach(() => {
-      render(<OrderCalculator onSubmit={fn} onChangeForm={fn} />, {
+      render(<OrderCalculator isOfferLoading={false} onSubmit={fn} onChangeForm={fn} />, {
         wrapper: createWrapper,
       })
     })
@@ -42,7 +42,9 @@ describe('OrderCalculator', () => {
 
   describe('Валидация формы работает корректно', () => {
     beforeEach(() => {
-      render(<OrderCalculator onSubmit={fn} onChangeForm={fn} />, { wrapper: createWrapper })
+      render(<OrderCalculator isOfferLoading={false} onSubmit={fn} onChangeForm={fn} />, {
+        wrapper: createWrapper,
+      })
       userEvent.click(screen.getByText('Показать'))
     })
 
@@ -53,7 +55,9 @@ describe('OrderCalculator', () => {
 
   describe('Дополнительные поля', () => {
     beforeEach(() => {
-      render(<OrderCalculator onSubmit={fn} onChangeForm={fn} />, { wrapper: createWrapper })
+      render(<OrderCalculator isOfferLoading={false} onSubmit={fn} onChangeForm={fn} />, {
+        wrapper: createWrapper,
+      })
     })
 
     it('Item добавляется и удаляется, но не последний', () => {

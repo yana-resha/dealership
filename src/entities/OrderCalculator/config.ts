@@ -69,10 +69,16 @@ export enum FormFieldNameMap {
   isCustomFields = 'isCustomFields',
 }
 
-const INITIAL_ADDITIONAL_SERVICE = {
-  [FormFieldNameMap.productType]: '',
-  [FormFieldNameMap.productCost]: '',
-  [FormFieldNameMap.isCreditAdditionalService]: false,
+export interface OrderCalculatorAdditionalService {
+  productType: string
+  productCost: string
+  isCredit: boolean
+}
+
+const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
+  productType: '',
+  productCost: '',
+  isCredit: false,
 }
 
 const INITIAL_BANK_DETAILS_VALUE = {
@@ -98,7 +104,23 @@ const FULL_INITIAL_ADDITIONAL_SERVICE = {
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 
-export const initialValueMap = {
+export interface OrderCalculatorFields {
+  [FormFieldNameMap.carCondition]: string
+  [FormFieldNameMap.carBrand]: string | null
+  [FormFieldNameMap.carModel]: string | null
+  [FormFieldNameMap.carYear]: string
+  [FormFieldNameMap.carCost]: string
+  [FormFieldNameMap.carMileage]: string
+  [FormFieldNameMap.creditProduct]: string
+  [FormFieldNameMap.initialPayment]: string
+  [FormFieldNameMap.loanTerm]: string
+  [FormFieldNameMap.additionalEquipments]: OrderCalculatorAdditionalService[]
+  [FormFieldNameMap.dealerAdditionalServices]: OrderCalculatorAdditionalService[]
+  [FormFieldNameMap.bankAdditionalServices]: OrderCalculatorAdditionalService[]
+  [FormFieldNameMap.specialMark]: string | null
+}
+
+export const initialValueMap: OrderCalculatorFields = {
   [FormFieldNameMap.carCondition]: CAR_CONDITIONS[0],
   [FormFieldNameMap.carBrand]: null,
   [FormFieldNameMap.carModel]: null,

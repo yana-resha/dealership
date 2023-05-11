@@ -11,10 +11,11 @@ import { FooterArea } from './FooterArea/FooterArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
 
 type Props = {
+  isOfferLoading: boolean
   onChangeForm: () => void
 }
 
-export function FormContainer({ onChangeForm }: Props) {
+export function FormContainer({ isOfferLoading, onChangeForm }: Props) {
   const { values } = useFormikContext<OrderCalculatorData>()
   const { vendorCode } = getPointOfSaleFromCookies()
 
@@ -84,7 +85,7 @@ export function FormContainer({ onChangeForm }: Props) {
     <Form>
       <CarSettingsArea onFilled={changeShouldFetchProducts} />
       <OrderSettingsArea disabled={!shouldShowOrderSettings} />
-      <FooterArea />
+      <FooterArea isOfferLoading={isOfferLoading} />
     </Form>
   )
 }

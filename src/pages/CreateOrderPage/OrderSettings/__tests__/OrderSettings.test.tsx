@@ -12,7 +12,7 @@ import { disableConsole } from 'tests/utils'
 
 import { OrderSettings } from '../OrderSettings'
 import * as OrderSettingsApi from '../OrderSettings.api'
-import { dataMock } from './OrderSettings.test.mock'
+import { mockCalculateCreditResponseForTest } from './OrderSettings.test.mock'
 
 const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
 
@@ -25,7 +25,7 @@ describe('OrderSettings', () => {
   const nextStep = jest.fn()
   beforeEach(() => {
     mockedUseCalculateCreditMutation.mockImplementation((() => ({
-      mutateAsync: () => Promise.resolve(dataMock),
+      mutateAsync: () => Promise.resolve(mockCalculateCreditResponseForTest()),
     })) as any)
     mockedUseGetCarListQuery.mockImplementation((() => ({
       data: prepearCars(carBrands),

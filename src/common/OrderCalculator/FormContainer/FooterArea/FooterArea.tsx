@@ -1,13 +1,17 @@
 import { useCallback, useState } from 'react'
 
-import { Box, Button } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 
 import { ReactComponent as WarningIcon } from 'assets/icons/warning.svg'
 
 import useStyles from './FooterArea.styles'
 import { SpecialMarkModal } from './SpecialMarkModal/SpecialMarkModal'
 
-export function FooterArea() {
+type Props = {
+  isOfferLoading: boolean
+}
+
+export function FooterArea({ isOfferLoading }: Props) {
   const classes = useStyles()
   const [isVisibleModal, setVisibleModal] = useState(false)
   const openModal = useCallback(() => {
@@ -26,7 +30,7 @@ export function FooterArea() {
         Специальная отметка
       </Button>
       <Button type="submit" className={classes.submitBtn} variant="contained">
-        Показать
+        {isOfferLoading ? <CircularProgress color="inherit" size={25} /> : 'Показать'}
       </Button>
       <SpecialMarkModal isVisible={isVisibleModal} onClose={closeModal} />
     </Box>

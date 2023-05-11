@@ -1,19 +1,19 @@
-import { createLoanAppLifeCycleDc } from '@sberauto/loanapplifecycledc-proto/public'
+import { CalculateCreditRequest, createDictionaryDc } from '@sberauto/dictionarydc-proto/public'
 import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
-import { PreparedTableData } from 'entities/BankOffers'
 import { Rest } from 'shared/api/client/client'
 
-import { dataMock } from './__tests__/OrderSettings.test.mock'
+import { mockCalculateCreditResponse } from './__tests__/OrderSettings.test.mock'
 
-const loanAppLifeCycleDcApi = createLoanAppLifeCycleDc(`${appConfig.apiUrl}`, Rest.request)
+const dictionaryDcApi = createDictionaryDc(`${appConfig.apiUrl}`, Rest.request)
 
-//TODO DCB-200: Убрать мок из ответа
-export const calculateCredit = (params: any) =>
-  new Promise<{ data: PreparedTableData[] }>(resolve => resolve({ data: dataMock })).then(
-    response => response.data ?? {},
-  )
+//TODO DCB-239: Убрать мок из ответа
+export const calculateCredit = (params: CalculateCreditRequest) =>
+  dictionaryDcApi
+    .calculateCredit({ data: params })
+    .then(response => response.data ?? {})
+    .catch(() => mockCalculateCreditResponse())
 
 export const useCalculateCreditMutation = () =>
-  useMutation(['calculateCredit'], (params: any) => calculateCredit(params))
+  useMutation(['calculateCredit'], (params: CalculateCreditRequest) => calculateCredit(params))
