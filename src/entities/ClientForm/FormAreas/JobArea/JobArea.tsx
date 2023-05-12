@@ -112,7 +112,7 @@ export function JobArea() {
         mask={maskNoRestrictions}
         gridColumn="span 12"
         disabled={jobDisabled}
-        readonly
+        InputProps={{ readOnly: true }}
       />
       <SwitchInputFormik
         name="emplNotKladr"

@@ -4,15 +4,12 @@ import { Box } from '@mui/material'
 
 import { useFormikWrapper } from '../hooks/useFormikWrapper'
 import { SelectInput } from './SelectInput'
+import { SelectInputProps } from './selectInput.types'
 
-type Props = {
+interface Props
+  extends Pick<SelectInputProps, 'label' | 'placeholder' | 'options' | 'emptyAvailable' | 'disabled'> {
   name: string
-  label: string
-  placeholder: string
-  options: string[]
   gridColumn?: string
-  emptyAvailable?: boolean
-  disabled?: boolean
 }
 
 export const SelectInputFormik = (props: Props) => {

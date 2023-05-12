@@ -8,9 +8,9 @@ export default makeStyles(theme => ({
   },
 
   title: {
-    fontSize: '25px' + '!important',
-    fontWeight: '600' + '!important',
-    lineHeight: '32px' + '!important',
+    fontSize: '25px!important',
+    fontWeight: '600!important',
+    lineHeight: '32px!important',
   },
 
   tableContainer: {

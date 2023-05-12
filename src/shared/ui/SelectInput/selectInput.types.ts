@@ -1,7 +1,8 @@
 export type SelectInputProps = {
   label: string
   placeholder: string
-  options: string[]
+  // DCB-256 заменить на options: { value: string | number; label?: string }[]
+  options: string[] | { value: string | number; label: string }[]
   value?: string
   onChange?: (value: string) => void
   isError?: boolean

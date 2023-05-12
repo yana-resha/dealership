@@ -22,11 +22,17 @@ export const MockedSelectInput = (props: SelectInputProps) => {
           onChange={handleChange}
           disabled={disabled}
         >
-          {props.options.map(option => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
+          {props.options.map(option =>
+            typeof option === 'string' ? (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ) : (
+              <option key={option.label} value={option.value}>
+                {option.label}
+              </option>
+            ),
+          )}
         </select>
         {label}
       </label>

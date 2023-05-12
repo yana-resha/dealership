@@ -1,0 +1,26 @@
+export const dataMock = [
+  {
+    id: '1',
+    creditProduct: 'Драйв В',
+    initialPayment: '200000000',
+    loanTerm: '24',
+    monthlyPayment: '9400',
+    lastPayment: '9400',
+    overpayment: '0',
+    interestRate: '18',
+    insurance: true,
+    loanAmount: '1821466',
+  },
+  {
+    id: '2',
+    creditProduct: 'Драйв C',
+    initialPayment: '300000',
+    loanTerm: '24',
+    monthlyPayment: '9400',
+    lastPayment: '9400',
+    overpayment: '0',
+    interestRate: '17.5',
+    insurance: true,
+    loanAmount: '1821466',
+  },
+]
