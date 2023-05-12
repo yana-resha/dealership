@@ -5,35 +5,10 @@ import { render, screen } from '@testing-library/react'
 
 import { ThemeProviderMock } from 'tests/mocks'
 
+import { getMockedClientDossier } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { InformationArea } from '../InformationArea'
 
-const mockedDossier = {
-  status: StatusCode.STATUS_CODE_INITIAL,
-  dealerCenterNumber: '2003023272',
-  dealerCenterName: 'ANEX TOUR',
-  dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
-  applicationNumber: '545544',
-  clientName: 'Терентьев Михаил Павлович',
-  passport: '0604060423',
-  carBrand: 'KIA',
-  carModel: 'RIO',
-  creditSum: 2000000,
-  monthlyPayment: 10400,
-  downPayment: 200000,
-  overdraft: 0,
-  rate: 9.8,
-  productSum: 300000,
-  term: 5,
-  productName: 'Драйв В',
-}
-
-jest.mock('shared/ui/InfoText/InfoText', () => ({
-  InfoText: ({ label, children }: any) => (
-    <span>
-      {label} {children}
-    </span>
-  ),
-}))
+const mockedDossier = getMockedClientDossier('1')
 
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
@@ -62,55 +37,86 @@ describe('InformationAreaTest', () => {
     it('Отображается Марка / модель', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('Марка / модель KIA RIO')).toBeInTheDocument()
+      expect(screen.getByText('Марка / модель')).toBeInTheDocument()
+      expect(screen.getByText('KIA RIO')).toBeInTheDocument()
     })
 
     it('Отображается Сумма кредита', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('Сумма кредита 2 000 000 руб.')).toBeInTheDocument()
+      expect(screen.getByText('Сумма кредита')).toBeInTheDocument()
+      expect(screen.getByText('2 000 000 руб.')).toBeInTheDocument()
     })
 
     it('Отображается платеж', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('Платеж 10 400 руб.')).toBeInTheDocument()
+      expect(screen.getByText('Платеж')).toBeInTheDocument()
+      expect(screen.getByText('10 400 руб.')).toBeInTheDocument()
     })
 
     it('Отображается ПВ', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('ПВ 200 000 руб.')).toBeInTheDocument()
+      expect(screen.getByText('ПВ')).toBeInTheDocument()
+      expect(screen.getByText('200 000 руб.')).toBeInTheDocument()
     })
 
     it('Отображается Переплата', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('Переплата 0 руб.')).toBeInTheDocument()
+      expect(screen.getByText('Переплата')).toBeInTheDocument()
+      expect(screen.getByText('0 руб.')).toBeInTheDocument()
     })
 
     it('Отображается Процентная ставка', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('% ставка 9.8%')).toBeInTheDocument()
+      expect(screen.getByText('% ставка')).toBeInTheDocument()
+      expect(screen.getByText('9.8%')).toBeInTheDocument()
     })
 
     it('Отображается Кредитный продукт', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('Кредитный продукт Драйв В')).toBeInTheDocument()
+      expect(screen.getByText('Кредитный продукт')).toBeInTheDocument()
+      expect(screen.getByText('Драйв В')).toBeInTheDocument()
     })
 
     it('Отображается Сумма продуктов', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('Сумма продуктов 300 000 руб.')).toBeInTheDocument()
+      expect(screen.getByText('Сумма продуктов')).toBeInTheDocument()
+      expect(screen.getByText('300 000 руб.')).toBeInTheDocument()
     })
 
     it('Отображается Срок кредита', () => {
       render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
 
-      expect(screen.getByText('Срок кредита 5 лет')).toBeInTheDocument()
+      expect(screen.getByText('Срок кредита')).toBeInTheDocument()
+      expect(screen.getByText('5 лет')).toBeInTheDocument()
+    })
+
+    describe('Отображается информация о дополнительных услугах', () => {
+      it('Отображается заголовок для дополнительного оборудования', () => {
+        render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
+
+        expect(screen.getByText('Дополнительное оборудование')).toBeInTheDocument()
+      })
+
+      it('Отображается информация о дополнительном оборудовании', () => {
+        render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
+
+        expect(screen.getByText('Коврики')).toBeInTheDocument()
+        expect(screen.getByText('10000 руб.')).toBeInTheDocument()
+      })
+
+      it('Отображается информация о дополнительных услугах дилера', () => {
+        render(<InformationArea clientDossier={mockedDossier} />, { wrapper: createWrapper })
+
+        expect(screen.getByText('Название продукта')).toBeInTheDocument()
+        expect(screen.getByText('400000 руб.')).toBeInTheDocument()
+      })
     })
 
     describe('Кнопка "График платежей" отображается при определенных статусах', () => {
@@ -152,22 +158,22 @@ describe('InformationAreaTest', () => {
         expect(screen.getByText('График платежей')).toBeInTheDocument()
       })
 
-      it('График платежей отображается при статусе Formation (Формирование КД)', () => {
+      it('График платежей отсутствует при статусе Formation (Формирование КД)', () => {
         render(
           <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }} />,
           { wrapper: createWrapper },
         )
 
-        expect(screen.getByText('График платежей')).toBeInTheDocument()
+        expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
-      it('График платежей отображается при статусе Singed (КД подписан)', () => {
+      it('График платежей отсутствует при статусе Singed (КД подписан)', () => {
         render(
           <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_SIGNED }} />,
           { wrapper: createWrapper },
         )
 
-        expect(screen.getByText('График платежей')).toBeInTheDocument()
+        expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
       it('График платежей отсутствует при статусе Rejected (Отказ)', () => {

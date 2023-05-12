@@ -1,23 +1,27 @@
 import React, { useMemo } from 'react'
 
 import { Box, Button } from '@mui/material'
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import SberTypography from 'shared/ui/SberTypography'
 
-import { PreparedStatus } from '../../application.utils'
+import { getStatus, PreparedStatus } from '../../application.utils'
+import { ClientDossier } from '../__tests__/mocks/clientDetailedDossier.mock'
 import { AgreementArea } from '../AgreementArea/AgreementArea'
-import { progressBarConfig } from '../configs/clientDetailedDossier.config'
 import { useStyles } from './ActionArea.styles'
 
 type Props = {
-  status: PreparedStatus
+  clientDossier: ClientDossier
+  updateStatus: (statusCode: StatusCode) => void
   fileQuestionnaire: File | undefined
+  agreementDocs: (File | undefined)[]
+  setAgreementDocs: (files: (File | undefined)[]) => void
 }
 
 export function ActionArea(props: Props) {
   const classes = useStyles()
-  const { status, fileQuestionnaire } = props
+  const { clientDossier, updateStatus, fileQuestionnaire, agreementDocs, setAgreementDocs } = props
+  const status = getStatus(clientDossier.status)
   const showActionsStatuses = [
     PreparedStatus.initial,
     PreparedStatus.approved,
@@ -60,20 +64,17 @@ export function ActionArea(props: Props) {
         </Box>
       )
     }
-    if (status == PreparedStatus.finallyApproved || status == PreparedStatus.formation) {
-      return <AgreementArea status={status} />
-    }
-    if (status == PreparedStatus.signed) {
+    if ([PreparedStatus.finallyApproved, PreparedStatus.formation, PreparedStatus.signed].includes(status)) {
       return (
-        <Box className={classes.buttonsWithProgressBar}>
-          <ProgressBar {...progressBarConfig} currentStep={3} />
-          <Box className={classes.actionButtons}>
-            <Button variant="contained"> Отправить на финансирование</Button>
-          </Box>
-        </Box>
+        <AgreementArea
+          clientDossier={clientDossier}
+          updateStatus={updateStatus}
+          agreementDocs={agreementDocs}
+          setAgreementDocs={setAgreementDocs}
+        />
       )
     }
-  }, [status, fileQuestionnaire])
+  }, [status, fileQuestionnaire, agreementDocs])
 
   return (
     <Box className={classes.blockContainer}>

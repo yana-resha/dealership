@@ -2,7 +2,48 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { sleep } from 'shared/lib/sleep'
 
-const mockClientDossier = [
+export interface AdditionalOptions {
+  optionType: string
+  typeOfProduct: string
+  insuranceCompany: string
+  provider: string
+  agentReceiver: string
+  price: number
+  term: number
+  policyNumber: string
+  receiver: string
+  bankNumber: string
+  accountNumber: string
+  tax: string
+  inCredit: boolean
+}
+
+export interface ClientDossier {
+  applicationId: string
+  status: StatusCode
+  dealerCenterNumber: string
+  dealerCenterName: string
+  dealerCenterAddress: string
+  applicationNumber: string
+  clientName: string
+  passport: string
+  carBrand: string
+  carModel: string
+  creditSum: number
+  creditLegalEntity: string
+  creditReceiverBank: string
+  creditBankAccountNumber: string
+  monthlyPayment: number
+  downPayment: number
+  overdraft: number
+  rate: number
+  productSum: number
+  term: number
+  productName: string
+  additionalOptions: AdditionalOptions[]
+}
+
+const mockClientDossier: ClientDossier[] = [
   {
     applicationId: '1',
     status: StatusCode.STATUS_CODE_INITIAL,
@@ -15,6 +56,9 @@ const mockClientDossier = [
     carBrand: 'KIA',
     carModel: 'RIO',
     creditSum: 2000000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     monthlyPayment: 10400,
     downPayment: 200000,
     overdraft: 0,
@@ -22,6 +66,53 @@ const mockClientDossier = [
     productSum: 300000,
     term: 5,
     productName: 'Драйв В',
+    additionalOptions: [
+      {
+        optionType: 'dealerServices',
+        typeOfProduct: 'Название продукта',
+        insuranceCompany: 'РосГосСтрах',
+        provider: 'Росгосстрах',
+        agentReceiver: 'Имя агента',
+        price: 400000,
+        term: 24,
+        policyNumber: '6566644-33',
+        receiver: 'ФК Открытие',
+        bankNumber: '40702810038000017240',
+        accountNumber: '40702810038000017240',
+        tax: 'Без НДС',
+        inCredit: true,
+      },
+      {
+        optionType: 'additionalEquipment',
+        typeOfProduct: 'Коврики',
+        insuranceCompany: '',
+        provider: '',
+        agentReceiver: '',
+        price: 10000,
+        term: 0,
+        policyNumber: '',
+        receiver: 'ФК Открытие',
+        bankNumber: '40702810038000017240',
+        accountNumber: '40702810038000017240',
+        tax: 'Без НДС',
+        inCredit: true,
+      },
+      {
+        optionType: 'additionalEquipment',
+        typeOfProduct: 'Сигнализация',
+        insuranceCompany: '',
+        provider: '',
+        agentReceiver: '',
+        price: 15000,
+        term: 0,
+        policyNumber: '',
+        receiver: 'Сбербанк',
+        bankNumber: '40702810038000017111',
+        accountNumber: '40702810038000017123',
+        tax: 'С НДС',
+        inCredit: true,
+      },
+    ],
   },
   {
     applicationId: '2',
@@ -35,6 +126,9 @@ const mockClientDossier = [
     carBrand: 'HYUNDAI',
     carModel: 'SOLARIS',
     creditSum: 1600000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     monthlyPayment: 20000,
     downPayment: 210000,
     overdraft: 15000,
@@ -42,6 +136,7 @@ const mockClientDossier = [
     productSum: 350000,
     term: 3,
     productName: 'Драйв C',
+    additionalOptions: [],
   },
   {
     applicationId: '3',
@@ -60,8 +155,12 @@ const mockClientDossier = [
     overdraft: 500000,
     rate: 15.0,
     productSum: 500000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 12,
     productName: 'Драйв D',
+    additionalOptions: [],
   },
   {
     applicationId: '4',
@@ -75,6 +174,9 @@ const mockClientDossier = [
     carBrand: 'ACURA',
     carModel: 'Integra',
     creditSum: 1900000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     monthlyPayment: 25400,
     downPayment: 100000,
     overdraft: 10000,
@@ -82,6 +184,53 @@ const mockClientDossier = [
     productSum: 250000,
     term: 1,
     productName: 'Драйв E',
+    additionalOptions: [
+      {
+        optionType: 'dealerServices',
+        typeOfProduct: 'Название продукта',
+        insuranceCompany: 'РосГосСтрах',
+        provider: 'Росгосстрах',
+        agentReceiver: 'Имя агента',
+        price: 400000,
+        term: 24,
+        policyNumber: '6566644-33',
+        receiver: 'ФК Открытие',
+        bankNumber: '40702810038000017240',
+        accountNumber: '40702810038000017240',
+        tax: 'Без НДС',
+        inCredit: true,
+      },
+      {
+        optionType: 'additionalEquipment',
+        typeOfProduct: 'Коврики',
+        insuranceCompany: '',
+        provider: '',
+        agentReceiver: '',
+        price: 10000,
+        term: 0,
+        policyNumber: '',
+        receiver: 'ФК Открытие',
+        bankNumber: '40702810038000017240',
+        accountNumber: '40702810038000017240',
+        tax: 'Без НДС',
+        inCredit: true,
+      },
+      {
+        optionType: 'additionalEquipment',
+        typeOfProduct: 'Сигнализация',
+        insuranceCompany: '',
+        provider: '',
+        agentReceiver: '',
+        price: 15000,
+        term: 0,
+        policyNumber: '',
+        receiver: 'Сбербанк',
+        bankNumber: '40702810038000017111',
+        accountNumber: '40702810038000017123',
+        tax: 'С НДС',
+        inCredit: true,
+      },
+    ],
   },
   {
     applicationId: '5',
@@ -95,6 +244,9 @@ const mockClientDossier = [
     carBrand: 'Lexus',
     carModel: 'LS',
     creditSum: 6100000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     monthlyPayment: 43550,
     downPayment: 1500000,
     overdraft: 1000000,
@@ -102,6 +254,23 @@ const mockClientDossier = [
     productSum: 400000,
     term: 7,
     productName: 'Драйв F',
+    additionalOptions: [
+      {
+        optionType: 'dealerServices',
+        typeOfProduct: 'Страхование колеса',
+        insuranceCompany: 'РосГосСтрах',
+        provider: 'Росгосстрах',
+        agentReceiver: 'Имя агента',
+        price: 400000,
+        term: 24,
+        policyNumber: '6566644-33',
+        receiver: 'ФК Открытие',
+        bankNumber: '40702810038000017240',
+        accountNumber: '40702810038000017240',
+        tax: 'Без НДС',
+        inCredit: true,
+      },
+    ],
   },
   {
     applicationId: '6',
@@ -115,6 +284,9 @@ const mockClientDossier = [
     carBrand: 'Suzuki',
     carModel: 'Vitara',
     creditSum: 1400000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     monthlyPayment: 20000,
     downPayment: 100000,
     overdraft: 0,
@@ -122,6 +294,7 @@ const mockClientDossier = [
     productSum: 50000,
     term: 3,
     productName: 'Драйв G',
+    additionalOptions: [],
   },
   {
     applicationId: '7',
@@ -135,6 +308,9 @@ const mockClientDossier = [
     carBrand: 'Suzuki',
     carModel: 'Jimny',
     creditSum: 3000000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     monthlyPayment: 33400,
     downPayment: 500000,
     overdraft: 0,
@@ -142,6 +318,7 @@ const mockClientDossier = [
     productSum: 70000,
     term: 4,
     productName: 'Драйв H',
+    additionalOptions: [],
   },
   {
     applicationId: '8',
@@ -160,8 +337,12 @@ const mockClientDossier = [
     overdraft: 250000,
     rate: 9.8,
     productSum: 250000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 8,
     productName: 'Драйв I',
+    additionalOptions: [],
   },
   {
     applicationId: '9',
@@ -180,8 +361,12 @@ const mockClientDossier = [
     overdraft: 45000,
     rate: 8.8,
     productSum: 20000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 3,
     productName: 'Драйв J',
+    additionalOptions: [],
   },
   {
     applicationId: '10',
@@ -200,8 +385,12 @@ const mockClientDossier = [
     overdraft: 150000,
     rate: 13.0,
     productSum: 110000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 6,
     productName: 'Драйв K',
+    additionalOptions: [],
   },
   {
     applicationId: '11',
@@ -220,8 +409,12 @@ const mockClientDossier = [
     overdraft: 300000,
     rate: 9.8,
     productSum: 300000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 9,
     productName: 'Драйв L',
+    additionalOptions: [],
   },
   {
     applicationId: '12',
@@ -240,8 +433,12 @@ const mockClientDossier = [
     overdraft: 123000,
     rate: 10.5,
     productSum: 100000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 5,
     productName: 'Драйв M',
+    additionalOptions: [],
   },
   {
     applicationId: '13',
@@ -260,8 +457,12 @@ const mockClientDossier = [
     overdraft: 0,
     rate: 9.8,
     productSum: 300000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 1,
     productName: 'Драйв N',
+    additionalOptions: [],
   },
   {
     applicationId: '14',
@@ -280,8 +481,12 @@ const mockClientDossier = [
     overdraft: 300000,
     rate: 13.3,
     productSum: 300000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 3,
     productName: 'Драйв O',
+    additionalOptions: [],
   },
   {
     applicationId: '15',
@@ -300,8 +505,12 @@ const mockClientDossier = [
     overdraft: 70000,
     rate: 9.8,
     productSum: 200000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     term: 3,
     productName: 'Драйв P',
+    additionalOptions: [],
   },
   {
     applicationId: '16',
@@ -315,6 +524,9 @@ const mockClientDossier = [
     carBrand: 'KIA',
     carModel: 'Cerato',
     creditSum: 1500000,
+    creditLegalEntity: 'Anex',
+    creditReceiverBank: 'Сбербанк',
+    creditBankAccountNumber: '40702810038000017240',
     monthlyPayment: 15000,
     downPayment: 250000,
     overdraft: 0,
@@ -322,16 +534,22 @@ const mockClientDossier = [
     productSum: 300000,
     term: 10,
     productName: 'Драйв Q',
+    additionalOptions: [],
   },
 ]
 
-export function getMockedClientDossier(applicationId: string) {
-  return mockClientDossier.find(application => application.applicationId == applicationId)
+export function getMockedClientDossier(applicationId: string): ClientDossier {
+  const dossier = mockClientDossier.find(application => application.applicationId == applicationId)
+  if (!dossier) {
+    return mockClientDossier[0]
+  }
+
+  return dossier
 }
 
 export async function getMockAgreement() {
   const files = []
-  await sleep(5000)
+  await sleep(1000)
   const mockFile = mockCreditAgreementFile
   const blob = await fetch(`data:${mockFile.type};base64,${mockFile.content}`).then(response =>
     response.blob(),

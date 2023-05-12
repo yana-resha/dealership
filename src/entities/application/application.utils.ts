@@ -1,5 +1,12 @@
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
+export enum AdditionalOptionsTypes {
+  credit = 'credit',
+  additionalEquipment = 'additionalEquipment',
+  dealerServices = 'dealerServices',
+  bankServices = 'bankServices',
+}
+
 export enum PreparedStatus {
   initial = 'Черновик',
   processed = 'Ожидает решение',

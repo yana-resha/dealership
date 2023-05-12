@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
 import { Box } from '@mui/material'
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { getStatus, PreparedStatus } from '../../../entities/application/application.utils'
 import {
+  ClientDossier,
   getMockedClientDossier,
   getMockQuestionnaire,
 } from '../../../entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
@@ -21,9 +23,10 @@ type Props = {
 export function ClientDetailedDossier(props: Props) {
   const classes = useStyles()
   const { applicationId, onBackButton } = props
-  const clientDossier = getMockedClientDossier(applicationId)
-  const status = clientDossier ? getStatus(clientDossier.status) : PreparedStatus.error
+  const [clientDossier, setClientDossier] = useState<ClientDossier>(getMockedClientDossier(applicationId))
+  const [status, setStatus] = useState(clientDossier ? getStatus(clientDossier.status) : PreparedStatus.error)
   const [fileQuestionnaire, setFileQuestionnaire] = useState<File>()
+  const [agreementDocs, setAgreementDocs] = useState<(File | undefined)[]>([])
 
   useEffect(() => {
     const fetchQuestionnaire = async () => {
@@ -35,6 +38,12 @@ export function ClientDetailedDossier(props: Props) {
     fetchQuestionnaire()
   }, [])
 
+  function updateStatus(statusCode: StatusCode) {
+    //sendRequest
+    setClientDossier({ ...clientDossier, status: statusCode })
+    setStatus(getStatus(statusCode))
+  }
+
   return (
     <Box className={classes.pageContainer}>
       <DossierIdArea clientDossier={clientDossier} onBackButton={onBackButton} />
@@ -43,9 +52,17 @@ export function ClientDetailedDossier(props: Props) {
         <DocumentsArea
           fileQuestionnaire={fileQuestionnaire}
           setQuestionnaire={setFileQuestionnaire}
+          agreementDocs={agreementDocs}
+          setAgreementDocs={setAgreementDocs}
           status={status}
         />
-        <ActionArea status={status} fileQuestionnaire={fileQuestionnaire} />
+        <ActionArea
+          clientDossier={clientDossier}
+          updateStatus={updateStatus}
+          fileQuestionnaire={fileQuestionnaire}
+          agreementDocs={agreementDocs}
+          setAgreementDocs={setAgreementDocs}
+        />
       </Box>
     </Box>
   )

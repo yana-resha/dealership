@@ -38,6 +38,8 @@ describe('DocumentsAreaTest', () => {
         <DocumentsArea
           fileQuestionnaire={undefined}
           setQuestionnaire={mockedSetQuestionnaire}
+          agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+          setAgreementDocs={jest.fn}
           status={PreparedStatus.initial}
         />,
         { wrapper: createWrapper },
@@ -52,6 +54,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={undefined}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.initial}
           />,
           { wrapper: createWrapper },
@@ -65,6 +69,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={undefined}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.initial}
           />,
           { wrapper: createWrapper },
@@ -79,6 +85,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.initial}
           />,
           { wrapper: createWrapper },
@@ -88,12 +96,14 @@ describe('DocumentsAreaTest', () => {
       })
     })
 
-    describe('Отображаются все элементы для статусов Authorized (Ожидание финансирования) и Financed (Кредит выдан)', () => {
+    describe('Отображаются все элементы для статусов Signed (КД Подписан) Authorized (Ожидание финансирования) и Financed (Кредит выдан)', () => {
       it('Отображаются 3 документа для статуса Authorized (Ожидание финансирования)', async () => {
         render(
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.authorized}
           />,
           { wrapper: createWrapper },
@@ -107,7 +117,24 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.financed}
+          />,
+          { wrapper: createWrapper },
+        )
+
+        await waitFor(async () => expect(await screen.findAllByTestId('uploadFile')).toHaveLength(3))
+      })
+
+      it('Отображаются 3 документа для статуса Signed (КД Подписан)', async () => {
+        render(
+          <DocumentsArea
+            fileQuestionnaire={mockedFileQuestionnaire}
+            setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
+            status={PreparedStatus.signed}
           />,
           { wrapper: createWrapper },
         )
@@ -122,6 +149,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.processed}
           />,
           { wrapper: createWrapper },
@@ -135,6 +164,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.approved}
           />,
           { wrapper: createWrapper },
@@ -148,6 +179,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.finallyApproved}
           />,
           { wrapper: createWrapper },
@@ -161,6 +194,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.formation}
           />,
           { wrapper: createWrapper },
@@ -174,6 +209,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.rejected}
           />,
           { wrapper: createWrapper },
@@ -187,6 +224,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.canceledDeal}
           />,
           { wrapper: createWrapper },
@@ -198,20 +237,9 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.canceled}
-          />,
-          { wrapper: createWrapper },
-        )
-
-        expect(await screen.findByTestId('uploadFile')).toBeInTheDocument()
-      })
-
-      it('Отображается анкета для статуса Signed (КД подписан)', async () => {
-        render(
-          <DocumentsArea
-            fileQuestionnaire={mockedFileQuestionnaire}
-            setQuestionnaire={mockedSetQuestionnaire}
-            status={PreparedStatus.signed}
           />,
           { wrapper: createWrapper },
         )
@@ -224,6 +252,8 @@ describe('DocumentsAreaTest', () => {
           <DocumentsArea
             fileQuestionnaire={mockedFileQuestionnaire}
             setQuestionnaire={mockedSetQuestionnaire}
+            agreementDocs={[mockedFileAgreement, mockedFileExtra]}
+            setAgreementDocs={jest.fn}
             status={PreparedStatus.error}
           />,
           { wrapper: createWrapper },
