@@ -54,10 +54,11 @@ export const theme = createTheme({
             border: '6px solid WHITE',
           },
           '&.Mui-disabled .MuiSwitch-thumb': {
-            color: '#9CA8B4',
+            color: '#ffffff',
           },
           '&.Mui-disabled + .MuiSwitch-track': {
-            opacity: 0.7,
+            opacity: 0.3,
+            backgroundColor: '#9CA8B4',
           },
         },
       },

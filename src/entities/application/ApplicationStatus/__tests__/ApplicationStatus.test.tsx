@@ -47,7 +47,7 @@ describe('ApplicationStatus', () => {
       render(<ApplicationStatus status={StatusCode.STATUS_CODE_AUTHORIZED} />)
 
       expect(screen.getByText('Ожидание финансирования')).toBeInTheDocument()
-      expect(screen.getByText('Ожидание финансирования')).toHaveStyle('background-color: rgb(0, 255, 0)')
+      expect(screen.getByText('Ожидание финансирования')).toHaveStyle('background-color: rgb(255, 151, 30)')
     })
     it('canceledDeal', () => {
       render(<ApplicationStatus status={StatusCode.STATUS_CODE_CANCELED_DEAL} />)
@@ -59,25 +59,25 @@ describe('ApplicationStatus', () => {
       render(<ApplicationStatus status={StatusCode.STATUS_CODE_FINALLY_APPROVED} />)
 
       expect(screen.getByText('Кредит одобрен')).toBeInTheDocument()
-      expect(screen.getByText('Кредит одобрен')).toHaveStyle('background-color: rgb(0, 128, 0)')
+      expect(screen.getByText('Кредит одобрен')).toHaveStyle('background-color: rgb(23, 161, 49)')
     })
     it('financed', () => {
       render(<ApplicationStatus status={StatusCode.STATUS_CODE_FINANCED} />)
 
       expect(screen.getByText('Кредит выдан')).toBeInTheDocument()
-      expect(screen.getByText('Кредит выдан')).toHaveStyle('background-color: rgb(0, 255, 127)')
+      expect(screen.getByText('Кредит выдан')).toHaveStyle('background-color: rgb(23, 161, 49)')
     })
     it('formation', () => {
       render(<ApplicationStatus status={StatusCode.STATUS_CODE_FORMATION} />)
 
       expect(screen.getByText('Формирование КД')).toBeInTheDocument()
-      expect(screen.getByText('Формирование КД')).toHaveStyle('background-color: rgb(0, 128, 0)')
+      expect(screen.getByText('Формирование КД')).toHaveStyle('background-color: rgb(23, 161, 49)')
     })
     it('signed', () => {
       render(<ApplicationStatus status={StatusCode.STATUS_CODE_SIGNED} />)
 
       expect(screen.getByText('КД подписан')).toBeInTheDocument()
-      expect(screen.getByText('КД подписан')).toHaveStyle('background-color: rgb(0, 128, 0)')
+      expect(screen.getByText('КД подписан')).toHaveStyle('background-color:  rgb(23, 161, 49)')
     })
   })
 

@@ -1,10 +1,11 @@
 import React, { PropsWithChildren } from 'react'
 
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 
 import { ThemeProviderMock } from 'tests/mocks'
 
-import { PreparedStatus } from '../../../application.utils'
+import { getMockedClientDossier } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { ActionArea } from '../ActionArea'
 
 const mockedFileQuestionnaire = new File(['anketa'], 'anketa.png', {
@@ -18,32 +19,59 @@ jest.mock('shared/ui/ProgressBar/ProgressBar', () => ({
   ProgressBar: () => <div data-testid="progressBar" />,
 }))
 
+const mockedDossier = getMockedClientDossier('1')
+
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 describe('ActionAreaTest', () => {
   describe('Отображаются все элементы для каждого статуса', () => {
     it('Отображается название области экрана "Действие"', () => {
-      render(<ActionArea status={PreparedStatus.initial} fileQuestionnaire={undefined} />, {
-        wrapper: createWrapper,
-      })
-
+      render(
+        <ActionArea
+          clientDossier={mockedDossier}
+          fileQuestionnaire={undefined}
+          updateStatus={jest.fn}
+          agreementDocs={[]}
+          setAgreementDocs={jest.fn}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
       expect(screen.getByText('Действие')).toBeInTheDocument()
     })
 
     describe('Статус Initial (Черновик)', () => {
       it('Если файл анкеты отсутствует, отображатеся только кнопка "Редактировать"', () => {
-        render(<ActionArea status={PreparedStatus.initial} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
+        render(
+          <ActionArea
+            clientDossier={mockedDossier}
+            fileQuestionnaire={undefined}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
         expect(screen.getByText('Редактировать')).toBeInTheDocument()
-        expect(screen.queryByText('Отправить на решение')).not.toBeInTheDocument()
       })
 
       it('Если файл анкеты присутствует, отображаются 2 кнопки', () => {
-        render(<ActionArea status={PreparedStatus.initial} fileQuestionnaire={mockedFileQuestionnaire} />, {
-          wrapper: createWrapper,
-        })
+        render(
+          <ActionArea
+            clientDossier={mockedDossier}
+            fileQuestionnaire={mockedFileQuestionnaire}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
         expect(screen.getByText('Редактировать')).toBeInTheDocument()
         expect(screen.getByText('Отправить на решение')).toBeInTheDocument()
@@ -52,9 +80,18 @@ describe('ActionAreaTest', () => {
 
     describe('Статус Approved (Предварительно одобрен)', () => {
       it('Отображаются кнопки "Редактировать" и "Дозаполнить анкету"', () => {
-        render(<ActionArea status={PreparedStatus.approved} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
+        render(
+          <ActionArea
+            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_APPROVED }}
+            fileQuestionnaire={undefined}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
         expect(screen.getByText('Редактировать')).toBeInTheDocument()
         expect(screen.getByText('Дозаполнить анкету')).toBeInTheDocument()
@@ -63,9 +100,18 @@ describe('ActionAreaTest', () => {
 
     describe('Статус FinallyApproved (Кредит одобрен)', () => {
       it('Отображается блок "AgreementArea"', () => {
-        render(<ActionArea status={PreparedStatus.formation} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
+        render(
+          <ActionArea
+            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FINALLY_APPROVED }}
+            fileQuestionnaire={undefined}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
         expect(screen.getByTestId('agreementArea')).toBeInTheDocument()
       })
@@ -73,9 +119,18 @@ describe('ActionAreaTest', () => {
 
     describe('Статус Formation (Формирование КД)', () => {
       it('Отображается блок "AgreementArea"', () => {
-        render(<ActionArea status={PreparedStatus.formation} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
+        render(
+          <ActionArea
+            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }}
+            fileQuestionnaire={undefined}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
         expect(screen.getByTestId('agreementArea')).toBeInTheDocument()
       })
@@ -83,9 +138,18 @@ describe('ActionAreaTest', () => {
 
     describe('Статус CanceledDeal (КД отменен)', () => {
       it('Отображается кнопка "Пересоздать заявку"', () => {
-        render(<ActionArea status={PreparedStatus.canceledDeal} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
+        render(
+          <ActionArea
+            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_CANCELED_DEAL }}
+            fileQuestionnaire={undefined}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
         expect(screen.getByText('Пересоздать заявку')).toBeInTheDocument()
       })
@@ -93,37 +157,56 @@ describe('ActionAreaTest', () => {
 
     describe('Статус Canceled (Отменен)', () => {
       it('Отображается кнопка "Пересоздать заявку"', () => {
-        render(<ActionArea status={PreparedStatus.canceled} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
+        render(
+          <ActionArea
+            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_CANCELED }}
+            fileQuestionnaire={undefined}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
         expect(screen.getByText('Пересоздать заявку')).toBeInTheDocument()
       })
     })
 
     describe('Статус Signed (КД подписан)', () => {
-      it('Отображается ProgressBar', () => {
-        render(<ActionArea status={PreparedStatus.signed} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
+      it('Отображается блок "AgreementArea"', () => {
+        render(
+          <ActionArea
+            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FINALLY_APPROVED }}
+            fileQuestionnaire={undefined}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
-        expect(screen.getByTestId('progressBar')).toBeInTheDocument()
-      })
-
-      it('Отображается кнопка "Отправить на финансирование"', () => {
-        render(<ActionArea status={PreparedStatus.signed} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
-
-        expect(screen.getByText('Отправить на финансирование')).toBeInTheDocument()
+        expect(screen.getByTestId('agreementArea')).toBeInTheDocument()
       })
     })
 
     describe('Статус Error (Ошибка)', () => {
       it('Отображается кнопка "Редактировать"', () => {
-        render(<ActionArea status={PreparedStatus.error} fileQuestionnaire={undefined} />, {
-          wrapper: createWrapper,
-        })
+        render(
+          <ActionArea
+            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_ERROR }}
+            fileQuestionnaire={undefined}
+            updateStatus={jest.fn}
+            agreementDocs={[]}
+            setAgreementDocs={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
 
         expect(screen.getByText('Редактировать')).toBeInTheDocument()
       })

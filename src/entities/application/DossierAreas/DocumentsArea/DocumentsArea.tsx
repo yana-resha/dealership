@@ -13,15 +13,20 @@ import { useStyles } from './DocumentsArea.styles'
 type Props = {
   fileQuestionnaire: File | undefined
   setQuestionnaire: (file: File | undefined) => void
+  agreementDocs: (File | undefined)[]
+  setAgreementDocs: (files: (File | undefined)[]) => void
   status: PreparedStatus
 }
 
 export function DocumentsArea(props: Props) {
   const classes = useStyles()
-  const { fileQuestionnaire, setQuestionnaire, status } = props
-  const [agreementDocs, setAgreementDocs] = useState<(File | undefined)[]>([])
+  const { fileQuestionnaire, setQuestionnaire, agreementDocs, setAgreementDocs, status } = props
   const [isDocsLoading, setIsDocsLoading] = useState(false)
-  const showDownloadLoanAgreement = [PreparedStatus.authorized, PreparedStatus.financed].includes(status)
+  const showDownloadLoanAgreement = [
+    PreparedStatus.authorized,
+    PreparedStatus.financed,
+    PreparedStatus.signed,
+  ].includes(status)
 
   useEffect(() => {
     const fetchAgreement = async () => {
@@ -29,7 +34,7 @@ export function DocumentsArea(props: Props) {
       setAgreementDocs(documents)
       setIsDocsLoading(false)
     }
-    if (showDownloadLoanAgreement) {
+    if (showDownloadLoanAgreement && !agreementDocs.length) {
       setIsDocsLoading(true)
       fetchAgreement()
     }

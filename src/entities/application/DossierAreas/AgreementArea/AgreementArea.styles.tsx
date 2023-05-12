@@ -23,10 +23,29 @@ export const useStyles = makeStyles(theme => ({
     gap: theme.spacing(3),
   },
 
+  documentContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(3),
+  },
+
   document: {
     display: 'flex',
     justifyContent: 'space-between',
-    gap: theme.spacing(7),
+    alignItems: 'center',
+    gap: theme.spacing(22),
+  },
+
+  radioGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(3),
+  },
+
+  buttonsContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(3),
   },
 
   textButton: {
@@ -39,30 +58,6 @@ export const useStyles = makeStyles(theme => ({
       '&.MuiTypography-root': {
         textDecoration: 'underline',
       },
-    },
-  },
-
-  switchContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignSelf: 'center',
-    gap: theme.spacing(2),
-  },
-
-  switch: {
-    '& .MuiSwitch-track': {
-      transition: theme.transitions.create(['background-color'], {
-        duration: 500,
-      }),
-    },
-  },
-
-  switchLabel: {
-    '&.MuiInputLabel-root': {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      color: theme.palette.grey[900],
     },
   },
 }))

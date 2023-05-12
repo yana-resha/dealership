@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { Box } from '@mui/material'
 
@@ -8,11 +8,17 @@ import { formatNumber, formatTerm } from 'shared/lib/utils'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
 
-import { getStatus, PreparedStatus } from '../../application.utils'
+import { AdditionalOptionsTypes, getStatus, PreparedStatus } from '../../application.utils'
+import { AdditionalOptions, ClientDossier } from '../__tests__/mocks/clientDetailedDossier.mock'
 import { useStyles } from './InformationArea.styles'
 
+interface AdditionalOptionInfo {
+  value: string
+  gridColumn: number
+}
+
 type Props = {
-  clientDossier: any
+  clientDossier: ClientDossier
 }
 
 export function InformationArea(props: Props) {
@@ -32,16 +38,37 @@ export function InformationArea(props: Props) {
     productSum,
     term,
     productName,
+    additionalOptions,
   } = clientDossier
+  const additionalEquipment = additionalOptions.filter(
+    option => option.optionType === AdditionalOptionsTypes.additionalEquipment,
+  )
+  const dealerServices = additionalOptions.filter(
+    option => option.optionType === AdditionalOptionsTypes.dealerServices,
+  )
+  const bankServices = additionalOptions.filter(
+    option => option.optionType === AdditionalOptionsTypes.bankServices,
+  )
   const status = getStatus(clientDossier.status)
   const showGraphicButton = [
     PreparedStatus.initial,
     PreparedStatus.processed,
     PreparedStatus.approved,
     PreparedStatus.finallyApproved,
-    PreparedStatus.formation,
-    PreparedStatus.signed,
   ].includes(status)
+
+  const getAdditionalOptionsInfo = useCallback((additionalOptions: AdditionalOptions[]) => {
+    const additionalOptionsInfo: AdditionalOptionInfo[] = []
+    for (const additionalOption of additionalOptions) {
+      additionalOptionsInfo.push(
+        { value: additionalOption.typeOfProduct, gridColumn: 2 },
+        { value: additionalOption.price + ' руб.', gridColumn: 1 },
+        { value: additionalOption.inCredit ? 'В кредит' : 'Не в кредит', gridColumn: 4 },
+      )
+    }
+
+    return additionalOptionsInfo
+  }, [])
 
   return (
     <Box className={classes.blockContainer}>
@@ -83,6 +110,56 @@ export function InformationArea(props: Props) {
           </SberTypography>
         </Box>
       )}
+      {!!additionalEquipment.length && (
+        <SberTypography sberautoVariant="body2" component="p" gridColumn="span 7">
+          Дополнительное оборудование
+        </SberTypography>
+      )}
+      {getAdditionalOptionsInfo(additionalEquipment).map((optionInfo, index) => (
+        <SberTypography
+          key={index}
+          sberautoVariant="body3"
+          component="p"
+          gridColumn={'span ' + optionInfo.gridColumn}
+          minWidth="min-content"
+        >
+          {optionInfo.value}
+        </SberTypography>
+      ))}
+
+      {!!dealerServices.length && (
+        <SberTypography sberautoVariant="body2" component="p" gridColumn="span 7">
+          Дополнительные услуги дилера
+        </SberTypography>
+      )}
+      {getAdditionalOptionsInfo(dealerServices).map((optionInfo, index) => (
+        <SberTypography
+          key={index}
+          sberautoVariant="body3"
+          component="p"
+          gridColumn={'span ' + optionInfo.gridColumn}
+          minWidth="min-content"
+        >
+          {optionInfo.value}
+        </SberTypography>
+      ))}
+
+      {!!bankServices.length && (
+        <SberTypography sberautoVariant="body2" component="p" gridColumn="span 7">
+          Дополнительные услуги банка
+        </SberTypography>
+      )}
+      {getAdditionalOptionsInfo(bankServices).map((optionInfo, index) => (
+        <SberTypography
+          key={index}
+          sberautoVariant="body3"
+          component="p"
+          gridColumn={'span ' + optionInfo.gridColumn}
+          minWidth="min-content"
+        >
+          {optionInfo.value}
+        </SberTypography>
+      ))}
     </Box>
   )
 }
