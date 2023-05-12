@@ -8,7 +8,14 @@ import * as useCheckAuthRedirectHooks from '../hooks/useCheckAuthRedirect'
 import * as LoginFormHooks from '../hooks/useGetAuthLink'
 import { LoginForm } from '../LoginForm'
 
-jest.mock('shared/ui/SnackbarErrorProvider/SnackbarErrorProvider')
+const mockEnqueue = jest.fn()
+
+jest.mock('notistack', () => ({
+  ...jest.requireActual('notistack'),
+  useSnackbar: () => ({
+    enqueueSnackbar: mockEnqueue,
+  }),
+}))
 
 const mockedUseGetAuthLink = jest.spyOn(LoginFormHooks, 'useGetAuthLink')
 const mockUseCheckAuthRedirect = jest.spyOn(useCheckAuthRedirectHooks, 'useCheckAuthRedirect')
@@ -96,7 +103,7 @@ describe('LoginForm', () => {
       </MockProviders>,
     )
 
-    const textBtn = screen.getByText('Войти по Сбер ID')
+    const textBtn = screen.getByText('Войти')
     expect(textBtn).toBeInTheDocument()
   })
 

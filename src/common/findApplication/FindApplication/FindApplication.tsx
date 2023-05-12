@@ -7,7 +7,7 @@ import { ApplicationFilters } from 'entities/application/ApplicationFilters/Appl
 import { FindApplicationsReq } from 'entities/application/ApplicationFilters/ApplicationFilters.types'
 import { ApplicationTable } from 'entities/application/ApplicationTable/ApplicationTable'
 import { StatusFilter } from 'entities/application/StatusFilter/StatusFilter'
-import { getPointOfSaleFromCookies } from 'shared/utils/getPointOfSaleFromCookies'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
 import { PreparedTableData } from '../../../entities/application/ApplicationTable/ApplicationTable.types'
 import { ClientDetailedDossier } from '../ClientDetailedDossier'

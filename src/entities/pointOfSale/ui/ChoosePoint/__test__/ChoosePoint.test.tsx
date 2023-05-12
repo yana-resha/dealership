@@ -35,7 +35,7 @@ const mockResponse = [
   },
 ]
 
-const mockedUseGetVendorListQuery: jest.SpyInstance = jest.spyOn(PoSApi, 'useGetVendorListQuery')
+const mockedUseGetVendorsListQuery: jest.SpyInstance = jest.spyOn(PoSApi, 'useGetVendorsListQuery')
 const mockedSavePointOfSaleToCookies: jest.SpyInstance = jest.spyOn(PoSUtil, 'savePointOfSaleToCookies')
 jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
@@ -56,7 +56,7 @@ disableConsole('error')
 describe('ChoosePoint', () => {
   describe('Все элементы отображаются', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
         data: mockResponse,
         error: undefined,
         isLoading: false,
@@ -75,7 +75,7 @@ describe('ChoosePoint', () => {
 
   describe('Если передан пропс isHeader, меняется размер и кнопка', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
         data: mockResponse,
         error: undefined,
         isLoading: false,
@@ -99,7 +99,7 @@ describe('ChoosePoint', () => {
 
   describe('Ожидание загрузки автосалонов обрабатывается', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
         data: undefined,
         error: undefined,
         isLoading: true,
@@ -119,9 +119,9 @@ describe('ChoosePoint', () => {
 
   describe('Список автосалонов успешно подгружается в Автокомплит', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse,
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
         isLoading: false,
       }))
       render(<ChoosePoint />, { wrapper: createWrapper })
@@ -143,9 +143,9 @@ describe('ChoosePoint', () => {
 
   describe('Взаимодействие со списком салонов выполняется корректно', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse,
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
         isLoading: false,
       }))
       render(<ChoosePoint />, { wrapper: createWrapper })
@@ -186,9 +186,9 @@ describe('ChoosePoint', () => {
 
   describe('При нажатии кнопки "Войти" видим корректную модалку', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse,
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
         isLoading: false,
       }))
       render(<ChoosePoint />, { wrapper: createWrapper })
@@ -211,9 +211,9 @@ describe('ChoosePoint', () => {
 
   describe('Сохранение выбранной точки в Cookies выполняется корректно', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse,
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
         isLoading: false,
       }))
       render(<ChoosePoint />, { wrapper: createWrapper })
@@ -236,9 +236,9 @@ describe('ChoosePoint', () => {
     const successFn = jest.fn()
 
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse,
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
         isLoading: false,
       }))
       render(<ChoosePoint onSuccessEditing={successFn} />, { wrapper: createWrapper })
@@ -259,9 +259,9 @@ describe('ChoosePoint', () => {
 
   describe('Сохранение выбранной точки не выполняется, если нажали "Нет" в модальном окне', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse,
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
         isLoading: false,
       }))
       render(<ChoosePoint />, { wrapper: createWrapper })
@@ -283,9 +283,9 @@ describe('ChoosePoint', () => {
 
   describe('Сохранение точки не выполняется, если она не была выбрана', () => {
     beforeEach(() => {
-      mockedUseGetVendorListQuery.mockImplementation(() => ({
-        data: undefined,
-        error: mockResponse,
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
         isLoading: false,
       }))
       render(<ChoosePoint />, { wrapper: createWrapper })

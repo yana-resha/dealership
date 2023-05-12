@@ -8,7 +8,7 @@ import { sleep } from 'shared/lib/sleep'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
 /** Отслеживаем обратный редирект с TeamID и запрашиваем токены */
-export const useCheckAuthRedirect = (onReject: (title: string, text: string) => void) => {
+export const useCheckAuthRedirect = (onReject: (text: string) => void) => {
   const navigate = useNavigate()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -26,23 +26,24 @@ export const useCheckAuthRedirect = (onReject: (title: string, text: string) => 
         setSearchParams(new URLSearchParams(''))
 
         const data = await getToken({ authCode: code, state })
-        if (!data.jwtAccessToken || !data.refreshToken) {
+        if (!data.accessJwt || !data.refreshToken) {
           throw new Error('Invalid response data')
         }
 
         // Делаем небольшую паузу, что бы у пользователя перед глазами не мерцал экран
-        await sleep(1000)
-        authToken.jwt.save(data.jwtAccessToken)
+        authToken.jwt.save(data.accessJwt)
         authToken.refresh.save(data.refreshToken)
+
+        await sleep(1500)
         navigate(appRoutePaths.vendorList)
       } catch (err) {
         const makeError = (error: unknown): { message: string } => ({
-          message: 'Не удалось авторизоваться, попробуйте еще раз',
+          message: 'Ошибка авторизации. Не удалось авторизоваться, попробуйте еще раз',
         })
 
         const error = makeError(err)
 
-        onReject('Ошибка авторизации', error.message)
+        onReject(error.message)
       } finally {
         setIsLoading(false)
       }

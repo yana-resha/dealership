@@ -5,6 +5,7 @@ export default makeStyles(theme => ({
     width: '100%',
     height: '48px',
     '&.MuiButton-root': {
+      marginTop: theme.spacing(3),
       borderRadius: 12 * theme.shape.borderRadius,
     },
   },
@@ -40,5 +41,14 @@ export default makeStyles(theme => ({
 
   button: {
     backgroundColor: theme.palette.background.paper + '!important',
+  },
+
+  dialogBtn: {
+    '&.MuiButton-root': {
+      minWidth: 160,
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      borderRadius: 12 * theme.shape.borderRadius,
+    },
   },
 }))

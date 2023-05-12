@@ -67,7 +67,7 @@ describe('useCheckAuthRedirect', () => {
 
   it('при наличии code и state получаем токены и сохраняем их', async () => {
     getTokenMock.mockImplementation(async () => ({
-      jwtAccessToken: 'fake_jwt_token',
+      accessJwt: 'fake_jwt_token',
       refreshToken: 'fake_refresh_token',
     }))
 

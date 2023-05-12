@@ -3,6 +3,7 @@
 // Сделать рефакторинг - вынести в shared
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { FindApplicationsResponse, FindApplicationsRequest } from '@sberauto/loanapplifecycledc-proto/public'
+
 import { appConfig } from 'config'
 
 import { PreparedTableData } from '../../../entities/application/ApplicationTable/ApplicationTable.types'
@@ -12,7 +13,8 @@ import { transformResToTableData } from './FindApplication.utils'
 
 export const appLifeCycleApi = createApi({
   reducerPath: 'findApplications',
-  baseQuery: defaultBaseQuery({ baseUrl: `${appConfig.apiUrl}` }),
+  // TODO DCB-198 : когда перестанет возвращаться 401ая, то убрать +mock
+  baseQuery: defaultBaseQuery({ baseUrl: `${appConfig.apiUrl}+mock` }),
   tagTypes: ['findApplications'],
   endpoints: build => ({
     findApplications: build.query<PreparedTableData[], FindApplicationsRequest>({

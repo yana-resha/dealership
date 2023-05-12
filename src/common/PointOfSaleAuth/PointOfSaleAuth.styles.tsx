@@ -6,7 +6,7 @@ export default makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    width: '413px',
+    width: 560,
     height: 'auto',
     boxSizing: 'border-box',
     padding: theme.spacing(3),
@@ -40,5 +40,18 @@ export default makeStyles(theme => ({
       fontSize: 19,
       lineHeight: theme.spacing(3),
     },
+  },
+  subtitle: {
+    '&.MuiTypography-root': {
+      fontWeight: 400,
+      fontSize: 14,
+      color: theme.palette.grey[500],
+      marginBottom: theme.spacing(1),
+    },
+  },
+  autocompleteContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
   },
 }))

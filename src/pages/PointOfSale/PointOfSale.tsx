@@ -4,7 +4,7 @@ import { Paper } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Navigate } from 'react-router-dom'
 
-import { useCheckToken } from 'common/auth'
+import { useAuthContext } from 'common/auth'
 import { PointOfSaleAuth } from 'common/PointOfSaleAuth'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 export function PointOfSale() {
   const classes = useStyles()
 
-  const isAuth = useCheckToken()
+  const { isAuth } = useAuthContext()
 
   if (!isAuth) {
     return <Navigate to={appRoutePaths.auth} replace />

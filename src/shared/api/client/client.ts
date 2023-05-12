@@ -1,3 +1,5 @@
+import { getUserSessionId } from 'shared/lib/getUserSessionId'
+
 import { Options } from '../helpers/baseFetch'
 import { authToken } from '../token'
 
@@ -11,6 +13,7 @@ class Rest {
   /* Обновить токен */
   private refreshMethod?: RefreshMethod
   private logoutMethod?: LogoutMethod
+  private isRefreshing?: boolean
 
   static instance(): Rest {
     if (!instance) {
@@ -22,19 +25,7 @@ class Rest {
 
   /** Установить флаг статуса процесса рефреша токена */
   private setIsRefreshing(value: boolean) {
-    /* Используем localStorage, потому что токен один на все вкладки,
-    следовательно и процесс рефреша должен быть синхронизирован */
-    if (!value) {
-      localStorage.removeItem('isRefreshing')
-    }
-    localStorage.setItem('isRefreshing', `${Number(value)}`)
-  }
-
-  /** Получить флаг статуса процесса рефреша токена */
-  private getIsRefreshing() {
-    const value = localStorage.getItem('isRefreshing')
-
-    return !!Number(value)
+    this.isRefreshing = value
   }
 
   setRefresh(method: RefreshMethod) {
@@ -46,14 +37,14 @@ class Rest {
   }
 
   /** Рефрешим токены */
-  private refresh = async (attempt = 0) => {
-    if (this.getIsRefreshing()) {
+  refresh = async (attempt = 0) => {
+    if (!this.isRefreshing) {
       this.setIsRefreshing(true)
 
       try {
         await this.refreshMethod?.()
       } catch (error: any) {
-        console.log('Rest.refresh err:', error)
+        console.warn('Rest.refresh err:', error)
 
         const isAuthError = error.errors?.some?.(
           (error: { code: string }) => error.code === 'Unauthenticated',
@@ -74,12 +65,12 @@ class Rest {
 
   /* Ожидаем пока не завершиться рефреш */
   private waitingRefreshed = async (): Promise<void> => {
-    if (!this.getIsRefreshing()) {
+    if (!this.isRefreshing) {
       return Promise.resolve()
     } else {
       return new Promise(resolve => {
         const timer = setInterval(() => {
-          if (!this.getIsRefreshing()) {
+          if (!this.isRefreshing) {
             clearInterval(timer)
             resolve()
           }
@@ -102,13 +93,18 @@ class Rest {
       ...opt
     } = options
 
-    await this.waitingRefreshed()
+    if (!url.includes('refreshAuthByToken')) {
+      await this.waitingRefreshed()
+    }
 
     const headers = new Headers({
       'Content-Type': 'application/json',
       ...additionalHeaders,
     })
-
+    const userSessionId = getUserSessionId()
+    if (userSessionId) {
+      // headers.append('X-Session-Id', userSessionId)
+    }
     if (withCredentials) {
       headers.append('Authorization', `Bearer ${authToken.jwt.get()}`)
     }

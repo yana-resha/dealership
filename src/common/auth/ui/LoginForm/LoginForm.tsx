@@ -1,10 +1,10 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { Avatar, Box, Button, CircularProgress, Collapse, Typography } from '@mui/material'
+import { useSnackbar } from 'notistack'
 
 import { ReactComponent as AvatarLogo } from 'assets/icons/avatar.svg'
 import SberTypography from 'shared/ui/SberTypography'
-import { useSnackbarErrorContext } from 'shared/ui/SnackbarErrorProvider/SnackbarErrorProvider'
 
 import { useCheckAuthRedirect } from './hooks/useCheckAuthRedirect'
 import { useGetAuthLink } from './hooks/useGetAuthLink'
@@ -13,15 +13,11 @@ import useStyles from './LoginForm.styles'
 export function LoginForm() {
   const classes = useStyles()
 
-  const snackbarRef = useSnackbarErrorContext()
+  const { enqueueSnackbar } = useSnackbar()
 
   const showError = useCallback(
-    (title: string, text: string) => {
-      if (snackbarRef) {
-        snackbarRef.show(title, text)
-      }
-    },
-    [snackbarRef],
+    (text: string) => enqueueSnackbar(text, { variant: 'error' }),
+    [enqueueSnackbar],
   )
 
   const { authLink, isLoading: authLinkLoading, error } = useGetAuthLink()
@@ -35,7 +31,7 @@ export function LoginForm() {
         <AvatarLogo />
       </Avatar>
 
-      <Typography className={classes.formMessage}>Добро пожаловать в СберАвто!</Typography>
+      <Typography className={classes.formMessage}>Добро пожаловать в Сбербанк!</Typography>
 
       <Button
         variant="contained"
@@ -44,7 +40,7 @@ export function LoginForm() {
         disabled={isLoading || !!error}
         data-testid="loginButton"
       >
-        {!isLoading && !!authLink ? 'Войти по Сбер ID' : <CircularProgress color="inherit" size={16} />}
+        {!isLoading && !!authLink ? 'Войти' : <CircularProgress color="inherit" size={16} />}
       </Button>
 
       <Collapse in={!!error} timeout="auto" unmountOnExit>

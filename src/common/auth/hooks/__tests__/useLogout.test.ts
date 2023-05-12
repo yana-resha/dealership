@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import Cookies from 'js-cookie'
 
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
-import { COOKIE_JWT_TOKEN } from 'shared/api/token'
+import { COOKIE_JWT_TOKEN, COOKIE_REFRESH_TOKEN } from 'shared/api/token'
 import { MockProviders } from 'tests/mocks'
 
 import { useLogout } from '../useLogout'
@@ -19,8 +19,9 @@ describe('useLogout', () => {
       result.current.onLogout()
     })
 
-    expect(Cookies.remove).toBeCalledTimes(2)
+    expect(Cookies.remove).toBeCalledTimes(3)
     expect(Cookies.remove).toHaveBeenNthCalledWith(1, COOKIE_JWT_TOKEN)
-    expect(Cookies.remove).toHaveBeenNthCalledWith(2, COOKIE_POINT_OF_SALE)
+    expect(Cookies.remove).toHaveBeenNthCalledWith(2, COOKIE_REFRESH_TOKEN)
+    expect(Cookies.remove).toHaveBeenNthCalledWith(3, COOKIE_POINT_OF_SALE)
   })
 })

@@ -2,6 +2,7 @@ import React from 'react'
 
 import { ReactComponent as LogoutIcon } from 'assets/icons/logout.svg'
 import { useLogout, AuthType } from 'common/auth'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { MenuItem } from './types'
 
@@ -18,7 +19,7 @@ export const useGetLogoutBtn = (props: UseGetLogoutBtnProps): MenuItem | null =>
     return {
       label: 'Выйти',
       icon: () => <LogoutIcon />,
-      path: '/auth',
+      path: appRoutePaths.auth,
       onCallback: onLogout,
     }
   }

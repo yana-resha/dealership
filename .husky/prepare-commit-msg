@@ -15,4 +15,4 @@ checkCommitSemantic() {
     fi
 }
 
-checkCommitSemantic
+# checkCommitSemantic

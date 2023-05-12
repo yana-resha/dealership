@@ -1,11 +1,16 @@
+import { createSelector } from '@reduxjs/toolkit'
+
 import { maskPhoneNumber } from 'shared/masks/InputMasks'
 
-export const slUserMainInfo = (state: RootState) => {
-  const phoneNumber = state.user?.user?.phone ? maskPhoneNumber(state.user?.user?.phone) : ''
-  const name = `${state.user?.user?.firstName ?? ''} ${state.user?.user?.lastName ?? ''}`.trim()
+export const slUserMainInfo = createSelector(
+  (state: RootState) => state.user,
+  user => {
+    const phoneNumber = user?.user?.phone ? maskPhoneNumber(user?.user?.phone) : ''
+    const name = `${user?.user?.firstName ?? ''} ${user?.user?.lastName ?? ''}`.trim()
 
-  return {
-    phoneNumber,
-    name,
-  }
-}
+    return {
+      phoneNumber,
+      name,
+    }
+  },
+)

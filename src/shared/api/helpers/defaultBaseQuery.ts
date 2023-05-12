@@ -1,5 +1,6 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 
+import { getUserSessionId } from 'shared/lib/getUserSessionId'
 import { transformRequestData, transformResponseData } from 'shared/lib/utils'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
@@ -57,7 +58,7 @@ export const defaultBaseQuery =
   > =>
   async ({ url, method = 'POST', body, options, responseHandler }) => {
     const jwt = authToken.jwt.get()
-    // const userSessionId = getUserSessionId()
+    const userSessionId = getUserSessionId()
 
     const headers: Record<string, string> = {}
     headers['Content-Type'] = 'application/json'
@@ -65,9 +66,9 @@ export const defaultBaseQuery =
     if (jwt) {
       headers['Authorization'] = `Bearer ${jwt}`
     }
-    // if (userSessionId) {
-    //   headers['X-Session-Id'] = userSessionId
-    // }
+    if (userSessionId) {
+      // headers['X-Session-Id'] = userSessionId
+    }
 
     const formattedBody = body ? JSON.stringify(transformRequestData(body)) : null
     const optionsWithToken = { body: formattedBody, headers, method, ...options }
