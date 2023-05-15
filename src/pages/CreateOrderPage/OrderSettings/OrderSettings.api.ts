@@ -1,7 +1,7 @@
 import { createLoanAppLifeCycleDc } from '@sberauto/loanapplifecycledc-proto/public'
-import { appConfig } from 'config'
 import { useMutation } from 'react-query'
 
+import { appConfig } from 'config'
 import { PreparedTableData } from 'entities/BankOffers'
 import { Rest } from 'shared/api/client/client'
 
