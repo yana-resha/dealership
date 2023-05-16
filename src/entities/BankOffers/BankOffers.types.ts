@@ -1,12 +1,13 @@
 export type PreparedTableData = {
-  id: string
-  creditProduct: string
-  initialPayment: string
-  loanTerm: string
-  monthlyPayment: string
-  lastPayment: string
-  overpayment: string
-  interestRate: string
-  insurance: boolean
-  loanAmount: string
+  productFamilyCode?: string
+  productCode?: string
+  productName?: string
+  downpayment?: string
+  term?: string
+  monthlyPayment?: string
+  lastPayment?: string
+  overpayment?: string
+  currentRate?: string
+  cascoFlag?: boolean
+  totalSum: string
 }
