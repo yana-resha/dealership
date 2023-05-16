@@ -1,16 +1,19 @@
+import { IsClientRequest } from '@sberauto/loanapplifecycledc-proto/public'
+
 import { useFindApplicationsQuery } from 'common/findApplication/FindApplication/FindApplication.api'
 
-import { OrderData } from '../OrderForm/OrderForm.types'
-
-export function useFindApplications(shouldDataFetch: boolean, initialOrderData: OrderData | undefined) {
+export function useFindApplications(
+  shouldDataFetch: boolean,
+  initialIsClientRequest: IsClientRequest | undefined,
+) {
   const { data, isSuccess, isError } = useFindApplicationsQuery(
-    { ...initialOrderData },
-    { skip: !shouldDataFetch || !initialOrderData },
+    { ...initialIsClientRequest },
+    { skip: !shouldDataFetch || !initialIsClientRequest },
   )
 
   return {
     isSuccessFindApplicationsQuery: isSuccess,
     isErrorFindApplicationsQuery: isError,
-    orderData: data,
+    IsClientRequest: data,
   }
 }

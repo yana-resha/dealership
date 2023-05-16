@@ -1,4 +1,4 @@
-import { CheckIfSberClientRequest, createLoanAppLifeCycleDc } from '@sberauto/loanapplifecycledc-proto/public'
+import { IsClientRequest, createLoanAppLifeCycleDc } from '@sberauto/loanapplifecycledc-proto/public'
 import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
@@ -7,11 +7,11 @@ import { Rest } from 'shared/api/client/client'
 const loanAppLifeCycleDcApi = createLoanAppLifeCycleDc(`${appConfig.apiUrl}`, Rest.request)
 
 //TODO DCB-194: Убрать мок из ответа
-export const checkIfSberClient = (params: CheckIfSberClientRequest) =>
+export const checkIfSberClient = (params: IsClientRequest) =>
   loanAppLifeCycleDcApi
-    .checkIfSberClient({ data: params })
+    .isClient({ data: params })
     .then(response => response.data ?? {})
-    .catch(() => ({ isSberClient: false }))
+    .catch(() => ({ isClient: false }))
 
 export const useCheckIfSberClientMutation = () =>
-  useMutation(['checkIfSberClient'], (params: CheckIfSberClientRequest) => checkIfSberClient(params))
+  useMutation(['isClient'], (params: IsClientRequest) => checkIfSberClient(params))

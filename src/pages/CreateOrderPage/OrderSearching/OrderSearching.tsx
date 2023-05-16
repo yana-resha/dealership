@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
 
-import { CheckIfSberClientResponse } from '@sberauto/loanapplifecycledc-proto/public'
+import { IsClientRequest, IsClientResponse } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ApplicationTable } from 'entities/application/ApplicationTable/ApplicationTable'
-import { OrderData, OrderForm } from 'pages/CreateOrderPage/OrderSearching/OrderForm'
+import { OrderForm } from 'pages/CreateOrderPage/OrderSearching/OrderForm'
 
 import { useFindApplications } from './hooks/useFindApplications'
 import { NoMatchesModal } from './NoMatchesModal/NoMatchesModal'
@@ -23,43 +23,41 @@ export function OrderSearching({ nextStep, onApplicationOpen }: Props) {
 
   const [shouldDataFetch, setShouldDataFetch] = useState(false)
 
-  const [initialOrderData, setInitialOrderData] = useState<OrderData | undefined>()
-  const findOrders = useCallback((data: OrderData) => {
-    setInitialOrderData(data)
+  const [initialIsClientRequest, setInitialIsClientRequest] = useState<IsClientRequest | undefined>()
+  const findOrders = useCallback((data: IsClientRequest) => {
+    setInitialIsClientRequest(data)
     setShouldDataFetch(true)
   }, [])
 
-  const { isSuccessFindApplicationsQuery, isErrorFindApplicationsQuery, orderData } = useFindApplications(
-    shouldDataFetch,
-    initialOrderData,
-  )
+  const { isSuccessFindApplicationsQuery, isErrorFindApplicationsQuery, IsClientRequest } =
+    useFindApplications(shouldDataFetch, initialIsClientRequest)
 
-  const checkIfSberClientMutation = useCheckIfSberClientMutation()
+  const { mutateAsync: checkIfSberClientMutateAsync } = useCheckIfSberClientMutation()
 
   const checkClient = useCallback(
-    async (data: OrderData) => {
-      // TODO DCB-194: Переделать работу с error на data
-      const res = (await checkIfSberClientMutation.mutateAsync(data)) as { error: CheckIfSberClientResponse }
-      if (!res.error?.isSberClient) {
+    async (data: IsClientRequest) => {
+      // TODO DCB-194: Переделать работу с error на data, возможно лучше использовать onSucces
+      const res = (await checkIfSberClientMutateAsync(data)) as { error: IsClientResponse }
+      if (!res.error?.isClient) {
         openModal()
       }
     },
-    [checkIfSberClientMutation, openModal],
+    [checkIfSberClientMutateAsync, openModal],
   )
 
   return (
     <>
       <OrderForm onSubmit={findOrders} />
       {isErrorFindApplicationsQuery && (
-        <OrderForm isNewOrder onSubmit={checkClient} initialData={initialOrderData} />
+        <OrderForm isNewOrder onSubmit={checkClient} initialData={initialIsClientRequest} />
       )}
 
-      {isSuccessFindApplicationsQuery && !!orderData?.length && (
+      {isSuccessFindApplicationsQuery && !!IsClientRequest?.length && (
         <ApplicationTable
           // TODO DCB-194: Slice использован как временное решение на период работы с моками,
           // т.к. столько строк не нужно
           // Убрать slice.метод при интеграции с бэком
-          data={orderData.slice(0, 3)}
+          data={IsClientRequest.slice(0, 3)}
           isLoading={false}
           rowsPerPage={-1}
           onClickRow={onApplicationOpen}

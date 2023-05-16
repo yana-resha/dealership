@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
 
 import { Box } from '@mui/material'
+import { IsClientRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { Formik } from 'formik'
-
-import { OrderData } from 'pages/CreateOrderPage/OrderSearching/OrderForm'
 
 import { initialValueMap } from '../../entities/orderCalculator/config'
 import { FormContainer } from './FormContainer/FormContainer'
@@ -11,7 +10,7 @@ import { useStyles } from './OrderCalculator.styles'
 import { orderСalculatorFormValidationSchema } from './utils/orderFormValidation'
 
 type Props = {
-  onSubmit: (data: OrderData) => void
+  onSubmit: (data: IsClientRequest) => void
   onChangeForm: () => void
 }
 

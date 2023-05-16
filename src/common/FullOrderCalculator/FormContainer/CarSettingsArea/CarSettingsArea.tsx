@@ -1,10 +1,13 @@
 import { useEffect } from 'react'
 
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
-import { legalPersons } from 'common/FullOrderCalculator/__tests__/FullOrderCalculator.mock'
-import { carBrands, carModels, creditProducts } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
+import {
+  carBrands,
+  carModels,
+  legalPersons,
+} from 'common/FullOrderCalculator/__tests__/FullOrderCalculator.mock'
 import {
   AreaFooter,
   CAR_CONDITIONS,

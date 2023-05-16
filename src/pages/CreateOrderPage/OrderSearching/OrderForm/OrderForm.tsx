@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { Box, Button, Typography } from '@mui/material'
+import { IsClientRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import cx from 'classnames'
 import { Form, Formik } from 'formik'
 
@@ -11,7 +12,7 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 
 import { orderFormValuesInitialValues } from './OrderForm.config'
 import { useStyles } from './OrderForm.styles'
-import { OrderData, OrderFormData } from './OrderForm.types'
+import { OrderFormData } from './OrderForm.types'
 import {
   orderFormValidationSchema,
   searchingOrderFormValidationSchema,
@@ -21,8 +22,8 @@ import {
 
 type Props = {
   isNewOrder?: boolean
-  onSubmit: (data: OrderData) => void
-  initialData?: OrderData
+  onSubmit: (data: IsClientRequest) => void
+  initialData?: IsClientRequest
 }
 
 export function OrderForm({ isNewOrder = false, onSubmit, initialData }: Props) {

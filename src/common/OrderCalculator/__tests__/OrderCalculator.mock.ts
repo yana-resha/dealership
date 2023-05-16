@@ -1,5 +1,3 @@
-export const carBrands = ['BMW', 'Fiat', 'KIA', 'Toyota', 'Skoda']
-export const carModels = ['1 series', '3 series', '5 series', '7 series', 'X series']
 export const creditProducts = ['Драйв А', 'Драйв Б', 'Драйв В']
 export const additionalEquipments = [
   'Светодиодные фары',

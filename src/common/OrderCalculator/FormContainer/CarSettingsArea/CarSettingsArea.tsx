@@ -1,7 +1,13 @@
-import { Box } from '@mui/material'
+import { useEffect, useMemo } from 'react'
 
-import { carBrands, carModels, creditProducts } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
+import { Box } from '@mui/material'
+import { useField, useFormikContext } from 'formik'
+
+import { creditProducts } from 'common/OrderCalculator/__tests__/OrderCalculator.mock'
 import { CAR_CONDITIONS, carYears, FormFieldNameMap } from 'entities/orderCalculator'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { useGetCarListQuery } from 'shared/api/dictionaryDc/dictionaryDc.api'
+import { usePrevious } from 'shared/hooks/usePrevious'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
@@ -12,6 +18,23 @@ import useStyles from './CarSettingsArea.styles'
 
 export function CarSettingsArea() {
   const classes = useStyles()
+
+  const { vendorCode } = getPointOfSaleFromCookies()
+  const { data } = useGetCarListQuery({ vendorCode })
+
+  const [carBrandField] = useField(FormFieldNameMap.carBrand)
+  const { setFieldValue } = useFormikContext()
+
+  const prevCarBrandValue = usePrevious(carBrandField.value)
+
+  const carBrands = useMemo(() => Object.keys(data?.cars || {}), [data?.cars])
+  const carModels = useMemo(() => data?.cars?.[carBrandField.value] || [], [carBrandField.value, data?.cars])
+
+  useEffect(() => {
+    if (prevCarBrandValue !== carBrandField.value) {
+      setFieldValue(FormFieldNameMap.carModel, null)
+    }
+  }, [carBrandField.value, prevCarBrandValue, setFieldValue])
 
   return (
     <CollapsibleFormAreaContainer title="Автомобиль">
@@ -36,6 +59,7 @@ export function CarSettingsArea() {
           placeholder="-"
           options={carModels}
           gridColumn="span 1"
+          disabled={!carBrandField.value}
         />
         <SelectInputFormik
           name={FormFieldNameMap.carYear}
