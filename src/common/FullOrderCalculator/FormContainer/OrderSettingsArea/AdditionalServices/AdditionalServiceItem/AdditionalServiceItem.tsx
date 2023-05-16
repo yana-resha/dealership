@@ -3,7 +3,7 @@ import { ArrayHelpers, useField } from 'formik'
 
 import { agent, provider } from 'common/FullOrderCalculator/__tests__/FullOrderCalculator.mock'
 import { BankDetails } from 'common/FullOrderCalculator/FormContainer/BankDetails/BankDetails'
-import { FormFieldNameMap, LOAN_TERM, useAdditionalServices } from 'entities/orderCalculator'
+import { FormFieldNameMap, LOAN_TERM, useAdditionalServices } from 'entities/OrderCalculator'
 import { maskDigitsOnly, maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'

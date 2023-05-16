@@ -5,7 +5,7 @@ import {
   AdditionalServicesContainer,
   FormFieldNameMap,
   useAdditionalServiceIds,
-} from 'entities/orderCalculator'
+} from 'entities/OrderCalculator'
 
 import useStyles from './AdditionalEquipment.styles'
 import { AdditionalEquipmentItem } from './AdditionalEquipmentItem/AdditionalEquipmentItem'

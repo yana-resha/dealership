@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-import { FormFieldNameMap, CAR_CONDITIONS } from 'entities/orderCalculator'
+import { FormFieldNameMap, CAR_CONDITIONS } from 'entities/OrderCalculator'
 import { FieldMessages } from 'shared/constatnts/fieldMessages'
 
 export const orderСalculatorFormValidationSchema = Yup.object().shape({

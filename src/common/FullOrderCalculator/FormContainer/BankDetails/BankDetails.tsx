@@ -8,7 +8,7 @@ import {
   bankIdentificationCodes,
   beneficiaryBanks,
 } from 'common/FullOrderCalculator/__tests__/FullOrderCalculator.mock'
-import { FormFieldNameMap } from 'entities/orderCalculator'
+import { FormFieldNameMap } from 'entities/OrderCalculator'
 import {
   maskNoRestrictions,
   maskPercent,
