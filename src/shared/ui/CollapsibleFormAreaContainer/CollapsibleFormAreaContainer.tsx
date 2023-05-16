@@ -7,15 +7,27 @@ import useStyles from './CollapsibleFormAreaContainer.styles'
 
 type Props = {
   title: string
+  disabled?: boolean
+  shouldExpanded?: boolean
 }
 
-export function CollapsibleFormAreaContainer({ title, children }: PropsWithChildren<Props>) {
+export function CollapsibleFormAreaContainer({
+  title,
+  children,
+  disabled = false,
+  shouldExpanded,
+}: PropsWithChildren<Props>) {
   const classes = useStyles()
   const [isExpanded, setExpanded] = useState(true)
   const handleAccordionChange = useCallback(() => setExpanded(prev => !prev), [])
 
   return (
-    <Accordion defaultExpanded expanded={isExpanded} className={classes.accordionContainer}>
+    <Accordion
+      defaultExpanded
+      expanded={shouldExpanded ?? isExpanded}
+      className={classes.accordionContainer}
+      disabled={disabled}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon className={classes.accordionIcon} onClick={handleAccordionChange} />}
       >
