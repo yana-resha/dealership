@@ -26,9 +26,11 @@ export const useGetAuthLink = () => {
   }, [data, isSuccessRequest])
 
   const authLink = useMemo(() => {
-    //NOTE: что бы не блочить авторизацию на деве пока нет заглушки временно ориентируемся на среду
-    if (appConfig.env !== 'prod') {
-      return appConfig.appUrl + '/auth?code=987654&state=e544b6f3-0697-49af-ac8b-72a39f20f7b8'
+    //NOTE: что бы не блочить авторизацию на деве ориентируемся на среду
+    if (appConfig.sberTeamAuthEnv === 'dev') {
+      return (
+        appConfig.appUrl + `/auth?code=987654&state=${data?.state ?? 'e544b6f3-0697-49af-ac8b-72a39f20f7b8'}`
+      )
     } else {
       return data ? authorizeUrl(data) : undefined
     }

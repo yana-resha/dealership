@@ -15,5 +15,6 @@ export const appConfig = {
   apiUrl: env('REACT_APP_API_URL'),
   apixUrl: env('REACT_APP_APIX_URL'),
   sberTeamIdUrl: env('REACT_APP_SBER_TEAM_ID_URL'),
-  env: env<'dev' | 'stage' | 'prod'>('REACT_APP_ENVIROMENT'),
+  env: env<'dev' | 'stage' | 'prod'>('REACT_APP_ENVIRONMENT'),
+  sberTeamAuthEnv: env<'dev' | 'integration'>('REACT_APP_SBER_TEAM_ID_ENVIRONMENT'),
 }
