@@ -8,7 +8,10 @@ function encodeGetParams(params: Record<string, string | undefined>) {
     (param): param is [string, string] => typeof param[1] === 'string',
   )
 
-  return validParts.map(param => param.map(encodeURIComponent).join('=')).join('&')
+  return validParts
+    .map(param => param.map(encodeURIComponent).join('='))
+    .join('&')
+    .replaceAll('%2B', '+')
 }
 
 /* Формируем ссылку на страницу авторизации TeamID */
