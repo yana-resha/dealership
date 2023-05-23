@@ -56,7 +56,14 @@ export function NavigationMenu(props: Props) {
       const tabProps = { id, key: id, 'aria-controls': `vertical-tabpanel-${index}` }
       const icon = item?.icon?.({ isSelected })
 
-      return <Tab {...tabProps} label={item.label} icon={icon} className={classes.tab} />
+      return (
+        <Tab
+          {...tabProps}
+          label={<span className={classes.tabLabel}>{item.label}</span>}
+          icon={icon}
+          className={classes.tab}
+        />
+      )
     },
     [classes, location.pathname],
   )

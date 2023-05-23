@@ -20,7 +20,7 @@ export function DefaultLayout(props: Props) {
     <Box className={classes.globalContainer}>
       <Drawer />
 
-      <Box display="grid" gridAutoRows="auto 1fr">
+      <Box display="grid" gridAutoRows="auto 1fr" className={classes.contentContainer}>
         {isHeader && (
           <AppBar className={classes.appBar} position="static">
             <Toolbar>
