@@ -5,7 +5,7 @@ import { Box, Button, Dialog, IconButton } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
 import { ReactComponent as NoDocs } from 'assets/icons/nodocs.svg'
-import { FileUploadBlock } from 'entities/FileUploadBlock'
+import { FileUploadBlock } from 'shared/ui/FileUploadBlock'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { useFieldsConfig } from './DownloadClientDocs.hooks'

@@ -7,7 +7,7 @@ import { UseQueryOptions, useQuery } from 'react-query'
 
 import { appConfig } from 'config'
 
-import { Rest } from './client/client'
+import { Rest } from './client'
 
 const dictionaryDcApi = createDictionaryDc(`${appConfig.apiUrl}`, Rest.request)
 

@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-import { FieldMessages } from 'shared/constatnts/fieldMessages'
+import { FieldMessages } from 'shared/constants/fieldMessages'
 
 import { CAR_CONDITIONS, FormFieldNameMap } from '../config'
 

@@ -17,10 +17,10 @@ import { useNavigate } from 'react-router-dom'
 
 import { ReactComponent as DoneIcon } from 'assets/icons/done.svg'
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
-import { useGetVendorsListQuery } from 'shared/api/pointsOfSale.api'
 import { defaultRoute } from 'shared/navigation/routerPath'
 import SberTypography from 'shared/ui/SberTypography'
 
+import { useGetVendorsListQuery } from './ChoosePoint.api'
 import useStyles from './ChoosePoint.styles'
 import {
   pointsOfSaleFilter,
@@ -35,7 +35,7 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   const theme = useTheme()
   const navigate = useNavigate()
 
-  const { data, error, isLoading } = useGetVendorsListQuery({})
+  const { data, error, isLoading } = useGetVendorsListQuery()
   const [chosenOption, setChosenOption] = useState<Vendor | null>(value ?? null)
   const [validationError, setValidationError] = useState<boolean>(false)
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)

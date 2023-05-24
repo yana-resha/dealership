@@ -2,11 +2,10 @@ import { useEffect } from 'react'
 
 import { Box, Skeleton, Typography } from '@mui/material'
 
-import { useGetUser } from 'entities/user/api/useRequest'
+import { useGetUserQuery } from 'entities/user/api/requestHooks'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
-import { getUser } from '../../api/requests'
 import { slUserMainInfo } from '../../model/selectors/slUserMainInfo'
 import { setUserInfo } from '../../model/userSlice'
 
@@ -14,7 +13,7 @@ export function UserInfo() {
   const creditExpert = useAppSelector(state => slUserMainInfo(state))
   const dispatch = useAppDispatch()
 
-  const { data: user, error, isLoading } = useGetUser()
+  const { data: user, error, isLoading } = useGetUserQuery()
 
   useEffect(() => {
     if (user) {

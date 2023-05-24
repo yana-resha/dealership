@@ -17,7 +17,8 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
-import { ClientData, configAddressInitialValues } from '../../config/clientFormInitialValues'
+import { ClientData } from '../../ClientForm.types'
+import { configAddressInitialValues } from '../../config/clientFormInitialValues'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './PassportArea.styles'
 

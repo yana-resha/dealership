@@ -1,8 +1,7 @@
-import { waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
 import { URLSearchParamsInit, useNavigate, useSearchParams } from 'react-router-dom'
 
-import * as request from 'common/auth/api/requests'
+import * as authdcApi from 'shared/api/requests/authdc'
 import { authToken } from 'shared/api/token'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
@@ -40,7 +39,7 @@ const useNavigateMock = useNavigate as jest.MockedFunction<typeof useNavigate>
 const useSearchParamsMock = useSearchParams as jest.MockedFunction<typeof useSearchParams>
 const navigateMock = jest.fn()
 
-const getTokenMock = jest.spyOn(request, 'getToken')
+const getTokenMock = jest.spyOn(authdcApi, 'getToken')
 
 describe('useCheckAuthRedirect', () => {
   const onRejectMock = jest.fn()

@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { Rest } from 'shared/api/client/client'
+import { Rest } from 'shared/api/client'
 import * as checkJwtFreshes from 'shared/api/helpers/checkJwtFresh'
 import { MockProviders } from 'tests/mocks'
 
@@ -8,7 +8,7 @@ import * as useAuthContextHooks from '../../ui/AuthProvider/context'
 import { useRefreshControl } from '../useRefreshControl'
 
 jest.mock('shared/api/token', () => ({ authToken: { jwt: { get: () => 'jwt_token' } } }))
-jest.mock('shared/api/client/client')
+jest.mock('shared/api/client')
 
 const useAuthContextToken = jest.spyOn(useAuthContextHooks, 'useAuthContext')
 const mockCheckJwtFresh = jest.spyOn(checkJwtFreshes, 'checkJwtFresh')

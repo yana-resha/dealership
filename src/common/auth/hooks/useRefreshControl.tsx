@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { Rest } from 'shared/api/client/client'
+import { Rest } from 'shared/api/client'
 import { checkJwtFresh } from 'shared/api/helpers/checkJwtFresh'
 import { authToken } from 'shared/api/token'
 

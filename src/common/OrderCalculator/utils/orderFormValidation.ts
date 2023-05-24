@@ -1,9 +1,9 @@
 import * as Yup from 'yup'
 
 import { FormFieldNameMap, CAR_CONDITIONS } from 'entities/OrderCalculator'
-import { FieldMessages } from 'shared/constatnts/fieldMessages'
+import { FieldMessages } from 'shared/constants/fieldMessages'
 
-export const orderСalculatorFormValidationSchema = Yup.object().shape({
+export const orderCalculatorFormValidationSchema = Yup.object().shape({
   [FormFieldNameMap.carCondition]: Yup.string().required(FieldMessages.required),
   [FormFieldNameMap.carBrand]: Yup.string().nullable().required(FieldMessages.required),
   [FormFieldNameMap.carModel]: Yup.string().nullable().required(FieldMessages.required),

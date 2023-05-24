@@ -3,4 +3,4 @@ import { UserInfo } from './ui/UserInfo/UserInfo'
 
 export { userSlice, UserInfo }
 
-export { useGetUser } from './api/useRequest'
+export { useGetUserQuery } from './api/requestHooks'

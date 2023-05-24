@@ -7,7 +7,7 @@ import { maskCyrillicAndDigits } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 
-import { Address } from '../../config/clientFormInitialValues'
+import { Address } from '../../ClientForm.types'
 import { clientAddressValidationSchema } from '../../config/clientFormValidation'
 import { useStyles } from './AddressDialog.styles'
 

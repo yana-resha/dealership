@@ -9,7 +9,7 @@ import { initialValueMap, OrderCalculatorFields } from 'entities/OrderCalculator
 import { FormContainer } from './FormContainer/FormContainer'
 import { useStyles } from './OrderCalculator.styles'
 import { mapValuesForCalculateCreditRequest } from './utils/orderFormMapper'
-import { orderСalculatorFormValidationSchema } from './utils/orderFormValidation'
+import { orderCalculatorFormValidationSchema } from './utils/orderFormValidation'
 
 type Props = {
   isOfferLoading: boolean
@@ -28,10 +28,10 @@ export function OrderCalculator({ isOfferLoading, onSubmit, onChangeForm }: Prop
   )
 
   return (
-    <Box className={classes.formContainer} data-testid="orderСalculatorForm">
+    <Box className={classes.formContainer} data-testid="orderCalculatorForm">
       <Formik
         initialValues={initialValueMap}
-        validationSchema={orderСalculatorFormValidationSchema}
+        validationSchema={orderCalculatorFormValidationSchema}
         onSubmit={handleSubmit}
       >
         <FormContainer isOfferLoading={isOfferLoading} onChangeForm={onChangeForm} />

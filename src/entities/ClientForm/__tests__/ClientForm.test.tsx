@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import { MockStore } from 'redux-mock-store'
 
-import { ThemeProviderMock } from 'tests/mocks'
+import { MockProviders, ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { ClientForm } from '../ClientForm'
@@ -34,7 +34,7 @@ interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
-const createWrapper = ({ children }: WrapperProps) => <ThemeProviderMock>{children}</ThemeProviderMock>
+const createWrapper = ({ children }: WrapperProps) => <MockProviders>{children}</MockProviders>
 
 disableConsole('error')
 

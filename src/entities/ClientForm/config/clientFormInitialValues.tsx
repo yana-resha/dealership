@@ -1,65 +1,4 @@
-export interface Address {
-  region: string
-  district: string
-  city: string
-  townType: string
-  town: string
-  streetType: string
-  street: string
-  house: string
-  building: string
-  block: string
-  flat: string
-}
-
-export interface ClientData {
-  clientName: string
-  hasNameChanged: boolean
-  clientFormerName: string
-  numOfChildren: string
-  familyStatus: string
-  passport: string
-  birthDate: Date | null
-  birthPlace: string
-  passportDate: Date | null
-  divisionCode: string
-  issuedBy: string
-  registrationAddressString: string
-  registrationAddress: Address
-  regNotKladr: boolean
-  regAddrIsLivingAddr: boolean
-  livingAddressString: string
-  livingAddress: Address
-  livingNotKladr: boolean
-  mobileNumber: string
-  additionalNumber: string
-  email: string
-  averageIncome: string
-  additionalIncome: string
-  incomeConfirmation: boolean
-  familyIncome: string
-  expenses: string
-  relatedToPublic: string
-  ndfl2File: File | null
-  ndfl3File: File | null
-  bankStatementFile: File | null
-  incomeProofUploadValidator: string
-  secondDocumentType: string
-  secondDocumentNumber: string
-  secondDocumentDate: Date | null
-  secondDocumentIssuedBy: string
-  occupation: string
-  employmentDate: Date | null
-  employerName: string
-  employerPhone: string
-  employerAddress: Address
-  employerAddressString: string
-  emplNotKladr: boolean
-  employerInn: string
-  specialMarkReason: string
-  specialMark: boolean
-  questionnaireFile: File | null
-}
+import { Address, ClientData } from '../ClientForm.types'
 
 export const configAddressInitialValues: Address = {
   region: '',
@@ -76,13 +15,13 @@ export const configAddressInitialValues: Address = {
 }
 
 export const configInitialValues: ClientData = {
-  clientName: 'Терентьев Михаил Павлович',
+  clientName: '',
   hasNameChanged: false,
   clientFormerName: '',
   numOfChildren: '',
   familyStatus: '',
-  passport: '1234 567890',
-  birthDate: new Date(1985, 0, 20, 0, 0, 0, 0),
+  passport: '',
+  birthDate: null,
   birthPlace: '',
   passportDate: null,
   divisionCode: '',
@@ -94,7 +33,7 @@ export const configInitialValues: ClientData = {
   livingAddressString: '',
   livingAddress: configAddressInitialValues,
   livingNotKladr: false,
-  mobileNumber: '89005553535',
+  mobileNumber: '',
   additionalNumber: '',
   email: '',
   averageIncome: '',

@@ -5,6 +5,7 @@ import { useQueryClient } from 'react-query'
 
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
 import { removeUserInfo } from 'entities/user/model/userSlice'
+import { clearOrder } from 'pages/CreateOrderPage/model/orderSlice'
 import { authToken } from 'shared/api/token'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 
@@ -15,6 +16,7 @@ export const useLogout = () => {
   const onLogout = useCallback(() => {
     // Чистим данные стора
     dispatch(removeUserInfo())
+    dispatch(clearOrder())
 
     // Чистим куки
     authToken.jwt.delete()

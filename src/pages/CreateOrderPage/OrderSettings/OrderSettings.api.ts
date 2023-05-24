@@ -2,7 +2,7 @@ import { CalculateCreditRequest, createDictionaryDc } from '@sberauto/dictionary
 import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
-import { Rest } from 'shared/api/client/client'
+import { Rest } from 'shared/api/client'
 
 import { mockCalculateCreditResponse } from './__tests__/OrderSettings.test.mock'
 

@@ -6,8 +6,7 @@ import { DefaultLayout } from 'common/layout/DefaultLayout'
 import { CreateOrderPage } from 'pages/CreateOrderPage'
 import { DealershipPage } from 'pages/Dealership'
 import { NotFoundPage } from 'pages/NotFound'
-
-import { appRoutePaths, defaultRoute } from '../../../shared/navigation/routerPath'
+import { appRoutePaths, defaultRoute } from 'shared/navigation/routerPath'
 
 export function MainRouter(): JSX.Element {
   return (

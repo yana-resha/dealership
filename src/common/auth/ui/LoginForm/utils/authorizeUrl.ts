@@ -16,7 +16,6 @@ function encodeGetParams(params: Record<string, string | undefined>) {
 
 /* Формируем ссылку на страницу авторизации TeamID */
 export const authorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: GetStateAndNonceResponse) => {
-  /* TODO DCB-181: может быть SUID | SIAM - нужно проверить при интеграции. */
   const realm = 'SIAM'
   const path = `/auth/realms/${realm}/protocol/openid-connect/auth`
 

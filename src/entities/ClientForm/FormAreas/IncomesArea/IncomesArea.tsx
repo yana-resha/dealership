@@ -8,7 +8,7 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
-import { ClientData } from '../../config/clientFormInitialValues'
+import { ClientData } from '../../ClientForm.types'
 import { IncomeProofUploadArea } from '../IncomeProofUploadArea/IncomeProofUploadArea'
 import useStyles from './IncomesArea.styles'
 

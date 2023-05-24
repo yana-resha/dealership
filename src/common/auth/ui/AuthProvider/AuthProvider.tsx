@@ -2,9 +2,9 @@ import React, { useEffect } from 'react'
 
 import { useCheckToken } from 'common/auth/hooks/useCheckToken'
 import { useRefreshControl } from 'common/auth/hooks/useRefreshControl'
-import { Rest } from 'shared/api/client/client'
+import { Rest } from 'shared/api/client'
+import { refreshAuthByToken } from 'shared/api/requests/authdc'
 
-import { refreshAuthByToken } from '../../api/requests'
 import { useLogout } from '../../hooks/useLogout'
 import { AuthContext } from './context'
 
