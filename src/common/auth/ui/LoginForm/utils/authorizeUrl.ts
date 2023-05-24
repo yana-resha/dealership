@@ -27,7 +27,7 @@ export const authorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: Get
     /* TODO DCB-181: соединителем может выступать '+' или ' ' - нужно проверить при интеграции. */
     scope,
     /* TODO DCB-181: значение по умолчанию, можно не указывать. Проверить работу без этого параметра. */
-    responseMode: 'fragment',
+    responseMode: 'query',
     state,
     nonce,
   })
