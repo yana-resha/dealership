@@ -8,7 +8,7 @@ import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
 
-import { ClientData } from '../../config/clientFormInitialValues'
+import { ClientData } from '../../ClientForm.types'
 import { useStyles } from './FraudDialog.styles'
 
 const SPECIAL_MARK = 'specialMark'

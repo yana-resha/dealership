@@ -1,16 +1,25 @@
 import { renderHook } from '@testing-library/react-hooks'
 import Cookies from 'js-cookie'
+import { act } from 'react-dom/test-utils'
 
-import { COOKIE_JWT_TOKEN } from '../../../../shared/api/token'
+import { authToken } from 'shared/api/token'
+import { COOKIE_JWT_TOKEN } from 'shared/api/token'
+
 import { useCheckToken } from '../useCheckToken'
+
+const mockOnLogout = jest.fn()
+jest.mock('../useLogout', () => ({ useLogout: () => ({ onLogout: mockOnLogout }) }))
 
 jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
 }))
 
-jest.useFakeTimers()
-
 describe('useCheckToken', () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+    jest.clearAllMocks()
+  })
+
   afterEach(() => {
     Cookies.remove(COOKIE_JWT_TOKEN)
   })
@@ -46,5 +55,19 @@ describe('useCheckToken', () => {
     unmount()
 
     expect(clearIntervalSpy).toHaveBeenCalled()
+  })
+
+  it('вызывается onLogout когда токен протухает', () => {
+    const getTokenMock = jest.spyOn(authToken.jwt, 'get').mockImplementation(() => 'token')
+
+    renderHook(() => useCheckToken())
+
+    getTokenMock.mockImplementation(() => '')
+
+    act(() => {
+      jest.advanceTimersByTime(550)
+    })
+
+    expect(mockOnLogout).toHaveBeenCalledTimes(1)
   })
 })

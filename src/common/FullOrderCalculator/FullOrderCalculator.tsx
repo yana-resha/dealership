@@ -26,7 +26,7 @@ export function FullOrderCalculator({ onSubmit, onChangeForm }: Props) {
   )
 
   return (
-    <Box className={classes.formContainer} data-testid="fullOrderСalculatorForm">
+    <Box className={classes.formContainer} data-testid="fullOrderCalculatorForm">
       <Formik
         initialValues={fullInitialValueMap}
         validationSchema={fullOrderFormValidationSchema}

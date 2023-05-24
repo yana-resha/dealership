@@ -1,16 +1,16 @@
 import { waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
 
+import * as authsberteamidApi from 'shared/api/requests/authsberteamid'
 import { MockProviders } from 'tests/mocks'
 
-import * as AuthApi from '../../../../api/requests'
 import { useGetAuthLink } from '../useGetAuthLink'
 
 jest.mock('js-cookie', () => ({
   remove: jest.fn(),
 }))
 
-const mockedUseStartAuthSessionQuery = jest.spyOn(AuthApi, 'getStateAndNonce')
+const mockedUseStartAuthSessionQuery = jest.spyOn(authsberteamidApi, 'getStateAndNonce')
 
 describe('useGetAuthLink', () => {
   it('После запроса параметров для авторизационной ссылки, сслыка подставляется в кнопку', async () => {

@@ -19,7 +19,7 @@ describe('FullOrderSettings', () => {
   })
 
   it('Изначально отображается только форма', () => {
-    expect(screen.getByTestId('fullOrderСalculatorForm')).toBeInTheDocument()
-    // expect(screen.queryByTestId('bankOffers')).not.toBeInTheDocument()
+    expect(screen.getByTestId('fullOrderCalculatorForm')).toBeInTheDocument()
+    expect(screen.queryByTestId('bankOffers')).not.toBeInTheDocument()
   })
 })

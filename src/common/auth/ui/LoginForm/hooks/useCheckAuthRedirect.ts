@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { getToken } from 'common/auth/api/requests'
+import { getToken } from 'shared/api/requests/authdc'
 import { authToken } from 'shared/api/token'
 import { sleep } from 'shared/lib/sleep'
 import { appRoutePaths } from 'shared/navigation/routerPath'
@@ -30,10 +30,10 @@ export const useCheckAuthRedirect = (onReject: (text: string) => void) => {
           throw new Error('Invalid response data')
         }
 
-        // Делаем небольшую паузу, что бы у пользователя перед глазами не мерцал экран
         authToken.jwt.save(data.accessJwt)
         authToken.refresh.save(data.refreshToken)
 
+        // Делаем небольшую паузу, что бы у пользователя перед глазами не мерцал экран
         await sleep(1500)
         navigate(appRoutePaths.vendorList)
       } catch (err) {

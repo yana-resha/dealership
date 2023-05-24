@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { store } from 'app/store'
 import { AuthProvider } from 'common/auth'
-// import { TabBlocker } from 'entities/tabManagement'
+import { TabBlocker } from 'entities/tabManagement'
 
 import { Router } from './Router'
 import { theme } from './theme'
@@ -21,14 +21,13 @@ export function App() {
       <StoreProvider store={store}>
         <ThemeProvider theme={theme}>
           <SnackbarProvider hideIconVariant dense>
-            {/* FIXME: https://jira.x.sberauto.com/browse/DCB-146 */}
-            {/* <TabBlocker> */}
-            <BrowserRouter basename="/">
-              <AuthProvider>
-                <Router />
-              </AuthProvider>
-            </BrowserRouter>
-            {/* </TabBlocker> */}
+            <TabBlocker>
+              <BrowserRouter basename="/">
+                <AuthProvider>
+                  <Router />
+                </AuthProvider>
+              </BrowserRouter>
+            </TabBlocker>
           </SnackbarProvider>
         </ThemeProvider>
       </StoreProvider>

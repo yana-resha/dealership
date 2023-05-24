@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 
 import { FormFieldNameMap } from 'entities/OrderCalculator'
-import { FieldMessages } from 'shared/constatnts/fieldMessages'
+import { FieldMessages } from 'shared/constants/fieldMessages'
 
 export const bankDetailsFormValidation = {
   [FormFieldNameMap.bankIdentificationCode]: Yup.string()

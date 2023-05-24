@@ -2,14 +2,14 @@ import React, { PropsWithChildren } from 'react'
 
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Form, Formik, useFormikContext } from 'formik'
+import { Form, Formik } from 'formik'
 import * as mockFormik from 'formik'
 
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
-import { Address } from '../../../config/clientFormInitialValues'
+import { Address } from '../../../ClientForm.types'
 import { AddressDialog } from '../AddressDialog'
 
 jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({

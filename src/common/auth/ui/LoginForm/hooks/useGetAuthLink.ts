@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useQuery } from 'react-query'
 
-import { getStateAndNonce } from 'common/auth/api/requests'
 import { appConfig } from 'config'
+import { getStateAndNonce } from 'shared/api/requests/authsberteamid'
 
 import { authorizeUrl } from '../utils/authorizeUrl'
 

@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { FindApplication } from 'common/findApplication/FindApplication'
+import { FindApplication } from 'common/findApplication/findApplications'
 
 import { useStyles } from './Dealership.styles'
 

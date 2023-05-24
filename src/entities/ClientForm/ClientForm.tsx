@@ -3,8 +3,10 @@ import React from 'react'
 import { Box, Button } from '@mui/material'
 import { Form, Formik } from 'formik'
 
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+
 import { useStyles } from './ClientForm.styles'
-import { ClientData, configInitialValues } from './config/clientFormInitialValues'
+import { ClientData } from './ClientForm.types'
 import { clientFormValidationSchema } from './config/clientFormValidation'
 import { CommunicationArea } from './FormAreas/CommunicationArea/CommunicationArea'
 import { FraudDialog } from './FormAreas/FraudDialog/FraudDialog'
@@ -13,9 +15,12 @@ import { JobArea } from './FormAreas/JobArea/JobArea'
 import { PassportArea } from './FormAreas/PassportArea/PassportArea'
 import { QuestionnaireUploadArea } from './FormAreas/QuestionnaireUploadArea/QuestionnaireUploadArea'
 import { SecondDocArea } from './FormAreas/SecondDocArea/SecondDocArea'
+import { makeClientForm } from './utils/makeClienForm'
 
 export function ClientForm() {
   const classes = useStyles()
+
+  const initialValues = useAppSelector(state => makeClientForm(state.order.order))
 
   function onSubmit(values: ClientData) {
     if (values.regAddrIsLivingAddr) {
@@ -29,16 +34,13 @@ export function ClientForm() {
     if (values.specialMarkReason !== '') {
       values.specialMark = true
     }
-    console.log(values)
+
+    console.log('ClientForm.onSubmit values:', values)
   }
 
   return (
     <Box className={classes.formContainer}>
-      <Formik
-        initialValues={configInitialValues}
-        validationSchema={clientFormValidationSchema}
-        onSubmit={onSubmit}
-      >
+      <Formik initialValues={initialValues} validationSchema={clientFormValidationSchema} onSubmit={onSubmit}>
         <Form className={classes.clientForm}>
           <PassportArea />
           <CommunicationArea />

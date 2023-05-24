@@ -6,7 +6,7 @@ import {
 import { UseQueryOptions, useQuery } from 'react-query'
 
 import { appConfig } from 'config'
-import { Rest } from 'shared/api/client/client'
+import { Rest } from 'shared/api/client'
 import { prepearCars } from 'shared/lib/prepearCars'
 
 import { carBrands } from './dictionaryDc.mock'

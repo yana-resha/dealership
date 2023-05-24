@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { useNavigate } from 'react-router-dom'
+import { authToken } from 'shared/api/token'
 
-import { appRoutePaths } from 'shared/navigation/routerPath'
-
-import { authToken } from '../../../shared/api/token'
+import { useLogout } from './useLogout'
 
 type Timer = any
 
@@ -12,15 +10,9 @@ type Timer = any
 export const useCheckToken = () => {
   const [token, setToken] = useState(authToken.jwt.get())
 
-  const navigate = useNavigate()
+  const { onLogout } = useLogout()
 
   const timerRef = useRef<Timer | undefined>()
-
-  const redirectToLogin = useCallback(() => {
-    if (window.location.pathname !== appRoutePaths.auth) {
-      navigate(appRoutePaths.auth)
-    }
-  }, [navigate])
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
@@ -29,7 +21,7 @@ export const useCheckToken = () => {
       if (newToken !== token) {
         setToken(newToken)
         if (!newToken) {
-          redirectToLogin()
+          onLogout()
         }
       }
     }, 500)
@@ -37,7 +29,7 @@ export const useCheckToken = () => {
     return () => {
       clearInterval(timerRef.current)
     }
-  }, [redirectToLogin, token])
+  }, [onLogout, token])
 
   return !!token
 }

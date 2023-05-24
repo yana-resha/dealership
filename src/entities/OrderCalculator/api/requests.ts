@@ -1,7 +1,7 @@
 import { createDictionaryDc, GetVendorOptionsRequest } from '@sberauto/dictionarydc-proto/public'
 
 import { appConfig } from 'config'
-import { Rest } from 'shared/api/client/client'
+import { Rest } from 'shared/api/client'
 
 import { mockGetVendorOptionsResponse } from '../__mocks__/apiMocks'
 

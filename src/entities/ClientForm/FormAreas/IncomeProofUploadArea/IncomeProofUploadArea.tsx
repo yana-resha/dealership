@@ -10,7 +10,7 @@ import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography'
 import { UploadFile } from 'shared/ui/UploadFile/UploadFile'
 
-import { ClientData } from '../../config/clientFormInitialValues'
+import { ClientData } from '../../ClientForm.types'
 import useStyles from './IncomeProofUploadArea.styles'
 
 const NDFL2 = 'ndfl2File'
