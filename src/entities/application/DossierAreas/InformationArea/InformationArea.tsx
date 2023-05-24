@@ -1,7 +1,9 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 
-import { Box } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 
+import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
+import { ReactComponent as KeyboardArrowUp } from 'assets/icons/keyboardArrowUp.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { ReactComponent as ShareIcon } from 'assets/icons/share.svg'
 import { formatNumber, formatTerm } from 'shared/lib/utils'
@@ -50,6 +52,8 @@ export function InformationArea(props: Props) {
     option => option.optionType === AdditionalOptionsTypes.bankServices,
   )
   const status = getStatus(clientDossier.status)
+  const [isAdditionalEquipmentShown, setIsAdditionalEquipmentShown] = useState(true)
+  const [isDealerServicesShown, setIsDealerServicesShown] = useState(true)
   const showGraphicButton = [
     PreparedStatus.initial,
     PreparedStatus.processed,
@@ -69,6 +73,14 @@ export function InformationArea(props: Props) {
 
     return additionalOptionsInfo
   }, [])
+
+  const toggleAdditionalEquipment = useCallback(() => {
+    setIsAdditionalEquipmentShown(!isAdditionalEquipmentShown)
+  }, [isAdditionalEquipmentShown])
+
+  const toggleDealerServices = useCallback(() => {
+    setIsDealerServicesShown(!isDealerServicesShown)
+  }, [isDealerServicesShown])
 
   return (
     <Box className={classes.blockContainer}>
@@ -111,43 +123,70 @@ export function InformationArea(props: Props) {
         </Box>
       )}
       {!!additionalEquipment.length && (
-        <SberTypography sberautoVariant="body2" component="p" gridColumn="span 7">
-          Дополнительное оборудование
-        </SberTypography>
+        <>
+          <SberTypography sberautoVariant="body2" component="p" gridColumn="span 6">
+            Дополнительное оборудование
+          </SberTypography>
+          <Box width="100%" display="flex" justifyContent="end">
+            <IconButton className={classes.optionsButton} onClick={toggleAdditionalEquipment}>
+              {isAdditionalEquipmentShown ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+          </Box>
+        </>
       )}
       {getAdditionalOptionsInfo(additionalEquipment).map((optionInfo, index) => (
-        <SberTypography
-          key={index}
-          sberautoVariant="body3"
-          component="p"
-          gridColumn={'span ' + optionInfo.gridColumn}
-          minWidth="min-content"
-        >
-          {optionInfo.value}
-        </SberTypography>
+        <React.Fragment key={optionInfo.value + index}>
+          {isAdditionalEquipmentShown && (
+            <SberTypography
+              sberautoVariant="body3"
+              component="p"
+              gridColumn={'span ' + optionInfo.gridColumn}
+              minWidth="min-content"
+            >
+              {optionInfo.value}
+            </SberTypography>
+          )}
+        </React.Fragment>
       ))}
 
       {!!dealerServices.length && (
-        <SberTypography sberautoVariant="body2" component="p" gridColumn="span 7">
-          Дополнительные услуги дилера
-        </SberTypography>
+        <>
+          <SberTypography sberautoVariant="body2" component="p" gridColumn="span 6">
+            Дополнительные услуги дилера
+          </SberTypography>
+          <Box width="100%" display="flex" justifyContent="end">
+            <IconButton className={classes.optionsButton} onClick={toggleDealerServices}>
+              {isDealerServicesShown ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+          </Box>
+        </>
       )}
       {getAdditionalOptionsInfo(dealerServices).map((optionInfo, index) => (
-        <SberTypography
-          key={index}
-          sberautoVariant="body3"
-          component="p"
-          gridColumn={'span ' + optionInfo.gridColumn}
-          minWidth="min-content"
-        >
-          {optionInfo.value}
-        </SberTypography>
+        <React.Fragment key={optionInfo.value + index}>
+          {isDealerServicesShown && (
+            <SberTypography
+              sberautoVariant="body3"
+              component="p"
+              gridColumn={'span ' + optionInfo.gridColumn}
+              minWidth="min-content"
+            >
+              {optionInfo.value}
+            </SberTypography>
+          )}
+        </React.Fragment>
       ))}
 
       {!!bankServices.length && (
-        <SberTypography sberautoVariant="body2" component="p" gridColumn="span 7">
-          Дополнительные услуги банка
-        </SberTypography>
+        <>
+          <SberTypography sberautoVariant="body2" component="p" gridColumn="span 6">
+            Дополнительные услуги банка
+          </SberTypography>
+          <Box width="100%" display="flex" justifyContent="end">
+            <IconButton className={classes.optionsButton}>
+              {isAdditionalEquipmentShown ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+          </Box>
+        </>
       )}
       {getAdditionalOptionsInfo(bankServices).map((optionInfo, index) => (
         <SberTypography

@@ -30,4 +30,9 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
+
+  optionsButton: {
+    width: '30px',
+    height: '30px',
+  },
 }))
