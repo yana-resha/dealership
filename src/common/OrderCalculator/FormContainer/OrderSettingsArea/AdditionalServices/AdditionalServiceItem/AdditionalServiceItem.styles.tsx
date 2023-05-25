@@ -5,16 +5,17 @@ export default makeStyles(theme => ({
     gap: '24px',
     display: 'grid',
     gridTemplateColumns: 'repeat(5, 1fr)',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
 
   switchContainer: {
-    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(4),
   },
 
   btnContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
     gap: theme.spacing(0.5),
+    marginTop: theme.spacing(3.6),
   },
 }))

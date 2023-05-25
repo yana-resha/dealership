@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useField, useFormikContext } from 'formik'
 import debounce from 'lodash/debounce'
+
+import { usePrevious } from 'shared/hooks/usePrevious'
 
 export function getPercentFromValue(valueStr: string, baseStr: string) {
   const value = parseFloat(valueStr)
@@ -28,8 +30,8 @@ export function getValueFromPercent(percentStr: string, baseStr: string) {
 
   return `${Math.round((percent / 100) * base)}`
 }
-
-export function useInitialPayment(carCostName: string, initialPaymentName: string) {
+// TODO DCB-272 удалить этот хук, большой калькулятор перевести на useInitialPayment
+export function useInitialPaymentFullCalc(carCostName: string, initialPaymentName: string) {
   const { setFieldValue } = useFormikContext()
   const [carCostField] = useField(carCostName)
   const [initialPaymentField] = useField(initialPaymentName)
@@ -51,4 +53,74 @@ export function useInitialPayment(carCostName: string, initialPaymentName: strin
   }, [carCostField.value, initialPaymentField.value])
 
   return { initialPaymentPercent, handleInitialPaymentPercentChange }
+}
+
+export function useInitialPayment(
+  carCostName: string,
+  initPaymentName: string,
+  initPaymentPercentName: string,
+  isDisabledForm: boolean,
+) {
+  const { setFieldValue } = useFormikContext()
+  const [carCostField] = useField(carCostName)
+  const [initPaymentField, , { setTouched: setInitPaymentTouched }] = useField(initPaymentName)
+  const [initPaymentPercentField, , { setTouched: setInitPaymentPercentTouched }] =
+    useField(initPaymentPercentName)
+  const prevInitPayment = usePrevious(initPaymentField.value)
+  const prevPercent = usePrevious(initPaymentPercentField.value)
+  const [autoChangedInitPayment, setAutoChangedInitPayment] = useState(false)
+  const [autoChangedInitPaymentPercent, setAutoChangedInitPaymentPercent] = useState(false)
+
+  const handleInitialPaymentFocus = useCallback(() => setAutoChangedInitPayment(false), [])
+  const handleInitialPaymentPercentFocus = useCallback(() => setAutoChangedInitPaymentPercent(false), [])
+  const handleInitialPaymentBlur = useCallback(() => setInitPaymentTouched(true), [setInitPaymentTouched])
+  const handleInitialPaymentPercentBlur = useCallback(
+    () => setInitPaymentPercentTouched(true),
+    [setInitPaymentPercentTouched],
+  )
+
+  const handleInitialPaymentChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setFieldValue(initPaymentPercentName, getPercentFromValue(value, carCostField.value))
+        setAutoChangedInitPaymentPercent(true)
+      }, 1000),
+    [carCostField.value, initPaymentPercentName, setFieldValue],
+  )
+
+  const handleInitialPaymentPercentChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setFieldValue(initPaymentName, getValueFromPercent(value, carCostField.value))
+        setAutoChangedInitPayment(true)
+      }, 1000),
+    [carCostField.value, initPaymentName, setFieldValue],
+  )
+
+  useEffect(() => {
+    if (!autoChangedInitPayment && initPaymentField.value !== prevInitPayment) {
+      handleInitialPaymentChange(initPaymentField.value)
+    }
+  }, [initPaymentField.value])
+
+  useEffect(() => {
+    if (!autoChangedInitPaymentPercent && initPaymentPercentField.value !== prevPercent) {
+      handleInitialPaymentPercentChange(initPaymentPercentField.value)
+      setInitPaymentPercentTouched(true)
+    }
+  }, [initPaymentPercentField.value])
+
+  useEffect(() => {
+    if (isDisabledForm) {
+      setInitPaymentTouched(false)
+      setInitPaymentPercentTouched(false)
+    }
+  }, [isDisabledForm])
+
+  return {
+    handleInitialPaymentFocus,
+    handleInitialPaymentPercentFocus,
+    handleInitialPaymentBlur,
+    handleInitialPaymentPercentBlur,
+  }
 }

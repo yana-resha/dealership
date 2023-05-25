@@ -1,18 +1,26 @@
-import { AdditionalOption, CalculateCreditRequest, LoanCar } from '@sberauto/dictionarydc-proto/public'
+import {
+  AdditionalOption,
+  CalculateCreditRequest,
+  LoanCar,
+  VendorOption,
+} from '@sberauto/dictionarydc-proto/public'
 
 import {
   FormFieldNameMap,
   OrderCalculatorAdditionalService,
   OrderCalculatorFields,
-} from 'entities/OrderCalculator/config'
+} from 'entities/OrderCalculator'
 
-export const mapValuesForCalculateCreditRequest = (values: OrderCalculatorFields): CalculateCreditRequest => {
+export const mapValuesForCalculateCreditRequest = (
+  values: OrderCalculatorFields,
+  vendorOptions: VendorOption[],
+): CalculateCreditRequest => {
   const additionalOptions: AdditionalOption[] = [
     ...mapAdditionalOptions(values[FormFieldNameMap.additionalEquipments], 'additionalEquipment'),
     ...mapAdditionalOptions(values[FormFieldNameMap.dealerAdditionalServices], 'dealerServices'),
   ]
   const loanCar: LoanCar = {
-    isCarNew: values[FormFieldNameMap.carCondition] === 'Новый' ? true : false,
+    isCarNew: !!values[FormFieldNameMap.carCondition],
     autoCreateYear: Number(values[FormFieldNameMap.carYear]),
     mileage: Number(values[FormFieldNameMap.carMileage]),
     brand: values[FormFieldNameMap.carBrand] || '',
@@ -37,9 +45,10 @@ export const mapValuesForCalculateCreditRequest = (values: OrderCalculatorFields
 
   return calculateCreditRequest
 }
-
 const mapAdditionalOptions = (
   additionalOptions: OrderCalculatorAdditionalService[],
+  // TODO это не корректно, тип должен быть индивидуальным для каждой опции,
+  // переделать, когда бэк переделает ручки
   type: string,
 ): AdditionalOption[] => {
   const filteredOptions = additionalOptions.filter(option => option.productType !== '')

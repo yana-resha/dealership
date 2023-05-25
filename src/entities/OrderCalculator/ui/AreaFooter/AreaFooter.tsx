@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { Box, Button } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 
 import useStyles from './AreaFooter.styles'
 
@@ -9,6 +9,7 @@ type Props = {
   btnType?: 'submit' | 'reset' | 'button'
   onClickBtn?: () => void
   disabled?: boolean
+  isLoadingBtn?: boolean
 }
 
 export function AreaFooter({
@@ -16,6 +17,7 @@ export function AreaFooter({
   btnType,
   onClickBtn,
   disabled = false,
+  isLoadingBtn = false,
   children,
 }: PropsWithChildren<Props>) {
   const classes = useStyles()
@@ -30,7 +32,7 @@ export function AreaFooter({
         onClick={onClickBtn}
         disabled={disabled}
       >
-        {btnTitle}
+        {isLoadingBtn ? <CircularProgress color="inherit" size={25} /> : btnTitle}
       </Button>
     </Box>
   )

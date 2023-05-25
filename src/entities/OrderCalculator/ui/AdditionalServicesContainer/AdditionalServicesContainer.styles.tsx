@@ -9,7 +9,12 @@ export default makeStyles(theme => ({
     '& > .MuiAccordionSummary-root': {
       display: 'inline-flex',
       flexDirection: 'row-reverse',
-      padding: theme.spacing(3.5, 0, 0),
+      padding: 0,
+      minHeight: 'unset',
+
+      '&.Mui-expanded': {
+        minHeight: 'unset',
+      },
 
       '&:hover': {
         color: theme.palette.primary.main,
@@ -50,5 +55,13 @@ export default makeStyles(theme => ({
     '&.MuiTypography-root': {
       marginLeft: '18px',
     },
+  },
+
+  errorMessage: {
+    '&.MuiTypography-root': {
+      fontSize: '12px',
+      paddingLeft: theme.spacing(4.7),
+    },
+    color: theme.palette.error.main,
   },
 }))

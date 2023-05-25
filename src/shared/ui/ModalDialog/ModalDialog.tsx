@@ -9,13 +9,14 @@ import { useStyles } from './ModalDialog.styles'
 
 type Props = {
   isVisible: boolean
-  label: string
+  label?: string
   onClose: () => void
+  testId?: string
 }
 
 export const ModalDialog = (props: PropsWithChildren<Props>) => {
   const classes = useStyles()
-  const { isVisible, label, onClose, children } = props
+  const { isVisible, label, onClose, testId, children } = props
 
   return (
     <Dialog
@@ -25,7 +26,7 @@ export const ModalDialog = (props: PropsWithChildren<Props>) => {
       fullWidth
       onClose={onClose}
     >
-      <Box display="flex" overflow="visible">
+      <Box display="flex" overflow="visible" data-testid={testId}>
         <SberTypography sberautoVariant="h5" component="p">
           {label}
         </SberTypography>

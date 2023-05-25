@@ -1,15 +1,19 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { CalculateCreditRequest } from '@sberauto/dictionarydc-proto/public'
 import { Formik } from 'formik'
 
-import { initialValueMap, OrderCalculatorFields } from 'entities/OrderCalculator/config'
+import { initialValueMap, OrderCalculatorFields } from 'entities/OrderCalculator'
+import { ValidationParams } from 'entities/OrderCalculator/utils/baseFormValidation'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { useGetVendorOptions } from 'shared/api/dictionaryDc/dictionaryDc.api'
 
 import { FormContainer } from './FormContainer/FormContainer'
+import { ValidationParamsContext } from './FormContainer/OrderSettingsArea/ValidationParamsContext'
 import { useStyles } from './OrderCalculator.styles'
 import { mapValuesForCalculateCreditRequest } from './utils/orderFormMapper'
-import { orderCalculatorFormValidationSchema } from './utils/orderFormValidation'
+import { orderFormValidationSchema } from './utils/orderFormValidation.utils'
 
 type Props = {
   isOfferLoading: boolean
@@ -20,21 +24,31 @@ type Props = {
 export function OrderCalculator({ isOfferLoading, onSubmit, onChangeForm }: Props) {
   const classes = useStyles()
 
+  const [validationParams, setSchemaParams] = useState({})
+  const changeSchemaParams = useCallback((newParams: ValidationParams) => setSchemaParams(newParams), [])
+
+  const { vendorCode } = getPointOfSaleFromCookies()
+  const { data: vendorOptions } = useGetVendorOptions({
+    vendorCode: vendorCode,
+  })
+
   const handleSubmit = useCallback(
-    (values: OrderCalculatorFields) => {
-      onSubmit(mapValuesForCalculateCreditRequest(values))
+    async (values: OrderCalculatorFields) => {
+      onSubmit(mapValuesForCalculateCreditRequest(values, vendorOptions?.options || []))
     },
-    [onSubmit],
+    [onSubmit, vendorOptions],
   )
 
   return (
     <Box className={classes.formContainer} data-testid="orderCalculatorForm">
       <Formik
         initialValues={initialValueMap}
-        validationSchema={orderCalculatorFormValidationSchema}
+        validationSchema={orderFormValidationSchema(validationParams)}
         onSubmit={handleSubmit}
       >
-        <FormContainer isOfferLoading={isOfferLoading} onChangeForm={onChangeForm} />
+        <ValidationParamsContext changeSchemaParams={changeSchemaParams}>
+          <FormContainer isOfferLoading={isOfferLoading} onChangeForm={onChangeForm} />
+        </ValidationParamsContext>
       </Formik>
     </Box>
   )

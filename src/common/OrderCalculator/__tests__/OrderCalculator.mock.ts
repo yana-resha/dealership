@@ -1,13 +1,3 @@
-export const creditProducts = ['Драйв А', 'Драйв Б', 'Драйв В']
-export const additionalEquipments = [
-  'Светодиодные фары',
-  'Защита картера',
-  'Парктроник',
-  'Комплект зимней резины',
-  'Ёлочка ароматная',
-]
-export const dealerAdditionalServices = ['ОСАГО', 'КАСКО', 'Перекрасить авто']
-
 export const formFields = [
   'Состояние',
   'Марка',

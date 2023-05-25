@@ -27,6 +27,7 @@ export function CollapsibleFormAreaContainer({
       expanded={shouldExpanded ?? isExpanded}
       className={classes.accordionContainer}
       disabled={disabled}
+      data-testid={`accordion-${title}`}
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon className={classes.accordionIcon} onClick={handleAccordionChange} />}
