@@ -5,7 +5,7 @@ import { Box, InputLabel, TextField } from '@mui/material'
 import useStyles from './MaskedInput.styles'
 import { MaskedInputProps } from './maskedInput.types'
 
-export const MaskedInput = (props: MaskedInputProps) => {
+export const MaskedInput = React.memo((props: MaskedInputProps) => {
   const classes = useStyles()
   const {
     label,
@@ -23,7 +23,12 @@ export const MaskedInput = (props: MaskedInputProps) => {
   const [fieldValue, setFieldValue] = useState(value || '')
 
   useEffect(() => {
-    if (value && value !== fieldValue) {
+    if (
+      value !== undefined &&
+      value !== null &&
+      (typeof value === 'string' || !isNaN(value)) &&
+      value !== fieldValue
+    ) {
       setFieldValue(value)
     }
   }, [value])
@@ -53,4 +58,4 @@ export const MaskedInput = (props: MaskedInputProps) => {
       <TextField className={classes.textField} {...configTextField} />
     </Box>
   )
-}
+})

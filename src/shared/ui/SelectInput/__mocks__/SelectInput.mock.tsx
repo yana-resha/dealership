@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { SelectInputProps } from '../selectInput.types'
 
-export const MockedSelectInput = (props: SelectInputProps) => {
+export function MockedSelectInput<T extends string | number>(props: SelectInputProps<T>) {
   const { label, value, onChange, isError, errorMessage, id, placeholder, disabled } = props
   const [fieldValue, setFieldValue] = useState(value || '')
 
@@ -23,7 +23,7 @@ export const MockedSelectInput = (props: SelectInputProps) => {
           disabled={disabled}
         >
           {props.options.map(option =>
-            typeof option === 'string' ? (
+            typeof option === 'string' || typeof option === 'number' ? (
               <option key={option} value={option}>
                 {option}
               </option>

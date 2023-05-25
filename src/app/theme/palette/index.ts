@@ -8,7 +8,7 @@ export const PRIMARY_MAIN = '#2D4B7F' // Синий как Фейсбук
 export const PRIMARY_DARK = '#213860' // Темно-синий
 export const GREEN_DEEP = '#19732A' // Зеленый сбера
 export const OLIVE = '#769E3B'
-export const RED_DEEP = '#D32F2F' // Красный
+export const RED_DEEP = '#D61C2F' // Красный
 export const RED_DARK = '#9E1B32' //Темно красный
 export const ORANGE_NORMAL = '#F25700'
 

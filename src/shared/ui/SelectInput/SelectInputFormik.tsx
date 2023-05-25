@@ -4,12 +4,13 @@ import { useFormikWrapper } from '../hooks/useFormikWrapper'
 import { SelectInput } from './SelectInput'
 import { SelectInputProps } from './selectInput.types'
 
-interface Props extends Omit<SelectInputProps, 'value' | 'onChange' | 'isError' | 'errorMessage' | 'id'> {
+interface Props<T>
+  extends Omit<SelectInputProps<T>, 'value' | 'onChange' | 'isError' | 'errorMessage' | 'id'> {
   name: string
   gridColumn?: string
 }
 
-export const SelectInputFormik = (props: Props) => {
+export function SelectInputFormik<T extends string | number>(props: Props<T>) {
   const { name, label, placeholder, options, gridColumn, emptyAvailable, disabled } = props
   const { value, isError, error, onChange } = useFormikWrapper(name)
 

@@ -186,7 +186,6 @@ export const theme = createTheme({
     colors: {
       blueGray: '#ECF1FA',
       white: WHITE,
-      redDeep: RED_DEEP,
     },
   },
 })
@@ -207,7 +206,6 @@ declare module '@mui/material/styles' {
     colors: {
       blueGray: React.CSSProperties['color']
       white: React.CSSProperties['color']
-      redDeep: React.CSSProperties['color']
     }
 
     status: {
@@ -246,7 +244,6 @@ declare module '@mui/material/styles' {
     authorized: string
     financed: string
     error: string
-    redDeep: string
   }
 
   interface SimplePaletteColorOptions {

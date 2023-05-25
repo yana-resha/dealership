@@ -27,9 +27,11 @@ export const ModalDialog = (props: PropsWithChildren<Props>) => {
       onClose={onClose}
     >
       <Box display="flex" overflow="visible" data-testid={testId}>
-        <SberTypography sberautoVariant="h5" component="p">
-          {label}
-        </SberTypography>
+        {!!label && (
+          <SberTypography sberautoVariant="h5" component="p">
+            {label}
+          </SberTypography>
+        )}
         <IconButton className={classes.closeButton} onClick={onClose} data-testid="modalDialogClose">
           <Close />
         </IconButton>
