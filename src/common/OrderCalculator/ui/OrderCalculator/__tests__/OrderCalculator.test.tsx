@@ -181,21 +181,21 @@ describe('OrderCalculator', () => {
       const carCostInput = orderCalculatorForm.querySelector('#carCost')!
       userEvent.type(carCostInput, '100')
 
-      userEvent.click(screen.getByTestId('additionalEquipments.0.productType').firstElementChild as Element)
+      userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
       await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
       const additionalEquipmentsCostField = orderCalculatorForm.querySelector(
-        '[id="additionalEquipments.0.productCost"]',
+        '[id="additionalEquipments[0].productCost"]',
       )!
       await act(() => userEvent.type(additionalEquipmentsCostField, '20'))
 
       userEvent.click(
-        screen.getByTestId('dealerAdditionalServices.0.productType').firstElementChild as Element,
+        screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
       await act(async () =>
         userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
       )
       const dealerAdditionalServiceCostField = orderCalculatorForm.querySelector(
-        '[id="dealerAdditionalServices.0.productCost"]',
+        '[id="dealerAdditionalServices[0].productCost"]',
       )!
       await act(() => userEvent.type(dealerAdditionalServiceCostField, '30'))
 
@@ -211,10 +211,10 @@ describe('OrderCalculator', () => {
       const carCostInput = orderCalculatorForm.querySelector('#carCost')!
       userEvent.type(carCostInput, '100')
 
-      userEvent.click(screen.getByTestId('additionalEquipments.0.productType').firstElementChild as Element)
+      userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
       await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
       const additionalEquipmentsCostField = orderCalculatorForm.querySelector(
-        '[id="additionalEquipments.0.productCost"]',
+        '[id="additionalEquipments[0].productCost"]',
       )!
       await act(() => userEvent.type(additionalEquipmentsCostField, '100'))
       expect(
@@ -230,13 +230,13 @@ describe('OrderCalculator', () => {
       userEvent.type(carCostInput, '100')
 
       userEvent.click(
-        screen.getByTestId('dealerAdditionalServices.0.productType').firstElementChild as Element,
+        screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
       await act(async () =>
         userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
       )
       const dealerAdditionalServiceCostField = orderCalculatorForm.querySelector(
-        '[id="dealerAdditionalServices.0.productCost"]',
+        '[id="dealerAdditionalServices[0].productCost"]',
       )!
       await act(() => userEvent.type(dealerAdditionalServiceCostField, '46'))
 

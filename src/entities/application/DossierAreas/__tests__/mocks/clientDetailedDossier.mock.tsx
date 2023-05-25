@@ -2,20 +2,50 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { sleep } from 'shared/lib/sleep'
 
+export interface RequisitesBanks {
+  bankName: string
+  bankBik: string
+  bankCorrAccount: string
+  accountNumbers: string[]
+}
+
+export interface RequisitesAdditionalOptions {
+  legalEntityName: string
+  banks: RequisitesBanks[]
+}
+
+export interface RequisitesAgents {
+  agentName: string
+  banks: RequisitesBanks[]
+}
+
+export interface RequisitesDealerServices {
+  provider: string
+  agents: RequisitesAgents[]
+}
+
+export interface Requisites {
+  dealerCenterRequisites: RequisitesAdditionalOptions[]
+  dealerServicesRequisites: RequisitesDealerServices[]
+  additionalEquipmentRequisites: RequisitesAdditionalOptions[]
+}
+
 export interface AdditionalOptions {
   optionType: string
-  typeOfProduct: string
-  insuranceCompany: string
+  productType: string
+  legalPerson: string
   provider: string
-  agentReceiver: string
-  price: number
-  term: number
-  policyNumber: string
-  receiver: string
-  bankNumber: string
-  accountNumber: string
-  tax: string
-  inCredit: boolean
+  agent: string
+  productCost: number
+  bankIdentificationCode: string
+  loanTerm: number
+  documentId: string
+  beneficiaryBank: string
+  correspondentAccount: string
+  bankAccountNumber: string
+  taxPresence: boolean
+  taxation: string
+  isCredit: boolean
 }
 
 export interface ClientDossier {
@@ -43,6 +73,223 @@ export interface ClientDossier {
   additionalOptions: AdditionalOptions[]
 }
 
+export const mockRequisites = (): Requisites => ({
+  dealerCenterRequisites: [
+    {
+      legalEntityName: 'Anex',
+      banks: [
+        {
+          bankName: 'Сбербанк',
+          bankBik: '646494331',
+          bankCorrAccount: '40702810038000017249',
+          accountNumbers: ['40702810038000017240', '40702810038000017241', '40702810038000017242'],
+        },
+        {
+          bankName: 'Альфабанк',
+          bankBik: '646495442',
+          bankCorrAccount: '40702810038000014270',
+          accountNumbers: ['40702810038000014268', '40702810038000024369'],
+        },
+        {
+          bankName: 'Тинькофф Банк',
+          bankBik: '646496553',
+          bankCorrAccount: '40702810038000062390',
+          accountNumbers: ['40702810038000015243', '40702810038000062389'],
+        },
+      ],
+    },
+    {
+      legalEntityName: 'САРМАТ',
+      banks: [
+        {
+          bankName: 'ДальКомБанк',
+          bankBik: '646497664',
+          bankCorrAccount: '40702810038000011112',
+          accountNumbers: ['40702810038000011111'],
+        },
+      ],
+    },
+  ],
+  dealerServicesRequisites: [
+    {
+      provider: 'РосГосСтрах',
+      agents: [
+        {
+          agentName: 'Райффайзен Банк',
+          banks: [
+            {
+              bankName: 'МТС Банк',
+              bankBik: '642674335',
+              bankCorrAccount: '40702810038000015433',
+              accountNumbers: ['40702810038000011532', '40702810038000052379', '40702810038000015432'],
+            },
+            {
+              bankName: 'Альфабанк',
+              bankBik: '646495446',
+              bankCorrAccount: '40702810038000024370',
+              accountNumbers: ['40702810038000014268', '40702810038000024369'],
+            },
+            {
+              bankName: 'Банк Открытие',
+              bankBik: '527494327',
+              bankCorrAccount: '40702810038000054322',
+              accountNumbers: ['40702810038000012345', '40702810038000054321'],
+            },
+          ],
+        },
+        {
+          agentName: 'Почта Банк',
+          banks: [
+            {
+              bankName: 'Альфабанк',
+              bankBik: '646495448',
+              bankCorrAccount: '40702810038000024374',
+              accountNumbers: ['40702810038000014262', '40702810038000024363'],
+            },
+            {
+              bankName: 'Банк Открытие',
+              bankBik: '527494329',
+              bankCorrAccount: '40702810038000054323',
+              accountNumbers: ['40702810038000012344', '40702810038000054329'],
+            },
+          ],
+        },
+        {
+          agentName: 'Сбербанк',
+          banks: [
+            {
+              bankName: 'Банк Открытие',
+              bankBik: '527494320',
+              bankCorrAccount: '40702810038000054367',
+              accountNumbers: ['40702810038000012357'],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      provider: 'Газпром страхование',
+      agents: [
+        {
+          agentName: 'МТС Банк',
+          banks: [
+            {
+              bankName: 'Банк Русский Стандарт',
+              bankBik: '642639081',
+              bankCorrAccount: '40702810038000063479',
+              accountNumbers: ['40702810038000011532', '40702810038000042389', '40702810038000063478'],
+            },
+          ],
+        },
+        {
+          agentName: 'Qiwi Банк',
+          banks: [
+            {
+              bankName: 'Webmoney',
+              bankBik: '642635462',
+              bankCorrAccount: '40702810038000063367',
+              accountNumbers: ['40702810038000011537', '40702810038000042471', '40702810038000063934'],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      provider: 'Ингосстрах',
+      agents: [
+        {
+          agentName: 'ЛокоБанк',
+          banks: [
+            {
+              bankName: 'ДальКомБанк',
+              bankBik: '646418563',
+              bankCorrAccount: '40702810038000012223',
+              accountNumbers: ['40702810038000012222'],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  additionalEquipmentRequisites: [
+    {
+      legalEntityName: 'Arex',
+      banks: [
+        {
+          bankName: 'Сбербанк',
+          bankBik: '646494334',
+          bankCorrAccount: '40702810038000017243',
+          accountNumbers: ['40702810038000017240', '40702810038000017241', '40702810038000017242'],
+        },
+        {
+          bankName: 'Тинькофф Банк',
+          bankBik: '646496555',
+          bankCorrAccount: '40702810038000062390',
+          accountNumbers: ['40702810038000015243', '40702810038000062389'],
+        },
+      ],
+    },
+    {
+      legalEntityName: 'САРМАТ',
+      banks: [
+        {
+          bankName: 'ДальКомБанк',
+          bankBik: '646497666',
+          bankCorrAccount: '40702810038000011112',
+          accountNumbers: ['40702810038000011111'],
+        },
+      ],
+    },
+  ],
+})
+
+export const mockRequisitesForTest = (): Requisites => ({
+  dealerCenterRequisites: [
+    {
+      legalEntityName: 'Anex',
+      banks: [
+        {
+          bankName: 'Сбербанк',
+          bankBik: '646494337',
+          bankCorrAccount: '40702810038000017249',
+          accountNumbers: ['40702810038000017240'],
+        },
+      ],
+    },
+  ],
+  dealerServicesRequisites: [
+    {
+      provider: 'РосГосСтрах',
+      agents: [
+        {
+          agentName: 'Райффайзен Банк',
+          banks: [
+            {
+              bankName: 'МТС Банк',
+              bankBik: '642674338',
+              bankCorrAccount: '40702810038000015433',
+              accountNumbers: ['40702810038000011532'],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  additionalEquipmentRequisites: [
+    {
+      legalEntityName: 'Arex',
+      banks: [
+        {
+          bankName: 'Сбербанк',
+          bankBik: '646494339',
+          bankCorrAccount: '40702810038000017243',
+          accountNumbers: ['40702810038000017240'],
+        },
+      ],
+    },
+  ],
+})
+
 const mockClientDossier: ClientDossier[] = [
   {
     applicationId: '1',
@@ -69,48 +316,54 @@ const mockClientDossier: ClientDossier[] = [
     additionalOptions: [
       {
         optionType: 'dealerServices',
-        typeOfProduct: 'Название продукта',
-        insuranceCompany: 'РосГосСтрах',
-        provider: 'Росгосстрах',
-        agentReceiver: 'Имя агента',
-        price: 400000,
-        term: 24,
-        policyNumber: '6566644-33',
-        receiver: 'ФК Открытие',
-        bankNumber: '40702810038000017240',
-        accountNumber: '40702810038000017240',
-        tax: 'Без НДС',
-        inCredit: true,
+        productType: 'Название продукта',
+        legalPerson: '',
+        provider: 'РосГосСтрах',
+        agent: 'Имя агента',
+        productCost: 400000,
+        loanTerm: 24,
+        bankIdentificationCode: '',
+        documentId: '6566644-33',
+        beneficiaryBank: 'ФК Открытие',
+        correspondentAccount: '40702810038000017240',
+        bankAccountNumber: '40702810038000017240',
+        taxPresence: false,
+        taxation: '0',
+        isCredit: true,
       },
       {
         optionType: 'additionalEquipment',
-        typeOfProduct: 'Коврики',
-        insuranceCompany: '',
+        productType: 'Коврики',
+        legalPerson: 'Arex',
         provider: '',
-        agentReceiver: '',
-        price: 10000,
-        term: 0,
-        policyNumber: '',
-        receiver: 'ФК Открытие',
-        bankNumber: '40702810038000017240',
-        accountNumber: '40702810038000017240',
-        tax: 'Без НДС',
-        inCredit: true,
+        agent: '',
+        productCost: 10000,
+        loanTerm: 0,
+        bankIdentificationCode: '',
+        documentId: '',
+        beneficiaryBank: 'Тинькофф Банк',
+        correspondentAccount: '40702810038000062390',
+        bankAccountNumber: '40702810038000015243',
+        taxPresence: false,
+        taxation: '0',
+        isCredit: true,
       },
       {
         optionType: 'additionalEquipment',
-        typeOfProduct: 'Сигнализация',
-        insuranceCompany: '',
+        productType: 'Сигнализация',
+        legalPerson: 'САРМАТ',
         provider: '',
-        agentReceiver: '',
-        price: 15000,
-        term: 0,
-        policyNumber: '',
-        receiver: 'Сбербанк',
-        bankNumber: '40702810038000017111',
-        accountNumber: '40702810038000017123',
-        tax: 'С НДС',
-        inCredit: true,
+        agent: '',
+        productCost: 15000,
+        loanTerm: 0,
+        bankIdentificationCode: '',
+        documentId: '',
+        beneficiaryBank: 'ДальКомБанк',
+        correspondentAccount: '40702810038000011112',
+        bankAccountNumber: '40702810038000011111',
+        taxPresence: true,
+        taxation: '25000',
+        isCredit: false,
       },
     ],
   },
@@ -187,48 +440,37 @@ const mockClientDossier: ClientDossier[] = [
     additionalOptions: [
       {
         optionType: 'dealerServices',
-        typeOfProduct: 'Название продукта',
-        insuranceCompany: 'РосГосСтрах',
-        provider: 'Росгосстрах',
-        agentReceiver: 'Имя агента',
-        price: 400000,
-        term: 24,
-        policyNumber: '6566644-33',
-        receiver: 'ФК Открытие',
-        bankNumber: '40702810038000017240',
-        accountNumber: '40702810038000017240',
-        tax: 'Без НДС',
-        inCredit: true,
+        productType: 'Перекраска',
+        legalPerson: '',
+        provider: 'РосГосСтрах',
+        agent: 'Райффайзен Банк',
+        productCost: 400000,
+        loanTerm: 24,
+        bankIdentificationCode: '',
+        documentId: '6566644-33',
+        beneficiaryBank: 'МТС Банк',
+        correspondentAccount: '40702810038000011532',
+        bankAccountNumber: '40702810038000011532',
+        taxPresence: false,
+        taxation: '0',
+        isCredit: true,
       },
       {
         optionType: 'additionalEquipment',
-        typeOfProduct: 'Коврики',
-        insuranceCompany: '',
+        productType: 'Коврики',
+        legalPerson: 'Arex',
         provider: '',
-        agentReceiver: '',
-        price: 10000,
-        term: 0,
-        policyNumber: '',
-        receiver: 'ФК Открытие',
-        bankNumber: '40702810038000017240',
-        accountNumber: '40702810038000017240',
-        tax: 'Без НДС',
-        inCredit: true,
-      },
-      {
-        optionType: 'additionalEquipment',
-        typeOfProduct: 'Сигнализация',
-        insuranceCompany: '',
-        provider: '',
-        agentReceiver: '',
-        price: 15000,
-        term: 0,
-        policyNumber: '',
-        receiver: 'Сбербанк',
-        bankNumber: '40702810038000017111',
-        accountNumber: '40702810038000017123',
-        tax: 'С НДС',
-        inCredit: true,
+        agent: '',
+        productCost: 10000,
+        loanTerm: 0,
+        bankIdentificationCode: '',
+        documentId: '',
+        beneficiaryBank: 'Тинькофф Банк',
+        correspondentAccount: '40702810038000062390',
+        bankAccountNumber: '40702810038000062389',
+        taxPresence: false,
+        taxation: '0',
+        isCredit: false,
       },
     ],
   },
@@ -257,18 +499,20 @@ const mockClientDossier: ClientDossier[] = [
     additionalOptions: [
       {
         optionType: 'dealerServices',
-        typeOfProduct: 'Страхование колеса',
-        insuranceCompany: 'РосГосСтрах',
-        provider: 'Росгосстрах',
-        agentReceiver: 'Имя агента',
-        price: 400000,
-        term: 24,
-        policyNumber: '6566644-33',
-        receiver: 'ФК Открытие',
-        bankNumber: '40702810038000017240',
-        accountNumber: '40702810038000017240',
-        tax: 'Без НДС',
-        inCredit: true,
+        productType: 'Перекраска',
+        legalPerson: '',
+        provider: 'РосГосСтрах',
+        agent: 'Райффайзен Банк',
+        productCost: 400000,
+        loanTerm: 24,
+        bankIdentificationCode: '',
+        documentId: '6566644-33',
+        beneficiaryBank: 'МТС Банк',
+        correspondentAccount: '40702810038000011532',
+        bankAccountNumber: '40702810038000011532',
+        taxPresence: false,
+        taxation: '0',
+        isCredit: true,
       },
     ],
   },
@@ -366,7 +610,76 @@ const mockClientDossier: ClientDossier[] = [
     creditBankAccountNumber: '40702810038000017240',
     term: 3,
     productName: 'Драйв J',
-    additionalOptions: [],
+    additionalOptions: [
+      {
+        optionType: 'dealerServices',
+        productType: 'Перекраска',
+        legalPerson: '',
+        provider: 'РосГосСтрах',
+        agent: 'Райффайзен Банк',
+        productCost: 400000,
+        loanTerm: 24,
+        bankIdentificationCode: '',
+        documentId: '6566644-33',
+        beneficiaryBank: 'МТС Банк',
+        correspondentAccount: '40702810038000011532',
+        bankAccountNumber: '40702810038000011532',
+        taxPresence: false,
+        taxation: '0',
+        isCredit: true,
+      },
+      {
+        optionType: 'dealerServices',
+        productType: 'Тонирование стекол',
+        legalPerson: '',
+        provider: 'Ингосстрах',
+        agent: 'ЛокоБанк',
+        productCost: 550000,
+        loanTerm: 36,
+        bankIdentificationCode: '',
+        documentId: '6566345-45',
+        beneficiaryBank: 'ДальКомБанк',
+        correspondentAccount: '40702810038000012222',
+        bankAccountNumber: '40702810038000012222',
+        taxPresence: true,
+        taxation: '3500',
+        isCredit: false,
+      },
+      {
+        optionType: 'additionalEquipment',
+        productType: 'Коврики',
+        legalPerson: 'САРМАТ',
+        provider: '',
+        agent: '',
+        productCost: 10000,
+        loanTerm: 0,
+        bankIdentificationCode: '',
+        documentId: '',
+        beneficiaryBank: 'ДальКомБанк',
+        correspondentAccount: '40702810038000011112',
+        bankAccountNumber: '40702810038000011111',
+        taxPresence: false,
+        taxation: '0',
+        isCredit: false,
+      },
+      {
+        optionType: 'additionalEquipment',
+        productType: 'Сигнализация',
+        legalPerson: 'Arex',
+        provider: '',
+        agent: '',
+        productCost: 15000,
+        loanTerm: 0,
+        bankIdentificationCode: '',
+        documentId: '',
+        beneficiaryBank: 'Тинькофф Банк',
+        correspondentAccount: '40702810038000062390',
+        bankAccountNumber: '40702810038000062389',
+        taxPresence: true,
+        taxation: '1000',
+        isCredit: true,
+      },
+    ],
   },
   {
     applicationId: '10',

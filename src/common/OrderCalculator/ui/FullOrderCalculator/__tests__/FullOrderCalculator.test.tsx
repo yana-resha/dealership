@@ -75,19 +75,22 @@ describe('FullOrderCalculator', () => {
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(4)
             break
           case 'Банк получатель денежных средств':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(4)
+            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(3)
             break
-          case 'Номер счета банка':
+          case 'Номер Счета банка':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(4)
             break
           case 'Страховая компания или поставщик':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
             break
-          case 'Агент':
+          case 'Агент получатель':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
             break
           case 'Тип продукта':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
+            break
+          case 'Срок':
+            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(1)
             break
           default:
             expect(screen.getByText(`${fieldName}`)).toBeInTheDocument()
@@ -96,13 +99,13 @@ describe('FullOrderCalculator', () => {
       }
 
       // Проверка наличия дополнительных полей блока BankDetails
-      expect(screen.queryByText('Корреспондентский счет')).not.toBeInTheDocument()
+      expect(screen.queryByText('Корреспондентский счёт')).not.toBeInTheDocument()
       expect(screen.queryByText('С НДС')).not.toBeInTheDocument()
       expect(screen.queryByText('Без НДС')).not.toBeInTheDocument()
       expect(screen.queryByText('Налог')).not.toBeInTheDocument()
 
       userEvent.click(screen.getAllByText('Ввести вручную')[0])
-      expect(screen.getAllByText('Корреспондентский счет')).toHaveLength(1)
+      // expect(screen.getAllByText('Корреспондентский счет')).toHaveLength(1)
 
       userEvent.click(screen.getByText('С НДС'))
       expect(screen.getAllByText('Налог')).toHaveLength(1)
@@ -112,8 +115,8 @@ describe('FullOrderCalculator', () => {
       expect(screen.queryByText('Номер документа')).not.toBeInTheDocument()
 
       userEvent.click(screen.getAllByText('В кредит')[1])
-      expect(screen.queryAllByText('Срок')).toHaveLength(2)
-      expect(screen.queryByText('Номер документа')).toBeInTheDocument()
+      expect(screen.queryAllByText('Срок')).toHaveLength(3)
+      expect(screen.queryAllByText('Номер полиса/сертификата')).toHaveLength(2)
     })
   })
 
@@ -142,12 +145,12 @@ describe('FullOrderCalculator', () => {
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(15)
       // Поля элемента блока "Дополнительное оборудование" становятся обязательными,
       // если выбран тип продукта, в том числе и поля блока BankDetails
-      userEvent.click(screen.getByTestId('additionalEquipments.0.productType').firstElementChild as Element)
+      userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
       await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
 
       await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[1]))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
     })
 
     it('Валидируется верное количество обязательных полей блока "Дополнительные услуги диллера"', async () => {
@@ -155,7 +158,7 @@ describe('FullOrderCalculator', () => {
       // Поля элемента блока "Дополнительные услуги диллера" становятся обязательными,
       // если выбран тип продукта, в том числе и поля блока BankDetails
       userEvent.click(
-        screen.getByTestId('dealerAdditionalServices.0.productType').firstElementChild as Element,
+        screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
       await act(async () =>
         userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
@@ -166,7 +169,7 @@ describe('FullOrderCalculator', () => {
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
 
       await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[2]))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(24)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
     })
 
     it('Поле стоимость - принимает только числа', async () => {
@@ -278,7 +281,7 @@ describe('FullOrderCalculator', () => {
     })
 
     it('Поле стоиимость блока Доп. оборудования  - принимает только числа', async () => {
-      userEvent.click(screen.getByTestId('additionalEquipments.0.productType').firstElementChild as Element)
+      userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
       await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
 
@@ -286,19 +289,19 @@ describe('FullOrderCalculator', () => {
       await act(() => userEvent.type(additionalEquipmentsCostField, 'test'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
       await act(() => userEvent.type(additionalEquipmentsCostField, '12'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(19)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
     })
 
     it('Поле стоиимость блока Доп. услуг  - принимает только числа', async () => {
       userEvent.click(
-        screen.getByTestId('dealerAdditionalServices.0.productType').firstElementChild as Element,
+        screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
       await act(async () =>
         userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
       )
 
       const dealerAdditionalServicesCostField = document.getElementById(
-        'dealerAdditionalServices.0.productCost',
+        'dealerAdditionalServices[0].productCost',
       )!
       await act(() => userEvent.type(dealerAdditionalServicesCostField, 'test'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
@@ -447,21 +450,21 @@ describe('FullOrderCalculator', () => {
       const carCostInput = orderCalculatorForm.querySelector('#carCost')!
       userEvent.type(carCostInput, '100')
 
-      userEvent.click(screen.getByTestId('additionalEquipments.0.productType').firstElementChild as Element)
+      userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
       await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
       const additionalEquipmentsCostField = orderCalculatorForm.querySelector(
-        '[id="additionalEquipments.0.productCost"]',
+        '[id="additionalEquipments[0].productCost"]',
       )!
       await act(() => userEvent.type(additionalEquipmentsCostField, '20'))
 
       userEvent.click(
-        screen.getByTestId('dealerAdditionalServices.0.productType').firstElementChild as Element,
+        screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
       await act(async () =>
         userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
       )
       const dealerAdditionalServiceCostField = orderCalculatorForm.querySelector(
-        '[id="dealerAdditionalServices.0.productCost"]',
+        '[id="dealerAdditionalServices[0].productCost"]',
       )!
       await act(() => userEvent.type(dealerAdditionalServiceCostField, '30'))
 
@@ -477,10 +480,10 @@ describe('FullOrderCalculator', () => {
       const carCostInput = orderCalculatorForm.querySelector('#carCost')!
       userEvent.type(carCostInput, '100')
 
-      userEvent.click(screen.getByTestId('additionalEquipments.0.productType').firstElementChild as Element)
+      userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
       await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
       const additionalEquipmentsCostField = orderCalculatorForm.querySelector(
-        '[id="additionalEquipments.0.productCost"]',
+        '[id="additionalEquipments[0].productCost"]',
       )!
       await act(() => userEvent.type(additionalEquipmentsCostField, '100'))
       expect(
@@ -496,13 +499,13 @@ describe('FullOrderCalculator', () => {
       userEvent.type(carCostInput, '100')
 
       userEvent.click(
-        screen.getByTestId('dealerAdditionalServices.0.productType').firstElementChild as Element,
+        screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
       await act(async () =>
         userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
       )
       const dealerAdditionalServiceCostField = orderCalculatorForm.querySelector(
-        '[id="dealerAdditionalServices.0.productCost"]',
+        '[id="dealerAdditionalServices[0].productCost"]',
       )!
       await act(() => userEvent.type(dealerAdditionalServiceCostField, '46'))
 

@@ -9,10 +9,13 @@ import {
   getMockedClientDossier,
   getMockQuestionnaire,
 } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
-import { ActionArea } from 'entities/application/DossierAreas/ActionArea/ActionArea'
-import { DocumentsArea } from 'entities/application/DossierAreas/DocumentsArea/DocumentsArea'
-import { DossierIdArea } from 'entities/application/DossierAreas/DossierIdArea/DossierIdArea'
-import { InformationArea } from 'entities/application/DossierAreas/InformationArea/InformationArea'
+import {
+  ActionArea,
+  DocumentsArea,
+  DossierIdArea,
+  EditRequisitesArea,
+  InformationArea,
+} from 'entities/application/DossierAreas/ui'
 
 import { useStyles } from './ClientDetailedDossier.styles'
 
@@ -22,14 +25,13 @@ type Props = {
 }
 
 export function ClientDetailedDossier(props: Props) {
-  const { applicationId, onBackButton } = props
-
   const classes = useStyles()
-
+  const { applicationId, onBackButton } = props
   const [clientDossier, setClientDossier] = useState<ClientDossier>(getMockedClientDossier(applicationId))
   const [status, setStatus] = useState(clientDossier ? getStatus(clientDossier.status) : PreparedStatus.error)
   const [fileQuestionnaire, setFileQuestionnaire] = useState<File>()
   const [agreementDocs, setAgreementDocs] = useState<(File | undefined)[]>([])
+  const [isEditRequisitesMode, setIsEditRequisitesMode] = useState(false)
 
   useEffect(() => {
     const fetchQuestionnaire = async () => {
@@ -38,35 +40,44 @@ export function ClientDetailedDossier(props: Props) {
         setFileQuestionnaire(questionnaire)
       }
     }
-    fetchQuestionnaire()
+    if (!isEditRequisitesMode) {
+      fetchQuestionnaire()
+    }
   }, [])
 
   function updateStatus(statusCode: StatusCode) {
     //sendRequest
-    setClientDossier({ ...clientDossier, status: statusCode })
+    setClientDossier(prev => ({ ...prev, status: statusCode }))
     setStatus(getStatus(statusCode))
   }
 
   return (
-    <Box className={classes.pageContainer}>
-      <DossierIdArea clientDossier={clientDossier} onBackButton={onBackButton} />
-      <Box className={classes.dossierContainer}>
-        <InformationArea clientDossier={clientDossier} />
-        <DocumentsArea
-          fileQuestionnaire={fileQuestionnaire}
-          setQuestionnaire={setFileQuestionnaire}
-          agreementDocs={agreementDocs}
-          setAgreementDocs={setAgreementDocs}
-          status={status}
-        />
-        <ActionArea
-          clientDossier={clientDossier}
-          updateStatus={updateStatus}
-          fileQuestionnaire={fileQuestionnaire}
-          agreementDocs={agreementDocs}
-          setAgreementDocs={setAgreementDocs}
-        />
-      </Box>
+    <Box>
+      {isEditRequisitesMode ? (
+        <EditRequisitesArea clientDossier={clientDossier} changeRequisites={setIsEditRequisitesMode} />
+      ) : (
+        <Box className={classes.pageContainer}>
+          <DossierIdArea clientDossier={clientDossier} onBackButton={onBackButton} />
+          <Box className={classes.dossierContainer}>
+            <InformationArea clientDossier={clientDossier} />
+            <DocumentsArea
+              fileQuestionnaire={fileQuestionnaire}
+              setQuestionnaire={setFileQuestionnaire}
+              agreementDocs={agreementDocs}
+              setAgreementDocs={setAgreementDocs}
+              status={status}
+            />
+            <ActionArea
+              clientDossier={clientDossier}
+              updateStatus={updateStatus}
+              fileQuestionnaire={fileQuestionnaire}
+              agreementDocs={agreementDocs}
+              setAgreementDocs={setAgreementDocs}
+              setIsEditRequisitesMode={setIsEditRequisitesMode}
+            />
+          </Box>
+        </Box>
+      )}
     </Box>
   )
 }

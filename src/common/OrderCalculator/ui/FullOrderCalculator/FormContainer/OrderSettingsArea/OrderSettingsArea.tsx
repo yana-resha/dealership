@@ -14,6 +14,7 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
+import { Requisites } from '../../../../../../entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
 import { AdditionalEquipment } from './AdditionalEquipment/AdditionalEquipment'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
 import useStyles from './OrderSettingsArea.styles'
@@ -21,8 +22,10 @@ import useStyles from './OrderSettingsArea.styles'
 type Props = {
   disabled: boolean
   isSubmitLoading: boolean
+  requisites: Requisites
 }
-export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
+
+export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Props) {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data: vendorOptions, isError: vendorOptionsIsError } = useGetVendorOptionsQuery({
@@ -101,11 +104,12 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
           />
         </Box>
 
-        <AdditionalEquipment />
+        <AdditionalEquipment requisites={requisites.additionalEquipmentRequisites} />
         <AdditionalServices
           title="Дополнительные услуги дилера"
           options={{ productType: dealerAdditionalServices, loanTerms }}
           name={FormFieldNameMap.dealerAdditionalServices}
+          requisites={requisites.dealerServicesRequisites}
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
         />
@@ -113,6 +117,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
           title="Дополнительные услуги банка"
           options={{ productType: [], loanTerms }}
           name={FormFieldNameMap.bankAdditionalServices}
+          requisites={requisites.dealerServicesRequisites}
           disabled
         />
         {!!commonErrors.length && (

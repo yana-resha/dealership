@@ -1,8 +1,9 @@
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 
+import { DossierIdArea } from 'entities/application/DossierAreas/ui/DossierIdArea/DossierIdArea'
 import { ThemeProviderMock } from 'tests/mocks'
 
 import { ClientDetailedDossier } from '../ClientDetailedDossier'
@@ -15,16 +16,16 @@ const mockedFileQuestionnaire = new File(['questionnaire'], 'Анкета', {
   type: 'application/pdf',
 })
 
-jest.mock('entities/application/DossierAreas/DossierIdArea/DossierIdArea', () => ({
+jest.mock('entities/application/DossierAreas/ui/DossierIdArea/DossierIdArea', () => ({
   DossierIdArea: () => <div data-testid="DossierIdArea" />,
 }))
-jest.mock('entities/application/DossierAreas/InformationArea/InformationArea', () => ({
+jest.mock('entities/application/DossierAreas/ui/InformationArea/InformationArea', () => ({
   InformationArea: () => <div data-testid="InformationArea" />,
 }))
-jest.mock('entities/application/DossierAreas/DocumentsArea/DocumentsArea', () => ({
+jest.mock('entities/application/DossierAreas/ui/DocumentsArea/DocumentsArea', () => ({
   DocumentsArea: () => <div data-testid="DocumentsArea" />,
 }))
-jest.mock('entities/application/DossierAreas/ActionArea/ActionArea', () => ({
+jest.mock('entities/application/DossierAreas/ui/ActionArea/ActionArea', () => ({
   ActionArea: () => <div data-testid="ActionArea" />,
 }))
 
