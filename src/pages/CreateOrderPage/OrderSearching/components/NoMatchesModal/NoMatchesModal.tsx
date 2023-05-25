@@ -12,6 +12,8 @@ import cx from 'classnames'
 
 import { ReactComponent as CloseIcon } from 'assets/icons/close.svg'
 import { ReactComponent as NoMatchesCircleIcon } from 'assets/icons/noMatchesCircle.svg'
+import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
+import SberTypography from 'shared/ui/SberTypography/SberTypography'
 
 import { useStyles } from './NoMatchesModal.styles'
 
@@ -23,39 +25,17 @@ export function NoMatchesModal({ isVisible, onClose }: Props) {
   const classes = useStyles()
 
   return (
-    <Dialog
-      open={isVisible}
-      onClose={onClose}
-      classes={{
-        paper: classes.modalWrapper,
-      }}
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        className={classes.modalContainer}
-        data-testid="noMatchesModal"
-      >
-        <DialogContent className={classes.modalContent}>
-          <NoMatchesCircleIcon />
-          <DialogTitle className={cx(classes.modalText, classes.modalTitle)}>
-            Совпадения не найдены
-          </DialogTitle>
-          <DialogContentText className={classes.modalText}>
-            Проверьте правильность заполнения данных
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" autoFocus fullWidth className={classes.confirmBtn} onClick={onClose}>
-            Хорошо, спасибо
-          </Button>
-        </DialogActions>
-      </Box>
-      <IconButton size="small" className={classes.closeBtn} onClick={onClose}>
-        <CloseIcon />
-      </IconButton>
-    </Dialog>
+    <ModalDialog isVisible={isVisible} onClose={onClose} testId="noMatchesModal">
+      <NoMatchesCircleIcon />
+      <SberTypography sberautoVariant="h4" component="h4" className={classes.text}>
+        Совпадения не найдены
+      </SberTypography>
+      <SberTypography sberautoVariant="body3" component="p" className={classes.text}>
+        Проверьте правильность заполнения данных
+      </SberTypography>
+      <Button variant="contained" autoFocus fullWidth className={classes.confirmBtn} onClick={onClose}>
+        Хорошо, спасибо
+      </Button>
+    </ModalDialog>
   )
 }

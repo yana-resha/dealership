@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Form, useFormikContext } from 'formik'
 
+import { initialValueMap, useGetCreditProductListQuery } from 'entities/OrderCalculator'
+import { OrderCalculatorFields } from 'entities/OrderCalculator'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { useGetCreditProductListQuery } from 'shared/api/getCreditProductList.api'
 
-import { OrderCalculatorData } from '../OrderCalculator.types'
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
-import { FooterArea } from './FooterArea/FooterArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
 
 type Props = {
@@ -16,41 +15,26 @@ type Props = {
 }
 
 export function FormContainer({ isOfferLoading, onChangeForm }: Props) {
-  const { values } = useFormikContext<OrderCalculatorData>()
+  const { values, setValues } = useFormikContext<OrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
-
+  const [sentParams, setSentParams] = useState({})
   const [shouldShowOrderSettings, setShouldShowOrderSettings] = useState(false)
   const [shouldFetchProducts, setShouldFetchProducts] = useState(false)
   const changeShouldFetchProducts = useCallback(() => setShouldFetchProducts(true), [])
 
-  const sentParamsRef = useRef({})
   const isChangedBaseValues = useMemo(
-    () => Object.entries(sentParamsRef.current).some(e => values[e[0] as keyof OrderCalculatorData] !== e[1]),
-    [values],
+    () => Object.entries(sentParams).some(e => values[e[0] as keyof OrderCalculatorFields] !== e[1]),
+    [sentParams, values],
   )
 
-  const { data, isError, isFetching } = useGetCreditProductListQuery(
-    {
-      vendorCode,
-      model: values.carModel,
-      brand: values.carBrand,
-      isCarNew: !!values.carCondition,
-      autoPrice: parseInt(values.carCost, 10),
-      autoCreateYear: parseInt(values.carYear, 10),
-      mileage: parseInt(values.carMileage, 10),
-    },
-    { enabled: shouldFetchProducts },
-  )
-
+  const { data, isError, isFetching } = useGetCreditProductListQuery({
+    vendorCode,
+    values,
+    enabled: shouldFetchProducts,
+  })
   useEffect(() => {
     if (isFetching) {
-      setShouldFetchProducts(false)
-    }
-  }, [isFetching])
-
-  useEffect(() => {
-    if (!isError && data) {
-      sentParamsRef.current = {
+      const formFields = {
         carCondition: values.carCondition,
         carBrand: values.carBrand,
         carModel: values.carModel,
@@ -58,11 +42,13 @@ export function FormContainer({ isOfferLoading, onChangeForm }: Props) {
         carCost: values.carCost,
         carMileage: values.carMileage,
       }
-      setShouldShowOrderSettings(true)
+      setShouldFetchProducts(false)
+      setSentParams(formFields)
+      setValues({ ...initialValueMap, ...formFields })
     }
   }, [
-    data,
-    isError,
+    isFetching,
+    setValues,
     values.carBrand,
     values.carCondition,
     values.carCost,
@@ -70,6 +56,12 @@ export function FormContainer({ isOfferLoading, onChangeForm }: Props) {
     values.carModel,
     values.carYear,
   ])
+
+  useEffect(() => {
+    if (!isError && data && !isChangedBaseValues) {
+      setShouldShowOrderSettings(true)
+    }
+  }, [data, isChangedBaseValues, isError])
 
   useEffect(() => {
     if (isChangedBaseValues) {
@@ -84,8 +76,7 @@ export function FormContainer({ isOfferLoading, onChangeForm }: Props) {
   return (
     <Form>
       <CarSettingsArea onFilled={changeShouldFetchProducts} />
-      <OrderSettingsArea disabled={!shouldShowOrderSettings} />
-      <FooterArea isOfferLoading={isOfferLoading} />
+      <OrderSettingsArea disabled={!shouldShowOrderSettings} isSubmitLoading={isOfferLoading} />
     </Form>
   )
 }

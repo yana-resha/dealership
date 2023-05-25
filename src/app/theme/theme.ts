@@ -1,7 +1,16 @@
 import { createTheme, alpha } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 
-import { BLACK, DARK_NORMAL, GRAY_NORMAL, LIGHT_GRAY, PRIMARY_DARK, PRIMARY_MAIN, WHITE } from './palette'
+import {
+  BLACK,
+  DARK_NORMAL,
+  GRAY_NORMAL,
+  LIGHT_GRAY,
+  PRIMARY_DARK,
+  PRIMARY_MAIN,
+  RED_DEEP,
+  WHITE,
+} from './palette'
 
 // NOTE: Since makeStyles is now exported from @mui/styles package which does not know about
 // Theme in the core package. To fix this, you need to augment the DefaultTheme (empty object)
@@ -177,6 +186,7 @@ export const theme = createTheme({
     colors: {
       blueGray: '#ECF1FA',
       white: WHITE,
+      redDeep: RED_DEEP,
     },
   },
 })
@@ -197,7 +207,9 @@ declare module '@mui/material/styles' {
     colors: {
       blueGray: React.CSSProperties['color']
       white: React.CSSProperties['color']
+      redDeep: React.CSSProperties['color']
     }
+
     status: {
       initial: React.CSSProperties['color']
       processed: React.CSSProperties['color']
@@ -234,6 +246,7 @@ declare module '@mui/material/styles' {
     authorized: string
     financed: string
     error: string
+    redDeep: string
   }
 
   interface SimplePaletteColorOptions {

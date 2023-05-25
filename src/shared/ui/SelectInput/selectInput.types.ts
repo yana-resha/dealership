@@ -7,6 +7,7 @@ export type SelectInputProps = {
   onChange?: (value: string) => void
   isError?: boolean
   errorMessage?: string
+  helperMessage?: string
   id?: string
   emptyAvailable?: boolean
   disabled?: boolean

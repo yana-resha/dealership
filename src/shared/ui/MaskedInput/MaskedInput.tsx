@@ -7,7 +7,19 @@ import { MaskedInputProps } from './maskedInput.types'
 
 export const MaskedInput = (props: MaskedInputProps) => {
   const classes = useStyles()
-  const { label, placeholder, mask, value, onChange, isError, errorMessage, id, disabled, InputProps } = props
+  const {
+    label,
+    placeholder,
+    mask,
+    value,
+    onChange,
+    isError,
+    errorMessage,
+    helperMessage,
+    id,
+    disabled,
+    InputProps,
+  } = props
   const [fieldValue, setFieldValue] = useState(value || '')
 
   useEffect(() => {
@@ -30,7 +42,7 @@ export const MaskedInput = (props: MaskedInputProps) => {
     autoComplete: 'off',
     InputProps: InputProps,
     error: isError,
-    helperText: isError ? errorMessage : '',
+    helperText: isError ? errorMessage : helperMessage || '',
   }
 
   return (

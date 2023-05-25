@@ -3,9 +3,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
-import { AreaFooter, CAR_CONDITIONS, carYears, FormFieldNameMap } from 'entities/OrderCalculator'
+import {
+  AreaFooter,
+  CAR_CONDITIONS,
+  carYears,
+  FormFieldNameMap,
+  useGetCarListQuery,
+} from 'entities/OrderCalculator'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { useGetCarListQuery } from 'shared/api/dictionaryDc/dictionaryDc.api'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
@@ -114,6 +119,7 @@ export function CarSettingsArea({ onFilled }: Props) {
           placeholder="-"
           options={carYears}
           gridColumn="span 1"
+          emptyAvailable
         />
         <MaskedInputFormik
           name={FormFieldNameMap.carCost}
@@ -129,8 +135,8 @@ export function CarSettingsArea({ onFilled }: Props) {
           mask={maskOnlyDigitsWithSeparator}
           gridColumn="span 1"
         />
+        <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} />
       </Box>
-      <AreaFooter btnTitle="Рассчитать" onClickBtn={handleBtnClick} />
     </CollapsibleFormAreaContainer>
   )
 }

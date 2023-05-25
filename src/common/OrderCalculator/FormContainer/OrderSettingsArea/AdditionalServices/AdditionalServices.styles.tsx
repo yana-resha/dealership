@@ -58,12 +58,4 @@ export default makeStyles(theme => ({
     gap: theme.spacing(3),
     paddingTop: theme.spacing(3),
   },
-
-  errorMessage: {
-    '&.MuiTypography-root': {
-      fontSize: '12px',
-      paddingLeft: theme.spacing(4.7),
-    },
-    color: theme.palette.error.main,
-  },
 }))

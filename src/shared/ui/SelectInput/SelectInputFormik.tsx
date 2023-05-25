@@ -1,13 +1,10 @@
-import React from 'react'
-
 import { Box } from '@mui/material'
 
 import { useFormikWrapper } from '../hooks/useFormikWrapper'
 import { SelectInput } from './SelectInput'
 import { SelectInputProps } from './selectInput.types'
 
-interface Props
-  extends Pick<SelectInputProps, 'label' | 'placeholder' | 'options' | 'emptyAvailable' | 'disabled'> {
+interface Props extends Omit<SelectInputProps, 'value' | 'onChange' | 'isError' | 'errorMessage' | 'id'> {
   name: string
   gridColumn?: string
 }

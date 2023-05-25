@@ -10,7 +10,7 @@ interface Props extends Omit<MaskedInputProps, 'onChange' | 'isError' | 'value'>
 }
 
 export const MaskedInputFormik = (props: Props) => {
-  const { name, label, placeholder, mask, gridColumn, disabled, InputProps } = props
+  const { name, label, placeholder, mask, gridColumn, disabled, InputProps, helperMessage } = props
   const { value, isError, error, onChange } = useFormikWrapper(name)
 
   return (
@@ -26,6 +26,7 @@ export const MaskedInputFormik = (props: Props) => {
         isError={isError}
         errorMessage={error}
         InputProps={InputProps}
+        helperMessage={helperMessage}
       />
     </Box>
   )

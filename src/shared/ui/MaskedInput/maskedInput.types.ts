@@ -6,4 +6,5 @@ export type MaskedInputProps = Omit<TextFieldProps, 'onChange'> & {
   onChange?: (value: string) => void
   isError?: boolean
   errorMessage?: string
+  helperMessage?: string
 }

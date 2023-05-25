@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 import { useFormikContext } from 'formik'
 
 import { ReactComponent as WarningIcon } from 'assets/icons/warning.svg'
+import { useSpecialMarkContext } from 'entities/SpecialMarkContext'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
@@ -21,6 +22,7 @@ const OPTIONS = [
 
 export const FraudDialog = () => {
   const classes = useStyles()
+  const { onChangeSpecialMark } = useSpecialMarkContext()
   const [isVisible, setIsVisible] = useState(false)
   const { values, setFieldValue } = useFormikContext<ClientData>()
   const { specialMarkReason } = values
@@ -46,7 +48,8 @@ export const FraudDialog = () => {
     setIsVisible(false)
     setFieldValue(SPECIAL_MARK_REASON, fraudReason)
     setFieldValue(SPECIAL_MARK, fraudReason === '' ? false : true)
-  }, [setIsVisible, fraudReason, setFieldValue])
+    onChangeSpecialMark(fraudReason)
+  }, [setFieldValue, fraudReason, onChangeSpecialMark])
 
   return (
     <Box className={classes.fraudButtonContainer}>

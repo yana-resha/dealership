@@ -7,7 +7,7 @@ export const useStyles = makeStyles(theme => ({
       display: 'flex',
       flexDisplay: 'column',
       gap: theme.spacing(2),
-      padding: theme.spacing(2, 3, 3, 3),
+      padding: theme.spacing(3),
       boxSizing: 'border-box',
       backgroundColor: theme.palette.background.default,
       borderRadius: 16,

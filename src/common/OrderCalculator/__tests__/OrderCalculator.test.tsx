@@ -1,8 +1,20 @@
 import { PropsWithChildren } from 'react'
 
+import { within } from '@testing-library/dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import * as mockFormik from 'formik'
+import { act } from 'react-dom/test-utils'
 
+import { prepearCreditProduct, prepearBankOptions, ADDITIONAL_EQUIPMENTS } from 'entities/OrderCalculator'
+// import * as initialValueMap2 from 'entities/OrderCalculator/config'
+import * as useGetCreditProductListQueryModule from 'entities/OrderCalculator/hooks/useGetCreditProductListQuery'
+import * as dictionaryDc from 'shared/api/dictionaryDc/dictionaryDc.api'
+import {
+  creditProductListRsData,
+  mockGetVendorOptionsResponse,
+} from 'shared/api/dictionaryDc/dictionaryDc.mock'
+import { sleep } from 'shared/lib/sleep'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -12,9 +24,48 @@ import { formFields } from './OrderCalculator.mock'
 const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
 
 disableConsole('error')
+// jest.mock()
+// const mockedUseGetCreditProductListQuery = jest.spyOn(dictionaryDc, 'fetchGetCreditProductList')
+// mockedUseGetCreditProductListQuery.mockImplementation(
+//   () =>
+//     new Promise(resolve => {
+//       resolve(creditProductListRsData)
+//     }),
+// )
+
+const mockedUseGetVendorOptions = jest.spyOn(dictionaryDc, 'useGetVendorOptions')
+
+const mockedUseGetCreditProductListQuery = jest.spyOn(
+  useGetCreditProductListQueryModule,
+  'useGetCreditProductListQuery',
+)
+
+const getCreditProductListData = {
+  ...creditProductListRsData,
+  ...prepearCreditProduct(creditProductListRsData.products),
+  ...prepearBankOptions(creditProductListRsData.bankOptions),
+}
 
 describe('OrderCalculator', () => {
   const fn = jest.fn()
+
+  beforeEach(() => {
+    mockedUseGetCreditProductListQuery.mockImplementation(
+      () =>
+        ({
+          data: getCreditProductListData,
+          isError: false,
+          isFetching: false,
+        } as any),
+    )
+    mockedUseGetVendorOptions.mockImplementation(
+      () =>
+        ({
+          data: mockGetVendorOptionsResponse,
+          isError: false,
+        } as any),
+    )
+  })
 
   describe('Форма отображается корректно', () => {
     beforeEach(() => {
@@ -40,16 +91,172 @@ describe('OrderCalculator', () => {
     })
   })
 
-  describe('Валидация формы работает корректно', () => {
+  describe('Валидация основных формы работает корректно', () => {
     beforeEach(() => {
       render(<OrderCalculator isOfferLoading={false} onSubmit={fn} onChangeForm={fn} />, {
         wrapper: createWrapper,
       })
-      userEvent.click(screen.getByText('Показать'))
+      userEvent.click(screen.getByText('Рассчитать'))
     })
 
     it('Валидируется верное количество обязательных полей', async () => {
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(4)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(5)
+    })
+
+    it('Ограничения минимума ПВ работает', async () => {
+      const orderCalculatorForm = document.querySelector('[data-testid="orderCalculatorForm"]')!
+      const carCostInput = orderCalculatorForm.querySelector('#carCost')!
+      userEvent.type(carCostInput, '1000')
+      const initialPaymentInput = orderCalculatorForm.querySelector('#initialPayment')!
+      userEvent.type(initialPaymentInput, '10')
+      expect(await screen.findByText('Значение должно быть больше 200')).toBeInTheDocument()
+    })
+
+    it('Ограничения максимума ПВ работает', async () => {
+      const orderCalculatorForm = document.querySelector('[data-testid="orderCalculatorForm"]')!
+      const carCostInput = orderCalculatorForm.querySelector('#carCost')!
+      userEvent.type(carCostInput, '1000')
+      const initialPaymentInput = orderCalculatorForm.querySelector('#initialPayment')!
+      userEvent.type(initialPaymentInput, '1000')
+      expect(await screen.findByText('Значение должно быть меньше 600')).toBeInTheDocument()
+    })
+
+    it('Ограничения минимума ПВ % работает', async () => {
+      const initialPaymentPercentInput = document.querySelector('#initialPaymentPercent')!
+      userEvent.type(initialPaymentPercentInput, '10')
+      expect(await screen.findByText('Значение должно быть больше 20')).toBeInTheDocument()
+    })
+
+    it('Ограничения максимума ПВ % работает', async () => {
+      const initialPaymentPercentInput = document.querySelector('#initialPaymentPercent')!
+      userEvent.type(initialPaymentPercentInput, '70')
+      expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
+    })
+
+    it('Смена КП приводит к смене ограничения минимума ПВ', async () => {
+      const orderCalculatorForm = document.querySelector('[data-testid="orderCalculatorForm"]')!
+      const carCostInput = orderCalculatorForm.querySelector('#carCost')!
+      userEvent.type(carCostInput, '1000')
+      const initialPaymentInput = orderCalculatorForm.querySelector('#initialPayment')!
+      userEvent.type(initialPaymentInput, '10')
+      expect(await screen.findByText('Значение должно быть больше 200')).toBeInTheDocument()
+
+      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
+      userEvent.click(await screen.findByText('Лайт A'))
+      expect(await screen.findByText('Значение должно быть больше 300')).toBeInTheDocument()
+    })
+
+    it('Смена КП приводит к смене ограничения максимума ПВ', async () => {
+      const orderCalculatorForm = document.querySelector('[data-testid="orderCalculatorForm"]')!
+      const carCostInput = orderCalculatorForm.querySelector('#carCost')!
+      userEvent.type(carCostInput, '1000')
+      const initialPaymentInput = orderCalculatorForm.querySelector('#initialPayment')!
+      userEvent.type(initialPaymentInput, '1000')
+      expect(await screen.findByText('Значение должно быть меньше 600')).toBeInTheDocument()
+
+      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
+      userEvent.click(await screen.findByText('Лайт A'))
+      expect(await screen.findByText('Значение должно быть меньше 700')).toBeInTheDocument()
+    })
+
+    it('Смена КП приводит к смене ограничения минимума ПВ %', async () => {
+      const initialPaymentPercentInput = document.querySelector('#initialPaymentPercent')!
+      userEvent.type(initialPaymentPercentInput, '10')
+      expect(await screen.findByText('Значение должно быть больше 20')).toBeInTheDocument()
+
+      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
+      userEvent.click(await screen.findByText('Лайт A'))
+      expect(await screen.findByText('Значение должно быть больше 30')).toBeInTheDocument()
+    })
+
+    it('Смена КП приводит к смене ограничения максимума ПВ %', async () => {
+      const initialPaymentPercentInput = document.querySelector('#initialPaymentPercent')!
+      userEvent.type(initialPaymentPercentInput, '100')
+      expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
+
+      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
+      userEvent.click(await screen.findByText('Лайт A'))
+      expect(await screen.findByText('Значение должно быть меньше 70')).toBeInTheDocument()
+    })
+  })
+
+  describe('Валидация стоимости допов', () => {
+    beforeEach(() => {
+      render(<OrderCalculator isOfferLoading={false} onSubmit={fn} onChangeForm={fn} />, {
+        wrapper: createWrapper,
+      })
+      userEvent.click(screen.getByText('Рассчитать'))
+    })
+
+    it('Общая стоимость дополнительных услуг и оборудования не должна превышать 45% от стоимости авто', async () => {
+      const orderCalculatorForm = document.querySelector('[data-testid="orderCalculatorForm"]')!
+      const carCostInput = orderCalculatorForm.querySelector('#carCost')!
+      userEvent.type(carCostInput, '100')
+
+      userEvent.click(screen.getByTestId('additionalEquipments.0.productType').firstElementChild as Element)
+      await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
+      const additionalEquipmentsCostField = orderCalculatorForm.querySelector(
+        '[id="additionalEquipments.0.productCost"]',
+      )!
+      await act(() => userEvent.type(additionalEquipmentsCostField, '20'))
+
+      userEvent.click(
+        screen.getByTestId('dealerAdditionalServices.0.productType').firstElementChild as Element,
+      )
+      await act(async () =>
+        userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
+      )
+      const dealerAdditionalServiceCostField = orderCalculatorForm.querySelector(
+        '[id="dealerAdditionalServices.0.productCost"]',
+      )!
+      await act(() => userEvent.type(dealerAdditionalServiceCostField, '30'))
+
+      expect(
+        await screen.findByText(
+          'Общая стоимость дополнительных услуг и оборудования не должна превышать 45% от стоимости авто',
+        ),
+      ).toBeInTheDocument()
+    })
+
+    it('Общая стоимость дополнительного оборудования не должна превышать 30% от стоимости авто', async () => {
+      const orderCalculatorForm = document.querySelector('[data-testid="orderCalculatorForm"]')!
+      const carCostInput = orderCalculatorForm.querySelector('#carCost')!
+      userEvent.type(carCostInput, '100')
+
+      userEvent.click(screen.getByTestId('additionalEquipments.0.productType').firstElementChild as Element)
+      await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
+      const additionalEquipmentsCostField = orderCalculatorForm.querySelector(
+        '[id="additionalEquipments.0.productCost"]',
+      )!
+      await act(() => userEvent.type(additionalEquipmentsCostField, '100'))
+      expect(
+        await screen.findByText(
+          'Общая стоимость дополнительного оборудования не должна превышать 30% от стоимости авто',
+        ),
+      ).toBeInTheDocument()
+    })
+
+    it('Общая стоимость дополнительных услуг дилера не должна превышать 45% от стоимости авто', async () => {
+      const orderCalculatorForm = document.querySelector('[data-testid="orderCalculatorForm"]')!
+      const carCostInput = orderCalculatorForm.querySelector('#carCost')!
+      userEvent.type(carCostInput, '100')
+
+      userEvent.click(
+        screen.getByTestId('dealerAdditionalServices.0.productType').firstElementChild as Element,
+      )
+      await act(async () =>
+        userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
+      )
+      const dealerAdditionalServiceCostField = orderCalculatorForm.querySelector(
+        '[id="dealerAdditionalServices.0.productCost"]',
+      )!
+      await act(() => userEvent.type(dealerAdditionalServiceCostField, '46'))
+
+      expect(
+        await screen.findByText(
+          'Общая стоимость дополнительных услуг дилера не должна превышать 45% от стоимости авто',
+        ),
+      ).toBeInTheDocument()
     })
   })
 

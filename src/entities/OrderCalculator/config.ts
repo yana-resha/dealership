@@ -7,7 +7,17 @@ function getCarYears(yearsLength: number) {
   return years
 }
 
-export const CAR_CONDITIONS = ['Новый', 'Б/У']
+export const CAR_CONDITIONS = [
+  {
+    value: 1,
+    label: 'Новый',
+  },
+  {
+    value: 0,
+    label: 'Б/У',
+  },
+]
+// TODO DCB-272 Удалить getCarYears и LOAN_TERM, после интеграции большого калькулятора это будет не нужно
 export const carYears = getCarYears(CAR_YEARS_LENGTH)
 export const LOAN_TERM = ['12', '24', '36', '48']
 export const CAR_PASSPORT_TYPE = [
@@ -32,6 +42,23 @@ export const INITIAL_CAR_ID_TYPE = [
   },
 ]
 
+export const ADDITIONAL_EQUIPMENTS = [
+  { type: 1, optionName: 'Адаптация и подготовка автомобиля' },
+  { type: 2, optionName: 'Автосигнализация, автозапуск/установка' },
+  { type: 3, optionName: 'Акустическая система, автозвук/установка' },
+  { type: 4, optionName: 'Видеорегистратор/установка' },
+  { type: 5, optionName: 'Диски/резина/колеса' },
+  { type: 6, optionName: 'Защита картера, коробки передач/установка' },
+  { type: 7, optionName: 'Защита решётки радиатора, защитные плёнки/установка' },
+  { type: 8, optionName: 'Ковры в салон/багажник' },
+  { type: 9, optionName: 'Комплект для обработки автомобиля' },
+  { type: 10, optionName: 'Обработка антишум, антикоррозия, полировка' },
+  { type: 11, optionName: 'Подкрылки,брызговики, дуги поперечные,рейлинги /установка' },
+  { type: 12, optionName: 'Тонировка, покраска, колеровка' },
+  { type: 13, optionName: 'Тюнинг автомобиля' },
+  { type: 14, optionName: 'Прочее' },
+]
+
 export enum FormFieldNameMap {
   carCondition = 'carCondition',
   carBrand = 'carBrand',
@@ -41,6 +68,7 @@ export enum FormFieldNameMap {
   carMileage = 'carMileage',
   creditProduct = 'creditProduct',
   initialPayment = 'initialPayment',
+  initialPaymentPercent = 'initialPaymentPercent',
   loanTerm = 'loanTerm',
   productType = 'productType',
   additionalEquipments = 'additionalEquipments',
@@ -67,6 +95,11 @@ export enum FormFieldNameMap {
   agent = 'agent',
   documentId = 'documentId',
   isCustomFields = 'isCustomFields',
+  commonError = 'commonError',
+  isExceededServicesTotalLimit = 'isExceededServicesTotalLimit',
+  isExceededAdditionalEquipmentsLimit = 'isExceededAdditionalEquipmentsLimit',
+  isExceededDealerAdditionalServicesLimit = 'isExceededDealerAdditionalServicesLimit',
+  isExceededBankAdditionalServicesLimit = 'isExceededBankAdditionalServicesLimit',
 }
 
 export interface OrderCalculatorAdditionalService {
@@ -104,8 +137,22 @@ const FULL_INITIAL_ADDITIONAL_SERVICE = {
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 
+export interface CommonError {
+  [FormFieldNameMap.isExceededServicesTotalLimit]: boolean
+  [FormFieldNameMap.isExceededAdditionalEquipmentsLimit]: boolean
+  [FormFieldNameMap.isExceededDealerAdditionalServicesLimit]: boolean
+  [FormFieldNameMap.isExceededBankAdditionalServicesLimit]: boolean
+}
+
+const INITIAL_COMMON_ERROR = {
+  [FormFieldNameMap.isExceededServicesTotalLimit]: false,
+  [FormFieldNameMap.isExceededAdditionalEquipmentsLimit]: false,
+  [FormFieldNameMap.isExceededDealerAdditionalServicesLimit]: false,
+  [FormFieldNameMap.isExceededBankAdditionalServicesLimit]: false,
+}
+
 export interface OrderCalculatorFields {
-  [FormFieldNameMap.carCondition]: string
+  [FormFieldNameMap.carCondition]: number
   [FormFieldNameMap.carBrand]: string | null
   [FormFieldNameMap.carModel]: string | null
   [FormFieldNameMap.carYear]: string
@@ -113,15 +160,17 @@ export interface OrderCalculatorFields {
   [FormFieldNameMap.carMileage]: string
   [FormFieldNameMap.creditProduct]: string
   [FormFieldNameMap.initialPayment]: string
+  [FormFieldNameMap.initialPaymentPercent]: string
   [FormFieldNameMap.loanTerm]: string
   [FormFieldNameMap.additionalEquipments]: OrderCalculatorAdditionalService[]
   [FormFieldNameMap.dealerAdditionalServices]: OrderCalculatorAdditionalService[]
   [FormFieldNameMap.bankAdditionalServices]: OrderCalculatorAdditionalService[]
   [FormFieldNameMap.specialMark]: string | null
+  [FormFieldNameMap.commonError]: CommonError
 }
 
 export const initialValueMap: OrderCalculatorFields = {
-  [FormFieldNameMap.carCondition]: CAR_CONDITIONS[0],
+  [FormFieldNameMap.carCondition]: CAR_CONDITIONS[0].value,
   [FormFieldNameMap.carBrand]: null,
   [FormFieldNameMap.carModel]: null,
   [FormFieldNameMap.carYear]: carYears[0],
@@ -129,11 +178,13 @@ export const initialValueMap: OrderCalculatorFields = {
   [FormFieldNameMap.carMileage]: '',
   [FormFieldNameMap.creditProduct]: '',
   [FormFieldNameMap.initialPayment]: '',
-  [FormFieldNameMap.loanTerm]: LOAN_TERM[0],
+  [FormFieldNameMap.initialPaymentPercent]: '',
+  [FormFieldNameMap.loanTerm]: '',
   [FormFieldNameMap.additionalEquipments]: [INITIAL_ADDITIONAL_SERVICE],
   [FormFieldNameMap.dealerAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
   [FormFieldNameMap.bankAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
   [FormFieldNameMap.specialMark]: null,
+  [FormFieldNameMap.commonError]: INITIAL_COMMON_ERROR,
 }
 
 export const fullInitialValueMap = {
@@ -156,4 +207,22 @@ export const fullInitialValueMap = {
   [FormFieldNameMap.additionalEquipments]: [FULL_INITIAL_ADDITIONAL_EQUIPMENTS],
   [FormFieldNameMap.dealerAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],
   [FormFieldNameMap.bankAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],
+}
+
+export type FormMessages = {
+  [FormFieldNameMap.isExceededServicesTotalLimit]: string
+  [FormFieldNameMap.isExceededAdditionalEquipmentsLimit]: string
+  [FormFieldNameMap.isExceededDealerAdditionalServicesLimit]: string
+  [FormFieldNameMap.isExceededBankAdditionalServicesLimit]: string
+}
+
+export const formMessages = {
+  [FormFieldNameMap.isExceededServicesTotalLimit]:
+    'Общая стоимость дополнительных услуг и оборудования не должна превышать 45% от стоимости авто',
+  [FormFieldNameMap.isExceededAdditionalEquipmentsLimit]:
+    'Общая стоимость дополнительного оборудования не должна превышать 30% от стоимости авто',
+  [FormFieldNameMap.isExceededDealerAdditionalServicesLimit]:
+    'Общая стоимость дополнительных услуг дилера не должна превышать 45% от стоимости авто',
+  [FormFieldNameMap.isExceededBankAdditionalServicesLimit]:
+    'Общая стоимость дополнительных услуг банка не должна превышать 30% от стоимости авто',
 }
