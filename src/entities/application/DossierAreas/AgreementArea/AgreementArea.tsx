@@ -63,9 +63,10 @@ export function AgreementArea({ clientDossier, updateStatus, agreementDocs, setA
     }
   }, [status])
 
-  const returnToSecondStage = useCallback(() => {
+  const returnToFirstStage = useCallback(() => {
     setAgreementDocs([])
-    getToSecondStage()
+    updateStatus(StatusCode.STATUS_CODE_FINALLY_APPROVED)
+    setCurrentStep(CREATE_AGREEMENT_STEP)
   }, [setAgreementDocs, getToSecondStage])
 
   const setDocumentToDownloaded = useCallback(
@@ -193,7 +194,7 @@ export function AgreementArea({ clientDossier, updateStatus, agreementDocs, setA
             sberautoVariant="body3"
             component="p"
             className={classes.textButton}
-            onClick={returnToSecondStage}
+            onClick={returnToFirstStage}
           >
             Вернуться на формирование договора
           </SberTypography>
