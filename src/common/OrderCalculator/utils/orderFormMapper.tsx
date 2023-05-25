@@ -7,44 +7,12 @@ import {
 
 import {
   FormFieldNameMap,
+  FullOrderCalculatorFields,
   OrderCalculatorAdditionalService,
   OrderCalculatorFields,
-} from 'entities/OrderCalculator'
+} from '../types'
+import { ProductsMap } from './prepareCreditProductListData'
 
-export const mapValuesForCalculateCreditRequest = (
-  values: OrderCalculatorFields,
-  vendorOptions: VendorOption[],
-): CalculateCreditRequest => {
-  const additionalOptions: AdditionalOption[] = [
-    ...mapAdditionalOptions(values[FormFieldNameMap.additionalEquipments], 'additionalEquipment'),
-    ...mapAdditionalOptions(values[FormFieldNameMap.dealerAdditionalServices], 'dealerServices'),
-  ]
-  const loanCar: LoanCar = {
-    isCarNew: !!values[FormFieldNameMap.carCondition],
-    autoCreateYear: Number(values[FormFieldNameMap.carYear]),
-    mileage: Number(values[FormFieldNameMap.carMileage]),
-    brand: values[FormFieldNameMap.carBrand] || '',
-    model: values[FormFieldNameMap.carModel] || '',
-    autoPrice: Number(values[FormFieldNameMap.carCost]),
-    equipmentPrice: getAdditionalOptionsPrice(additionalOptions),
-    equipmentPriceInCredit: getAdditionalOptionsPriceInCredit(additionalOptions),
-  }
-  const calculateCreditRequest: CalculateCreditRequest = {
-    productName: values[FormFieldNameMap.creditProduct],
-    downpayment: Number(values[FormFieldNameMap.initialPayment]),
-    term: Number(values[FormFieldNameMap.loanTerm]),
-    creditAmountWithAddons:
-      Number(values[FormFieldNameMap.carCost]) +
-      Number(getAdditionalOptionsPrice(additionalOptions)) -
-      Number(values[FormFieldNameMap.initialPayment]),
-    creditAmountWithoutAddons:
-      Number(values[FormFieldNameMap.carCost]) - Number(values[FormFieldNameMap.initialPayment]),
-    additionalOptions: additionalOptions,
-    loanCar: loanCar,
-  }
-
-  return calculateCreditRequest
-}
 const mapAdditionalOptions = (
   additionalOptions: OrderCalculatorAdditionalService[],
   // TODO это не корректно, тип должен быть индивидуальным для каждой опции,
@@ -74,3 +42,40 @@ const getAdditionalOptionsPriceInCredit = (options: AdditionalOption[]) =>
     (acc: number, element: AdditionalOption) => acc + (element.inCreditFlag ? element.price || 0 : 0),
     0,
   )
+
+export const mapValuesForCalculateCreditRequest = (
+  values: OrderCalculatorFields | FullOrderCalculatorFields,
+  vendorOptions: VendorOption[],
+  productsMap?: ProductsMap,
+): CalculateCreditRequest => {
+  const additionalOptions: AdditionalOption[] = [
+    ...mapAdditionalOptions(values[FormFieldNameMap.additionalEquipments], 'additionalEquipment'),
+    ...mapAdditionalOptions(values[FormFieldNameMap.dealerAdditionalServices], 'dealerServices'),
+  ]
+  const loanCar: LoanCar = {
+    isCarNew: !!values[FormFieldNameMap.carCondition],
+    autoCreateYear: Number(values[FormFieldNameMap.carYear]),
+    mileage: Number(values[FormFieldNameMap.carMileage]),
+    brand: values[FormFieldNameMap.carBrand] || '',
+    model: values[FormFieldNameMap.carModel] || '',
+    autoPrice: Number(values[FormFieldNameMap.carCost]),
+    equipmentPrice: getAdditionalOptionsPrice(additionalOptions),
+    equipmentPriceInCredit: getAdditionalOptionsPriceInCredit(additionalOptions),
+  }
+  const calculateCreditRequest: CalculateCreditRequest = {
+    productCode: values[FormFieldNameMap.creditProduct],
+    productName: productsMap?.[values[FormFieldNameMap.creditProduct]].productName,
+    downpayment: Number(values[FormFieldNameMap.initialPayment]),
+    term: Number(values[FormFieldNameMap.loanTerm]),
+    creditAmountWithAddons:
+      Number(values[FormFieldNameMap.carCost]) +
+      Number(getAdditionalOptionsPrice(additionalOptions)) -
+      Number(values[FormFieldNameMap.initialPayment]),
+    creditAmountWithoutAddons:
+      Number(values[FormFieldNameMap.carCost]) - Number(values[FormFieldNameMap.initialPayment]),
+    additionalOptions: additionalOptions,
+    loanCar: loanCar,
+  }
+
+  return calculateCreditRequest
+}

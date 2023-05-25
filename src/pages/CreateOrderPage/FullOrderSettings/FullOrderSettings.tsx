@@ -1,16 +1,67 @@
-import { FullOrderCalculator } from 'common/FullOrderCalculator'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { Box, Typography } from '@mui/material'
+import { CalculateCreditRequest, CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
+
+import { FullOrderCalculator } from 'common/OrderCalculator'
 import { BankOffers } from 'entities/BankOffers'
+import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
 
 import { dataMock } from './__tests__/FullOrderSettings.test.mock'
+import { useStyles } from './FullOrderSettings.styles'
 
 export function FullOrderSettings() {
+  const classes = useStyles()
+  const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
+  const [isOfferLoading, setIsOfferLoading] = useState(false)
+
+  const { mutateAsync, isError } = useCalculateCreditMutation()
+  useEffect(() => {
+    if (isError) {
+      setIsOfferLoading(false)
+      setBankOffers([])
+    }
+  }, [isError])
+
+  const clearBankOfferList = useCallback(() => {
+    if (!bankOffers.length) {
+      return
+    }
+    setBankOffers([])
+  }, [bankOffers.length])
+
+  const calculateCredit = useCallback(
+    async (data: CalculateCreditRequest) => {
+      setIsOfferLoading(true)
+      const res = await mutateAsync(data)
+      if (res && res.products) {
+        setBankOffers(res.products)
+        setIsOfferLoading(false)
+      }
+    },
+    [mutateAsync],
+  )
+
+  const bankOffersRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    if (bankOffersRef.current) {
+      bankOffersRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [bankOffers.length])
+
   return (
     <>
       <FullOrderCalculator
-        onSubmit={() => console.log('FullOrderCalculator')}
-        onChangeForm={() => console.log('clearBankOfferList')}
+        isSubmitLoading={isOfferLoading}
+        onSubmit={calculateCredit}
+        onChangeForm={clearBankOfferList}
       />
-      <BankOffers data={dataMock} onRowClick={() => null} />
+      {isError && (
+        <Box className={classes.errorContainer}>
+          <Typography>Произошла ошибка при загрузке данных. Попробуйте снова</Typography>
+        </Box>
+      )}
+      {!isError && bankOffers.length > 0 && <BankOffers data={dataMock} onRowClick={() => null} />}
     </>
   )
 }

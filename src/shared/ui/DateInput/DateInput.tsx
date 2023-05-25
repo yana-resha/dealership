@@ -13,7 +13,7 @@ import { DateInputProps } from './dateInput.types'
 const YEAR_INPUT_COMPLETED = 1000
 const DATE_FORMAT = 'dd.MM.yyyy'
 
-export const DateInput = (props: DateInputProps) => {
+export const DateInput = React.memo((props: DateInputProps) => {
   const classes = useStyles()
   const { value, onChange, isError, errorMessage, id, label, disabled } = props
   const [fieldValue, setFieldValue] = useState<DateTime | null>(
@@ -82,4 +82,4 @@ export const DateInput = (props: DateInputProps) => {
       </LocalizationProvider>
     </Box>
   )
-}
+})

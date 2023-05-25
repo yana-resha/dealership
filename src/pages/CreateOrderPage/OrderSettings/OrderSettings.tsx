@@ -6,8 +6,7 @@ import { CalculateCreditRequest, CalculatedProduct } from '@sberauto/dictionaryd
 
 import { OrderCalculator } from 'common/OrderCalculator'
 import { BankOffers } from 'entities/BankOffers'
-
-import { useCalculateCreditMutation } from './OrderSettings.api'
+import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
 
 const useStyles = makeStyles(theme => ({
   errorContainer: {
@@ -24,9 +23,9 @@ type Props = {
 export function OrderSettings({ nextStep }: Props) {
   const classes = useStyles()
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
-  const { mutateAsync, isError } = useCalculateCreditMutation()
   const [isOfferLoading, setIsOfferLoading] = useState(false)
 
+  const { mutateAsync, isError } = useCalculateCreditMutation()
   useEffect(() => {
     if (isError) {
       setIsOfferLoading(false)
@@ -50,21 +49,20 @@ export function OrderSettings({ nextStep }: Props) {
         setIsOfferLoading(false)
       }
     },
-    [mutateAsync, isError],
+    [mutateAsync],
   )
 
   const bankOffersRef = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
-    if (!bankOffersRef.current) {
-      return
+    if (bankOffersRef.current) {
+      bankOffersRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-    bankOffersRef.current.scrollIntoView({ behavior: 'smooth' })
   }, [bankOffers.length])
 
   return (
     <>
       <OrderCalculator
-        isOfferLoading={isOfferLoading}
+        isSubmitLoading={isOfferLoading}
         onSubmit={calculateCredit}
         onChangeForm={clearBankOfferList}
       />
