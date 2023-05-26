@@ -55,6 +55,7 @@ export default makeStyles(theme => ({
   itemsContainer: {
     display: 'flex',
     flexDirection: 'column',
+    marginTop: theme.spacing(3),
     gap: theme.spacing(3),
   },
 }))

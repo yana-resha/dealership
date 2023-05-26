@@ -14,6 +14,8 @@ import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { legalPersons } from 'common/OrderCalculator/ui/FullOrderCalculator/__tests__/FullOrderCalculator.mock'
+import { RequisitesAdditionalOptions } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
+import { DealerCenterRequisites } from 'entities/application/DossierAreas/ui'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskVin,
@@ -28,14 +30,14 @@ import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
-import { BankDetails } from '../BankDetails/BankDetails'
 import useStyles from './CarSettingsArea.styles'
 
 type Props = {
   onFilled: () => void
+  requisites: RequisitesAdditionalOptions[]
 }
 
-export function CarSettingsArea({ onFilled }: Props) {
+export function CarSettingsArea({ onFilled, requisites }: Props) {
   const classes = useStyles()
   const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
   const { handleBtnClick } = useCarSettings(onFilled)
@@ -140,23 +142,7 @@ export function CarSettingsArea({ onFilled }: Props) {
           />
           <DateInputFormik name={FormFieldNameMap.salesContractDate} label="Дата ДКП" gridColumn="span 1" />
         </Box>
-        <Box className={classes.gridContainer}>
-          <SelectInputFormik
-            name={FormFieldNameMap.legalPerson}
-            label="Юридическое лицо"
-            placeholder="-"
-            options={legalPersons}
-            gridColumn="span 2"
-          />
-          <MaskedInputFormik
-            name={FormFieldNameMap.loanAmount}
-            label="Сумма кредита"
-            placeholder="-"
-            mask={maskOnlyDigitsWithSeparator}
-            gridColumn="span 2"
-          />
-        </Box>
-        <BankDetails />
+        <DealerCenterRequisites requisites={requisites} isRequisiteEditable={true} />
         <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} />
       </Box>
     </CollapsibleFormAreaContainer>

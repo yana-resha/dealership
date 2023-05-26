@@ -7,6 +7,7 @@ import { useGetCreditProductListQuery } from 'common/OrderCalculator/hooks/useGe
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
+import { mockRequisites } from '../../../../../entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
 
@@ -18,6 +19,7 @@ type Props = {
 export function FormContainer({ isSubmitLoading, onChangeForm }: Props) {
   const { values, setValues } = useFormikContext<FullOrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
+  const requisites = mockRequisites()
 
   const [sentParams, setSentParams] = useState({})
   const [shouldShowOrderSettings, setShouldShowOrderSettings] = useState(false)
@@ -107,8 +109,12 @@ export function FormContainer({ isSubmitLoading, onChangeForm }: Props) {
 
   return (
     <Form>
-      <CarSettingsArea onFilled={changeShouldFetchProducts} />
-      <OrderSettingsArea disabled={!shouldShowOrderSettings} isSubmitLoading={isSubmitLoading} />
+      <CarSettingsArea onFilled={changeShouldFetchProducts} requisites={requisites.dealerCenterRequisites} />
+      <OrderSettingsArea
+        disabled={!shouldShowOrderSettings}
+        isSubmitLoading={isSubmitLoading}
+        requisites={requisites}
+      />
     </Form>
   )
 }

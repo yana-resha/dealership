@@ -59,7 +59,7 @@ export function CreateOrderPage() {
   }
 
   // Временное решение для отображения FullOrderSettings
-  const shouldShowFullCalculator = false
+  const shouldShowFullCalculator = true
 
   return (
     <div className={classes.page} data-testid="dealershipPage">

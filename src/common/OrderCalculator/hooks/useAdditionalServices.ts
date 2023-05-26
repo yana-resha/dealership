@@ -9,9 +9,9 @@ const MIN_ITEMS_LENGTH = 1
 type Params = {
   parentName: string
   index: number
-  arrayHelpers: ArrayHelpers
-  arrayLength: number
-  changeIds: (idx: number, changingOption: string, minItems?: number) => void
+  arrayHelpers?: ArrayHelpers
+  arrayLength?: number
+  changeIds?: (idx: number, changingOption: string, minItems?: number) => void
 }
 
 // Хук для работы с айтемами доп.оборудования или доп, услуг. Принимает:
@@ -33,22 +33,26 @@ type Params = {
 // Потому если длина массива не превышает 1 (MIN_ITEMS_LENGTH), то айтем не удаляется,
 // а заменяется на айтем со значениями из initialValues
 export function useAdditionalServices({ parentName, index, arrayLength, arrayHelpers, changeIds }: Params) {
-  const namePrefix = `${parentName}.${index}.`
+  const namePrefix = `${parentName}[${index}].`
   const { initialValues } = useFormikContext<any>()
 
   const removeItem = useCallback(() => {
-    if (arrayLength > MIN_ITEMS_LENGTH) {
-      arrayHelpers.remove(index)
-      changeIds(index, ChangingIdsOption.remove)
-    } else {
-      arrayHelpers.replace(index, initialValues[parentName][0])
-      changeIds(index, ChangingIdsOption.clear, MIN_ITEMS_LENGTH)
+    if (arrayLength && arrayHelpers && changeIds) {
+      if (arrayLength > MIN_ITEMS_LENGTH) {
+        arrayHelpers.remove(index)
+        changeIds(index, ChangingIdsOption.remove)
+      } else {
+        arrayHelpers.replace(index, initialValues[parentName][0])
+        changeIds(index, ChangingIdsOption.clear, MIN_ITEMS_LENGTH)
+      }
     }
   }, [arrayHelpers, arrayLength, changeIds, index, initialValues, parentName])
 
   const addItem = useCallback(() => {
-    arrayHelpers.insert(index + 1, initialValues[parentName][0])
-    changeIds(index, ChangingIdsOption.add)
+    if (arrayHelpers && changeIds) {
+      arrayHelpers.insert(index + 1, initialValues[parentName][0])
+      changeIds(index, ChangingIdsOption.add)
+    }
   }, [arrayHelpers, changeIds, index, initialValues, parentName])
 
   return { namePrefix, removeItem, addItem }
