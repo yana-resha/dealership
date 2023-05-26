@@ -8,7 +8,8 @@ import { getStateAndNonce } from 'shared/api/requests/authsberteamid'
 import { authorizeUrl } from '../utils/authorizeUrl'
 
 /** Генерируем ссылку на авторизацию в TeamID */
-export const useGetAuthLink = () => {
+/** пропс code использовать только на девах! */
+export const useGetAuthLink = (code?: string | null) => {
   const [isSuccessRequest, setIsSuccessRequest] = useState(false)
 
   const { data, error, isLoading } = useQuery(['getStateAndNonce'], () => getStateAndNonce({}), {
@@ -29,12 +30,13 @@ export const useGetAuthLink = () => {
     //NOTE: что бы не блочить авторизацию на деве ориентируемся на среду
     if (appConfig.sberTeamAuthEnv === 'dev') {
       return (
-        appConfig.appUrl + `/auth?code=11111&state=${data?.state ?? 'e544b6f3-0697-49af-ac8b-72a39f20f7b8'}`
+        appConfig.appUrl +
+        `/auth?code=${code ?? '11111'}&state=${data?.state ?? 'e544b6f3-0697-49af-ac8b-72a39f20f7b8'}`
       )
     } else {
       return data ? authorizeUrl(data) : undefined
     }
-  }, [data])
+  }, [data, code])
 
   return { authLink, isLoading, error }
 }
