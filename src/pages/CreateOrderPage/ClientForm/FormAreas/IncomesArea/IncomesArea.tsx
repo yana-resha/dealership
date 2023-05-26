@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { Box, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
@@ -68,7 +68,10 @@ export function IncomesArea() {
         name="relatedToPublic"
         label="Принадлежность клиента к категории публичных лиц"
         placeholder="-"
-        options={['Нет', 'Да']}
+        options={[
+          { label: 'Нет', value: 0 },
+          { label: 'Да', value: 1 },
+        ]}
         gridColumn="span 7"
       />
       <Box gridColumn="span 9" />

@@ -9,7 +9,7 @@ import useStyles from './AdditionalServices.styles'
 
 type Props = {
   title: string
-  options: string[]
+  options: { value: string | number; label: string }[]
   name: string
   productLabel: string
   isError?: boolean

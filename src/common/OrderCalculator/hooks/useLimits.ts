@@ -93,9 +93,9 @@ export function useLimits({ vendorCode }: Params) {
     const durationMax =
       Math.floor((data?.fullDurationMax || 0) / LOAN_TERM_GRADUATION_VALUE) * LOAN_TERM_GRADUATION_VALUE
     const scaleLength = (durationMax - durationMin) / LOAN_TERM_GRADUATION_VALUE + 1
-    const loanTerms = [...new Array(scaleLength)].map(
-      (v, i) => `${(i + 1) * LOAN_TERM_GRADUATION_VALUE + durationMin - LOAN_TERM_GRADUATION_VALUE}`,
-    )
+    const loanTerms = [...new Array(scaleLength)].map((v, i) => ({
+      value: `${(i + 1) * LOAN_TERM_GRADUATION_VALUE + durationMin - LOAN_TERM_GRADUATION_VALUE}`,
+    }))
 
     return loanTerms
   }, [data?.fullDurationMax, data?.fullDurationMin])

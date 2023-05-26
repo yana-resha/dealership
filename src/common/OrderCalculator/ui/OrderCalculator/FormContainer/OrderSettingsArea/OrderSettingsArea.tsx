@@ -32,9 +32,12 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
     vendorCode: vendorCode,
   })
 
-  const additionalEquipments = useMemo(() => ADDITIONAL_EQUIPMENTS.map(option => option.optionName), [])
+  const additionalEquipments = useMemo(
+    () => ADDITIONAL_EQUIPMENTS.map(option => ({ value: option.type, label: option.optionName })),
+    [],
+  )
   const dealerAdditionalServices = useMemo(
-    () => vendorOptions?.options?.map(option => option.optionName || '') || [],
+    () => vendorOptions?.options?.map(option => ({ value: option.type, label: option.optionName })) || [],
     [vendorOptions?.options],
   )
 

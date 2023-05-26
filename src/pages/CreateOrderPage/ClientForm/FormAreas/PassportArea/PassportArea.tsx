@@ -4,7 +4,6 @@ import { Box, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
 
 import {
-  maskOnlyCyrillicNoDigits,
   maskDigitsOnly,
   maskDivisionCode,
   maskFullName,
@@ -111,7 +110,7 @@ export function PassportArea() {
         name="familyStatus"
         label="Семейное положение"
         placeholder="-"
-        options={['Женат', 'Не женат']}
+        options={[{ value: 'Женат' }, { value: 'Не женат' }]}
         gridColumn="span 6"
       />
       <Box gridColumn="span 7" />

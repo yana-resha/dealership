@@ -32,7 +32,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
     vendorCode: vendorCode,
   })
   const dealerAdditionalServices = useMemo(
-    () => vendorOptions?.options?.map(option => option.optionName || '') || [],
+    () => vendorOptions?.options?.map(option => ({ value: option.type, label: option.optionName })) || [],
     [vendorOptions?.options],
   )
 

@@ -20,7 +20,10 @@ type Props = {
 export function AdditionalEquipment({ requisites, disabled = false }: Props) {
   const classes = useStyles()
   const [field] = useField(FormFieldNameMap.additionalEquipments)
-  const additionalEquipments = useMemo(() => ADDITIONAL_EQUIPMENTS.map(option => option.optionName), [])
+  const additionalEquipments = useMemo(
+    () => ADDITIONAL_EQUIPMENTS.map(o => ({ value: o.type, label: o.optionName })),
+    [],
+  )
 
   const { ids, changeIds } = useAdditionalServiceIds()
 

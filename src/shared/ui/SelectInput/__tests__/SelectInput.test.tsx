@@ -1,6 +1,5 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
-import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -20,7 +19,7 @@ describe('SelectInputTest', () => {
         <SelectInput
           placeholder="Тестовый placeholder"
           label="Тестовый select"
-          options={['Первая', 'Вторая', 'Третья']}
+          options={[{ value: 'Первая' }, { value: 'Вторая' }, { value: 'Третья' }]}
         />,
         {
           wrapper: createWrapper,
@@ -43,7 +42,7 @@ describe('SelectInputTest', () => {
         <SelectInput
           placeholder="Тестовый placeholder"
           label="Тестовый select"
-          options={['Первая', 'Вторая', 'Третья']}
+          options={[{ value: 'Первая' }, { value: 'Вторая' }, { value: 'Третья' }]}
         />,
         {
           wrapper: createWrapper,
@@ -70,7 +69,7 @@ describe('SelectInputTest', () => {
         <SelectInput
           placeholder="Тестовый placeholder"
           label="Тестовый select"
-          options={['Первая', 'Вторая', 'Третья']}
+          options={[{ value: 'Первая' }, { value: 'Вторая' }, { value: 'Третья' }]}
           isError={true}
           errorMessage="Поле обязательно для заполнения"
         />,

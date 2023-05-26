@@ -14,8 +14,8 @@ import useStyles from './AdditionalServices.styles'
 type Props = {
   title: string
   options: {
-    productType: string[]
-    loanTerms: string[]
+    productType: { value: string | number; label: string }[]
+    loanTerms: { value: string | number }[]
   }
   name: string
   requisites: RequisitesDealerServices[]
