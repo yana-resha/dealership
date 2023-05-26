@@ -4,6 +4,7 @@ import { Avatar, Box, Button, CircularProgress, Collapse, Typography } from '@mu
 import { useSnackbar } from 'notistack'
 
 import { ReactComponent as AvatarLogo } from 'assets/icons/avatar.svg'
+import { appConfig } from 'config'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { useCheckAuthRedirect } from './hooks/useCheckAuthRedirect'
@@ -12,6 +13,8 @@ import useStyles from './LoginForm.styles'
 
 export function LoginForm() {
   const classes = useStyles()
+  const urlParams = new URLSearchParams(window.location.search)
+  const code = urlParams.get('authCode')
 
   const { enqueueSnackbar } = useSnackbar()
 
@@ -20,7 +23,7 @@ export function LoginForm() {
     [enqueueSnackbar],
   )
 
-  const { authLink, isLoading: authLinkLoading, error } = useGetAuthLink()
+  const { authLink, isLoading: authLinkLoading, error } = useGetAuthLink(code)
   const { isLoading: redirectLoading } = useCheckAuthRedirect(showError)
 
   const isLoading = authLinkLoading || redirectLoading
@@ -53,6 +56,12 @@ export function LoginForm() {
           Произошла неизвестная ошибка! Перезагрузите страницу и попробуйте снова
         </SberTypography>
       </Collapse>
+
+      {appConfig.sberTeamAuthEnv === 'dev' && (
+        <Box fontSize={10} color="lightgray">
+          authCode пользователей: 11111, 22222, 33333
+        </Box>
+      )}
     </Box>
   )
 }
