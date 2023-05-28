@@ -1,2 +1,2 @@
-export { OrderCalculator } from './ui/OrderCalculator/OrderCalculator'
-export { FullOrderCalculator } from './ui/FullOrderCalculator/FullOrderCalculator'
+export { OrderCalculator } from 'common/OrderCalculator/ui/OrderCalculator/OrderCalculator'
+export { FullOrderCalculator } from 'common/OrderCalculator/ui/FullOrderCalculator/FullOrderCalculator'
