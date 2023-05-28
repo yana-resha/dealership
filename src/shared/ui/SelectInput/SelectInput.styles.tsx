@@ -10,7 +10,6 @@ export default makeStyles(theme => ({
 
   inputLabel: {
     '&.MuiInputLabel-root': {
-      color: theme.palette.grey[500],
       fontSize: '14px',
       lineHeight: '18px',
     },

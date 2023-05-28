@@ -11,7 +11,7 @@ export const useStyles = makeStyles(theme => ({
 
   infoTextLabel: {
     '&.MuiTypography-root': {
-      color: theme.palette.grey[500],
+      color: theme.palette.text.secondary,
       lineHeight: '18px',
     },
   },
