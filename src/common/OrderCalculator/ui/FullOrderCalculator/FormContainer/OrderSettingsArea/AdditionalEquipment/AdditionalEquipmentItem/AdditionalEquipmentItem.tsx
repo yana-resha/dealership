@@ -27,7 +27,10 @@ type Props = {
 
 export function AdditionalEquipmentItem({ parentName, index, arrayLength, arrayHelpers, changeIds }: Props) {
   const classes = useStyles()
-  const additionalEquipments = useMemo(() => ADDITIONAL_EQUIPMENTS.map(option => option.optionName), [])
+  const additionalEquipments = useMemo(
+    () => ADDITIONAL_EQUIPMENTS.map(option => ({ value: option.type, label: option.optionName })),
+    [],
+  )
 
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
     parentName,

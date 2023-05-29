@@ -69,7 +69,7 @@ export function JobArea() {
         name="occupation"
         label="Должность/Вид занятости"
         placeholder="-"
-        options={['Безработный', 'Аналитик', 'Разработчик']}
+        options={[{ value: 'Безработный' }, { value: 'Аналитик' }, { value: 'Разработчик' }]}
         gridColumn="span 8"
       />
       <DateInputFormik

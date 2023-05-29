@@ -19,8 +19,8 @@ import useStyles from './AdditionalServiceItem.styles'
 
 type Props = {
   options: {
-    productType: string[]
-    loanTerms: string[]
+    productType: { value: string | number; label: string }[]
+    loanTerms: { value: string | number }[]
   }
   parentName: string
   index: number

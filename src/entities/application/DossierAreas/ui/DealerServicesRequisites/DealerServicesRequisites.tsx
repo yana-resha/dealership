@@ -21,6 +21,7 @@ import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { useAdditionalServices } from '../../../../../common/OrderCalculator/hooks/useAdditionalServices'
 import { RequisitesDealerServices } from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { useBanksOptions } from '../../hooks/useBanksOptions'
 import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './DealerServicesRequisites.styles'
 
@@ -29,13 +30,23 @@ type Props = {
   index: number
   parentName: string
   isRequisiteEditable: boolean
-  productOptions?: string[]
+  productOptions?: {
+    value: string | number
+    label: string
+  }[]
   arrayHelpers?: ArrayHelpers
   arrayLength?: number
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
 }
 
-const terms = ['12', '24', '36', '48', '60', '72']
+const terms = [
+  { value: '12' },
+  { value: '24' },
+  { value: '36' },
+  { value: '48' },
+  { value: '60' },
+  { value: '72' },
+]
 
 export function DealerServicesRequisites(props: Props) {
   const classes = useStyles()
@@ -60,26 +71,33 @@ export function DealerServicesRequisites(props: Props) {
     arrayHelpers,
     changeIds,
   })
-  const providers = requisites.map(requisite => requisite.provider)
-  const [banksOptions, setBanksOptions] = useState<string[]>([beneficiaryBank])
-  const [accountNumberOptions, setAccountNumberOptions] = useState<string[]>([bankAccountNumber])
-  const [agentOptions, setAgentOptions] = useState<string[]>([agent])
-  const [manualEntry, setManualEntry] = useState(false)
+  const providers = requisites.map(requisite => ({ value: requisite.provider }))
+
+  const [agentOptions, setAgentOptions] = useState<{ value: string }[]>([{ value: agent }])
   const previousInsuranceCompany = usePrevious(provider)
   const previousAgent = usePrevious(agent)
   const previousBeneficiaryBank = usePrevious(beneficiaryBank)
-  const previousAccountNumber = usePrevious(bankAccountNumber)
+
+  const {
+    banksOptions,
+    setBanksOptions,
+    accountNumberOptions,
+    setAccountNumberOptions,
+    manualEntry,
+    setManualEntry,
+    previousAccountNumber,
+  } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
 
   const updateRequisites = useCallback(() => {
     const requisiteForProviders = requisites.find(requisite => requisite.provider === provider)
     if (requisiteForProviders) {
-      setAgentOptions(requisiteForProviders.agents.map(receiver => receiver.agentName))
+      setAgentOptions(requisiteForProviders.agents.map(receiver => ({ value: receiver.agentName })))
       const chosenAgent = requisiteForProviders.agents.find(receiver => receiver.agentName === agent)
-      setBanksOptions(chosenAgent ? chosenAgent.banks.map(bank => bank.bankName) : [])
+      setBanksOptions(chosenAgent ? chosenAgent.banks.map(bank => ({ value: bank.bankName })) : [])
       const chosenBank = chosenAgent
         ? chosenAgent.banks.find(bank => bank.bankName === beneficiaryBank)
         : undefined
-      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers : [])
+      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers.map(a => ({ value: a })) : [])
       if (!manualEntry) {
         setFieldValue(`${namePrefix}bankIdentificationCode`, chosenBank ? chosenBank.bankBik : '')
         setFieldValue(`${namePrefix}correspondentAccount`, chosenBank ? chosenBank.bankCorrAccount : '')

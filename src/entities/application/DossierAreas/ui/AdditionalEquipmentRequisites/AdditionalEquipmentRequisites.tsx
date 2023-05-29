@@ -20,6 +20,7 @@ import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { useAdditionalServices } from '../../../../../common/OrderCalculator/hooks/useAdditionalServices'
 import { RequisitesAdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { useBanksOptions } from '../../hooks/useBanksOptions'
 import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './AdditionalEquipmentRequisites.styles'
 
@@ -28,7 +29,10 @@ type Props = {
   index: number
   parentName: string
   isRequisiteEditable: boolean
-  productOptions?: string[]
+  productOptions?: {
+    value: string | number
+    label: string
+  }[]
   arrayHelpers?: ArrayHelpers
   arrayLength?: number
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
@@ -56,20 +60,26 @@ export function AdditionalEquipmentRequisites(props: Props) {
     changeIds,
   })
   const initialValues = useRef(values.additionalEquipments[index])
-  const [manualEntry, setManualEntry] = useState(false)
-  const legalEntityOptions = requisites.map(requisite => requisite.legalEntityName)
-  const [banksOptions, setBanksOptions] = useState<string[]>([beneficiaryBank])
-  const [accountNumberOptions, setAccountNumberOptions] = useState<string[]>([bankAccountNumber])
+  const legalEntityOptions = requisites.map(requisite => ({ value: requisite.legalEntityName }))
   const previousLegalPerson = usePrevious(legalPerson)
   const previousReceiverBank = usePrevious(beneficiaryBank)
-  const previousAccountNumber = usePrevious(bankAccountNumber)
+
+  const {
+    banksOptions,
+    setBanksOptions,
+    accountNumberOptions,
+    setAccountNumberOptions,
+    manualEntry,
+    setManualEntry,
+    previousAccountNumber,
+  } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
 
   const updateRequisites = useCallback(() => {
     const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
     if (requisiteForLegalName) {
-      setBanksOptions(requisiteForLegalName.banks.map(bank => bank.bankName))
+      setBanksOptions(requisiteForLegalName.banks.map(bank => ({ value: bank.bankName })))
       const chosenBank = requisiteForLegalName.banks.find(bank => bank.bankName === beneficiaryBank)
-      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers : [])
+      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers.map(a => ({ value: a })) : [])
       if (!manualEntry) {
         setFieldValue(`${namePrefix}bankIdentificationCode`, chosenBank ? chosenBank.bankBik : '')
         setFieldValue(`${namePrefix}correspondentAccount`, chosenBank ? chosenBank.bankCorrAccount : '')

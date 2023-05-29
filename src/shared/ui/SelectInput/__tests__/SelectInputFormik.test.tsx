@@ -34,7 +34,7 @@ describe('SelectInputFormikTest', () => {
           name="testSelectInputName"
           placeholder="Тестовый placeholder"
           label="Тестовый select"
-          options={['Первая', 'Вторая', 'Третья']}
+          options={[{ value: 'Первая' }, { value: 'Вторая' }, { value: 'Третья' }]}
         />,
         {
           wrapper: createWrapper,

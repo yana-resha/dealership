@@ -56,17 +56,11 @@ export function SelectInputWithoutMemo<T extends string | number>(props: SelectI
           <MenuItem disabled={!emptyAvailable} selected value="">
             <span className={classes.placeholder}>{placeholder}</span>
           </MenuItem>
-          {options.map(option =>
-            typeof option === 'string' || typeof option === 'number' ? (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ) : (
-              <MenuItem key={option.label} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ),
-          )}
+          {options.map(option => (
+            <MenuItem key={`${option.value}${option.label}`} value={option.value}>
+              {option.label || option.value}
+            </MenuItem>
+          ))}
         </Select>
         {isError && (
           <FormHelperText className={classes.helperText} error>

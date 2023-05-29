@@ -16,6 +16,7 @@ import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
 import { RequisitesAdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { useBanksOptions } from '../../hooks/useBanksOptions'
 import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './DealerCenterRequisites.styles'
 
@@ -30,19 +31,25 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
   const { values, setFieldValue } = useFormikContext<DossierRequisites>()
   const { legalPerson, beneficiaryBank, bankAccountNumber, taxPresence, isCustomFields } = values
   const initialValues = useRef(values)
-  const legalEntityOptions = requisites.map(requisite => requisite.legalEntityName)
-  const [banksOptions, setBanksOptions] = useState<string[]>([beneficiaryBank])
-  const [accountNumberOptions, setAccountNumberOptions] = useState<string[]>([bankAccountNumber])
+  const legalEntityOptions = requisites.map(requisite => ({ value: requisite.legalEntityName }))
+
   const previousLegalPerson = usePrevious(legalPerson)
   const previousReceiverBank = usePrevious(beneficiaryBank)
-  const previousAccountNumber = usePrevious(bankAccountNumber)
+
+  const {
+    banksOptions,
+    setBanksOptions,
+    accountNumberOptions,
+    setAccountNumberOptions,
+    previousAccountNumber,
+  } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
 
   const updateRequisites = useCallback(() => {
     const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
     if (requisiteForLegalName) {
-      setBanksOptions(requisiteForLegalName.banks.map(bank => bank.bankName))
+      setBanksOptions(requisiteForLegalName.banks.map(bank => ({ value: bank.bankName })))
       const chosenBank = requisiteForLegalName.banks.find(bank => bank.bankName === beneficiaryBank)
-      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers : [])
+      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers.map(a => ({ value: a })) : [])
       if (!isCustomFields) {
         setFieldValue(namePrefix + 'bankIdentificationCode', chosenBank ? chosenBank.bankBik : '')
         setFieldValue(namePrefix + 'correspondentAccount', chosenBank ? chosenBank.bankCorrAccount : '')

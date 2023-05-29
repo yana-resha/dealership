@@ -14,7 +14,7 @@ const CAR_YEARS_LENGTH = 30
 
 function getCarYears(yearsLength: number) {
   const currentYear = new Date().getFullYear()
-  const years = Array.from(new Array(yearsLength), (_, index) => `${currentYear - index}`)
+  const years = Array.from(new Array(yearsLength), (_, index) => ({ value: `${currentYear - index}` }))
 
   return years
 }
@@ -112,7 +112,7 @@ export const initialValueMap: OrderCalculatorFields = {
   [FormFieldNameMap.carCondition]: CAR_CONDITIONS[0].value,
   [FormFieldNameMap.carBrand]: null,
   [FormFieldNameMap.carModel]: null,
-  [FormFieldNameMap.carYear]: carYears[0],
+  [FormFieldNameMap.carYear]: carYears[0].value,
   [FormFieldNameMap.carCost]: '',
   [FormFieldNameMap.carMileage]: '',
   [FormFieldNameMap.creditProduct]: '',

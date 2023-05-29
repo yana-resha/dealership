@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Box, Step, StepIcon, StepLabel, Stepper, Typography } from '@mui/material'
 
 import { ClientDetailedDossier } from 'common/findApplication/ClientDetailedDossier/ClientDetailedDossier'
-import { SpecialMarkContextWrapper } from 'entities/SpecialMarkContext'
+import { SpecialMarkContextWrapper } from 'entities/SpecialMark'
 
 import { ClientForm } from './ClientForm'
 import { useStyles } from './CreateOrderPage.styles'

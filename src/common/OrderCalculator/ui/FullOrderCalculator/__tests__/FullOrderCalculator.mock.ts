@@ -31,10 +31,14 @@ export const formFields = [
   'Агент получатель',
 ]
 
-export const legalPersons = ['ANEX', 'Рога и копыта']
-export const bankIdentificationCodes = ['000000000', '123456789']
-export const beneficiaryBanks = ['Сбер', 'НеСбер']
-export const bankAccountNumbers = ['1234123412341234', '4321432143214321']
+export const legalPersons = [{ value: 'ANEX' }, { value: 'Рога и копыта' }]
+export const bankIdentificationCodes = [{ value: '000000000' }, { value: '123456789' }]
+export const beneficiaryBanks = [{ value: 'Сбер' }, { value: 'НеСбер' }]
+export const bankAccountNumbers = [{ value: '1234123412341234' }, { value: '4321432143214321' }]
 
-export const provider = ['Хороший поставшик', 'Хорошая страховая компания', 'Так себе поставшик']
-export const agent = ['Хороший агент', 'Так себе агент']
+export const provider = [
+  { value: 'Хороший поставшик' },
+  { value: 'Хорошая страховая компания' },
+  { value: 'Так себе поставшик' },
+]
+export const agent = [{ value: 'Хороший агент' }, { value: 'Так себе агент' }]

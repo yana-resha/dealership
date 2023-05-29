@@ -4,7 +4,7 @@ import { Box, Button } from '@mui/material'
 import { useFormikContext } from 'formik'
 
 import { ReactComponent as WarningIcon } from 'assets/icons/warning.svg'
-import { useSpecialMarkContext } from 'entities/SpecialMarkContext'
+import { SPECIAL_MARK_OPTIONS, useSpecialMarkContext } from 'entities/SpecialMark'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
@@ -14,11 +14,6 @@ import { useStyles } from './FraudDialog.styles'
 
 const SPECIAL_MARK = 'specialMark'
 const SPECIAL_MARK_REASON = 'specialMarkReason'
-const OPTIONS = [
-  'Находится в присутствии 3х лиц ',
-  'Находится в нетрезвом состоянии',
-  'Подозрение на мошенничество',
-]
 
 export const FraudDialog = () => {
   const classes = useStyles()
@@ -72,7 +67,7 @@ export const FraudDialog = () => {
           onChange={onChange}
           label="Варианты"
           placeholder="-"
-          options={OPTIONS}
+          options={SPECIAL_MARK_OPTIONS}
           emptyAvailable
         />
         <Button onClick={onSubmit} variant="contained">

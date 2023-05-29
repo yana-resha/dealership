@@ -13,7 +13,7 @@ import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 import useStyles from './AdditionalServiceItem.styles'
 
 interface Props {
-  options: string[]
+  options: { value: string | number; label: string }[]
   parentName: string
   index: number
   productLabel: string

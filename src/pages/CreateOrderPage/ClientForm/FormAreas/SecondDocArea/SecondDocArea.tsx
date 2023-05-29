@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Box, Typography } from '@mui/material'
 
-import { maskCyrillicAndDigits, maskDigitsOnly, maskOnlyCyrillicNoDigits } from 'shared/masks/InputMasks'
+import { maskCyrillicAndDigits, maskDigitsOnly } from 'shared/masks/InputMasks'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
@@ -22,7 +22,7 @@ export function SecondDocArea() {
         name="secondDocumentType"
         label="Тип второго документа"
         placeholder="-"
-        options={['Водительское удостоверение']}
+        options={[{ value: 'Водительское удостоверение' }]}
         gridColumn="span 8"
       />
       <Box gridColumn="span 8" />
