@@ -38,6 +38,6 @@ export const useStyles = makeStyles(theme => ({
   },
 
   clientPassport: {
-    color: theme.palette.grey[500],
+    color: theme.palette.text.secondary,
   },
 }))
