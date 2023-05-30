@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { MailOutline } from '@mui/icons-material'
+import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import {
   CircularProgress,
   Table,
@@ -80,7 +80,7 @@ export const ApplicationTable = ({
                   <TableCell key={cell.name} align="left" className={styles.bodyCell}>
                     {cell.name === 'status' && <ApplicationStatus status={cell.value as StatusCode} />}
 
-                    {cell.name === 'isDC' && cell.value && <MailOutline htmlColor="#DADADA" />}
+                    {cell.name === 'isDC' && cell.value && <MailOutlineIcon htmlColor="#DADADA" />}
 
                     {cell.name !== 'status' && cell.name !== 'isDC' && cell.value}
                   </TableCell>

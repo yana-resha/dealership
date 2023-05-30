@@ -1,7 +1,7 @@
 import { FilterOptionsState } from '@mui/material'
 import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import Cookies from 'js-cookie'
-import { compact } from 'lodash'
+import compact from 'lodash/compact'
 
 import { COOKIE_POINT_OF_SALE } from '../../constants'
 

@@ -12,12 +12,13 @@ import {
   prepareCreditProduct,
 } from 'common/OrderCalculator/utils/prepareCreditProductListData'
 import { creditProductListRsData, mockGetVendorOptionsResponse } from 'shared/api/requests/dictionaryDc.mock'
-import { sleep } from 'shared/lib/sleep'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { FullOrderCalculator } from '../FullOrderCalculator'
 import { formFields } from './FullOrderCalculator.mock'
+
+jest.mock('entities/pointOfSale')
 
 const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
 
@@ -280,7 +281,7 @@ describe('FullOrderCalculator', () => {
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
     })
 
-    it('Поле стоиимость блока Доп. оборудования  - принимает только числа', async () => {
+    it('Поле стоимость блока Доп. оборудования  - принимает только числа', async () => {
       userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
       await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
@@ -292,7 +293,7 @@ describe('FullOrderCalculator', () => {
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
     })
 
-    it('Поле стоиимость блока Доп. услуг  - принимает только числа', async () => {
+    it('Поле стоимость блока Доп. услуг  - принимает только числа', async () => {
       userEvent.click(
         screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
@@ -530,17 +531,15 @@ describe('FullOrderCalculator', () => {
       await act(() => userEvent.type(carCostField, '77'))
       const initialPaymentField = document.getElementById('initialPayment')!
       await act(() => userEvent.type(initialPaymentField, '11'))
-      await sleep(1100)
 
       expect(await screen.findByDisplayValue('14.29')).toBeInTheDocument()
     })
 
-    it('Значение в поле Первоначальный взносос появляется', async () => {
+    it('Значение в поле Первоначальный взнос появляется', async () => {
       const carCostField = document.getElementById('carCost')!
       await act(() => userEvent.type(carCostField, '77'))
       const initialPaymentField = document.getElementById('initialPaymentPercent')!
       await act(() => userEvent.type(initialPaymentField, '11'))
-      await sleep(1100)
 
       expect(await screen.findByDisplayValue('8')).toBeInTheDocument()
     })

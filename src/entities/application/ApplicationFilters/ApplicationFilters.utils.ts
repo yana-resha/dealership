@@ -1,5 +1,5 @@
 import { FormikErrors } from 'formik'
-import { zipObject } from 'lodash'
+import zipObject from 'lodash/zipObject'
 import { DateTime } from 'luxon'
 
 import { applicationFiltersValues, FindApplicationsReq } from './ApplicationFilters.types'

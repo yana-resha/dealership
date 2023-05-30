@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { Close } from '@mui/icons-material'
+import CloseIcon from '@mui/icons-material/Close'
 import { Box, Button, Dialog, IconButton } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
@@ -74,7 +74,7 @@ export const DownloadClientDocs = () => {
             Документы
           </SberTypography>
           <IconButton size="small" onClick={onClose}>
-            <Close />
+            <CloseIcon />
           </IconButton>
         </Box>
         <div className={styles.dialogContent}>
