@@ -7,7 +7,6 @@ import { SpecialMarkContextWrapper } from 'entities/SpecialMark'
 
 import { ClientForm } from './ClientForm'
 import { useStyles } from './CreateOrderPage.styles'
-import { FullOrderSettings } from './FullOrderSettings'
 import { OrderSearching } from './OrderSearching'
 import { OrderSettings } from './OrderSettings'
 

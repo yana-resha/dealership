@@ -4,9 +4,9 @@ import { Box, Divider } from '@mui/material'
 import { FieldArray, useField } from 'formik'
 
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
-import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { RequisitesAdditionalOptions } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { AdditionalEquipmentRequisites } from 'entities/application/DossierAreas/ui'
 
 import { ADDITIONAL_EQUIPMENTS } from '../../../../../config'
@@ -19,7 +19,7 @@ type Props = {
 
 export function AdditionalEquipment({ requisites, disabled = false }: Props) {
   const classes = useStyles()
-  const [field] = useField(FormFieldNameMap.additionalEquipments)
+  const [field] = useField(ServicesGroupName.additionalEquipments)
   const additionalEquipments = useMemo(
     () => ADDITIONAL_EQUIPMENTS.map(o => ({ value: o.type, label: o.optionName })),
     [],
@@ -29,7 +29,7 @@ export function AdditionalEquipment({ requisites, disabled = false }: Props) {
 
   return (
     <AdditionalServicesContainer title="Дополнительное оборудование" disabled={disabled}>
-      <FieldArray name={FormFieldNameMap.additionalEquipments}>
+      <FieldArray name={ServicesGroupName.additionalEquipments}>
         {arrayHelpers => (
           <Box minWidth="min-content" className={classes.itemsContainer}>
             {field.value.map((v: any, index: number, arr: any[]) => (
@@ -37,7 +37,7 @@ export function AdditionalEquipment({ requisites, disabled = false }: Props) {
                 <AdditionalEquipmentRequisites
                   requisites={requisites}
                   index={index}
-                  parentName={FormFieldNameMap.additionalEquipments}
+                  parentName={ServicesGroupName.additionalEquipments}
                   isRequisiteEditable={true}
                   productOptions={additionalEquipments}
                   arrayHelpers={arrayHelpers}

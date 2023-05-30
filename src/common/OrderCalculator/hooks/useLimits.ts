@@ -2,6 +2,8 @@ import { useEffect, useMemo } from 'react'
 
 import { useField, useFormikContext } from 'formik'
 
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+
 import { formMessages } from '../config'
 import {
   CommonError,
@@ -240,17 +242,17 @@ export function useLimits({ vendorCode }: Params) {
   useEffect(() => {
     if (commonErrorsField.value.isExceededAdditionalEquipmentsLimit) {
       values.additionalEquipments.forEach((e, i) =>
-        setFieldTouched(`${FormFieldNameMap.additionalEquipments}.${i}.${FormFieldNameMap.productCost}`),
+        setFieldTouched(`${ServicesGroupName.additionalEquipments}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
     if (commonErrorsField.value.isExceededDealerAdditionalServicesLimit) {
       values.additionalEquipments.forEach((e, i) =>
-        setFieldTouched(`${FormFieldNameMap.dealerAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
+        setFieldTouched(`${ServicesGroupName.dealerAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
     if (commonErrorsField.value.isExceededBankAdditionalServicesLimit) {
       values.additionalEquipments.forEach((e, i) =>
-        setFieldTouched(`${FormFieldNameMap.bankAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
+        setFieldTouched(`${ServicesGroupName.bankAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
   }, [commonErrorsField.value, setFieldTouched, values.additionalEquipments])

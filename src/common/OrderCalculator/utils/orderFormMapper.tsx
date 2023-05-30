@@ -5,6 +5,8 @@ import {
   VendorOption,
 } from '@sberauto/dictionarydc-proto/public'
 
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+
 import {
   FormFieldNameMap,
   FullOrderCalculatorFields,
@@ -49,8 +51,8 @@ export const mapValuesForCalculateCreditRequest = (
   productsMap?: ProductsMap,
 ): CalculateCreditRequest => {
   const additionalOptions: AdditionalOption[] = [
-    ...mapAdditionalOptions(values[FormFieldNameMap.additionalEquipments], 'additionalEquipment'),
-    ...mapAdditionalOptions(values[FormFieldNameMap.dealerAdditionalServices], 'dealerServices'),
+    ...mapAdditionalOptions(values[ServicesGroupName.additionalEquipments], 'additionalEquipment'),
+    ...mapAdditionalOptions(values[ServicesGroupName.dealerAdditionalServices], 'dealerServices'),
   ]
   const loanCar: LoanCar = {
     isCarNew: !!values[FormFieldNameMap.carCondition],

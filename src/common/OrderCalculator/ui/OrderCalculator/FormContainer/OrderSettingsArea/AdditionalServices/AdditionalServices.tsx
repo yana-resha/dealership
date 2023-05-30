@@ -3,6 +3,7 @@ import { FieldArray, useField } from 'formik'
 
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 
 import { AdditionalServiceItem } from './AdditionalServiceItem/AdditionalServiceItem'
 import useStyles from './AdditionalServices.styles'
@@ -10,7 +11,7 @@ import useStyles from './AdditionalServices.styles'
 type Props = {
   title: string
   options: { value: string | number; label: string }[]
-  name: string
+  name: ServicesGroupName
   productLabel: string
   isError?: boolean
   errorMessage?: string

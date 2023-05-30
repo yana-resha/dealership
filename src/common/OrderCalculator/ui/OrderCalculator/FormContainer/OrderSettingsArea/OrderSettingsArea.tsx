@@ -8,6 +8,7 @@ import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPaymen
 import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { maskOnlyDigitsWithSeparator, maskPercent } from 'shared/masks/InputMasks'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
@@ -112,13 +113,13 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
         <AdditionalServices
           title="Дополнительное оборудование"
           options={additionalEquipments}
-          name={FormFieldNameMap.additionalEquipments}
+          name={ServicesGroupName.additionalEquipments}
           productLabel="Вид оборудования"
         />
         <AdditionalServices
           title="Дополнительные услуги дилера"
           options={dealerAdditionalServices}
-          name={FormFieldNameMap.dealerAdditionalServices}
+          name={ServicesGroupName.dealerAdditionalServices}
           productLabel="Тип продукта"
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
@@ -127,7 +128,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
           disabled
           title="Дополнительные услуги банка"
           options={[]}
-          name={FormFieldNameMap.bankAdditionalServices}
+          name={ServicesGroupName.bankAdditionalServices}
           productLabel="Тип продукта"
         />
         {!!commonErrors.length && (

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
@@ -18,8 +18,12 @@ import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
-import { useAdditionalServices } from '../../../../../common/OrderCalculator/hooks/useAdditionalServices'
-import { RequisitesAdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
+import {
+  AdditionalOptions,
+  RequisitesAdditionalOptions,
+} from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { useAdditionalServices } from '../../hooks/useAdditionalServices'
+import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
 import { useBanksOptions } from '../../hooks/useBanksOptions'
 import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './AdditionalEquipmentRequisites.styles'
@@ -27,7 +31,7 @@ import { useStyles } from './AdditionalEquipmentRequisites.styles'
 type Props = {
   requisites: RequisitesAdditionalOptions[]
   index: number
-  parentName: string
+  parentName: ServicesGroupName
   isRequisiteEditable: boolean
   productOptions?: {
     value: string | number
@@ -73,6 +77,13 @@ export function AdditionalEquipmentRequisites(props: Props) {
     setManualEntry,
     previousAccountNumber,
   } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
+
+  const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
+    values,
+    index,
+    parentName,
+    options: productOptions,
+  })
 
   const updateRequisites = useCallback(() => {
     const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
@@ -161,7 +172,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
           name={`${namePrefix}productType`}
           label="Тип доп оборудования"
           placeholder="-"
-          options={productOptions}
+          options={filteredOptions}
           gridColumn="span 6"
         />
       ) : (
@@ -192,7 +203,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
       {isRequisiteEditable && (
         <Box className={classes.btnContainer} gridColumn="span 3">
           <CloseSquareBtn onClick={removeItem} />
-          <AddingSquareBtn onClick={addItem} />
+          <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />
         </Box>
       )}
 

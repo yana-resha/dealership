@@ -19,8 +19,9 @@ import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
-import { useAdditionalServices } from '../../../../../common/OrderCalculator/hooks/useAdditionalServices'
 import { RequisitesDealerServices } from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { useAdditionalServices } from '../../hooks/useAdditionalServices'
+import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
 import { useBanksOptions } from '../../hooks/useBanksOptions'
 import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './DealerServicesRequisites.styles'
@@ -28,7 +29,7 @@ import { useStyles } from './DealerServicesRequisites.styles'
 type Props = {
   requisites: RequisitesDealerServices[]
   index: number
-  parentName: string
+  parentName: ServicesGroupName
   isRequisiteEditable: boolean
   productOptions?: {
     value: string | number
@@ -87,6 +88,13 @@ export function DealerServicesRequisites(props: Props) {
     setManualEntry,
     previousAccountNumber,
   } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
+
+  const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
+    values,
+    index,
+    parentName,
+    options: productOptions,
+  })
 
   const updateRequisites = useCallback(() => {
     const requisiteForProviders = requisites.find(requisite => requisite.provider === provider)
@@ -204,7 +212,7 @@ export function DealerServicesRequisites(props: Props) {
           name={`${namePrefix}productType`}
           label="Тип продукта"
           placeholder="-"
-          options={productOptions}
+          options={filteredOptions}
           gridColumn="span 6"
         />
       ) : (
@@ -235,7 +243,7 @@ export function DealerServicesRequisites(props: Props) {
       {isRequisiteEditable && (
         <Box className={classes.btnContainer} gridColumn="span 1">
           <CloseSquareBtn onClick={removeItem} />
-          <AddingSquareBtn onClick={addItem} />
+          <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />
         </Box>
       )}
 

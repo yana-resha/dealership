@@ -1,8 +1,12 @@
 import { Box } from '@mui/material'
-import { ArrayHelpers } from 'formik'
+import { ArrayHelpers, useFormikContext } from 'formik'
 
-import { useAdditionalServices } from 'common/OrderCalculator/hooks/useAdditionalServices'
-import { FormFieldNameMap } from 'common/OrderCalculator/types'
+import { FormFieldNameMap, OrderCalculatorFields } from 'common/OrderCalculator/types'
+import { useAdditionalServices } from 'entities/application/DossierAreas/hooks/useAdditionalServices'
+import {
+  ServicesGroupName,
+  useAdditionalServicesOptions,
+} from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
@@ -14,7 +18,7 @@ import useStyles from './AdditionalServiceItem.styles'
 
 interface Props {
   options: { value: string | number; label: string }[]
-  parentName: string
+  parentName: ServicesGroupName
   index: number
   productLabel: string
   arrayHelpers: ArrayHelpers
@@ -42,13 +46,21 @@ export function AdditionalServiceItem({
     changeIds,
   })
 
+  const { values } = useFormikContext<OrderCalculatorFields>()
+  const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
+    values,
+    index,
+    parentName,
+    options,
+  })
+
   return (
     <Box className={classes.gridContainer}>
       <SelectInputFormik
         name={namePrefix + FormFieldNameMap.productType}
         label={productLabel}
         placeholder="-"
-        options={options}
+        options={filteredOptions}
         gridColumn="span 2"
         disabled={isError}
       />
@@ -71,7 +83,7 @@ export function AdditionalServiceItem({
       {!isError && (
         <Box className={classes.btnContainer} gridColumn="span 1">
           <CloseSquareBtn onClick={removeItem} />
-          <AddingSquareBtn onClick={addItem} />
+          <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />
         </Box>
       )}
     </Box>

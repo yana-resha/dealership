@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { ArrayHelpers, useFormikContext } from 'formik'
 
-import { ChangingIdsOption } from '../constants'
+import { ChangingIdsOption } from '../../../../common/OrderCalculator/constants'
 
 const MIN_ITEMS_LENGTH = 1
 

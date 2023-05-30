@@ -5,6 +5,10 @@ export default makeStyles(theme => ({
     width: '36px',
     height: '36px',
     padding: 0 + '!important',
+
+    '&.Mui-disabled > svg > path': {
+      fill: theme.palette.text.secondary + '!important',
+    },
   },
 
   btnIcon: {

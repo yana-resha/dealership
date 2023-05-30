@@ -14,6 +14,7 @@ import {
   mockRequisites,
 } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { editRequisitesValidationSchema } from '../../configs/editRequisitesValidation'
+import { ServicesGroupName } from '../../hooks/useAdditionalServicesOptions'
 import { useStyles } from './EditRequisitesArea.styles'
 
 export interface DossierRequisites {
@@ -121,7 +122,7 @@ export function EditRequisitesArea({ clientDossier, changeRequisites }: Props) {
                   <DealerServicesRequisites
                     requisites={requisites.dealerServicesRequisites}
                     index={index}
-                    parentName="dealerAdditionalServices"
+                    parentName={ServicesGroupName.dealerAdditionalServices}
                     isRequisiteEditable={false}
                   />
                   {index < array.length - 1 && <Divider />}
@@ -141,7 +142,7 @@ export function EditRequisitesArea({ clientDossier, changeRequisites }: Props) {
                   <AdditionalEquipmentRequisites
                     requisites={requisites.additionalEquipmentRequisites}
                     index={index}
-                    parentName="additionalEquipments"
+                    parentName={ServicesGroupName.additionalEquipments}
                     isRequisiteEditable={false}
                   />
                   {index < array.length - 1 && <Divider />}

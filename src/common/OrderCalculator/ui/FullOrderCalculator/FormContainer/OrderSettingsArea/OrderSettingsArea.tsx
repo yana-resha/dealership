@@ -7,6 +7,7 @@ import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPaymen
 import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { maskOnlyDigitsWithSeparator, maskPercent } from 'shared/masks/InputMasks'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
@@ -108,7 +109,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
         <AdditionalServices
           title="Дополнительные услуги дилера"
           options={{ productType: dealerAdditionalServices, loanTerms }}
-          name={FormFieldNameMap.dealerAdditionalServices}
+          name={ServicesGroupName.dealerAdditionalServices}
           requisites={requisites.dealerServicesRequisites}
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
@@ -116,7 +117,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
         <AdditionalServices
           title="Дополнительные услуги банка"
           options={{ productType: [], loanTerms }}
-          name={FormFieldNameMap.bankAdditionalServices}
+          name={ServicesGroupName.bankAdditionalServices}
           requisites={requisites.dealerServicesRequisites}
           disabled
         />

@@ -1,3 +1,5 @@
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+
 export enum FormFieldNameMap {
   carCondition = 'carCondition',
   carBrand = 'carBrand',
@@ -12,9 +14,6 @@ export enum FormFieldNameMap {
   productType = 'productType',
   productCost = 'productCost',
   isCredit = 'isCredit',
-  additionalEquipments = 'additionalEquipments',
-  dealerAdditionalServices = 'dealerAdditionalServices',
-  bankAdditionalServices = 'bankAdditionalServices',
   specialMark = 'specialMark',
   carPassportType = 'carPassportType',
   carPassportId = 'carPassportId',
@@ -97,9 +96,9 @@ export interface OrderCalculatorFields {
   [FormFieldNameMap.initialPayment]: string
   [FormFieldNameMap.initialPaymentPercent]: string
   [FormFieldNameMap.loanTerm]: string
-  [FormFieldNameMap.additionalEquipments]: OrderCalculatorAdditionalService[]
-  [FormFieldNameMap.dealerAdditionalServices]: OrderCalculatorAdditionalService[]
-  [FormFieldNameMap.bankAdditionalServices]: OrderCalculatorAdditionalService[]
+  [ServicesGroupName.additionalEquipments]: OrderCalculatorAdditionalService[]
+  [ServicesGroupName.dealerAdditionalServices]: OrderCalculatorAdditionalService[]
+  [ServicesGroupName.bankAdditionalServices]: OrderCalculatorAdditionalService[]
   [FormFieldNameMap.specialMark]: string | null
   [FormFieldNameMap.commonError]: CommonError
   [FormFieldNameMap.validationParams]: ValidationParams
@@ -110,9 +109,9 @@ export interface FullOrderCalculatorFields
     Omit<
       OrderCalculatorFields,
       | FormFieldNameMap.specialMark
-      | FormFieldNameMap.additionalEquipments
-      | FormFieldNameMap.dealerAdditionalServices
-      | FormFieldNameMap.bankAdditionalServices
+      | ServicesGroupName.additionalEquipments
+      | ServicesGroupName.dealerAdditionalServices
+      | ServicesGroupName.bankAdditionalServices
     > {
   [FormFieldNameMap.carPassportType]: number
   [FormFieldNameMap.carPassportId]: string
@@ -123,9 +122,9 @@ export interface FullOrderCalculatorFields
   [FormFieldNameMap.salesContractDate]: string
   [FormFieldNameMap.legalPerson]: string
   [FormFieldNameMap.loanAmount]: string
-  [FormFieldNameMap.additionalEquipments]: FullInitialAdditionalEquipments[]
-  [FormFieldNameMap.dealerAdditionalServices]: FullInitialAdditionalService[]
-  [FormFieldNameMap.bankAdditionalServices]: FullInitialAdditionalService[]
+  [ServicesGroupName.additionalEquipments]: FullInitialAdditionalEquipments[]
+  [ServicesGroupName.dealerAdditionalServices]: FullInitialAdditionalService[]
+  [ServicesGroupName.bankAdditionalServices]: FullInitialAdditionalService[]
 }
 
 export type FormMessages = {
