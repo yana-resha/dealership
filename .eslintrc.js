@@ -90,6 +90,21 @@ module.exports = {
         },
       },
     ],
+    'no-restricted-imports': [
+      'error',
+      {
+        name: '@mui/icons-material',
+        message: 'Please use "import foo from \'@mui/icons-material/foo\'" instead.',
+      },
+      {
+        name: 'lodash',
+        message: 'Please use "import foo from \'lodash/foo\'" instead.',
+      },
+      {
+        name: '@mui/*/*/*',
+        message: 'Please don`t use deep import for @mui/*/*/*.',
+      },
+    ],
   },
   overrides: [
     {

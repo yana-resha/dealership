@@ -5,7 +5,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "TZ=UTC react-scripts test --passWithNoTests --env=jsdom --runInBand --no-compilation-cache --logHeapUsage",
+    "test": "TZ=UTC react-scripts test --passWithNoTests --env=jsdom --maxWorkers 2 --no-compilation-cache --logHeapUsage",
     "eject": "react-scripts eject",
     "prepare": "husky install"
   },
@@ -30,7 +30,6 @@
     "luxon": "3.1.1",
     "normalizr": "3.6.2",
     "notistack": "2.0.8",
-    "re-reselect": "4.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-imask": "6.4.3",
@@ -43,7 +42,6 @@
     "redux-state-sync": "3.1.4",
     "snakecase-keys": "5.4.4",
     "uuid": "9.0.0",
-    "web-vitals": "2.1.4",
     "yup": "0.32.11"
   },
   "devDependencies": {

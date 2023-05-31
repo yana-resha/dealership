@@ -1,4 +1,4 @@
-import { compact } from 'lodash'
+import compact from 'lodash/compact'
 
 export function getFullName(firstName?: string, lastName?: string, middleName?: string) {
   const nameArr = [lastName, firstName, middleName]

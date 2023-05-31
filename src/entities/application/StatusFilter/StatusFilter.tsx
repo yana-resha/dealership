@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import { alpha, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
-import { uniq } from 'lodash'
+import uniq from 'lodash/uniq'
 
 import { PreparedStatus } from '../application.utils'
 
