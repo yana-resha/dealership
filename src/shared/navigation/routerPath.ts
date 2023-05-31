@@ -4,6 +4,7 @@ export const appRoutes = {
   vendorList: () => '/vendorlist',
   createOrder: () => '/create_order',
   orderList: () => '/order_list',
+  fullOrderSettings: () => '/full_order_settings',
 }
 
 export const appRoutePaths = {
@@ -12,6 +13,7 @@ export const appRoutePaths = {
   vendorList: appRoutes.vendorList(),
   createOrder: appRoutes.createOrder(),
   orderList: appRoutes.orderList(),
+  fullOrderSettings: appRoutes.fullOrderSettings(),
 }
 
 export const defaultRoute = appRoutePaths.orderList

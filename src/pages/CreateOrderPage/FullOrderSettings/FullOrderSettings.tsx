@@ -50,7 +50,7 @@ export function FullOrderSettings() {
   }, [bankOffers.length])
 
   return (
-    <>
+    <div className={classes.page} data-testid="fullOrderSettingsPage">
       <FullOrderCalculator
         isSubmitLoading={isOfferLoading}
         onSubmit={calculateCredit}
@@ -62,6 +62,6 @@ export function FullOrderSettings() {
         </Box>
       )}
       {!isError && bankOffers.length > 0 && <BankOffers data={dataMock} onRowClick={() => null} />}
-    </>
+    </div>
   )
 }

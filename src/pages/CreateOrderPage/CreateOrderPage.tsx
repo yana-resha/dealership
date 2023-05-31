@@ -58,14 +58,9 @@ export function CreateOrderPage() {
     setDetailedApplicationId(applicationId)
   }
 
-  // Временное решение для отображения FullOrderSettings
-  const shouldShowFullCalculator = false
-
   return (
     <div className={classes.page} data-testid="dealershipPage">
-      {shouldShowFullCalculator ? (
-        <FullOrderSettings />
-      ) : detailedApplicationId ? (
+      {detailedApplicationId ? (
         <ClientDetailedDossier applicationId={detailedApplicationId} onBackButton={onBackButton} />
       ) : (
         <Box className={classes.loaderContainer}>
