@@ -9,7 +9,7 @@ import { ThemeProviderMock } from 'tests/mocks'
 import { ClientDetailedDossier } from '../ClientDetailedDossier'
 
 const mockedClientDossier = {
-  status: StatusCode.STATUS_CODE_INITIAL,
+  status: StatusCode.INITIAL,
 }
 
 const mockedFileQuestionnaire = new File(['questionnaire'], 'Анкета', {

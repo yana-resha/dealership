@@ -9,7 +9,7 @@ import { ThemeProviderMock } from 'tests/mocks'
 import { DossierIdArea } from '../DossierIdArea'
 
 const mockedClientDossier = {
-  status: StatusCode.STATUS_CODE_INITIAL,
+  status: StatusCode.INITIAL,
   applicationNumber: '545544',
   clientName: 'Терентьев Михаил Павлович',
   passport: '0604060423',

@@ -36,40 +36,40 @@ const useStyles = makeStyles(theme => ({
 
 const config = [
   {
-    filter: [StatusCode.STATUS_CODE_INITIAL],
+    filter: [StatusCode.INITIAL],
     textValue: PreparedStatus.initial,
   },
   {
     filter: [
-      StatusCode.STATUS_CODE_INITIAL,
-      StatusCode.STATUS_CODE_PROCESSED,
-      StatusCode.STATUS_CODE_APPROVED,
-      StatusCode.STATUS_CODE_FINALLY_APPROVED,
-      StatusCode.STATUS_CODE_FORMATION,
-      StatusCode.STATUS_CODE_AUTHORIZED,
-      StatusCode.STATUS_CODE_FINANCED,
-      StatusCode.STATUS_CODE_ERROR,
+      StatusCode.INITIAL,
+      StatusCode.PROCESSED,
+      StatusCode.APPROVED,
+      StatusCode.FINALLY_APPROVED,
+      StatusCode.FORMATION,
+      StatusCode.AUTHORIZED,
+      StatusCode.ISSUED,
+      StatusCode.ERROR,
     ],
     textValue: 'Актуальные заявки',
   },
   {
-    filter: [StatusCode.STATUS_CODE_PROCESSED],
+    filter: [StatusCode.PROCESSED],
     textValue: PreparedStatus.processed,
   },
   {
-    filter: [StatusCode.STATUS_CODE_CANCELED_DEAL],
+    filter: [StatusCode.CANCELED_DEAL],
     textValue: PreparedStatus.canceledDeal,
   },
   {
-    filter: [StatusCode.STATUS_CODE_AUTHORIZED],
+    filter: [StatusCode.AUTHORIZED],
     textValue: PreparedStatus.authorized,
   },
   {
-    filter: [StatusCode.STATUS_CODE_FINALLY_APPROVED],
+    filter: [StatusCode.FINALLY_APPROVED],
     textValue: PreparedStatus.finallyApproved,
   },
   {
-    filter: [StatusCode.STATUS_CODE_REJECTED],
+    filter: [StatusCode.REJECTED],
     textValue: PreparedStatus.rejected,
   },
 ]

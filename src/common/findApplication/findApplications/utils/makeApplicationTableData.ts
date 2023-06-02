@@ -23,9 +23,9 @@ export const makeApplicationTableData = (data: Application[]): PreparedTableData
       fullName: getFullName(firstName, lastName, middleName),
       vendorCode: vendorCode ?? '',
       source: source ?? '',
-      decisionTerm: decisionTerm ?? '',
+      decisionTerm: decisionTerm ? `${decisionTerm}` : '',
       //NOTE: непонятно что отвечает за иконку уточнить
       isDC: true,
-      status: status ?? StatusCode.STATUS_CODE_ERROR,
+      status: status ?? StatusCode.ERROR,
     }
   })

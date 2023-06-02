@@ -21,7 +21,7 @@ export const FindApplication = () => {
     firstName: '',
     middleName: '',
     lastName: '',
-    statuses: [],
+    // statuses: [],
   })
   const [page, setPage] = useState(1)
   const [detailedApplicationId, setDetailedApplicationId] = useState<string | undefined>(undefined)

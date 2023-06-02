@@ -93,7 +93,7 @@ export const clientFormValidationSchema = Yup.object().shape({
   numOfChildren: Yup.string()
     .required('Поле обязательно для заполнения')
     .max(20, 'Введено слишком большое значение'),
-  familyStatus: Yup.string().required('Поле обязательно для заполнения'),
+  familyStatus: Yup.number().required('Поле обязательно для заполнения'),
   passport: Yup.string().required('Поле обязательно для заполнения').min(10, 'Введите данные полностью'),
   birthDate: Yup.date()
     .nullable()
@@ -114,7 +114,7 @@ export const clientFormValidationSchema = Yup.object().shape({
   }),
   mobileNumber: Yup.string().required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
   additionalNumber: Yup.string().when('occupation', {
-    is: 'Безработный',
+    is: 8,
     then: schema => schema.required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
     otherwise: schema =>
       schema.test(
@@ -141,15 +141,15 @@ export const clientFormValidationSchema = Yup.object().shape({
     }),
   familyIncome: Yup.string().required('Поле обязательно для заполнения').max(13, 'Значение слишком большое'),
   expenses: Yup.string().required('Поле обязательно для заполнения').max(13, 'Значение слишком большое'),
-  relatedToPublic: Yup.string().required('Поле обязательно для заполнения'),
-  secondDocumentType: Yup.string().required('Поле обязательно для заполнения'),
+  relatedToPublic: Yup.number().required('Поле обязательно для заполнения'),
+  secondDocumentType: Yup.number().required('Поле обязательно для заполнения'),
   secondDocumentNumber: Yup.string().required('Поле обязательно для заполнения'),
   secondDocumentDate: Yup.date()
     .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Дата слишком ранняя'),
   secondDocumentIssuedBy: Yup.string().required('Поле обязательно для заполнения'),
-  occupation: Yup.string().required('Поле обязательно для заполнения'),
+  occupation: Yup.number().required('Поле обязательно для заполнения'),
   employmentDate: Yup.date()
     .nullable()
     .when('occupation', {

@@ -19,7 +19,7 @@ jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({
 const formFields = ['mobileNumber', 'additionalNumber', 'email']
 
 let mockedCommunicationFields = {
-  occupation: '',
+  occupation: null,
   mobileNumber: '',
   additionalNumber: '',
   email: '',
@@ -88,7 +88,8 @@ describe('CommunicationAreaTest', () => {
     it('Поле "additionalNumber" валидируется, если клиент не работает', async () => {
       mockedCommunicationFields = {
         ...mockedCommunicationFields,
-        occupation: 'Безработный',
+        //@ts-expect-error нужно прописать типы
+        occupation: 8,
       }
       render(<CommunicationArea />, {
         wrapper: createWrapper,

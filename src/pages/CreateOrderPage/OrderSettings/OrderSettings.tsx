@@ -7,6 +7,10 @@ import { CalculateCreditRequest, CalculatedProduct } from '@sberauto/dictionaryd
 import { OrderCalculator } from 'common/OrderCalculator'
 import { BankOffers } from 'entities/BankOffers'
 import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
+import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+
+import { updateOrder } from '../model/orderSlice'
 
 const useStyles = makeStyles(theme => ({
   errorContainer: {
@@ -24,6 +28,7 @@ export function OrderSettings({ nextStep }: Props) {
   const classes = useStyles()
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
   const [isOfferLoading, setIsOfferLoading] = useState(false)
+  const dispatch = useAppDispatch()
 
   const { mutateAsync, isError } = useCalculateCreditMutation()
   useEffect(() => {
@@ -42,6 +47,7 @@ export function OrderSettings({ nextStep }: Props) {
 
   const calculateCredit = useCallback(
     async (data: CalculateCreditRequest) => {
+      dispatch(updateOrder({ orderData: data }))
       setIsOfferLoading(true)
       const res = await mutateAsync(data)
       if (res && res.products) {
@@ -49,7 +55,7 @@ export function OrderSettings({ nextStep }: Props) {
         setIsOfferLoading(false)
       }
     },
-    [mutateAsync],
+    [mutateAsync, dispatch],
   )
 
   const bankOffersRef = useRef<HTMLDivElement | null>(null)

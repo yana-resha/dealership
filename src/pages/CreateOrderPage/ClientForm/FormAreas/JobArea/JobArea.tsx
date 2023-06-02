@@ -22,7 +22,8 @@ export function JobArea() {
   const { occupation, employerAddress, employerAddressString } = values
 
   useEffect(() => {
-    if (occupation === 'Безработный') {
+    //DCB-390 брать значение из контрактов
+    if (occupation === 8) {
       setJobDisabled(true)
       setFieldValue('employmentDate', '')
       setFieldValue('employerName', '')
@@ -69,7 +70,45 @@ export function JobArea() {
         name="occupation"
         label="Должность/Вид занятости"
         placeholder="-"
-        options={[{ value: 'Безработный' }, { value: 'Аналитик' }, { value: 'Разработчик' }]}
+        //TODO нужен enum в контракте DCB-390
+        options={[
+          {
+            label: 'работает/служит по временному контракту',
+            value: 1,
+          },
+          {
+            label: 'работает/cлужит по постоянному контракту',
+            value: 2,
+          },
+          {
+            label: 'частная практика',
+            value: 3,
+          },
+          {
+            label: 'индивидуальный предприниматель',
+            value: 4,
+          },
+          {
+            label: 'агент на комиссионном договоре',
+            value: 5,
+          },
+          {
+            label: 'пенсионер',
+            value: 6,
+          },
+          {
+            label: 'исполнитель по гражданско-правовому договору',
+            value: 7,
+          },
+          {
+            label: 'не работает',
+            value: 8,
+          },
+          {
+            label: 'самозанятый',
+            value: 9,
+          },
+        ]}
         gridColumn="span 8"
       />
       <DateInputFormik

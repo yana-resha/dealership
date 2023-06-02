@@ -17,7 +17,7 @@ export interface ClientData {
   hasNameChanged: boolean
   clientFormerName: string
   numOfChildren: string
-  familyStatus: string
+  familyStatus: number | null
   passport: string
   birthDate: Date | null
   birthPlace: string
@@ -39,16 +39,16 @@ export interface ClientData {
   incomeConfirmation: boolean
   familyIncome: string
   expenses: string
-  relatedToPublic: string
+  relatedToPublic: number | null
   ndfl2File: File | null
   ndfl3File: File | null
   bankStatementFile: File | null
   incomeProofUploadValidator: string
-  secondDocumentType: string
+  secondDocumentType: number | null
   secondDocumentNumber: string
   secondDocumentDate: Date | null
   secondDocumentIssuedBy: string
-  occupation: string
+  occupation: number | null
   employmentDate: Date | null
   employerName: string
   employerPhone: string

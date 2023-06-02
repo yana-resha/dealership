@@ -293,7 +293,7 @@ export const mockRequisitesForTest = (): Requisites => ({
 const mockClientDossier: ClientDossier[] = [
   {
     applicationId: '1',
-    status: StatusCode.STATUS_CODE_INITIAL,
+    status: StatusCode.INITIAL,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -369,7 +369,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '2',
-    status: StatusCode.STATUS_CODE_PROCESSED,
+    status: StatusCode.PROCESSED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -393,7 +393,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '3',
-    status: StatusCode.STATUS_CODE_APPROVED,
+    status: StatusCode.APPROVED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -417,7 +417,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '4',
-    status: StatusCode.STATUS_CODE_FINALLY_APPROVED,
+    status: StatusCode.FINALLY_APPROVED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -476,7 +476,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '5',
-    status: StatusCode.STATUS_CODE_FORMATION,
+    status: StatusCode.FORMATION,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -518,7 +518,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '6',
-    status: StatusCode.STATUS_CODE_REJECTED,
+    status: StatusCode.REJECTED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -542,7 +542,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '7',
-    status: StatusCode.STATUS_CODE_CANCELED_DEAL,
+    status: StatusCode.CANCELED_DEAL,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -566,7 +566,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '8',
-    status: StatusCode.STATUS_CODE_CANCELED,
+    status: StatusCode.CANCELED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -590,7 +590,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '9',
-    status: StatusCode.STATUS_CODE_SIGNED,
+    status: StatusCode.SIGNED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -683,7 +683,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '10',
-    status: StatusCode.STATUS_CODE_AUTHORIZED,
+    status: StatusCode.AUTHORIZED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -707,7 +707,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '11',
-    status: StatusCode.STATUS_CODE_FINANCED,
+    status: StatusCode.ISSUED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -731,7 +731,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '12',
-    status: StatusCode.STATUS_CODE_ERROR,
+    status: StatusCode.ERROR,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -755,7 +755,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '13',
-    status: StatusCode.STATUS_CODE_APPROVED,
+    status: StatusCode.APPROVED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -779,7 +779,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '14',
-    status: StatusCode.STATUS_CODE_CANCELED,
+    status: StatusCode.CANCELED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -803,7 +803,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '15',
-    status: StatusCode.STATUS_CODE_REJECTED,
+    status: StatusCode.REJECTED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -827,7 +827,7 @@ const mockClientDossier: ClientDossier[] = [
   },
   {
     applicationId: '16',
-    status: StatusCode.STATUS_CODE_APPROVED,
+    status: StatusCode.APPROVED,
     dealerCenterNumber: '2003023272',
     dealerCenterName: 'ANEX TOUR',
     dealerCenterAddress: 'Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
@@ -876,7 +876,7 @@ export async function getMockAgreement() {
 export async function getMockQuestionnaire(applicationId: string) {
   await sleep(3000)
   const application = getMockedClientDossier(applicationId)
-  if (application == undefined || application.status == StatusCode.STATUS_CODE_INITIAL) {
+  if (application == undefined || application.status == StatusCode.INITIAL) {
     return undefined
   }
   const mockFile = mockQuestionnaire

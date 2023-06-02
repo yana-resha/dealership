@@ -22,29 +22,33 @@ export enum PreparedStatus {
   error = 'Ошибка',
 }
 
+export enum ApplicationTypes {
+  initial = 1,
+}
+
 export const getStatus = (status: StatusCode) => {
   switch (status) {
-    case StatusCode.STATUS_CODE_INITIAL:
+    case StatusCode.INITIAL:
       return PreparedStatus.initial
-    case StatusCode.STATUS_CODE_PROCESSED:
+    case StatusCode.PROCESSED:
       return PreparedStatus.processed
-    case StatusCode.STATUS_CODE_APPROVED:
+    case StatusCode.APPROVED:
       return PreparedStatus.approved
-    case StatusCode.STATUS_CODE_FINALLY_APPROVED:
+    case StatusCode.FINALLY_APPROVED:
       return PreparedStatus.finallyApproved
-    case StatusCode.STATUS_CODE_FORMATION:
+    case StatusCode.FORMATION:
       return PreparedStatus.formation
-    case StatusCode.STATUS_CODE_REJECTED:
+    case StatusCode.REJECTED:
       return PreparedStatus.rejected
-    case StatusCode.STATUS_CODE_CANCELED_DEAL:
+    case StatusCode.CANCELED_DEAL:
       return PreparedStatus.canceledDeal
-    case StatusCode.STATUS_CODE_CANCELED:
+    case StatusCode.CANCELED:
       return PreparedStatus.canceled
-    case StatusCode.STATUS_CODE_SIGNED:
+    case StatusCode.SIGNED:
       return PreparedStatus.signed
-    case StatusCode.STATUS_CODE_FINANCED:
+    case StatusCode.ISSUED:
       return PreparedStatus.financed
-    case StatusCode.STATUS_CODE_AUTHORIZED:
+    case StatusCode.AUTHORIZED:
       return PreparedStatus.authorized
     default:
       return PreparedStatus.error
