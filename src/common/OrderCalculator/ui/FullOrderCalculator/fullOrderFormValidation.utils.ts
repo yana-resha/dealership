@@ -8,6 +8,7 @@ import {
   checkAdditionalEquipmentsLimit,
   checkDealerAdditionalServicesLimit,
 } from 'common/OrderCalculator/utils/baseFormValidation'
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { FieldMessages } from 'shared/constants/fieldMessages'
 
 import {
@@ -52,7 +53,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
 
   ...requiredBankDetailsFormValidation,
 
-  [FormFieldNameMap.additionalEquipments]: Yup.array().of(
+  [ServicesGroupName.additionalEquipments]: Yup.array().of(
     Yup.object().shape({
       ...additionalServiceBaseValidation(checkAdditionalEquipmentsLimit),
       [FormFieldNameMap.legalPerson]: Yup.string().when([FormFieldNameMap.productType], {
@@ -63,7 +64,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     }),
   ),
 
-  [FormFieldNameMap.dealerAdditionalServices]: Yup.array().of(
+  [ServicesGroupName.dealerAdditionalServices]: Yup.array().of(
     Yup.object().shape({
       ...additionalServiceBaseValidation(checkDealerAdditionalServicesLimit),
 

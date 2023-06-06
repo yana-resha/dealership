@@ -7,13 +7,14 @@ import useStyles from './SquareBtn.styles'
 
 type Props = {
   onClick: () => void
+  disabled: boolean
 }
 
-export const AddingSquareBtn = ({ onClick }: Props) => {
+export const AddingSquareBtn = ({ onClick, disabled }: Props) => {
   const classes = useStyles()
 
   return (
-    <SquareBtn onClick={onClick} testId="addingSquareBtn">
+    <SquareBtn onClick={onClick} disabled={disabled} testId="addingSquareBtn">
       <CloseIcon className={cx(classes.btnIcon, classes.rotatedIcon)} />
     </SquareBtn>
   )

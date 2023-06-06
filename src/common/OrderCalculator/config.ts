@@ -1,3 +1,5 @@
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+
 import {
   OrderCalculatorAdditionalService,
   CommonError,
@@ -119,9 +121,9 @@ export const initialValueMap: OrderCalculatorFields = {
   [FormFieldNameMap.initialPayment]: '',
   [FormFieldNameMap.initialPaymentPercent]: '',
   [FormFieldNameMap.loanTerm]: '',
-  [FormFieldNameMap.additionalEquipments]: [INITIAL_ADDITIONAL_SERVICE],
-  [FormFieldNameMap.dealerAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
-  [FormFieldNameMap.bankAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
+  [ServicesGroupName.additionalEquipments]: [INITIAL_ADDITIONAL_SERVICE],
+  [ServicesGroupName.dealerAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
+  [ServicesGroupName.bankAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
   [FormFieldNameMap.specialMark]: null,
   [FormFieldNameMap.commonError]: INITIAL_COMMON_ERROR,
   [FormFieldNameMap.validationParams]: INITIAL_VALIDATION_PARAMS,
@@ -139,9 +141,9 @@ export const fullInitialValueMap: FullOrderCalculatorFields = {
   [FormFieldNameMap.legalPerson]: '',
   [FormFieldNameMap.loanAmount]: '',
   ...INITIAL_BANK_DETAILS_VALUE,
-  [FormFieldNameMap.additionalEquipments]: [FULL_INITIAL_ADDITIONAL_EQUIPMENTS],
-  [FormFieldNameMap.dealerAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],
-  [FormFieldNameMap.bankAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],
+  [ServicesGroupName.additionalEquipments]: [FULL_INITIAL_ADDITIONAL_EQUIPMENTS],
+  [ServicesGroupName.dealerAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],
+  [ServicesGroupName.bankAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],
 }
 
 export const formMessages = {

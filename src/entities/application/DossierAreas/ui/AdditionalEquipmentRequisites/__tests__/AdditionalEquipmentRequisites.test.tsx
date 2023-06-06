@@ -5,6 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
@@ -78,7 +79,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
           requisites={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
-          parentName="additionalEquipments"
+          parentName={ServicesGroupName.additionalEquipments}
         />,
         {
           wrapper: createWrapper,
@@ -150,7 +151,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
           requisites={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
-          parentName="additionalEquipments"
+          parentName={ServicesGroupName.additionalEquipments}
         />,
         {
           wrapper: createWrapper,
