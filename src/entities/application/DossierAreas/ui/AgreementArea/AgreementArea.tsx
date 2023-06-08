@@ -49,13 +49,13 @@ export function AgreementArea(props: Props) {
       setDocsStatus(Array(documents.length).fill('received'))
     }
     if (status != PreparedStatus.formation) {
-      updateStatus(StatusCode.STATUS_CODE_FORMATION)
+      updateStatus(StatusCode.FORMATION)
     }
     setIsDocsLoading(true)
     setCurrentStep(DOWNLOAD_AGREEMENT_STEP)
     setRightsAssigned(false)
     fetchAgreement()
-  }, [updateStatus, setAgreementDocs])
+  }, [updateStatus, setAgreementDocs, status])
 
   useEffect(() => {
     if (status == PreparedStatus.formation) {
@@ -64,11 +64,11 @@ export function AgreementArea(props: Props) {
       setCurrentStep(CHECK_REQUISITES)
       agreementAreaRef.current?.scrollIntoView()
     }
-  }, [status])
+  }, [status, getToSecondStage])
 
   const returnToFirstStage = useCallback(() => {
     setAgreementDocs([])
-    updateStatus(StatusCode.STATUS_CODE_FINALLY_APPROVED)
+    updateStatus(StatusCode.FINALLY_APPROVED)
     setCurrentStep(CREATE_AGREEMENT_STEP)
   }, [setAgreementDocs, getToSecondStage])
 
@@ -94,7 +94,7 @@ export function AgreementArea(props: Props) {
         }
       }
       if (signCounter == docStatus.length) {
-        updateStatus(StatusCode.STATUS_CODE_SIGNED)
+        updateStatus(StatusCode.SIGNED)
         setCurrentStep(CHECK_REQUISITES)
       }
     },

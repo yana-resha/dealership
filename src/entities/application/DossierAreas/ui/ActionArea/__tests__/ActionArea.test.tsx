@@ -85,7 +85,7 @@ describe('ActionAreaTest', () => {
       it('Отображаются кнопки "Редактировать" и "Дозаполнить анкету"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_APPROVED }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.APPROVED }}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -106,7 +106,7 @@ describe('ActionAreaTest', () => {
       it('Отображается блок "AgreementArea"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FINALLY_APPROVED }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.FINALLY_APPROVED }}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -126,7 +126,7 @@ describe('ActionAreaTest', () => {
       it('Отображается блок "AgreementArea"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -146,7 +146,7 @@ describe('ActionAreaTest', () => {
       it('Отображается кнопка "Пересоздать заявку"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_CANCELED_DEAL }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.CANCELED_DEAL }}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -166,7 +166,7 @@ describe('ActionAreaTest', () => {
       it('Отображается кнопка "Пересоздать заявку"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_CANCELED }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.CANCELED }}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -186,7 +186,7 @@ describe('ActionAreaTest', () => {
       it('Отображается блок "AgreementArea"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FINALLY_APPROVED }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.FINALLY_APPROVED }}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -206,7 +206,7 @@ describe('ActionAreaTest', () => {
       it('Отображается кнопка "Редактировать"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_ERROR }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.ERROR }}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}

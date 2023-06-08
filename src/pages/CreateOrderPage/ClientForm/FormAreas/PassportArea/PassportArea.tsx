@@ -110,7 +110,10 @@ export function PassportArea() {
         name="familyStatus"
         label="Семейное положение"
         placeholder="-"
-        options={[{ value: 'Женат' }, { value: 'Не женат' }]}
+        options={[
+          { label: 'Женат', value: 1 },
+          { label: 'Не женат', value: 0 },
+        ]}
         gridColumn="span 6"
       />
       <Box gridColumn="span 7" />

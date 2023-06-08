@@ -32,7 +32,7 @@ jest.mock('shared/ui/DateInput/DateInput', () => ({
 const formFields = ['employmentDate', 'employerName', 'employerPhone', 'employerAddressString', 'employerInn']
 
 const mockedJobAreaFields = {
-  occupation: '',
+  occupation: null,
   employmentDate: null,
   employerName: '',
   employerPhone: '',

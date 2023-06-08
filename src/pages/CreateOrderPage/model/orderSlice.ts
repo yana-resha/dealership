@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { CalculateCreditRequest } from '@sberauto/dictionarydc-proto/public'
 
 type Order = {
   passportSeries?: string
@@ -8,6 +9,7 @@ type Order = {
   middleName?: string
   birthDate?: string
   phoneNumber?: string
+  orderData?: CalculateCreditRequest
 }
 
 interface OrderState {

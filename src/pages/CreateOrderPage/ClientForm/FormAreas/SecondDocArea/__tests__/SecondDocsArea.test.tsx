@@ -32,7 +32,7 @@ const formFields = [
 ]
 
 const mockedSecondDocAreaFields = {
-  secondDocumentType: '',
+  secondDocumentType: null,
   secondDocumentNumber: '',
   secondDocumentDate: null,
   secondDocumentIssuedBy: '',

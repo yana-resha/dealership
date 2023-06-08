@@ -121,37 +121,32 @@ describe('InformationAreaTest', () => {
 
     describe('Кнопка "График платежей" отображается при определенных статусах', () => {
       it('График платежей отображается при статусе Initial (Черновик)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_INITIAL }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.INITIAL }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.getByText('График платежей')).toBeInTheDocument()
       })
 
       it('График платежей отображается при статусе Processed (Ожидает решение)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_PROCESSED }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.PROCESSED }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.getByText('График платежей')).toBeInTheDocument()
       })
 
       it('График платежей отображается при статусе Approved (Предварительно одобрен)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_APPROVED }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.APPROVED }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.getByText('График платежей')).toBeInTheDocument()
       })
 
       it('График платежей отображается при статусе FinallyApproved (Кредит одобрен)', () => {
         render(
-          <InformationArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FINALLY_APPROVED }}
-          />,
+          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.FINALLY_APPROVED }} />,
           { wrapper: createWrapper },
         )
 
@@ -159,75 +154,65 @@ describe('InformationAreaTest', () => {
       })
 
       it('График платежей отсутствует при статусе Formation (Формирование КД)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
       it('График платежей отсутствует при статусе Singed (КД подписан)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_SIGNED }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.SIGNED }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
       it('График платежей отсутствует при статусе Rejected (Отказ)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_REJECTED }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.REJECTED }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
       it('График платежей отсутствует при статусе CanceledDeal (КД Отменен)', () => {
-        render(
-          <InformationArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_CANCELED_DEAL }}
-          />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.CANCELED_DEAL }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
       it('График платежей отсутствует при статусе Canceled (Отменен)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_CANCELED }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.CANCELED }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
       it('График платежей отсутствует при статусе Authorized (Ожидание финансирования)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_AUTHORIZED }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.AUTHORIZED }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
       it('График платежей отсутствует при статусе Financed (Кредит выдан)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FINANCED }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.ISSUED }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })
 
       it('График платежей отсутствует при статусе Error (Ошибка)', () => {
-        render(
-          <InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_ERROR }} />,
-          { wrapper: createWrapper },
-        )
+        render(<InformationArea clientDossier={{ ...mockedDossier, status: StatusCode.ERROR }} />, {
+          wrapper: createWrapper,
+        })
 
         expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
       })

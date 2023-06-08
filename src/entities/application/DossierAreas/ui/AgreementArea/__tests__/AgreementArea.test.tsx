@@ -61,7 +61,7 @@ describe('AgreementAreaTest', () => {
       beforeEach(() => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FINALLY_APPROVED }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.FINALLY_APPROVED }}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -91,7 +91,7 @@ describe('AgreementAreaTest', () => {
       it('Отсутствует кнопка "Редактировать"', () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -107,7 +107,7 @@ describe('AgreementAreaTest', () => {
       it('Отображаются один плейсхолдер документа, пока они загружаются', async () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -124,7 +124,7 @@ describe('AgreementAreaTest', () => {
     it('Отображается 2 документа после загрузки', async () => {
       render(
         <AgreementArea
-          clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }}
+          clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
           updateStatus={mockUpdateStatus}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
@@ -140,7 +140,7 @@ describe('AgreementAreaTest', () => {
     it('После загрузки документов отображается кнопка "Вернуться..."', async () => {
       render(
         <AgreementArea
-          clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }}
+          clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
           updateStatus={mockUpdateStatus}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
@@ -159,7 +159,7 @@ describe('AgreementAreaTest', () => {
       it('После клика по документам появляются свитчи', async () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -180,7 +180,7 @@ describe('AgreementAreaTest', () => {
       it('После подтверждения подписания документов заявке присваивается статус "КД Подписан"', async () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_FORMATION }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -207,7 +207,7 @@ describe('AgreementAreaTest', () => {
       it('После подтверждения подписания документов отображаются реквизиты', async () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.STATUS_CODE_SIGNED }}
+            clientDossier={{ ...mockedDossier, status: StatusCode.SIGNED }}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
