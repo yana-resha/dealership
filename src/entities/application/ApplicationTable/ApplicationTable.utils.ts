@@ -2,8 +2,10 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { PreparedTableData } from './ApplicationTable.types'
 
+type CellsChildren = { name: string; value: string | number | boolean | StatusCode }[]
+
 export const getCellsChildrens = (row: PreparedTableData) =>
-  Object.entries(row).reduce((acc, [key, value]) => {
+  Object.entries(row).reduce<CellsChildren>((acc, [key, value]) => {
     if (key === 'id') {
       return acc
     }
@@ -11,4 +13,4 @@ export const getCellsChildrens = (row: PreparedTableData) =>
     acc.push({ name: key, value })
 
     return acc
-  }, [] as { name: string; value: string | boolean | StatusCode }[])
+  }, [])

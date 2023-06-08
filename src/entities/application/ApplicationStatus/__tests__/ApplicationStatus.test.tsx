@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 
@@ -83,7 +81,7 @@ describe('ApplicationStatus', () => {
 
   it('если пришло неопознанное значение, показываем ошибку', () => {
     //@ts-ignore
-    render(<ApplicationStatus status="ацыацу" />)
+    render(<ApplicationStatus status="Какой-то не валидный статус" />)
 
     expect(screen.getByText('Ошибка')).toBeInTheDocument()
     expect(screen.getByText('Ошибка')).toHaveStyle('background-color: rgb(255, 0, 0)')

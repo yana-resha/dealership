@@ -35,7 +35,7 @@ export const getVendorOptions = (params: GetVendorOptionsRequest) =>
   dictionaryDcApi
     .getVendorOptions({ data: params })
     .then(response => response.data ?? {})
-    .catch(() => mockGetVendorOptionsResponse)
+    .catch(async () => mockGetVendorOptionsResponse)
 
 export const calculateCredit = (params: CalculateCreditRequest) =>
   dictionaryDcApi

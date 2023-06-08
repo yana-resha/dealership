@@ -1,4 +1,5 @@
 import { createAuthDc, GetTokenRequest, GetUserRequest } from '@sberauto/authdc-proto/public'
+import { useQuery } from 'react-query'
 
 import { appConfig } from 'config'
 
@@ -26,3 +27,5 @@ export const refreshAuthByToken = () =>
 
       return response.data ?? {}
     })
+
+export const useGetUserQuery = () => useQuery(['getUser'], () => getUser({}), {})

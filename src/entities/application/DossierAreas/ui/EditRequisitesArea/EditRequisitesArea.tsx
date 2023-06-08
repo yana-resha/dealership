@@ -83,7 +83,7 @@ export function EditRequisitesArea({ clientDossier, changeRequisites }: Props) {
   }, [changeRequisites])
 
   const sendToDecision = useCallback(() => {
-    console.log(values)
+    console.log('EditRequisitesArea.sendToDecision', values)
     setIsSendToDecisionDialogOpen(false)
   }, [values])
 

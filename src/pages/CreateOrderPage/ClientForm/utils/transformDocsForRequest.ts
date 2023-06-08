@@ -31,7 +31,7 @@ export const transformDocsForRequest = (
   }
 
   const result = {
-    type: type ? `${type}` : undefined,
+    type: type ? type : undefined,
     series,
     number,
     issuedBy: issuedBy,

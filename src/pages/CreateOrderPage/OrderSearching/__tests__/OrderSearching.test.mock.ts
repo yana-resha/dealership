@@ -1,4 +1,4 @@
-import { Application, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { StatusCode, Application } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { PreparedTableData } from 'entities/application/ApplicationTable/ApplicationTable.types'
 
@@ -245,7 +245,7 @@ export const findApplicationsDataMock: Application[] = [
   },
 ]
 
-export const formFields = ['Серия и номер паспорта', 'ФИО', 'День рождения', 'Телефон']
+export const formFields = ['Серия и номер паспорта', 'ФИО', 'Дата рождения', 'Телефон']
 
 export const initialData = {
   passportSeries: '1234',
@@ -268,11 +268,11 @@ export const applicationTabledataMock: PreparedTableData[] = [
   {
     applicationNumber: '1',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '10',
+    decisionTerm: 10,
     fullName: 'Терентьев Михаил Павлович',
     isDC: true,
     source: 'Сбол',
-    status: 0,
+    status: StatusCode.INITIAL,
     vendorCode: '2003023272',
   },
 ]

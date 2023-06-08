@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { Box, Skeleton, Typography } from '@mui/material'
 
-import { useGetUserQuery } from 'entities/user/api/requestHooks'
+import { useGetUserQuery } from 'shared/api/requests/authdc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 

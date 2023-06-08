@@ -2256,10 +2256,10 @@
   dependencies:
     requireindex "1.2.0"
 
-"@sberauto/loanapplifecycledc-proto@0.13.0":
-  version "0.13.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.13.0.tgz#84c9899040cc53ecf68db363ffed31229448783b"
-  integrity sha512-+C3GbSTBHb48gE7Z1l+dY349AgYCkth9aM1z3dpox+5sm2THe+q3Rjoy9Re4HsyhdLbKDa18rGDAjhUmWekn8A==
+"@sberauto/loanapplifecycledc-proto@0.15.0":
+  version "0.15.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.15.0.tgz#7d4aa6f9903910331c06fa1ab0a499a8beb2eb61"
+  integrity sha512-dXwX9Za/VgMmT5uw9U5MJI/lnGEHXDXBUaXBtmZyNazsKadX4Xt5OX0JZhI8ARVGZUeCbr9rLRH/ao2/Cja8JQ==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"

@@ -1,4 +1,4 @@
-import { sleep } from 'shared/lib/sleep'
+import { GetVendorOptionsResponse } from '@sberauto/dictionarydc-proto/public'
 
 export const carBrands = [
   { brand: 'BMW', models: ['1 series', '3 series'] },

@@ -48,7 +48,23 @@ export default makeStyles(theme => ({
       minWidth: 160,
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
+      marginBottom: theme.spacing(1),
       borderRadius: 12 * theme.shape.borderRadius,
+    },
+  },
+
+  dialogText: {
+    '&&.MuiDialogContentText-root': {
+      color: theme.palette.text.primary,
+      marginBottom: theme.spacing(1),
+    },
+  },
+
+  dialogContrastText: {
+    '&&.MuiDialogContentText-root': {
+      color: theme.palette.text.primary,
+      fontWeight: '600',
+      marginBottom: theme.spacing(1),
     },
   },
 }))

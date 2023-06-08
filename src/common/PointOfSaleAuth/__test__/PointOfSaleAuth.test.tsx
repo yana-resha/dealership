@@ -5,7 +5,7 @@ import { disableConsole } from 'tests/utils'
 
 import { PointOfSaleAuth } from '../PointOfSaleAuth'
 
-jest.mock('entities/user/api/requestHooks', () => ({
+jest.mock('shared/api/requests/authdc', () => ({
   useGetUserQuery: () => ({ data: { firstName: 'firstName', lastName: 'lastName' } }),
 }))
 jest.mock('common/auth', () => ({

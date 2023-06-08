@@ -5,12 +5,12 @@ import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import configureMockStore from 'redux-mock-store'
 
+import * as ApiHooks from 'common/findApplication/findApplications/hooks/useFindApplicationsQuery'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import * as orderSlice from '../../model/orderSlice'
 import { OrderSearching } from '../OrderSearching'
-import * as ApiHooks from '../OrderSearching.api'
 import * as Hooks from '../OrderSearching.hooks'
 import { applicationTabledataMock } from './OrderSearching.test.mock'
 
@@ -57,6 +57,7 @@ describe('OrderSearching', () => {
         isLoading: false,
         data: undefined,
         refetch: mockRefetch,
+        remove: jest.fn(),
       }))
 
       render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
@@ -75,6 +76,7 @@ describe('OrderSearching', () => {
         isLoading: false,
         data: undefined,
         refetch: mockRefetch,
+        remove: jest.fn(),
       }))
 
       render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
@@ -115,6 +117,7 @@ describe('OrderSearching', () => {
         isLoading: false,
         data: applicationTabledataMock,
         refetch: mockRefetch,
+        remove: jest.fn(),
       }))
 
       render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
@@ -133,6 +136,7 @@ describe('OrderSearching', () => {
         isLoading: false,
         data: undefined,
         refetch: mockRefetch,
+        remove: jest.fn(),
       }))
 
       jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(false))
@@ -180,6 +184,7 @@ describe('OrderSearching', () => {
       isLoading: false,
       data: undefined,
       refetch: mockRefetch,
+      remove: jest.fn(),
     }))
 
     jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(false))
@@ -225,7 +230,7 @@ describe('OrderSearching', () => {
           firstName: 'firstName',
           middleName: 'middleName',
           birthDate: '2000-01-01',
-          phoneNumber: '89999999999',
+          phoneNumber: '79999999999',
         },
       },
     }
@@ -235,6 +240,7 @@ describe('OrderSearching', () => {
       isLoading: false,
       data: undefined,
       refetch: mockRefetch,
+      remove: jest.fn(),
     }))
 
     jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(true))
@@ -271,6 +277,7 @@ describe('OrderSearching', () => {
       isLoading: false,
       data: undefined,
       refetch: mockRefetch,
+      remove: jest.fn(),
     }))
 
     jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(true))

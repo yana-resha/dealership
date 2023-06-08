@@ -7,6 +7,10 @@ export function getFullName(firstName?: string, lastName?: string, middleName?: 
 }
 
 export function getSplitedName(clientName?: string) {
+  if (!clientName?.trim?.()) {
+    return {}
+  }
+
   const clientNames = clientName?.trim().split(' ')
   const lastName = clientNames?.[0]
   const firstName = clientNames?.[1]

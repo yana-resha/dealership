@@ -6,7 +6,7 @@ describe('утилиты анкеты клиента', () => {
   it('transformDocsForRequest работает корректно для водительского удостоверения', () => {
     const date = new Date('1999-01-31')
     expect(transformDocsForRequest(SecondDocs.DriverLicense, '1111333333', date, '222')).toMatchObject({
-      type: '15',
+      type: 15,
       series: '1111',
       number: '333333',
       issuedBy: '222',
@@ -18,7 +18,7 @@ describe('утилиты анкеты клиента', () => {
     const date = new Date('1999-01-31')
     expect(transformDocsForRequest(SecondDocs.InsuranceCertificate, '1111333333', date, '222')).toMatchObject(
       {
-        type: '18',
+        type: 18,
         number: '1111333333',
         issuedBy: '222',
         issuedDate: '1999-01-31',
@@ -30,7 +30,7 @@ describe('утилиты анкеты клиента', () => {
     const date = new Date('1999-01-31')
     expect(transformDocsForRequest(SecondDocs.InternationalPassport, '111333333', date, '222')).toMatchObject(
       {
-        type: '11',
+        type: 11,
         series: '11',
         number: '1333333',
         issuedBy: '222',

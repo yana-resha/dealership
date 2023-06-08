@@ -6,7 +6,7 @@ import { DateTime, Interval } from 'luxon'
 
 import { ApplicationTypes } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { useGetUserQuery } from 'entities/user'
+import { useGetUserQuery } from 'shared/api/requests/authdc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { getFullName } from 'shared/utils/clientNameTransform'
 import { getSplitedName } from 'shared/utils/clientNameTransform'

@@ -8,7 +8,8 @@ function clientNameIsCorrect(value: string | undefined) {
     return false
   }
   const nameParts = value.trim().split(' ')
-  if (nameParts.length == 3) {
+  // ФИО может быть без отчества
+  if (nameParts.length >= 2 && nameParts.length <= 3) {
     return true
   }
 
@@ -123,7 +124,7 @@ export const clientFormValidationSchema = Yup.object().shape({
         (value: string | undefined) => value === undefined || value.trim().length == 11,
       ),
   }),
-  email: Yup.string().required('Поле обязательно для заполнения').email('Введите корретный Email'),
+  email: Yup.string().required('Поле обязательно для заполнения').email('Введите корректный Email'),
   averageIncome: Yup.string().required('Поле обязательно для заполнения').max(13, 'Значение слишком большое'),
   additionalIncome: Yup.string()
     .required('Поле обязательно для заполнения')
