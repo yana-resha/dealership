@@ -13,6 +13,7 @@ import {
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { InputAdornment } from '@mui/material'
 import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 
 import { ReactComponent as DoneIcon } from 'assets/icons/done.svg'
@@ -34,6 +35,7 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const { data, error, isLoading } = useGetVendorsListQuery()
   const [chosenOption, setChosenOption] = useState<Vendor | null>(value ?? null)
@@ -65,8 +67,9 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
     savePointOfSaleToCookies(chosenOption)
     setIsDialogOpen(false)
     onSuccessEditing && onSuccessEditing()
+    queryClient.resetQueries()
     navigate(defaultRoute)
-  }, [navigate, chosenOption, onSuccessEditing])
+  }, [navigate, chosenOption, onSuccessEditing, queryClient])
 
   const calculateIsOptionEqualToValue = useCallback(
     (option: Vendor, value: Vendor) => option.vendorCode === value.vendorCode,
@@ -177,11 +180,13 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
       <Dialog open={isDialogOpen} maxWidth="xs" fullWidth>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
           <DialogContent>
-            <DialogContentText>Вы выбрали точку:</DialogContentText>
+            <DialogContentText className={classes.dialogText}>Вы выбрали точку:</DialogContentText>
             {chosenOption && (
-              <DialogContentText>{retrieveLabelForPointOfSale(chosenOption)}</DialogContentText>
+              <DialogContentText className={classes.dialogContrastText}>
+                {retrieveLabelForPointOfSale(chosenOption)}
+              </DialogContentText>
             )}
-            <DialogContentText>Все верно?</DialogContentText>
+            <DialogContentText className={classes.dialogText}>Все верно?</DialogContentText>
           </DialogContent>
 
           <DialogActions>

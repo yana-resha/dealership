@@ -134,7 +134,7 @@ export const theme = createTheme({
           backgroundColor: PRIMARY_MAIN,
 
           '&:hover': {
-            backgroundColor: PRIMARY_MAIN,
+            backgroundColor: PRIMARY_DARK,
             boxShadow: `0 2px 4px 0 ${alpha(PRIMARY_MAIN, 0.2)}`,
           },
           '&:active': {

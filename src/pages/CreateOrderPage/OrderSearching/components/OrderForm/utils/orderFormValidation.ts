@@ -16,7 +16,8 @@ export const searchingOrderFormValidationSchema = Yup.object().shape(
     passport: Yup.string()
       .min(10, 'Введите данные полностью')
       .when(['clientName', 'birthDate', 'phoneNumber'], {
-        is: (...args: (string | Date | undefined)[]) => args.filter(a => !!a).length >= 2,
+        is: (...args: (string | Date | undefined)[]) =>
+          args.filter(a => (typeof a === 'string' ? !!a?.trim?.() : !!a)).length >= 2,
         otherwise: schema => schema.required(FILL_ONE_OF_FIELDS_MESSAGE),
       }),
     clientName: Yup.string()
@@ -31,14 +32,16 @@ export const searchingOrderFormValidationSchema = Yup.object().shape(
       .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`)
       .when(['passport', 'clientName', 'phoneNumber'], {
         is: (passport: string | undefined, clientName: string | undefined, phoneNumber: Date | undefined) =>
-          passport || (clientName && phoneNumber),
+          passport || (clientName?.trim?.() && phoneNumber),
         otherwise: schema => schema.required(FILL_ONE_OF_FIELDS_MESSAGE),
-      }),
+      })
+      .nullable()
+      .default(null),
     phoneNumber: Yup.string()
       .min(9, 'Введите номер полностью')
       .when(['passport', 'clientName', 'birthDate'], {
         is: (passport: string | undefined, clientName: string | undefined, birthDate: Date | undefined) =>
-          passport || (clientName && birthDate),
+          passport || (clientName?.trim?.() && birthDate),
         otherwise: schema => schema.required(FILL_ONE_OF_FIELDS_MESSAGE),
       }),
   },

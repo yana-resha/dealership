@@ -85,7 +85,7 @@ function OrderForm({ isNewOrder = false, isLoading, onSubmit, onChange, initialD
           />
           <DateInputFormik
             name="birthDate"
-            label="День рождения"
+            label="Дата рождения"
             gridColumn="span 5"
             disabled={disabledFields.includes('birthDate')}
           />

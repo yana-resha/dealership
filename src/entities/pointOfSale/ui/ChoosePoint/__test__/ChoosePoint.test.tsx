@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { MockStore } from 'redux-mock-store'
 
 import { ThemeProviderMock, StoreProviderMock } from 'tests/mocks'
@@ -48,10 +49,13 @@ interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
+const queryClient = new QueryClient()
 const createWrapper = ({ store, children }: WrapperProps) => (
-  <StoreProviderMock mockStore={store}>
-    <ThemeProviderMock>{children}</ThemeProviderMock>
-  </StoreProviderMock>
+  <QueryClientProvider client={queryClient}>
+    <StoreProviderMock mockStore={store}>
+      <ThemeProviderMock>{children}</ThemeProviderMock>
+    </StoreProviderMock>
+  </QueryClientProvider>
 )
 
 disableConsole('error')

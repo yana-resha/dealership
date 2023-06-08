@@ -6,7 +6,7 @@ export type PreparedTableData = {
   fullName: string
   vendorCode: string
   source: string
-  decisionTerm: string
+  decisionTerm?: number
   //NOTE: непонятно что отвечает за иконку уточнить
   isDC: boolean
   status: StatusCode

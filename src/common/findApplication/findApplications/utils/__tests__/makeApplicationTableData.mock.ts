@@ -1,4 +1,4 @@
-import { Application, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { StatusCode, Application } from '@sberauto/loanapplifecycledc-proto/public'
 
 export const dataMock: Application[] = [
   {
@@ -247,7 +247,7 @@ export const preparedMock = [
   {
     applicationNumber: '1',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '10',
+    decisionTerm: 10,
     fullName: 'Терентьев Михаил Павлович',
     isDC: true,
     source: 'Сбол',
@@ -257,7 +257,7 @@ export const preparedMock = [
   {
     applicationNumber: '2',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '44',
+    decisionTerm: 44,
     fullName: 'Карасева Мелания Данииловна',
     isDC: true,
     source: 'Сбол',
@@ -267,7 +267,7 @@ export const preparedMock = [
   {
     applicationNumber: '3',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '16',
+    decisionTerm: 16,
     fullName: 'Смирнов Александр Александрович',
     isDC: true,
     source: 'Сбол',
@@ -277,7 +277,7 @@ export const preparedMock = [
   {
     applicationNumber: '4',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '10',
+    decisionTerm: 10,
     fullName: 'Медведев Али Денисович',
     isDC: true,
     source: 'Сбол',
@@ -287,7 +287,7 @@ export const preparedMock = [
   {
     applicationNumber: '5',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '44',
+    decisionTerm: 44,
     fullName: 'Поляков Виктор Николаевич',
     isDC: true,
     source: 'Сбол',
@@ -297,7 +297,7 @@ export const preparedMock = [
   {
     applicationNumber: '6',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '16',
+    decisionTerm: 16,
     fullName: 'Смирнова Галина Васильевна',
     isDC: true,
     source: 'Сбол',
@@ -307,7 +307,7 @@ export const preparedMock = [
   {
     applicationNumber: '7',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '10',
+    decisionTerm: 10,
     fullName: 'Крылова Елена Сергеевна',
     isDC: true,
     source: 'Сбол',
@@ -317,7 +317,7 @@ export const preparedMock = [
   {
     applicationNumber: '8',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '44',
+    decisionTerm: 44,
     fullName: 'Морозов Максим Петрович',
     isDC: true,
     source: 'Сбол',
@@ -327,7 +327,7 @@ export const preparedMock = [
   {
     applicationNumber: '9',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '16',
+    decisionTerm: 16,
     fullName: 'Вершинина Мария Владимировна',
     isDC: true,
     source: 'Сбол',
@@ -337,7 +337,7 @@ export const preparedMock = [
   {
     applicationNumber: '10',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '10',
+    decisionTerm: 10,
     fullName: 'Афанасьев Иван Савельевич',
     isDC: true,
     source: 'Сбол',
@@ -347,7 +347,7 @@ export const preparedMock = [
   {
     applicationNumber: '11',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '44',
+    decisionTerm: 44,
     fullName: 'Шевцов Илья Иванович',
     isDC: true,
     source: 'Сбол',
@@ -357,7 +357,7 @@ export const preparedMock = [
   {
     applicationNumber: '12',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '16',
+    decisionTerm: 16,
     fullName: 'Реброва Маргарита Александровна',
     isDC: true,
     source: 'Сбол',
@@ -367,7 +367,7 @@ export const preparedMock = [
   {
     applicationNumber: '13',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '10',
+    decisionTerm: 10,
     fullName: 'Сомова Анна Павловна',
     isDC: true,
     source: 'Сбол',
@@ -377,7 +377,7 @@ export const preparedMock = [
   {
     applicationNumber: '14',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '44',
+    decisionTerm: 44,
     fullName: 'Ребров Игорь Семенович',
     isDC: true,
     source: 'Сбол',
@@ -387,7 +387,7 @@ export const preparedMock = [
   {
     applicationNumber: '15',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '16',
+    decisionTerm: 16,
     fullName: 'Зимовский Антон Владимирович',
     isDC: true,
     source: 'Сбол',
@@ -397,7 +397,7 @@ export const preparedMock = [
   {
     applicationNumber: '16',
     applicationUpdateDate: '22.02.2023',
-    decisionTerm: '10',
+    decisionTerm: 10,
     fullName: 'Калугин Андрей Николаевич',
     isDC: true,
     source: 'Сбол',

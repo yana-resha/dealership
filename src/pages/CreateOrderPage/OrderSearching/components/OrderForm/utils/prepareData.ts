@@ -1,10 +1,12 @@
 import { IsClientRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime } from 'luxon'
 
+import { maskPhoneNumber } from 'shared/masks/InputMasks'
 import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
 
 import { OrderFormData } from '../OrderForm.types'
 
+/** Подготавливаем данные для отправки на сервер */
 export const prepareData = (data: OrderFormData): IsClientRequest => {
   const passportSeries = data.passport ? data.passport.slice(0, 4) : undefined
   const passportNumber = data.passport ? data.passport.slice(4, data.passport.length) : undefined
@@ -16,7 +18,7 @@ export const prepareData = (data: OrderFormData): IsClientRequest => {
       ? DateTime.fromJSDate(data.birthDate).toFormat('yyyy-LL-dd')
       : data.birthDate || undefined
 
-  const phoneNumber = data.phoneNumber ? `89${data.phoneNumber}` : undefined
+  const phoneNumber = data.phoneNumber ? maskPhoneNumber(data.phoneNumber, true) : undefined
 
   return {
     passportSeries,
@@ -29,6 +31,7 @@ export const prepareData = (data: OrderFormData): IsClientRequest => {
   }
 }
 
+/** Подготавливаем данные для отображения на форме */
 export const parseData = (data: IsClientRequest): OrderFormData => {
   const { passportSeries, passportNumber, lastName, firstName, middleName, birthDate, phoneNumber } = data
 
@@ -36,7 +39,7 @@ export const parseData = (data: IsClientRequest): OrderFormData => {
   const clientName = getFullName(firstName, lastName, middleName)
 
   const parsedBirthDate = birthDate ? new Date(birthDate) : undefined
-  const parsedPhoneNumber = phoneNumber ? phoneNumber.slice(2) : ''
+  const parsedPhoneNumber = phoneNumber ? phoneNumber : ''
 
   return {
     passport,

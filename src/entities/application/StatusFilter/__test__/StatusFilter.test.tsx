@@ -1,5 +1,4 @@
-import React from 'react'
-
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -56,7 +55,7 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Черновик'))
-      expect(change).toHaveBeenNthCalledWith(1, [0])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.INITIAL])
       userEvent.click(screen.getByText('Черновик'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
@@ -71,7 +70,16 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Актуальные заявки'))
-      expect(change).toHaveBeenNthCalledWith(1, [0, 1, 2, 3, 4, 9, 10, 11])
+      expect(change).toHaveBeenNthCalledWith(1, [
+        StatusCode.INITIAL,
+        StatusCode.PROCESSED,
+        StatusCode.APPROVED,
+        StatusCode.FINALLY_APPROVED,
+        StatusCode.FORMATION,
+        StatusCode.AUTHORIZED,
+        StatusCode.ISSUED,
+        StatusCode.ERROR,
+      ])
       userEvent.click(screen.getByText('Актуальные заявки'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
@@ -85,7 +93,7 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Ожидает решение'))
-      expect(change).toHaveBeenNthCalledWith(1, [1])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.PROCESSED])
       userEvent.click(screen.getByText('Ожидает решение'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
@@ -99,7 +107,7 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('КД Отменен'))
-      expect(change).toHaveBeenNthCalledWith(1, [6])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.CANCELED_DEAL])
       userEvent.click(screen.getByText('КД Отменен'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
@@ -113,7 +121,7 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Ожидание финансирования'))
-      expect(change).toHaveBeenNthCalledWith(1, [9])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.AUTHORIZED])
       userEvent.click(screen.getByText('Ожидание финансирования'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
@@ -127,7 +135,7 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Кредит одобрен'))
-      expect(change).toHaveBeenNthCalledWith(1, [3])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.FINALLY_APPROVED])
       userEvent.click(screen.getByText('Кредит одобрен'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
@@ -141,7 +149,7 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Отказ'))
-      expect(change).toHaveBeenNthCalledWith(1, [5])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.REJECTED])
       userEvent.click(screen.getByText('Отказ'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
@@ -155,11 +163,20 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Черновик'))
-      expect(change).toHaveBeenNthCalledWith(1, [0])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.INITIAL])
       userEvent.click(screen.getByText('Актуальные заявки'))
-      expect(change).toHaveBeenNthCalledWith(2, [0, 1, 2, 3, 4, 9, 10, 11])
+      expect(change).toHaveBeenNthCalledWith(2, [
+        StatusCode.INITIAL,
+        StatusCode.PROCESSED,
+        StatusCode.APPROVED,
+        StatusCode.FINALLY_APPROVED,
+        StatusCode.FORMATION,
+        StatusCode.AUTHORIZED,
+        StatusCode.ISSUED,
+        StatusCode.ERROR,
+      ])
       userEvent.click(screen.getByText('Актуальные заявки'))
-      expect(change).toHaveBeenNthCalledWith(3, [0])
+      expect(change).toHaveBeenNthCalledWith(3, [StatusCode.INITIAL])
     })
     it('Актуальные заявки + Отказ', () => {
       const change = jest.fn()
@@ -171,11 +188,30 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Отказ'))
-      expect(change).toHaveBeenNthCalledWith(1, [5])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.REJECTED])
       userEvent.click(screen.getByText('Актуальные заявки'))
-      expect(change).toHaveBeenNthCalledWith(2, [5, 0, 1, 2, 3, 4, 9, 10, 11])
+      expect(change).toHaveBeenNthCalledWith(2, [
+        StatusCode.REJECTED,
+        StatusCode.INITIAL,
+        StatusCode.PROCESSED,
+        StatusCode.APPROVED,
+        StatusCode.FINALLY_APPROVED,
+        StatusCode.FORMATION,
+        StatusCode.AUTHORIZED,
+        StatusCode.ISSUED,
+        StatusCode.ERROR,
+      ])
       userEvent.click(screen.getByText('Отказ'))
-      expect(change).toHaveBeenNthCalledWith(3, [0, 1, 2, 3, 4, 9, 10, 11])
+      expect(change).toHaveBeenNthCalledWith(3, [
+        StatusCode.INITIAL,
+        StatusCode.PROCESSED,
+        StatusCode.APPROVED,
+        StatusCode.FINALLY_APPROVED,
+        StatusCode.FORMATION,
+        StatusCode.AUTHORIZED,
+        StatusCode.ISSUED,
+        StatusCode.ERROR,
+      ])
     })
     it('Кредит одобрен + Отказ', () => {
       const change = jest.fn()
@@ -187,11 +223,11 @@ describe('StatusFilter', () => {
       )
 
       userEvent.click(screen.getByText('Отказ'))
-      expect(change).toHaveBeenNthCalledWith(1, [5])
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.REJECTED])
       userEvent.click(screen.getByText('Кредит одобрен'))
-      expect(change).toHaveBeenNthCalledWith(2, [5, 3])
+      expect(change).toHaveBeenNthCalledWith(2, [StatusCode.REJECTED, StatusCode.FINALLY_APPROVED])
       userEvent.click(screen.getByText('Отказ'))
-      expect(change).toHaveBeenNthCalledWith(3, [3])
+      expect(change).toHaveBeenNthCalledWith(3, [StatusCode.FINALLY_APPROVED])
       userEvent.click(screen.getByText('Кредит одобрен'))
       expect(change).toHaveBeenNthCalledWith(4, [])
     })

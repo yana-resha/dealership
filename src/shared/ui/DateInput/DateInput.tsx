@@ -34,7 +34,7 @@ export const DateInput = React.memo((props: DateInputProps) => {
         onChange?.(null)
       }
     },
-    [fieldValue],
+    [onChange],
   )
 
   function handleDateChange(value: DateTime | null) {
@@ -45,6 +45,9 @@ export const DateInput = React.memo((props: DateInputProps) => {
         setFieldValue(value)
         onChange?.(chosenDate)
       }
+    } else if (value === null) {
+      setFieldValue(null)
+      onChange?.(null)
     }
   }
 

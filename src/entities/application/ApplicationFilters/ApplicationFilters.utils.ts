@@ -2,25 +2,28 @@ import { FormikErrors } from 'formik'
 import zipObject from 'lodash/zipObject'
 import { DateTime } from 'luxon'
 
-import { applicationFiltersValues, FindApplicationsReq } from './ApplicationFilters.types'
+import { FormApplicationFiltersValues, FindApplicationsReq } from './ApplicationFilters.types'
 
 const PASSPORT_NUMBER_LENGTH = 10
-const APPLICATION_NUMBER_LENGTH = 12
-const FULL_NAME_LENGTH = 3
+const MIN_APPLICATION_NUMBER_LENGTH = 12
+
 const standardError =
   'Формат ввода данных: \n Паспорт - ХХХХ ХХХХХХ \n Номер заявки - ХХХХХХХХХХХХ \n ФИО - Фамилия Имя Отчество'
 
 export const validateFiltersFields = (
-  values: applicationFiltersValues,
+  values: {
+    findApplication: string
+    applicationUpdateDate: string
+    onlyUserApplications: {
+      employeeId?: string
+      onlyUserApplicationsFlag?: boolean
+    }
+  },
   onSubmit: (req: FindApplicationsReq) => void,
-  setErrors: (errors: FormikErrors<applicationFiltersValues>) => void,
+  setErrors: (errors: FormikErrors<FormApplicationFiltersValues>) => void,
 ) => {
-  const {
-    findApplication,
-    applicationUpdateDate: updateDate,
-    isMyApplication: onlyUserApplicationsFlag,
-  } = values
-  const applicationUpdateDate = DateTime.fromJSDate(new Date(updateDate)).toISODate()
+  const { findApplication, applicationUpdateDate: updateDate, onlyUserApplications } = values
+  const applicationUpdateDate = updateDate ? DateTime.fromJSDate(new Date(updateDate)).toISODate() : undefined
   const noSpacing = findApplication.replace(/ /g, '')
 
   //Если значение полностью числовое
@@ -29,18 +32,18 @@ export const validateFiltersFields = (
     if (noSpacing.length === PASSPORT_NUMBER_LENGTH) {
       //Разбиваем число на серию номер и отправляем на бекенд с остальными введенными параметрами
       const passportSeries = noSpacing.substring(0, 4)
-      const passportNumber = noSpacing.substring(3, 6)
+      const passportNumber = noSpacing.substring(4, 10)
       onSubmit({
-        onlyUserApplicationsFlag,
+        ...onlyUserApplications,
         passportNumber,
         passportSeries,
         applicationUpdateDate,
       })
       //И длина значения соответствует длине номера заявки
-    } else if (noSpacing.length === APPLICATION_NUMBER_LENGTH) {
+    } else if (noSpacing.length >= MIN_APPLICATION_NUMBER_LENGTH) {
       //отправляем на бекенд с остальными введенными параметрами
       onSubmit({
-        onlyUserApplicationsFlag,
+        ...onlyUserApplications,
         applicationNumber: noSpacing,
         applicationUpdateDate,
       })
@@ -57,16 +60,28 @@ export const validateFiltersFields = (
       setErrors({ findApplication: standardError })
       //И в нем отсутствуют цифры
     } else {
-      const fullName = ['firstName', 'lastName', 'middleName']
       const fullValuesName = findApplication.split(' ')
 
       //И в значениях присутствуют имя фамилия и отчество
-      if (fullValuesName.length >= FULL_NAME_LENGTH) {
+      if (fullValuesName.length >= 3) {
+        // [Фамилия Имя Отчество]
+        const fullName = ['lastName', 'firstName', 'middleName']
         //по умолчанию считаем что первое слово - фамилия, второе - имя, а все что дальше отчество
         const values = [fullValuesName[0], fullValuesName[1], fullValuesName.slice(2).join(' ')]
         //отправляем на бекенд с остальными введенными параметрами
         onSubmit({
-          onlyUserApplicationsFlag,
+          ...onlyUserApplications,
+          applicationUpdateDate,
+          ...zipObject(fullName, values),
+        })
+      } else if (fullValuesName.length >= 2) {
+        // [Фамилия Имя]
+        const fullName = ['lastName', 'firstName']
+        //по умолчанию считаем что первое слово - фамилия, второе - имя
+        const values = [fullValuesName[0], fullValuesName[1]]
+        //отправляем на бекенд с остальными введенными параметрами
+        onSubmit({
+          ...onlyUserApplications,
           applicationUpdateDate,
           ...zipObject(fullName, values),
         })

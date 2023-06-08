@@ -85,7 +85,7 @@ export function PassportArea() {
         gridColumn="span 4"
         disabled
       />
-      <DateInputFormik name="birthDate" label="День рождения" gridColumn="span 4" disabled />
+      <DateInputFormik name="birthDate" label="Дата рождения" gridColumn="span 4" disabled />
       <Box gridColumn="span 8" />
 
       {hasNameChanged && (

@@ -1,5 +1,9 @@
+/* eslint-disable no-constant-condition */
 import { useCallback, useState } from 'react'
 
+import { Skeleton } from '@mui/material'
+
+import { useFindApplicationsQuery } from 'common/findApplication/findApplications'
 import { ApplicationTable } from 'entities/application/ApplicationTable/ApplicationTable'
 import { OrderData, OrderForm } from 'pages/CreateOrderPage/OrderSearching/components/OrderForm'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
@@ -7,7 +11,6 @@ import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
 import { clearOrder, setOrder } from '../model/orderSlice'
 import { NoMatchesModal } from './components/NoMatchesModal/NoMatchesModal'
-import { useFindApplicationsQuery } from './OrderSearching.api'
 import { useCheckIfSberClient } from './OrderSearching.hooks'
 import { slIsOrderExist, slStorageOrder } from './OrderSearching.selectors'
 
@@ -36,11 +39,13 @@ export function OrderSearching({ nextStep, onApplicationOpen }: Props) {
     isSuccess: isSuccessFindApplicationsQuery,
     isLoading: isLoadingFindApplicationsQuery,
     refetch,
+    remove,
     data: orderData = [],
-  } = useFindApplicationsQuery(initialOrderData)
+  } = useFindApplicationsQuery(initialOrderData, { enabled: false })
 
   const findOrders = useCallback(
     (data: OrderData) => {
+      remove()
       // Если менеджер начал искать заявку, значит считаем что со старой он уже не работает
       dispatch(clearOrder())
       // Показываем форму создания заявки после нажатия на кнопку "Найти"
@@ -105,25 +110,33 @@ export function OrderSearching({ nextStep, onApplicationOpen }: Props) {
         isLoading={isLoadingFindApplicationsQuery}
         onChange={onHideCreateForm}
       />
-      {isShowNewForm && (
-        <OrderForm
-          isNewOrder
-          onSubmit={checkClient}
-          initialData={initialOrderData}
-          isLoading={checkIfSberClient.isLoading}
-        />
-      )}
 
-      {isSuccessFindApplicationsQuery && !!orderData?.length && (
-        <ApplicationTable
-          // TODO DCB-194: Slice использован как временное решение на период работы с моками,
-          // т.к. столько строк не нужно
-          // Убрать slice.метод при интеграции с бэком
-          data={orderData.slice(0, 3)}
-          isLoading={false}
-          rowsPerPage={-1}
-          onClickRow={onApplicationOpen}
-        />
+      {isLoadingFindApplicationsQuery ? (
+        <>
+          <Skeleton height={72} width="100%" />
+          <Skeleton height={72} width="100%" />
+          <Skeleton height={72} width="100%" />
+        </>
+      ) : (
+        <>
+          {isShowNewForm && (
+            <OrderForm
+              isNewOrder
+              onSubmit={checkClient}
+              initialData={initialOrderData}
+              isLoading={checkIfSberClient.isLoading}
+            />
+          )}
+
+          {isSuccessFindApplicationsQuery && !!orderData?.length && (
+            <ApplicationTable
+              data={orderData}
+              isLoading={false}
+              rowsPerPage={-1}
+              onClickRow={onApplicationOpen}
+            />
+          )}
+        </>
       )}
 
       <NoMatchesModal isVisible={isVisibleModal} onClose={closeModal} />

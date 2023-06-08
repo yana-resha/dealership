@@ -1,17 +1,19 @@
 import { useState } from 'react'
 
-import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import Box from '@mui/material/Box'
 
 import { ClientDetailedDossier } from 'common/findApplication/ClientDetailedDossier'
 import { ApplicationFilters } from 'entities/application/ApplicationFilters/ApplicationFilters'
 import { FindApplicationsReq } from 'entities/application/ApplicationFilters/ApplicationFilters.types'
 import { ApplicationTable } from 'entities/application/ApplicationTable/ApplicationTable'
-import { StatusFilter } from 'entities/application/StatusFilter/StatusFilter'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
-import { useFindApplicationsQuery } from '../api/requestHooks'
+import { useFindApplicationsQuery } from '../hooks/useFindApplicationsQuery'
+import { useStyles } from './FindApplication.styles'
 
 export const FindApplication = () => {
+  const classes = useStyles()
+
   const [request, setRequest] = useState<FindApplicationsReq>({
     passportSeries: '',
     passportNumber: '',
@@ -27,19 +29,22 @@ export const FindApplication = () => {
   const [detailedApplicationId, setDetailedApplicationId] = useState<string | undefined>(undefined)
 
   const { vendorCode } = getPointOfSaleFromCookies()
-  const { data, isLoading } = useFindApplicationsQuery({ vendorCode, ...request })
+
+  const { data, isLoading } = useFindApplicationsQuery({ vendorCode, ...request }, { retry: false })
 
   const onSubmit = (values: FindApplicationsReq) => {
-    const newValue = { ...request, ...values }
+    const newValue = { ...values }
 
     setRequest(newValue)
   }
 
-  const setStatuses = (statusValues: StatusCode[]) => {
-    const newValue = { ...request, statuses: statusValues }
+  /* TODO: DCB-387 Решили не делать до старта MVP 
+    const setStatuses = (statusValues: StatusCode[]) => {
+      const newValue = { ...request, statuses: statusValues }
 
-    setRequest(newValue)
-  }
+      setRequest(newValue)
+    }
+  */
 
   const getDetailedDossier = (applicationId: string, page: number) => {
     setPage(page)
@@ -55,7 +60,9 @@ export const FindApplication = () => {
   ) : (
     <>
       <ApplicationFilters onSubmitClick={onSubmit} />
-      <StatusFilter onChange={setStatuses} />
+      {/* TODO: DCB-387 Решили не делать до старта MVP */}
+      {/* <StatusFilter onChange={setStatuses} /> */}
+      <Box className={classes.divider} />
       <ApplicationTable
         data={data || []}
         isLoading={isLoading}

@@ -6,6 +6,9 @@ export default makeStyles(theme => ({
       padding: theme.spacing(1),
       color: theme.palette.text.secondary,
       borderBottom: 'none',
+      textAlign: 'start',
+      verticalAlign: 'top',
+      textTransform: 'uppercase',
     },
   },
   headerRow: {
