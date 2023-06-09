@@ -28,3 +28,17 @@ export const addressTransformForRequest = (address: Address): AddressFrontdc => 
 
   return result
 }
+
+export const addressTransformForForm = (address: AddressFrontdc, initialValuesMap?: Address): Address => ({
+  region: address.region ?? initialValuesMap?.region ?? '',
+  district: address.area ?? initialValuesMap?.district ?? '',
+  city: address.city ?? initialValuesMap?.city ?? '',
+  townType: address.settlementType ?? initialValuesMap?.townType ?? '',
+  town: address.settlement ?? initialValuesMap?.town ?? '',
+  streetType: address.streetType ?? initialValuesMap?.streetType ?? '',
+  street: address.street ?? initialValuesMap?.street ?? '',
+  house: address.house ?? initialValuesMap?.house ?? '',
+  building: address.unit ?? initialValuesMap?.building ?? '',
+  block: address.houseExt ?? initialValuesMap?.block ?? '',
+  flat: address.unitNum ?? initialValuesMap?.flat ?? '',
+})

@@ -56,7 +56,6 @@ export interface ClientData {
   employerAddressString: string
   emplNotKladr: boolean
   employerInn: string
-  specialMarkReason: string
-  specialMark: boolean
+  specialMark: string
   questionnaireFile: File | null
 }

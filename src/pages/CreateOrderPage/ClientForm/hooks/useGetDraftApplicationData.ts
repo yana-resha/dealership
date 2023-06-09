@@ -32,7 +32,7 @@ export const useGetDraftApplicationData = () => {
         birthPlace,
         clientFormerName,
         clientName,
-        specialMarkReason,
+        specialMark,
         email,
         numOfChildren,
         relatedToPublic,
@@ -81,7 +81,7 @@ export const useGetDraftApplicationData = () => {
           tabNumActual: user?.employeeId,
           fullNameActual: getFullName(user?.firstName, user?.lastName),
         },
-        specialMark: specialMarkReason,
+        specialMark,
         // unit: string, //добавить после расширения ручки getVendorOptions DCB-389
         applicant: {
           type: 'MainDebitor',

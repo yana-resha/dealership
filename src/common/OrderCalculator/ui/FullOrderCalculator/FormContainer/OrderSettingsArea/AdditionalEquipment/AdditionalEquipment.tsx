@@ -27,8 +27,14 @@ export function AdditionalEquipment({ requisites, disabled = false }: Props) {
 
   const { ids, changeIds } = useAdditionalServiceIds()
 
+  const isInitialExpanded = !!field.value.length && !!field.value[0].productType
+
   return (
-    <AdditionalServicesContainer title="Дополнительное оборудование" disabled={disabled}>
+    <AdditionalServicesContainer
+      title="Дополнительное оборудование"
+      disabled={disabled}
+      isInitialExpanded={isInitialExpanded}
+    >
       <FieldArray name={ServicesGroupName.additionalEquipments}>
         {arrayHelpers => (
           <Box minWidth="min-content" className={classes.itemsContainer}>

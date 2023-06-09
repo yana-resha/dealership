@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -36,12 +36,9 @@ disableConsole('error')
 describe('EditRequisitesAreaTest', () => {
   describe('Все блоки отображаются на форме', () => {
     beforeEach(() => {
-      render(
-        <EditRequisitesArea changeRequisites={mockedReturnToDetailedDossier} clientDossier={mockedDossier} />,
-        {
-          wrapper: createWrapper,
-        },
-      )
+      render(<EditRequisitesArea applicationId="123" changeRequisites={mockedReturnToDetailedDossier} />, {
+        wrapper: createWrapper,
+      })
     })
 
     it('Отображается один блок "Реквизиты дилерского центра"', () => {
@@ -67,12 +64,9 @@ describe('EditRequisitesAreaTest', () => {
 
   describe('Кнопки на форме работают корректно', () => {
     beforeEach(() => {
-      render(
-        <EditRequisitesArea changeRequisites={mockedReturnToDetailedDossier} clientDossier={mockedDossier} />,
-        {
-          wrapper: createWrapper,
-        },
-      )
+      render(<EditRequisitesArea applicationId="123" changeRequisites={mockedReturnToDetailedDossier} />, {
+        wrapper: createWrapper,
+      })
     })
 
     it('При нажатии на "Назад к заявке открывается модальный диалог"', async () => {

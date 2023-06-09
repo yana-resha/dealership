@@ -1,7 +1,7 @@
 import { useSnackbar } from 'notistack'
 import { useMutation } from 'react-query'
 
-import { checkIfSberClient } from 'shared/api/requests/loanapplifecycledc'
+import { checkIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
 
 import { OrderData } from './components/OrderForm'
 

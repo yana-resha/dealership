@@ -4,14 +4,16 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
 
-import { ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
+import { ADDITIONAL_EQUIPMENTS, fullInitialValueMap } from 'common/OrderCalculator/config'
 import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
 import {
   prepareBankOptions,
   prepareCreditProduct,
 } from 'common/OrderCalculator/utils/prepareCreditProductListData'
 import { creditProductListRsData, mockGetVendorOptionsResponse } from 'shared/api/requests/dictionaryDc.mock'
+import { sleep } from 'shared/lib/sleep'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -29,6 +31,7 @@ const mockedUseGetCreditProductListQuery = jest.spyOn(
   useGetCreditProductListQueryModule,
   'useGetCreditProductListQuery',
 )
+const mockedUseInitialValues = jest.spyOn(useInitialValuesModule, 'useInitialValues')
 
 const getCreditProductListData = {
   ...creditProductListRsData,
@@ -52,6 +55,13 @@ describe('FullOrderCalculator', () => {
         ({
           data: mockGetVendorOptionsResponse,
           isError: false,
+        } as any),
+    )
+    mockedUseInitialValues.mockImplementation(
+      () =>
+        ({
+          isShouldShowLoading: false,
+          initialValues: fullInitialValueMap,
         } as any),
     )
   })
@@ -530,7 +540,8 @@ describe('FullOrderCalculator', () => {
       const carCostField = document.getElementById('carCost')!
       await act(() => userEvent.type(carCostField, '77'))
       const initialPaymentField = document.getElementById('initialPayment')!
-      await act(() => userEvent.type(initialPaymentField, '11'))
+      userEvent.type(initialPaymentField, '11')
+      await sleep(1000)
 
       expect(await screen.findByDisplayValue('14.29')).toBeInTheDocument()
     })
@@ -539,7 +550,8 @@ describe('FullOrderCalculator', () => {
       const carCostField = document.getElementById('carCost')!
       await act(() => userEvent.type(carCostField, '77'))
       const initialPaymentField = document.getElementById('initialPaymentPercent')!
-      await act(() => userEvent.type(initialPaymentField, '11'))
+      userEvent.type(initialPaymentField, '11')
+      await sleep(1000)
 
       expect(await screen.findByDisplayValue('8')).toBeInTheDocument()
     })

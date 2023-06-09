@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { Box, Button, Divider } from '@mui/material'
 import { Form, Formik } from 'formik'
@@ -7,15 +7,11 @@ import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 
 import { AdditionalEquipmentRequisites, DealerCenterRequisites, DealerServicesRequisites } from '../'
-import { AdditionalOptionsTypes } from '../../../application.utils'
-import {
-  AdditionalOptions,
-  ClientDossier,
-  mockRequisites,
-} from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { AdditionalOptions, mockRequisites } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { editRequisitesValidationSchema } from '../../configs/editRequisitesValidation'
 import { ServicesGroupName } from '../../hooks/useAdditionalServicesOptions'
 import { useStyles } from './EditRequisitesArea.styles'
+import { useInitialValues } from './useInitialValues'
 
 export interface DossierRequisites {
   legalPerson: string
@@ -32,39 +28,19 @@ export interface DossierRequisites {
 }
 
 type Props = {
-  clientDossier: ClientDossier
+  applicationId: string
   changeRequisites: (value: boolean) => void
 }
 
-export function EditRequisitesArea({ clientDossier, changeRequisites }: Props) {
+export function EditRequisitesArea({ applicationId, changeRequisites }: Props) {
   const classes = useStyles()
   const requisites = mockRequisites()
-  const { additionalOptions, creditLegalEntity, creditSum, creditReceiverBank, creditBankAccountNumber } =
-    clientDossier
+
   const [isReturnDialogOpen, setIsReturnDialogOpen] = useState(false)
   const [isSendToDecisionDialogOpen, setIsSendToDecisionDialogOpen] = useState(false)
-  const [dealerServices, additionalEquipment] = useMemo(
-    () => [
-      additionalOptions.filter(option => option.optionType === AdditionalOptionsTypes.dealerServices),
-      additionalOptions.filter(option => option.optionType === AdditionalOptionsTypes.additionalEquipment),
-    ],
-    [additionalOptions],
-  )
   const [values, setValues] = useState<DossierRequisites>()
 
-  const initialValues: DossierRequisites = {
-    legalPerson: creditLegalEntity,
-    loanAmount: creditSum.toString(),
-    isCustomFields: false,
-    bankIdentificationCode: '',
-    beneficiaryBank: creditReceiverBank,
-    bankAccountNumber: creditBankAccountNumber,
-    correspondentAccount: '',
-    taxPresence: false,
-    dealerAdditionalServices: dealerServices,
-    additionalEquipments: additionalEquipment,
-    taxation: '0',
-  }
+  const initialValues = useInitialValues(applicationId)
 
   const showReturnDialog = useCallback(() => {
     setIsReturnDialogOpen(true)
@@ -112,12 +88,12 @@ export function EditRequisitesArea({ clientDossier, changeRequisites }: Props) {
           />
           <Divider className={classes.divider} />
 
-          {!!dealerServices.length && (
+          {!!initialValues.dealerAdditionalServices.length && (
             <>
               <SberTypography gridColumn="span 15" sberautoVariant="h5" component="p">
                 Дополнительные услуги дилера
               </SberTypography>
-              {dealerServices.map((dealerService, index, array) => (
+              {initialValues.dealerAdditionalServices.map((dealerService, index, array) => (
                 <React.Fragment key={dealerService.productType + index}>
                   <DealerServicesRequisites
                     requisites={requisites.dealerServicesRequisites}
@@ -132,12 +108,12 @@ export function EditRequisitesArea({ clientDossier, changeRequisites }: Props) {
             </>
           )}
 
-          {!!additionalEquipment.length && (
+          {!!initialValues.additionalEquipments.length && (
             <>
               <SberTypography gridColumn="span 15" sberautoVariant="h5" component="p">
                 Дополнительное оборудование
               </SberTypography>
-              {additionalEquipment.map((additionalEquipment, index, array) => (
+              {initialValues.additionalEquipments.map((additionalEquipment, index, array) => (
                 <React.Fragment key={additionalEquipment.productType + index}>
                   <AdditionalEquipmentRequisites
                     requisites={requisites.additionalEquipmentRequisites}

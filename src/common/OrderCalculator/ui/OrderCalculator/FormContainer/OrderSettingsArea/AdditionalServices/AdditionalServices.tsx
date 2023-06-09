@@ -30,6 +30,7 @@ export function AdditionalServices({
   const classes = useStyles()
   const [field] = useField(name)
   const { ids, changeIds } = useAdditionalServiceIds()
+  const isInitialExpanded = !!field.value.length && !!field.value[0].productType
 
   return (
     <AdditionalServicesContainer
@@ -37,6 +38,7 @@ export function AdditionalServices({
       disabled={disabled}
       isError={isError}
       errorMessage={errorMessage}
+      isInitialExpanded={isInitialExpanded}
     >
       <FieldArray name={name}>
         {arrayHelpers => (

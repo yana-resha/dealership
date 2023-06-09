@@ -4,9 +4,10 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
 
-import { ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
+import { ADDITIONAL_EQUIPMENTS, initialValueMap } from 'common/OrderCalculator/config'
 import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
 import {
   prepareBankOptions,
   prepareCreditProduct,
@@ -34,6 +35,8 @@ const getCreditProductListData = {
   ...prepareBankOptions(creditProductListRsData.bankOptions),
 }
 
+const mockedUseInitialValues = jest.spyOn(useInitialValuesModule, 'useInitialValues')
+
 describe('OrderCalculator', () => {
   const fn = jest.fn()
 
@@ -51,6 +54,13 @@ describe('OrderCalculator', () => {
         ({
           data: mockGetVendorOptionsResponse,
           isError: false,
+        } as any),
+    )
+    mockedUseInitialValues.mockImplementation(
+      () =>
+        ({
+          isShouldShowLoading: false,
+          initialValues: initialValueMap,
         } as any),
     )
   })

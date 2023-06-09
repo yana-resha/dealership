@@ -31,8 +31,8 @@ export interface Requisites {
 }
 
 export interface AdditionalOptions {
-  optionType: string
-  productType: string
+  bankOptionType: number
+  productType: any
   legalPerson: string
   provider: string
   agent: string
@@ -315,7 +315,7 @@ const mockClientDossier: ClientDossier[] = [
     productName: 'Драйв В',
     additionalOptions: [
       {
-        optionType: 'dealerServices',
+        bankOptionType: 1,
         productType: 'Название продукта',
         legalPerson: '',
         provider: 'РосГосСтрах',
@@ -332,7 +332,7 @@ const mockClientDossier: ClientDossier[] = [
         isCredit: true,
       },
       {
-        optionType: 'additionalEquipment',
+        bankOptionType: 2,
         productType: 'Коврики',
         legalPerson: 'Arex',
         provider: '',
@@ -349,7 +349,7 @@ const mockClientDossier: ClientDossier[] = [
         isCredit: true,
       },
       {
-        optionType: 'additionalEquipment',
+        bankOptionType: 2,
         productType: 'Сигнализация',
         legalPerson: 'САРМАТ',
         provider: '',
@@ -439,7 +439,7 @@ const mockClientDossier: ClientDossier[] = [
     productName: 'Драйв E',
     additionalOptions: [
       {
-        optionType: 'dealerServices',
+        bankOptionType: 1,
         productType: 'Перекраска',
         legalPerson: '',
         provider: 'РосГосСтрах',
@@ -456,7 +456,7 @@ const mockClientDossier: ClientDossier[] = [
         isCredit: true,
       },
       {
-        optionType: 'additionalEquipment',
+        bankOptionType: 2,
         productType: 'Коврики',
         legalPerson: 'Arex',
         provider: '',
@@ -498,7 +498,7 @@ const mockClientDossier: ClientDossier[] = [
     productName: 'Драйв F',
     additionalOptions: [
       {
-        optionType: 'dealerServices',
+        bankOptionType: 1,
         productType: 'Перекраска',
         legalPerson: '',
         provider: 'РосГосСтрах',
@@ -612,7 +612,7 @@ const mockClientDossier: ClientDossier[] = [
     productName: 'Драйв J',
     additionalOptions: [
       {
-        optionType: 'dealerServices',
+        bankOptionType: 1,
         productType: 'Перекраска',
         legalPerson: '',
         provider: 'РосГосСтрах',
@@ -629,7 +629,7 @@ const mockClientDossier: ClientDossier[] = [
         isCredit: true,
       },
       {
-        optionType: 'dealerServices',
+        bankOptionType: 1,
         productType: 'Тонирование стекол',
         legalPerson: '',
         provider: 'Ингосстрах',
@@ -646,7 +646,7 @@ const mockClientDossier: ClientDossier[] = [
         isCredit: false,
       },
       {
-        optionType: 'additionalEquipment',
+        bankOptionType: 2,
         productType: 'Коврики',
         legalPerson: 'САРМАТ',
         provider: '',
@@ -663,7 +663,7 @@ const mockClientDossier: ClientDossier[] = [
         isCredit: false,
       },
       {
-        optionType: 'additionalEquipment',
+        bankOptionType: 2,
         productType: 'Сигнализация',
         legalPerson: 'Arex',
         provider: '',

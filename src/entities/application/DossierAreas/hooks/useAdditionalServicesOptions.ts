@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 export interface AdditionalServiceItem {
-  productType: string
+  productType: number | undefined
 }
 export enum ServicesGroupName {
   additionalEquipments = 'additionalEquipments',

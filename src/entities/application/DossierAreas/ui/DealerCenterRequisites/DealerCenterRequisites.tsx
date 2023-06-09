@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { Box } from '@mui/material'
 import { useFormikContext } from 'formik'
 
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskBankAccountNumber,
@@ -28,11 +29,15 @@ type Props = {
 
 export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePrefix = '' }: Props) {
   const classes = useStyles()
+  const { vendorName, vendorCode } = getPointOfSaleFromCookies()
   const { values, setFieldValue } = useFormikContext<DossierRequisites>()
   const { legalPerson, beneficiaryBank, bankAccountNumber, taxPresence, isCustomFields } = values
   const initialValues = useRef(values)
-  const legalEntityOptions = requisites.map(requisite => ({ value: requisite.legalEntityName }))
 
+  const legalPersonOptions = useMemo(
+    () => [{ value: vendorCode || '', label: vendorName }],
+    [vendorCode, vendorName],
+  )
   const previousLegalPerson = usePrevious(legalPerson)
   const previousReceiverBank = usePrevious(beneficiaryBank)
 
@@ -118,8 +123,9 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
         name={namePrefix + 'legalPerson'}
         label="Юридическое лицо"
         placeholder="-"
-        options={legalEntityOptions}
+        options={legalPersonOptions}
         gridColumn="span 6"
+        disabled
       />
       <MaskedInputFormik
         name={namePrefix + 'loanAmount'}

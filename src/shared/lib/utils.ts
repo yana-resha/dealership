@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys'
+import compact from 'lodash/compact'
 import snakecaseKeys from 'snakecase-keys'
 
 export function transformRequestData(requestData: any) {
@@ -23,17 +24,19 @@ export function formatNumber(number: number) {
 
 export function formatTerm(term: number) {
   if (term == 1) {
-    return `${term} год`
+    return `${term} месяц`
   }
   if (term > 1 && term < 5) {
-    return `${term} года`
+    return `${term} месяца`
   }
 
-  return `${term} лет`
+  return `${term} месяцев`
 }
 
-export function formatPassport(passport: string) {
-  return `${passport.slice(0, 2)} ${passport.slice(2, 4)} ${passport.slice(4)}`
+export function formatPassport(series?: string, number?: string) {
+  const nameArr = [series?.slice(0, 2), series?.slice(2, 4), number]
+
+  return compact(nameArr).join(' ')
 }
 
 type CamelToSnakeCase<S extends string> = S extends `${infer T}${infer U}`

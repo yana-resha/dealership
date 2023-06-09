@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
-import { useFormikContext } from 'formik'
+import { useField } from 'formik'
 
 import { ReactComponent as WarningIcon } from 'assets/icons/warning.svg'
 import { SPECIAL_MARK_OPTIONS, useSpecialMarkContext } from 'entities/SpecialMark'
@@ -9,21 +9,15 @@ import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
 
-import { ClientData } from '../../ClientForm.types'
 import { useStyles } from './FraudDialog.styles'
-
-const SPECIAL_MARK = 'specialMark'
-const SPECIAL_MARK_REASON = 'specialMarkReason'
 
 export const FraudDialog = () => {
   const classes = useStyles()
-  const { onChangeSpecialMark } = useSpecialMarkContext()
+  const { specialMark, onChangeSpecialMark } = useSpecialMarkContext()
+  const [specialMarkField] = useField<string | null>('specialMark')
   const [isVisible, setIsVisible] = useState(false)
-  const { values, setFieldValue } = useFormikContext<ClientData>()
-  const { specialMarkReason } = values
-  const [fraudReason, setFraudReason] = useState(specialMarkReason)
-
-  const onChange = useCallback(
+  const [fraudReason, setFraudReason] = useState(specialMarkField.value || specialMark)
+  const handleChange = useCallback(
     (fieldValue: string) => {
       setFraudReason(fieldValue)
     },
@@ -32,8 +26,7 @@ export const FraudDialog = () => {
 
   const openFraudDialog = useCallback(() => {
     setIsVisible(true)
-    setFraudReason(specialMarkReason)
-  }, [setIsVisible, specialMarkReason])
+  }, [setIsVisible])
 
   const onClose = useCallback(() => {
     setIsVisible(false)
@@ -41,10 +34,8 @@ export const FraudDialog = () => {
 
   const onSubmit = useCallback(() => {
     setIsVisible(false)
-    setFieldValue(SPECIAL_MARK_REASON, fraudReason)
-    setFieldValue(SPECIAL_MARK, fraudReason === '' ? false : true)
     onChangeSpecialMark(fraudReason)
-  }, [setFieldValue, fraudReason, onChangeSpecialMark])
+  }, [fraudReason, onChangeSpecialMark])
 
   return (
     <Box className={classes.fraudButtonContainer}>
@@ -64,13 +55,13 @@ export const FraudDialog = () => {
         <SelectInput
           value={fraudReason}
           id="fraudReason"
-          onChange={onChange}
+          onChange={handleChange}
           label="Варианты"
           placeholder="-"
           options={SPECIAL_MARK_OPTIONS}
           emptyAvailable
         />
-        <Button onClick={onSubmit} variant="contained">
+        <Button onClick={onSubmit} variant="contained" className={classes.submitBtn}>
           Сохранить
         </Button>
       </ModalDialog>

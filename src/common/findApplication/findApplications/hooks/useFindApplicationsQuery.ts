@@ -1,7 +1,7 @@
 import { useSnackbar } from 'notistack'
 import { useQuery } from 'react-query'
 
-import { findApplications } from 'shared/api/requests/loanapplifecycledc'
+import { findApplications } from 'shared/api/requests/loanAppLifeCycleDc'
 
 import { makeApplicationTableData } from '../utils/makeApplicationTableData'
 

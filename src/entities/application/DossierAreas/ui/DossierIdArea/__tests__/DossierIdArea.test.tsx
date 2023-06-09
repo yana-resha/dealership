@@ -24,56 +24,46 @@ jest.mock('entities/application/ApplicationStatus/ApplicationStatus', () => ({
 
 const mockedOnBackButton = jest.fn()
 
+const dossierIdAreaProps = {
+  dcAppId: '545544',
+  clientName: 'Терентьев Михаил Павлович',
+  passport: '06 04 060423',
+  status: StatusCode.INITIAL,
+  onBackButton: mockedOnBackButton,
+}
+
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 describe('DossierIdTest', () => {
   describe('Все элементы компонента отображаются', () => {
-    it('Отображается кнопка "Назад"', () => {
-      render(<DossierIdArea clientDossier={mockedClientDossier} onBackButton={mockedOnBackButton} />, {
+    beforeEach(() => {
+      render(<DossierIdArea {...dossierIdAreaProps} />, {
         wrapper: createWrapper,
       })
+    })
 
+    it('Отображается кнопка "Назад"', () => {
       expect(screen.getByTestId('backButton')).toBeInTheDocument()
     })
 
     it('При нажатии на кнопку "Назад" выполняется переход', () => {
-      render(<DossierIdArea clientDossier={mockedClientDossier} onBackButton={mockedOnBackButton} />, {
-        wrapper: createWrapper,
-      })
-
       userEvent.click(screen.getByTestId('backButton'))
       expect(mockedOnBackButton).toBeCalledTimes(1)
     })
 
     it('Отображается номер заявки', () => {
-      render(<DossierIdArea clientDossier={mockedClientDossier} onBackButton={mockedOnBackButton} />, {
-        wrapper: createWrapper,
-      })
-
       expect(screen.getByText('№ 545544')).toBeInTheDocument()
     })
 
     it('Отображается статус', () => {
-      render(<DossierIdArea clientDossier={mockedClientDossier} onBackButton={mockedOnBackButton} />, {
-        wrapper: createWrapper,
-      })
-
       expect(screen.getByTestId('applicationStatus')).toBeInTheDocument()
     })
 
     it('Отображается ФИО', () => {
-      render(<DossierIdArea clientDossier={mockedClientDossier} onBackButton={mockedOnBackButton} />, {
-        wrapper: createWrapper,
-      })
-
       expect(screen.getByText('Терентьев Михаил Павлович')).toBeInTheDocument()
     })
 
     it('Отображается серия и номер паспорта', () => {
-      render(<DossierIdArea clientDossier={mockedClientDossier} onBackButton={mockedOnBackButton} />, {
-        wrapper: createWrapper,
-      })
-
       expect(screen.getByText('06 04 060423')).toBeInTheDocument()
     })
   })

@@ -4,9 +4,9 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
+import { ApplicationFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 
-import { getMockedClientDossier } from '../../../__tests__/mocks/clientDetailedDossier.mock'
 import { AgreementArea } from '../AgreementArea'
 
 const mockedAgreementDocs = [
@@ -35,7 +35,6 @@ window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
 const mockUpdateStatus = jest.fn()
 const mockSetAgreementDocs = jest.fn()
-const mockedDossier = getMockedClientDossier('1')
 
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
@@ -44,7 +43,8 @@ describe('AgreementAreaTest', () => {
     it('Отображается ProgressBar', () => {
       render(
         <AgreementArea
-          clientDossier={mockedDossier}
+          status={StatusCode.INITIAL}
+          application={fullApplicationData.application as ApplicationFrontdc}
           updateStatus={mockUpdateStatus}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
@@ -61,7 +61,8 @@ describe('AgreementAreaTest', () => {
       beforeEach(() => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.FINALLY_APPROVED }}
+            status={StatusCode.FINALLY_APPROVED}
+            application={fullApplicationData.application as ApplicationFrontdc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -91,7 +92,8 @@ describe('AgreementAreaTest', () => {
       it('Отсутствует кнопка "Редактировать"', () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
+            status={StatusCode.FORMATION}
+            application={fullApplicationData.application as ApplicationFrontdc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -107,7 +109,8 @@ describe('AgreementAreaTest', () => {
       it('Отображаются один плейсхолдер документа, пока они загружаются', async () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
+            status={StatusCode.FORMATION}
+            application={fullApplicationData.application as ApplicationFrontdc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -124,7 +127,8 @@ describe('AgreementAreaTest', () => {
     it('Отображается 2 документа после загрузки', async () => {
       render(
         <AgreementArea
-          clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
+          status={StatusCode.FORMATION}
+          application={fullApplicationData.application as ApplicationFrontdc}
           updateStatus={mockUpdateStatus}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
@@ -140,7 +144,8 @@ describe('AgreementAreaTest', () => {
     it('После загрузки документов отображается кнопка "Вернуться..."', async () => {
       render(
         <AgreementArea
-          clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
+          status={StatusCode.FORMATION}
+          application={fullApplicationData.application as ApplicationFrontdc}
           updateStatus={mockUpdateStatus}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
@@ -159,7 +164,8 @@ describe('AgreementAreaTest', () => {
       it('После клика по документам появляются свитчи', async () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
+            status={StatusCode.FORMATION}
+            application={fullApplicationData.application as ApplicationFrontdc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -180,7 +186,8 @@ describe('AgreementAreaTest', () => {
       it('После подтверждения подписания документов заявке присваивается статус "КД Подписан"', async () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
+            status={StatusCode.FORMATION}
+            application={fullApplicationData.application as ApplicationFrontdc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -207,7 +214,8 @@ describe('AgreementAreaTest', () => {
       it('После подтверждения подписания документов отображаются реквизиты', async () => {
         render(
           <AgreementArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.SIGNED }}
+            status={StatusCode.SIGNED}
+            application={fullApplicationData.application as ApplicationFrontdc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}

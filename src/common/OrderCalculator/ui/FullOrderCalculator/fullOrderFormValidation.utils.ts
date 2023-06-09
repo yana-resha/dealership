@@ -16,7 +16,7 @@ import {
   requiredBankDetailsFormValidation,
 } from './FormContainer/BankDetails/bankDetailsFormValidation.utils'
 
-function checkForCarCreationDate(value: Date | undefined, context: Yup.TestContext) {
+function checkForCarCreationDate(value: Date | null | undefined, context: Yup.TestContext) {
   const carYear = context.parent[FormFieldNameMap.carYear] as string | undefined
   if (!value || !carYear) {
     return true
@@ -37,6 +37,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
       otherwise: schema => schema.min(10, FieldMessages.enterFullData),
     }),
   [FormFieldNameMap.carPassportCreationDate]: Yup.date()
+    .nullable()
     .required(FieldMessages.required)
     .test('', 'Дата выдачи ПТС не может превышать дату выпуска автомобиля', checkForCarCreationDate),
 
@@ -46,6 +47,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     .min(17, FieldMessages.enterFullData),
   [FormFieldNameMap.salesContractId]: Yup.string().required(FieldMessages.required),
   [FormFieldNameMap.salesContractDate]: Yup.date()
+    .nullable()
     .required(FieldMessages.required)
     .test('', 'Дата ДКП не может превышать дату выпуска автомобиля', checkForCarCreationDate),
   [FormFieldNameMap.legalPerson]: Yup.string().required(FieldMessages.required),
@@ -76,7 +78,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
         is: (productType: string) => !!productType,
         then: schema => schema.required(FieldMessages.required),
       }),
-      [FormFieldNameMap.loanTerm]: Yup.string().when(
+      [FormFieldNameMap.loanTerm]: Yup.number().when(
         [FormFieldNameMap.productType, FormFieldNameMap.isCredit],
         {
           is: (productType: string, isCredit: boolean) => !!productType && isCredit,

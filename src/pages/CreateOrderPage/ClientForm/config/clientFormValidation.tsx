@@ -1,5 +1,7 @@
 import * as Yup from 'yup'
 
+import { Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+
 const minAge = 21
 const maxAge = 65
 
@@ -115,7 +117,7 @@ export const clientFormValidationSchema = Yup.object().shape({
   }),
   mobileNumber: Yup.string().required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
   additionalNumber: Yup.string().when('occupation', {
-    is: 8,
+    is: Occupation.WithoutWork,
     then: schema => schema.required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
     otherwise: schema =>
       schema.test(
@@ -154,25 +156,25 @@ export const clientFormValidationSchema = Yup.object().shape({
   employmentDate: Yup.date()
     .nullable()
     .when('occupation', {
-      is: 'Безработный',
+      is: Occupation.WithoutWork,
       otherwise: schema =>
         schema.required('Поле обязательно для заполнения').min(getMinBirthDate(), 'Дата слишком ранняя'),
     }),
   employerName: Yup.string().when('occupation', {
-    is: 'Безработный',
+    is: Occupation.WithoutWork,
     otherwise: schema => schema.required('Поле обязательно для заполнения'),
   }),
   employerPhone: Yup.string().when('occupation', {
-    is: 'Безработный',
+    is: Occupation.WithoutWork,
     otherwise: schema =>
       schema.required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
   }),
   employerAddressString: Yup.string().when('occupation', {
-    is: 'Безработный',
+    is: Occupation.WithoutWork,
     otherwise: schema => schema.required('Поле обязательно для заполнения'),
   }),
   employerInn: Yup.string().when('occupation', {
-    is: 'Безработный',
+    is: Occupation.WithoutWork,
     otherwise: schema => schema.required('Поле обязательно для заполнения'),
   }),
   questionnaireFile: Yup.string().nullable().required('Необходимо загрузить анкету'),

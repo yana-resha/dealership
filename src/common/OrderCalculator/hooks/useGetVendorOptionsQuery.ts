@@ -1,11 +1,22 @@
 import {
   GetVendorOptionsRequest,
-  GetVendorOptionsResponse,
-  VendorOption,
+  GetVendorOptionsResponse as GetVendorOptionsResponseProto,
+  VendorOption as VendorOptionProto,
 } from '@sberauto/dictionarydc-proto/public'
 import { UseQueryOptions, useQuery } from 'react-query'
 
 import { getVendorOptions } from 'shared/api/requests/dictionaryDc.api'
+
+/* TODO DCB-389 | Прослойка добалена, потому что сейчас в протосах ручки getVendorOptions type: string,
+а должен быть number */
+export type VendorOption = Omit<VendorOptionProto, 'type'> & {
+  type?: number
+}
+/* TODO DCB-389 | Прослойка добалена, потому что сейчас в протосах ручки getVendorOptions type: string,
+а должен быть number */
+type GetVendorOptionsResponse = Omit<GetVendorOptionsResponseProto, 'options'> & {
+  options?: VendorOption[] | null
+}
 
 type RequiredVendorOptions = Required<VendorOption>
 type NormalizedVendorOptions = {

@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { Box } from '@mui/material'
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { FileUploadButton } from 'shared/ui/FileUploadButton/FileUploadButton'
 import SberTypography from 'shared/ui/SberTypography'
 import { UploadFile } from 'shared/ui/UploadFile/UploadFile'
 
-import { PreparedStatus } from '../../../application.utils'
+import { PreparedStatus, getStatus } from '../../../application.utils'
 import { getMockAgreement } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { useStyles } from './DocumentsArea.styles'
 
@@ -15,19 +16,24 @@ type Props = {
   setQuestionnaire: (file: File | undefined) => void
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void
-  status: PreparedStatus
+  status: StatusCode
 }
 
-export function DocumentsArea(props: Props) {
+export function DocumentsArea({
+  fileQuestionnaire,
+  setQuestionnaire,
+  agreementDocs,
+  setAgreementDocs,
+  status,
+}: Props) {
   const classes = useStyles()
-  const { fileQuestionnaire, setQuestionnaire, agreementDocs, setAgreementDocs, status } = props
   const [isDocsLoading, setIsDocsLoading] = useState(false)
+  const preparedStatus = getStatus(status)
   const showDownloadLoanAgreement = [
     PreparedStatus.authorized,
     PreparedStatus.financed,
     PreparedStatus.signed,
-  ].includes(status)
-
+  ].includes(preparedStatus)
   useEffect(() => {
     const fetchAgreement = async () => {
       const documents = await getMockAgreement()
@@ -55,7 +61,7 @@ export function DocumentsArea(props: Props) {
       <SberTypography sberautoVariant="h5" component="p">
         Документы
       </SberTypography>
-      {status == PreparedStatus.initial ? (
+      {preparedStatus == PreparedStatus.initial ? (
         <Box gridColumn="1 / -1">
           {fileQuestionnaire ? (
             <UploadFile

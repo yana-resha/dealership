@@ -3,16 +3,14 @@ import React, { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
+import { ApplicationFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 
-import { getMockedClientDossier } from '../../../__tests__/mocks/clientDetailedDossier.mock'
 import { RequisitesArea } from '../RequisitesArea'
 
 jest.mock('../../Requisite/Requisite', () => ({
   Requisite: () => <div data-testid="requisite" />,
 }))
-
-const { additionalOptions } = getMockedClientDossier('1')
 
 const mockedSetFinancingEnabled = jest.fn()
 
@@ -23,11 +21,7 @@ describe('RequisiteAreaTest', () => {
     beforeEach(() => {
       render(
         <RequisitesArea
-          creditReceiverBank="Сбербанк"
-          creditBankAccountNumber="40702810038000017239"
-          creditLegalEntity="Anex"
-          creditSum={10000}
-          additionalOptions={additionalOptions}
+          application={fullApplicationData.application as ApplicationFrontdc}
           setFinancingEnabled={mockedSetFinancingEnabled}
           changeRequisites={jest.fn}
         />,
@@ -56,11 +50,7 @@ describe('RequisiteAreaTest', () => {
     beforeEach(() => {
       render(
         <RequisitesArea
-          creditReceiverBank="Сбербанк"
-          creditBankAccountNumber="40702810038000017239"
-          creditLegalEntity="Anex"
-          creditSum={10000}
-          additionalOptions={additionalOptions}
+          application={fullApplicationData.application as ApplicationFrontdc}
           setFinancingEnabled={mockedSetFinancingEnabled}
           changeRequisites={jest.fn}
         />,
