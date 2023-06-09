@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import { Box, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { Box, Button, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 
 import useStyles from './SelectInput.styles'
 import { SelectInputProps } from './selectInput.types'
@@ -52,7 +53,12 @@ export function SelectInputWithoutMemo<T extends string | number>(props: SelectI
         {label}
       </InputLabel>
       <Box>
-        <Select displayEmpty className={classes.selectField} {...configSelect}>
+        <Select
+          displayEmpty
+          className={classes.selectField}
+          IconComponent={KeyboardArrowDownIcon}
+          {...configSelect}
+        >
           <MenuItem disabled={!emptyAvailable} selected value="">
             <span className={classes.placeholder}>{placeholder}</span>
           </MenuItem>

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { Autocomplete, AutocompleteValue, Box, InputLabel, TextField } from '@mui/material'
 
 import useStyles from './AutocompleteInput.styles'
@@ -51,6 +52,7 @@ export const AutocompleteInput = React.memo(
         <Box>
           <Autocomplete
             {...autocompleteConfig}
+            popupIcon={<KeyboardArrowDownIcon />}
             className={classes.autocompleteField}
             renderInput={params => <TextField {...textFieldConfig} {...params} />}
           />

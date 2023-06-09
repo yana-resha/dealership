@@ -1,4 +1,7 @@
+import { alpha } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+
+import { PRIMARY_MAIN } from 'app/theme/palette'
 
 export default makeStyles(theme => ({
   inputContainer: {
@@ -20,6 +23,11 @@ export default makeStyles(theme => ({
     '& .MuiOutlinedInput-input': {
       padding: `${theme.spacing(1, 1, 1, 2)}`,
       backgroundColor: theme.palette.common.white,
+    },
+
+    '&:hover .MuiSvgIcon-root': {
+      borderRadius: '50%',
+      backgroundColor: theme.palette.grey[100],
     },
   },
 
