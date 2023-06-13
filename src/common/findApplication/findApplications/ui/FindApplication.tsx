@@ -55,22 +55,22 @@ export const FindApplication = () => {
     setDetailedApplicationId(undefined)
   }
 
-  return <ClientDetailedDossier applicationId="detailedApplicationId" onBackButton={onBackButton} />
+  // return <ClientDetailedDossier applicationId="detailedApplicationId" onBackButton={onBackButton} />
 
-  // return detailedApplicationId ? (
-  //   <ClientDetailedDossier applicationId={detailedApplicationId} onBackButton={onBackButton} />
-  // ) : (
-  //   <>
-  //     <ApplicationFilters onSubmitClick={onSubmit} />
-  //     {/* TODO: DCB-387 Решили не делать до старта MVP */}
-  //     {/* <StatusFilter onChange={setStatuses} /> */}
-  //     <Box className={classes.divider} />
-  //     <ApplicationTable
-  //       data={data || []}
-  //       isLoading={isLoading}
-  //       onClickRow={getDetailedDossier}
-  //       startPage={page}
-  //     />
-  //   </>
-  // )
+  return detailedApplicationId ? (
+    <ClientDetailedDossier applicationId={detailedApplicationId} onBackButton={onBackButton} />
+  ) : (
+    <>
+      <ApplicationFilters onSubmitClick={onSubmit} />
+      {/* TODO: DCB-387 Решили не делать до старта MVP */}
+      {/* <StatusFilter onChange={setStatuses} /> */}
+      <Box className={classes.divider} />
+      <ApplicationTable
+        data={data || []}
+        isLoading={isLoading}
+        onClickRow={getDetailedDossier}
+        startPage={page}
+      />
+    </>
+  )
 }
