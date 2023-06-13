@@ -6,6 +6,7 @@ import { Form, Formik } from 'formik'
 import * as mockFormik from 'formik'
 
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
+import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -15,45 +16,54 @@ import { AddressDialog } from '../AddressDialog'
 jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({
   MaskedInput: MockedMaskedInput,
 }))
+jest.mock('shared/ui/SelectInput/SelectInput', () => ({
+  SelectInput: MockedSelectInput,
+}))
 
 const formFields = [
-  'building',
+  'unit',
   'city',
-  'district',
+  'cityType',
+  'area',
+  'areaType',
   'house',
   'region',
   'street',
   'streetType',
-  'town',
-  'townType',
+  'settlement',
+  'settlementType',
 ]
 
 const mockedAddressFieldsEmpty: Address = {
-  building: '',
+  unit: '',
   city: '',
-  district: '',
+  cityType: '',
+  area: '',
+  areaType: '',
   house: '',
   region: '',
   street: '',
   streetType: '',
-  town: '',
-  townType: '',
-  block: '',
-  flat: '',
+  settlement: '',
+  settlementType: '',
+  houseExt: '',
+  unitNum: '',
 }
 
 const mockedAddressFieldsFilled: Address = {
-  building: 'Тест',
+  unit: 'Тест',
   city: 'Тест',
-  district: 'Тест',
+  cityType: '310',
+  area: 'Тест',
+  areaType: '201',
   house: 'Тест',
   region: 'Тест',
   street: 'Тест',
-  streetType: 'Тест',
-  town: 'Тест',
-  townType: 'Тест',
-  block: 'Тест',
-  flat: 'Тест',
+  streetType: '501',
+  settlement: 'Тест',
+  settlementType: '403',
+  houseExt: 'Тест',
+  unitNum: 'Тест',
 }
 
 const submitForm = jest.fn()
@@ -125,8 +135,12 @@ describe('AddressDialogTest', () => {
       expect(await screen.findByTestId('cityErrorMessage')).toBeInTheDocument()
     })
 
-    it('Поле "town" валидируется', async () => {
-      expect(await screen.findByTestId('townErrorMessage')).toBeInTheDocument()
+    it('Поле "settlement" валидируется', async () => {
+      expect(await screen.findByTestId('settlementErrorMessage')).toBeInTheDocument()
+    })
+
+    it('Поле "streetType" валидируется', async () => {
+      expect(await screen.findByTestId('streetTypeErrorMessage')).toBeInTheDocument()
     })
 
     it('Поле "house" валидируется', async () => {

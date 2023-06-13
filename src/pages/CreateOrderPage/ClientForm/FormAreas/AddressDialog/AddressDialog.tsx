@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
 import { Box, Button } from '@mui/material'
 import { Form, Formik, useFormikContext } from 'formik'
@@ -6,9 +6,11 @@ import { Form, Formik, useFormikContext } from 'formik'
 import { maskCyrillicAndDigits } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
+import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
 import { Address } from '../../ClientForm.types'
 import { clientAddressValidationSchema } from '../../config/clientFormValidation'
+import { AREA_TYPES, CITY_TYPES, SETTLEMENT_TYPES, STREET_TYPES } from './AddressDialog.config'
 import { useStyles } from './AddressDialog.styles'
 
 type Props = {
@@ -23,26 +25,44 @@ type Props = {
 export const AddressDialog = (props: Props) => {
   const classes = useStyles()
   const { addressName, address, label, isVisible, setIsVisible, onCloseDialog } = props
+
   const { setFieldValue } = useFormikContext()
 
   const getStringIfPresent = useCallback((value: string) => (value ? value + ' ' : ''), [])
 
   const buildAddressString = useCallback(
-    (values: Address) =>
-      (
+    (values: Address) => {
+      function getLabel(
+        values: {
+          value: string
+          label: string
+        }[],
+        value?: string,
+      ): string {
+        if (!value) {
+          return ''
+        }
+
+        return values.find(item => item.value === value)?.label ?? value ?? ''
+      }
+
+      return (
         getStringIfPresent(values.region) +
-        getStringIfPresent(values.district) +
+        getStringIfPresent(getLabel(AREA_TYPES, values.areaType)) +
+        getStringIfPresent(values.area) +
+        getStringIfPresent(getLabel(CITY_TYPES, values.cityType)) +
         getStringIfPresent(values.city) +
-        getStringIfPresent(values.townType) +
-        getStringIfPresent(values.town) +
-        getStringIfPresent(values.streetType) +
+        getStringIfPresent(getLabel(SETTLEMENT_TYPES, values.settlementType)) +
+        getStringIfPresent(values.settlement) +
+        getStringIfPresent(getLabel(STREET_TYPES, values.streetType)) +
         getStringIfPresent(values.street) +
         getStringIfPresent(values.house) +
-        getStringIfPresent(values.building) +
-        getStringIfPresent(values.block) +
-        getStringIfPresent(values.flat)
-      ).trim(),
-    [],
+        getStringIfPresent(values.unit) +
+        getStringIfPresent(values.houseExt) +
+        getStringIfPresent(values.unitNum)
+      ).trim()
+    },
+    [getStringIfPresent],
   )
 
   const onClose = useCallback(() => {
@@ -67,41 +87,45 @@ export const AddressDialog = (props: Props) => {
         <Formik initialValues={address} validationSchema={clientAddressValidationSchema} onSubmit={onSubmit}>
           <Form className={classes.formContainer}>
             <MaskedInputFormik name="region" label="Регион" placeholder="-" mask={maskCyrillicAndDigits} />
-            <MaskedInputFormik name="district" label="Район" placeholder="-" mask={maskCyrillicAndDigits} />
+
+            <SelectInputFormik name="areaType" label="Тип района" placeholder="-" options={AREA_TYPES} />
+            <MaskedInputFormik name="area" label="Район" placeholder="-" mask={maskCyrillicAndDigits} />
+
+            <SelectInputFormik
+              name="cityType"
+              label="Тип города"
+              placeholder="-"
+              options={CITY_TYPES}
+              emptyAvailable
+            />
             <MaskedInputFormik name="city" label="Город" placeholder="-" mask={maskCyrillicAndDigits} />
-            <MaskedInputFormik
-              name="townType"
+
+            <SelectInputFormik
+              name="settlementType"
               label="Тип населенного пункта"
               placeholder="-"
-              mask={maskCyrillicAndDigits}
+              options={SETTLEMENT_TYPES}
             />
             <MaskedInputFormik
-              name="town"
+              name="settlement"
               label="Населенный пункт"
               placeholder="-"
               mask={maskCyrillicAndDigits}
             />
-            <MaskedInputFormik
-              name="streetType"
-              label="Тип улицы"
-              placeholder="-"
-              mask={maskCyrillicAndDigits}
-            />
+
+            <SelectInputFormik name="streetType" label="Тип улицы" placeholder="-" options={STREET_TYPES} />
             <MaskedInputFormik name="street" label="Улица" placeholder="-" mask={maskCyrillicAndDigits} />
+
             <MaskedInputFormik name="house" label="Дом" placeholder="-" mask={maskCyrillicAndDigits} />
+            <MaskedInputFormik name="unit" label="Строение" placeholder="-" mask={maskCyrillicAndDigits} />
+            <MaskedInputFormik name="houseExt" label="Корпус" placeholder="-" mask={maskCyrillicAndDigits} />
             <MaskedInputFormik
-              name="building"
-              label="Строение"
-              placeholder="-"
-              mask={maskCyrillicAndDigits}
-            />
-            <MaskedInputFormik name="block" label="Корпус" placeholder="-" mask={maskCyrillicAndDigits} />
-            <MaskedInputFormik
-              name="flat"
+              name="unitNum"
               label="Квартира/офис"
               placeholder="-"
               mask={maskCyrillicAndDigits}
             />
+
             <Button type="submit" variant="contained">
               Сохранить
             </Button>
