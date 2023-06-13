@@ -4,16 +4,18 @@ import { Address, ClientData } from '../ClientForm.types'
 
 export const configAddressInitialValues: Address = {
   region: '',
-  district: '',
+  areaType: '',
+  area: '',
+  cityType: '',
   city: '',
-  townType: '',
-  town: '',
+  settlementType: '',
+  settlement: '',
   streetType: '',
   street: '',
   house: '',
-  building: '',
-  block: '',
-  flat: '',
+  unit: '',
+  houseExt: '',
+  unitNum: '',
 }
 
 export const configInitialValues: ClientData = {

@@ -69,17 +69,32 @@ function isIncomeProofUploaded(
 export const clientAddressValidationSchema = Yup.object().shape(
   {
     region: Yup.string().required('Поле обязательно для заполнения'),
-    town: Yup.string().when('city', {
+    settlement: Yup.string().when('city', {
       is: undefined,
       then: schema => schema.required('Необходимо указать город или населенный пункт'),
     }),
-    city: Yup.string().when('town', {
+    city: Yup.string().when('settlement', {
       is: undefined,
       then: schema => schema.required('Необходимо указать город или населенный пункт'),
     }),
+
+    cityType: Yup.string().when('city', {
+      is: (city?: string) => city,
+      then: schema => schema.required('Необходимо указать тип города'),
+    }),
+    settlementType: Yup.string().when('settlement', {
+      is: (settlement?: string) => settlement,
+      then: schema => schema.required('Необходимо указать тип населенного пункта'),
+    }),
+    areaType: Yup.string().when('area', {
+      is: (area?: string) => area,
+      then: schema => schema.required('Необходимо указать тип района'),
+    }),
+
+    streetType: Yup.string().required('Поле обязательно для заполнения'),
     house: Yup.string().required('Поле обязательно для заполнения'),
   },
-  [['town', 'city']],
+  [['settlement', 'city']],
 )
 
 export const clientFormValidationSchema = Yup.object().shape({

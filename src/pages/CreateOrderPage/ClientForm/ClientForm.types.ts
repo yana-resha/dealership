@@ -1,15 +1,21 @@
 export interface Address {
   region: string
-  district: string
+  area: string
+  areaType: string
   city: string
-  townType: string
-  town: string
+  cityType: string
+  settlementType: string
+  /** Населенный пункт */
+  settlement: string
   streetType: string
   street: string
   house: string
-  building: string
-  block: string
-  flat: string
+  /** Строение */
+  unit: string
+  /** Корпус */
+  houseExt: string
+  /** Квартира/ офис */
+  unitNum: string
 }
 
 export interface ClientData {

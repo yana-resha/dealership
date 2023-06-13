@@ -3,7 +3,21 @@ import { AddressFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
 import { Address } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 
 export const addressTransformForRequest = (address: Address): AddressFrontdc => {
-  const { region, district, city, townType, town, streetType, street, house, building, block, flat } = address
+  const {
+    region,
+    areaType,
+    area,
+    cityType,
+    city,
+    settlementType,
+    settlement,
+    streetType,
+    street,
+    house,
+    unit,
+    houseExt,
+    unitNum,
+  } = address
 
   const result = {
     type: 1,
@@ -11,19 +25,19 @@ export const addressTransformForRequest = (address: Address): AddressFrontdc => 
     // postalCode: string, //дополнить из дадаты DCB-353
     // regCode: string, //дополнить из дадаты DCB-353
     region,
-    // areaType: string, //дополнить из дадаты DCB-353
-    area: district,
-    // cityType: string, //дополнить из дадаты DCB-353
+    areaType,
+    area,
+    cityType,
     city,
-    settlementType: townType,
-    settlement: town,
+    settlementType,
+    settlement,
     streetType,
     street,
     house,
-    houseExt: block,
-    unit: building,
-    unitNum: flat,
-    office: flat,
+    houseExt,
+    unit,
+    unitNum,
+    office: unitNum,
   }
 
   return result
