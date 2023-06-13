@@ -37,7 +37,7 @@ const steps = [
 export function CreateOrderPage() {
   const classes = useStyles()
 
-  const [currentStepIdx, setCurrentStepIdx] = useState(0)
+  const [currentStepIdx, setCurrentStepIdx] = useState(2)
   const currentStep = useMemo(() => steps[currentStepIdx], [currentStepIdx])
 
   const handleStepChange = useCallback(

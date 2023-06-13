@@ -7,12 +7,14 @@ import {
   FindApplicationsRequest,
   Application,
   StatusCode,
+  GetFullApplicationRequest,
 } from '@sberauto/loanapplifecycledc-proto/public'
-import { useMutation } from 'react-query'
+import { UseQueryOptions, useMutation, useQuery } from 'react-query'
 
 import { appConfig } from 'config'
 
 import { Rest } from '../client'
+import { fullApplicationData, GetFullApplicationResponse } from './loanAppLifeCycleDc.mock'
 
 /** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,
  * поэтому приводим к изначальному виду */
@@ -27,19 +29,19 @@ function prepareApplication(application: Application): Application {
   }
 }
 
-const loanapplifecycledcApi = createLoanAppLifeCycleDc(
+const loanAppLifeCycleDcApi = createLoanAppLifeCycleDc(
   () => `${appConfig.apiUrl}/loanapplifecycledc`,
   Rest.request,
 )
 
 export const checkIfSberClient = (params: IsClientRequest) =>
-  loanapplifecycledcApi.isClient({ data: params }).then(response => response.data ?? {})
+  loanAppLifeCycleDcApi.isClient({ data: params }).then(response => response.data ?? {})
 
 export const getVendorsList = (params: GetVendorsListRequest) =>
-  loanapplifecycledcApi.getVendorsList({ data: params }).then(response => response.data ?? {})
+  loanAppLifeCycleDcApi.getVendorsList({ data: params }).then(response => response.data ?? {})
 
 export const saveLoanApplicationDraft = (params: SaveLoanApplicationDraftRequest) =>
-  loanapplifecycledcApi.saveLoanApplicationDraft({ data: params }).then(response => response.data ?? {})
+  loanAppLifeCycleDcApi.saveLoanApplicationDraft({ data: params }).then(response => response.data ?? {})
 
 export const useCheckIfSberClientMutation = () =>
   useMutation(['checkIfSberClient'], (params: IsClientRequest) => checkIfSberClient(params))
@@ -54,11 +56,26 @@ export const useSaveDraftApplicationMutation = () =>
 // const mockLoanapplifecycledcApi = createLoanAppLifeCycleDc(`${appConfig.apiUrl}+mock`, Rest.request)
 
 export const findApplications = (params: FindApplicationsRequest) =>
-  loanapplifecycledcApi.findApplications({ data: params }).then(response => {
+  loanAppLifeCycleDcApi.findApplications({ data: params }).then(response => {
     const { data } = response || {}
     const { applicationList } = data || {}
 
     return {
       applicationList: applicationList?.map(prepareApplication),
     }
+  })
+
+const getFullApplication = (params: GetFullApplicationRequest) =>
+  loanAppLifeCycleDcApi
+    .getFullApplication({ data: params })
+    .then(response => (response.data ?? {}) as GetFullApplicationResponse)
+    .catch(() => fullApplicationData)
+
+export const useGetFullApplicationQuery = (
+  params: GetFullApplicationRequest,
+  options?: UseQueryOptions<GetFullApplicationResponse, unknown, GetFullApplicationResponse, string[]>,
+) =>
+  useQuery(['getFullApplication'], () => getFullApplication(params), {
+    retry: false,
+    ...options,
   })

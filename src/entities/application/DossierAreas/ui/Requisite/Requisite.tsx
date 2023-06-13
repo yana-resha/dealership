@@ -1,54 +1,39 @@
-import React from 'react'
-
 import { Box } from '@mui/material'
 
+import { AdditionalOptionsType } from 'entities/application/constants'
+import { AdditionalOptionFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 
-import { AdditionalOptionsTypes } from '../../../application.utils'
-import { AdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { useStyles } from './Requisite.styles'
 
 type Props = {
-  additionalOption: AdditionalOptions
+  additionalOption: AdditionalOptionFrontdc
 }
 
-export function Requisite(option: Props) {
+export function Requisite({ additionalOption }: Props) {
   const classes = useStyles()
-  const {
-    optionType,
-    loanTerm,
-    productType,
-    provider,
-    taxPresence,
-    productCost,
-    bankAccountNumber,
-    documentId,
-    correspondentAccount,
-    agent,
-    beneficiaryBank,
-  } = option.additionalOption
+  const { bankOptionType, name, vendor, broker, price, term, docNumber, brokerAccount, vendorAccount } =
+    additionalOption
+
+  const label = bankOptionType === AdditionalOptionsType.Equipments ? 'Тип доп. оборудования' : 'Тип продукта'
+  const beneficiaryBank = broker ? brokerAccount?.bank : vendorAccount?.bank
+  const correspondentAccount = broker ? brokerAccount?.accountCorrNumber : vendorAccount?.accountCorrNumber
+  const bankAccountNumber = broker ? brokerAccount?.accountNumber : vendorAccount?.accountNumber
+  const tax = broker ? brokerAccount?.tax : vendorAccount?.tax
 
   return (
     <Box className={classes.requisiteContainer}>
       <Box className={classes.requisiteInfo}>
-        <InfoText
-          label={
-            optionType === AdditionalOptionsTypes.additionalEquipment
-              ? 'Тип доп. оборудования'
-              : 'Тип продукта'
-          }
-        >
-          {productType}
-        </InfoText>
-        {provider && <InfoText label="Страховая компания">{provider}</InfoText>}
-        {agent && <InfoText label="Агент получатель">{agent}</InfoText>}
-        {productCost > 0 && <InfoText label="Стоимость">{productCost} руб.</InfoText>}
-        {loanTerm > 0 && <InfoText label="Срок">{loanTerm} мес.</InfoText>}
-        {documentId && <InfoText label="Номер полиса">{documentId}</InfoText>}
+        <InfoText label={label}>{name || ''}</InfoText>
+        {vendor && <InfoText label="Страховая компания">{vendor}</InfoText>}
+        {broker && <InfoText label="Агент получатель">{broker}</InfoText>}
+        {price !== undefined && <InfoText label="Стоимость">{price} руб.</InfoText>}
+        {term && <InfoText label="Срок">{term} мес.</InfoText>}
+        {docNumber && <InfoText label="Номер полиса">{docNumber}</InfoText>}
         {beneficiaryBank && <InfoText label="Получатель">{beneficiaryBank}</InfoText>}
         {correspondentAccount && <InfoText label="Номер счета банка">{correspondentAccount}</InfoText>}
         {bankAccountNumber && <InfoText label="Расчетный счет">{bankAccountNumber}</InfoText>}
-        <InfoText label="Налог">{taxPresence ? 'C НДС' : 'Без НДС'}</InfoText>
+        <InfoText label="Налог">{tax || 'Без НДС'}</InfoText>
       </Box>
     </Box>
   )

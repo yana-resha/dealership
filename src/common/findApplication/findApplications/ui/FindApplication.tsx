@@ -38,7 +38,7 @@ export const FindApplication = () => {
     setRequest(newValue)
   }
 
-  /* TODO: DCB-387 Решили не делать до старта MVP 
+  /* TODO: DCB-387 Решили не делать до старта MVP
     const setStatuses = (statusValues: StatusCode[]) => {
       const newValue = { ...request, statuses: statusValues }
 
@@ -55,20 +55,22 @@ export const FindApplication = () => {
     setDetailedApplicationId(undefined)
   }
 
-  return detailedApplicationId ? (
-    <ClientDetailedDossier applicationId={detailedApplicationId} onBackButton={onBackButton} />
-  ) : (
-    <>
-      <ApplicationFilters onSubmitClick={onSubmit} />
-      {/* TODO: DCB-387 Решили не делать до старта MVP */}
-      {/* <StatusFilter onChange={setStatuses} /> */}
-      <Box className={classes.divider} />
-      <ApplicationTable
-        data={data || []}
-        isLoading={isLoading}
-        onClickRow={getDetailedDossier}
-        startPage={page}
-      />
-    </>
-  )
+  return <ClientDetailedDossier applicationId="detailedApplicationId" onBackButton={onBackButton} />
+
+  // return detailedApplicationId ? (
+  //   <ClientDetailedDossier applicationId={detailedApplicationId} onBackButton={onBackButton} />
+  // ) : (
+  //   <>
+  //     <ApplicationFilters onSubmitClick={onSubmit} />
+  //     {/* TODO: DCB-387 Решили не делать до старта MVP */}
+  //     {/* <StatusFilter onChange={setStatuses} /> */}
+  //     <Box className={classes.divider} />
+  //     <ApplicationTable
+  //       data={data || []}
+  //       isLoading={isLoading}
+  //       onClickRow={getDetailedDossier}
+  //       startPage={page}
+  //     />
+  //   </>
+  // )
 }

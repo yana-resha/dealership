@@ -7,7 +7,7 @@ import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
-import { SecondDocs } from '../../config/clientForm.values'
+import { DOCUMENT_TYPE_VALUES } from '../../config/clientFormInitialValues'
 import useStyles from './SecondDocArea.styles'
 
 export function SecondDocArea() {
@@ -24,17 +24,7 @@ export function SecondDocArea() {
         label="Тип второго документа"
         placeholder="-"
         //TODO зафиксировать в контрактах DCB-390
-        options={[
-          { label: 'Водительское удостоверение', value: SecondDocs.DriverLicense },
-          {
-            label: 'Страховое свидетельство пенсионного страхования',
-            value: SecondDocs.InsuranceCertificate,
-          },
-          {
-            label: 'Заграничный паспорт (для граждан РФ для выезда за рубеж)',
-            value: SecondDocs.InternationalPassport,
-          },
-        ]}
+        options={DOCUMENT_TYPE_VALUES}
         gridColumn="span 8"
       />
       <Box gridColumn="span 8" />

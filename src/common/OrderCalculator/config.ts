@@ -16,7 +16,7 @@ const CAR_YEARS_LENGTH = 30
 
 function getCarYears(yearsLength: number) {
   const currentYear = new Date().getFullYear()
-  const years = Array.from(new Array(yearsLength), (_, index) => ({ value: `${currentYear - index}` }))
+  const years = Array.from(new Array(yearsLength), (_, index) => ({ value: currentYear - index }))
 
   return years
 }
@@ -72,7 +72,7 @@ export const ADDITIONAL_EQUIPMENTS = [
 ]
 
 const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
-  productType: '',
+  productType: undefined,
   productCost: '',
   isCredit: false,
 }
@@ -96,7 +96,7 @@ const FULL_INITIAL_ADDITIONAL_SERVICE: FullInitialAdditionalService = {
   ...INITIAL_ADDITIONAL_SERVICE,
   [FormFieldNameMap.provider]: '',
   [FormFieldNameMap.agent]: '',
-  [FormFieldNameMap.loanTerm]: '',
+  [FormFieldNameMap.loanTerm]: undefined,
   [FormFieldNameMap.documentId]: '',
   ...INITIAL_BANK_DETAILS_VALUE,
 }
@@ -120,7 +120,7 @@ export const initialValueMap: OrderCalculatorFields = {
   [FormFieldNameMap.creditProduct]: '',
   [FormFieldNameMap.initialPayment]: '',
   [FormFieldNameMap.initialPaymentPercent]: '',
-  [FormFieldNameMap.loanTerm]: '',
+  [FormFieldNameMap.loanTerm]: undefined,
   [ServicesGroupName.additionalEquipments]: [INITIAL_ADDITIONAL_SERVICE],
   [ServicesGroupName.dealerAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
   [ServicesGroupName.bankAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
@@ -130,14 +130,14 @@ export const initialValueMap: OrderCalculatorFields = {
 }
 
 export const fullInitialValueMap: FullOrderCalculatorFields = {
-  ...initialValueMap,
+  ...{ ...initialValueMap, [FormFieldNameMap.specialMark]: undefined },
   [FormFieldNameMap.carPassportType]: CAR_PASSPORT_TYPE[0].value,
   [FormFieldNameMap.carPassportId]: '',
-  [FormFieldNameMap.carPassportCreationDate]: '',
+  [FormFieldNameMap.carPassportCreationDate]: null,
   [FormFieldNameMap.carIdType]: INITIAL_CAR_ID_TYPE[0].value,
   [FormFieldNameMap.carId]: '',
   [FormFieldNameMap.salesContractId]: '',
-  [FormFieldNameMap.salesContractDate]: '',
+  [FormFieldNameMap.salesContractDate]: null,
   [FormFieldNameMap.legalPerson]: '',
   [FormFieldNameMap.loanAmount]: '',
   ...INITIAL_BANK_DETAILS_VALUE,

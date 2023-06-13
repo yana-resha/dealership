@@ -21,7 +21,7 @@ export const useGetCreditProductListQuery = ({ vendorCode, values, enabled = tru
         brand: values.carBrand || '',
         isCarNew: !!values.carCondition,
         autoPrice: parseInt(values.carCost, 10),
-        autoCreateYear: parseInt(values.carYear, 10),
+        autoCreateYear: values.carYear,
         mileage: parseInt(values.carMileage, 10),
       }),
     {

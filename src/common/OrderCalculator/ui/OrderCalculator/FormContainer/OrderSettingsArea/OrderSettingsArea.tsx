@@ -10,6 +10,7 @@ import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { FraudDialog } from 'entities/SpecialMark'
 import { maskOnlyDigitsWithSeparator, maskPercent } from 'shared/masks/InputMasks'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -17,7 +18,6 @@ import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
-import { FraudDialog } from './FraudDialog/FraudDialog'
 import useStyles from './OrderSettingsArea.styles'
 
 type Props = {

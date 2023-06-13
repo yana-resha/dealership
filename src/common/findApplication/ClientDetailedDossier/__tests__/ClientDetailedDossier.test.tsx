@@ -3,6 +3,8 @@ import { PropsWithChildren } from 'react'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 
+import * as useGetFullApplicationQueryModule from 'shared/api/requests/loanAppLifeCycleDc'
+import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 
 import { ClientDetailedDossier } from '../ClientDetailedDossier'
@@ -28,36 +30,37 @@ jest.mock('entities/application/DossierAreas/ui/ActionArea/ActionArea', () => ({
   ActionArea: () => <div data-testid="ActionArea" />,
 }))
 
-jest.mock('entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock', () => ({
-  getMockedClientDossier: (applicationId: string) => mockedClientDossier,
-  getMockQuestionnaire: async (applicationId: string) => mockedFileQuestionnaire,
-}))
+const mockedUseGetFullApplicationQuery = jest.spyOn(
+  useGetFullApplicationQueryModule,
+  'useGetFullApplicationQuery',
+)
 
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 describe('ClientDetailedDossierTest', () => {
   describe('Отображаются все области экрана', () => {
-    it('Отображается область DossierIdArea', () => {
+    beforeEach(() => {
+      mockedUseGetFullApplicationQuery.mockImplementation(
+        () =>
+          ({
+            data: fullApplicationData,
+          } as any),
+      )
       render(<ClientDetailedDossier applicationId="1" onBackButton={jest.fn} />, { wrapper: createWrapper })
-
+    })
+    it('Отображается область DossierIdArea', () => {
       expect(screen.getByTestId('DossierIdArea')).toBeInTheDocument()
     })
 
     it('Отображается область InformationArea', () => {
-      render(<ClientDetailedDossier applicationId="1" onBackButton={jest.fn} />, { wrapper: createWrapper })
-
       expect(screen.getByTestId('InformationArea')).toBeInTheDocument()
     })
 
     it('Отображается область DocumentsArea', () => {
-      render(<ClientDetailedDossier applicationId="1" onBackButton={jest.fn} />, { wrapper: createWrapper })
-
       expect(screen.getByTestId('DocumentsArea')).toBeInTheDocument()
     })
 
     it('Отображается область ActionArea', () => {
-      render(<ClientDetailedDossier applicationId="1" onBackButton={jest.fn} />, { wrapper: createWrapper })
-
       expect(screen.getByTestId('ActionArea')).toBeInTheDocument()
     })
   })

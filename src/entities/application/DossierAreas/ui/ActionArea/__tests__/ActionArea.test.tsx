@@ -3,9 +3,9 @@ import { PropsWithChildren } from 'react'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 
+import { ApplicationFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 
-import { getMockedClientDossier } from '../../../__tests__/mocks/clientDetailedDossier.mock'
 import { ActionArea } from '../ActionArea'
 
 const mockedFileQuestionnaire = new File(['anketa'], 'anketa.png', {
@@ -19,8 +19,6 @@ jest.mock('shared/ui/ProgressBar/ProgressBar', () => ({
   ProgressBar: () => <div data-testid="progressBar" />,
 }))
 
-const mockedDossier = getMockedClientDossier('1')
-
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 describe('ActionAreaTest', () => {
@@ -28,7 +26,8 @@ describe('ActionAreaTest', () => {
     it('Отображается название области экрана "Действие"', () => {
       render(
         <ActionArea
-          clientDossier={mockedDossier}
+          status={StatusCode.INITIAL}
+          application={fullApplicationData.application as ApplicationFrontdc}
           fileQuestionnaire={undefined}
           updateStatus={jest.fn}
           agreementDocs={[]}
@@ -46,7 +45,8 @@ describe('ActionAreaTest', () => {
       it('Если файл анкеты отсутствует, отображатеся только кнопка "Редактировать"', () => {
         render(
           <ActionArea
-            clientDossier={mockedDossier}
+            status={StatusCode.INITIAL}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -64,7 +64,8 @@ describe('ActionAreaTest', () => {
       it('Если файл анкеты присутствует, отображаются 2 кнопки', () => {
         render(
           <ActionArea
-            clientDossier={mockedDossier}
+            status={StatusCode.INITIAL}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={mockedFileQuestionnaire}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -85,7 +86,8 @@ describe('ActionAreaTest', () => {
       it('Отображаются кнопки "Редактировать" и "Дозаполнить анкету"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.APPROVED }}
+            status={StatusCode.APPROVED}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -106,7 +108,8 @@ describe('ActionAreaTest', () => {
       it('Отображается блок "AgreementArea"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.FINALLY_APPROVED }}
+            status={StatusCode.FINALLY_APPROVED}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -126,7 +129,8 @@ describe('ActionAreaTest', () => {
       it('Отображается блок "AgreementArea"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.FORMATION }}
+            status={StatusCode.FORMATION}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -146,7 +150,8 @@ describe('ActionAreaTest', () => {
       it('Отображается кнопка "Пересоздать заявку"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.CANCELED_DEAL }}
+            status={StatusCode.CANCELED_DEAL}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -166,7 +171,8 @@ describe('ActionAreaTest', () => {
       it('Отображается кнопка "Пересоздать заявку"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.CANCELED }}
+            status={StatusCode.CANCELED}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -186,7 +192,8 @@ describe('ActionAreaTest', () => {
       it('Отображается блок "AgreementArea"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.FINALLY_APPROVED }}
+            status={StatusCode.FINALLY_APPROVED}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -206,7 +213,8 @@ describe('ActionAreaTest', () => {
       it('Отображается кнопка "Редактировать"', () => {
         render(
           <ActionArea
-            clientDossier={{ ...mockedDossier, status: StatusCode.ERROR }}
+            status={StatusCode.ERROR}
+            application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}

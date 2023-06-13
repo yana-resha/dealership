@@ -1,12 +1,14 @@
 import { useCallback, useRef } from 'react'
 
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import { CalculateCreditRequest } from '@sberauto/dictionarydc-proto/public'
 import { Formik, FormikProps } from 'formik'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import { useGetCreditProductListQuery } from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import { useGetVendorOptionsQuery } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+import { useInitialValues } from 'common/OrderCalculator/hooks/useInitialValues'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { mapValuesForCalculateCreditRequest } from 'common/OrderCalculator/utils/orderFormMapper'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
@@ -26,6 +28,11 @@ export function FullOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }:
   const { data: vendorOptions } = useGetVendorOptionsQuery({
     vendorCode: vendorCode,
   })
+
+  const { isShouldShowLoading, initialValues, hasCustomInitialValues } = useInitialValues(
+    fullInitialValueMap,
+    true,
+  )
   const formRef = useRef<FormikProps<FullOrderCalculatorFields>>(null)
   const { data: creditProductListData } = useGetCreditProductListQuery({
     vendorCode,
@@ -48,14 +55,22 @@ export function FullOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }:
 
   return (
     <Box className={classes.formContainer} data-testid="fullOrderCalculatorForm">
-      <Formik
-        initialValues={fullInitialValueMap}
-        validationSchema={fullOrderFormValidationSchema}
-        onSubmit={handleSubmit}
-        innerRef={formRef}
-      >
-        <FormContainer isSubmitLoading={isSubmitLoading} onChangeForm={onChangeForm} />
-      </Formik>
+      {isShouldShowLoading ? (
+        <CircularProgress className={classes.circular} />
+      ) : (
+        <Formik
+          initialValues={initialValues}
+          validationSchema={fullOrderFormValidationSchema}
+          onSubmit={handleSubmit}
+          innerRef={formRef}
+        >
+          <FormContainer
+            isSubmitLoading={isSubmitLoading}
+            onChangeForm={onChangeForm}
+            shouldFetchProductsOnStart={hasCustomInitialValues}
+          />
+        </Formik>
+      )}
     </Box>
   )
 }

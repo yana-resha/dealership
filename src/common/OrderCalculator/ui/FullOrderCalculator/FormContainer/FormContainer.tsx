@@ -14,28 +14,27 @@ import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
 type Props = {
   isSubmitLoading: boolean
   onChangeForm: () => void
+  shouldFetchProductsOnStart: boolean
 }
 
-export function FormContainer({ isSubmitLoading, onChangeForm }: Props) {
+export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProductsOnStart }: Props) {
   const { values, setValues } = useFormikContext<FullOrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
   const requisites = mockRequisites()
-
   const [sentParams, setSentParams] = useState({})
   const [shouldShowOrderSettings, setShouldShowOrderSettings] = useState(false)
-  const [shouldFetchProducts, setShouldFetchProducts] = useState(false)
+  const [shouldFetchProducts, setShouldFetchProducts] = useState(shouldFetchProductsOnStart)
   const changeShouldFetchProducts = useCallback(() => setShouldFetchProducts(true), [])
 
   const isChangedBaseValues = useMemo(
     () => Object.entries(sentParams).some(e => values[e[0] as keyof FullOrderCalculatorFields] !== e[1]),
     [sentParams, values],
   )
-  const { data, isError, isFetching } = useGetCreditProductListQuery({
+  const { data, isError, isFetching, isFetched } = useGetCreditProductListQuery({
     vendorCode,
     values,
     enabled: shouldFetchProducts,
   })
-
   useEffect(() => {
     if (isFetching) {
       const formFields = {
@@ -63,11 +62,15 @@ export function FormContainer({ isSubmitLoading, onChangeForm }: Props) {
       }
       setShouldFetchProducts(false)
       setSentParams(formFields)
-      setValues({ ...fullInitialValueMap, ...formFields })
+      if (!shouldFetchProductsOnStart || (shouldFetchProductsOnStart && isFetched)) {
+        setValues({ ...fullInitialValueMap, ...formFields })
+      }
     }
   }, [
+    isFetched,
     isFetching,
     setValues,
+    shouldFetchProductsOnStart,
     values.bankAccountNumber,
     values.bankIdentificationCode,
     values.beneficiaryBank,

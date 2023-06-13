@@ -1,12 +1,8 @@
-import {
-  AdditionalOption,
-  CalculateCreditRequest,
-  LoanCar,
-  VendorOption,
-} from '@sberauto/dictionarydc-proto/public'
+import { AdditionalOption, CalculateCreditRequest, LoanCar } from '@sberauto/dictionarydc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 
+import { VendorOption } from '../hooks/useGetVendorOptionsQuery'
 import {
   FormFieldNameMap,
   FullOrderCalculatorFields,
@@ -21,11 +17,11 @@ const mapAdditionalOptions = (
   // переделать, когда бэк переделает ручки
   type: string,
 ): AdditionalOption[] => {
-  const filteredOptions = additionalOptions.filter(option => option.productType !== '')
+  const filteredOptions = additionalOptions.filter(option => !!option.productType)
   const additionalOptionsFormatted: AdditionalOption[] = filteredOptions.map(option => {
     const additionalOption: AdditionalOption = {
       type: type,
-      name: option.productType,
+      name: `${option.productType as number}`,
       price: Number(option.productCost),
       inCreditFlag: option.isCredit,
     }

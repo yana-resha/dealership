@@ -4,9 +4,16 @@ export const useStyles = makeStyles(theme => ({
   formContainer: {
     height: '100%',
     width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     padding: theme.spacing(3),
     backgroundColor: theme.palette.background.paper,
     borderRadius: 4 * theme.shape.borderRadius,
+  },
+
+  circular: {
+    margin: theme.spacing(20, 0),
   },
 
   clientForm: {

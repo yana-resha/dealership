@@ -42,7 +42,7 @@ export enum FormFieldNameMap {
 }
 
 export interface OrderCalculatorAdditionalService {
-  [FormFieldNameMap.productType]: string
+  [FormFieldNameMap.productType]: number | undefined
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
 }
@@ -67,7 +67,7 @@ export interface FullInitialAdditionalService
     InitialBankDetailsValue {
   [FormFieldNameMap.provider]: string
   [FormFieldNameMap.agent]: string
-  [FormFieldNameMap.loanTerm]: string
+  [FormFieldNameMap.loanTerm]: number | undefined
   [FormFieldNameMap.documentId]: string
 }
 
@@ -89,13 +89,13 @@ export interface OrderCalculatorFields {
   [FormFieldNameMap.carCondition]: number
   [FormFieldNameMap.carBrand]: string | null
   [FormFieldNameMap.carModel]: string | null
-  [FormFieldNameMap.carYear]: string
+  [FormFieldNameMap.carYear]: number
   [FormFieldNameMap.carCost]: string
   [FormFieldNameMap.carMileage]: string
   [FormFieldNameMap.creditProduct]: string
   [FormFieldNameMap.initialPayment]: string
   [FormFieldNameMap.initialPaymentPercent]: string
-  [FormFieldNameMap.loanTerm]: string
+  [FormFieldNameMap.loanTerm]: number | undefined
   [ServicesGroupName.additionalEquipments]: OrderCalculatorAdditionalService[]
   [ServicesGroupName.dealerAdditionalServices]: OrderCalculatorAdditionalService[]
   [ServicesGroupName.bankAdditionalServices]: OrderCalculatorAdditionalService[]
@@ -115,11 +115,11 @@ export interface FullOrderCalculatorFields
     > {
   [FormFieldNameMap.carPassportType]: number
   [FormFieldNameMap.carPassportId]: string
-  [FormFieldNameMap.carPassportCreationDate]: string
+  [FormFieldNameMap.carPassportCreationDate]: Date | null
   [FormFieldNameMap.carIdType]: number
   [FormFieldNameMap.carId]: string
   [FormFieldNameMap.salesContractId]: string
-  [FormFieldNameMap.salesContractDate]: string
+  [FormFieldNameMap.salesContractDate]: Date | null
   [FormFieldNameMap.legalPerson]: string
   [FormFieldNameMap.loanAmount]: string
   [ServicesGroupName.additionalEquipments]: FullInitialAdditionalEquipments[]

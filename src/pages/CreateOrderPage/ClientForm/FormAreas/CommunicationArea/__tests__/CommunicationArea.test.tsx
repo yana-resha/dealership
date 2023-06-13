@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
@@ -18,7 +19,12 @@ jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({
 
 const formFields = ['mobileNumber', 'additionalNumber', 'email']
 
-let mockedCommunicationFields = {
+let mockedCommunicationFields: {
+  occupation: number | null
+  mobileNumber: string
+  additionalNumber: string
+  email: string
+} = {
   occupation: null,
   mobileNumber: '',
   additionalNumber: '',
@@ -88,8 +94,7 @@ describe('CommunicationAreaTest', () => {
     it('Поле "additionalNumber" валидируется, если клиент не работает', async () => {
       mockedCommunicationFields = {
         ...mockedCommunicationFields,
-        //@ts-expect-error нужно прописать типы
-        occupation: 8,
+        occupation: Occupation.WithoutWork,
       }
       render(<CommunicationArea />, {
         wrapper: createWrapper,

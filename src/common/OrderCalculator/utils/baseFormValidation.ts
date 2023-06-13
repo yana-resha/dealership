@@ -75,5 +75,5 @@ export const baseFormValidation = {
         ? context.createError({ message: `Значение должно быть меньше ${maxInitialPaymentPercent}` })
         : true
     }),
-  [FormFieldNameMap.loanTerm]: Yup.string().required(FieldMessages.required),
+  [FormFieldNameMap.loanTerm]: Yup.number().required(FieldMessages.required),
 }

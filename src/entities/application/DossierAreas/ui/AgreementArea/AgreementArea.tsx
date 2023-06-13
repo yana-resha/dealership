@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Divider } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { ApplicationFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
@@ -11,12 +12,13 @@ import { UploadFile } from 'shared/ui/UploadFile/UploadFile'
 
 import { RequisitesArea } from '../'
 import { getStatus, PreparedStatus } from '../../../application.utils'
-import { ClientDossier, getMockAgreement } from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { getMockAgreement } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { progressBarConfig } from '../../configs/clientDetailedDossier.config'
 import { useStyles } from './AgreementArea.styles'
 
 type Props = {
-  clientDossier: ClientDossier
+  status: StatusCode
+  application: ApplicationFrontdc
   updateStatus: (statusCode: StatusCode) => void
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void
@@ -28,12 +30,17 @@ const DOWNLOAD_AGREEMENT_STEP = 1
 const SIGN_AGREEMENT_STEP = 2
 const CHECK_REQUISITES = 3
 
-export function AgreementArea(props: Props) {
-  const { clientDossier, updateStatus, agreementDocs, setAgreementDocs, setIsEditRequisitesMode } = props
+export function AgreementArea({
+  status,
+  application,
+  updateStatus,
+  agreementDocs,
+  setAgreementDocs,
+  setIsEditRequisitesMode,
+}: Props) {
   const classes = useStyles()
-  const status = getStatus(clientDossier.status)
-  const { additionalOptions, creditSum, creditReceiverBank, creditBankAccountNumber, creditLegalEntity } =
-    clientDossier
+  const preparedStatus = getStatus(status)
+
   const [currentStep, setCurrentStep] = useState(CREATE_AGREEMENT_STEP)
   const [isDocsLoading, setIsDocsLoading] = useState(false)
   const [docsStatus, setDocsStatus] = useState<string[]>([])
@@ -48,7 +55,7 @@ export function AgreementArea(props: Props) {
       setIsDocsLoading(false)
       setDocsStatus(Array(documents.length).fill('received'))
     }
-    if (status != PreparedStatus.formation) {
+    if (preparedStatus != PreparedStatus.formation) {
       updateStatus(StatusCode.FORMATION)
     }
     setIsDocsLoading(true)
@@ -58,9 +65,9 @@ export function AgreementArea(props: Props) {
   }, [updateStatus, setAgreementDocs, status])
 
   useEffect(() => {
-    if (status == PreparedStatus.formation) {
+    if (preparedStatus == PreparedStatus.formation) {
       getToSecondStage()
-    } else if (status == PreparedStatus.signed) {
+    } else if (preparedStatus == PreparedStatus.signed) {
       setCurrentStep(CHECK_REQUISITES)
       agreementAreaRef.current?.scrollIntoView()
     }
@@ -114,7 +121,7 @@ export function AgreementArea(props: Props) {
   return (
     <Box className={classes.blockContainer} ref={agreementAreaRef}>
       <ProgressBar {...progressBarConfig} currentStep={currentStep} />
-      {status == PreparedStatus.finallyApproved && (
+      {preparedStatus == PreparedStatus.finallyApproved && (
         <Box className={classes.actionButtons}>
           <Button variant="contained" className={classes.button}>
             Редактировать
@@ -125,7 +132,7 @@ export function AgreementArea(props: Props) {
         </Box>
       )}
 
-      {status == PreparedStatus.formation && (
+      {preparedStatus == PreparedStatus.formation && (
         <Box>
           {isDocsLoading ? (
             <UploadFile
@@ -179,20 +186,16 @@ export function AgreementArea(props: Props) {
         </Box>
       )}
 
-      {status == PreparedStatus.signed && (
+      {preparedStatus == PreparedStatus.signed && (
         <Box className={classes.documentContainer}>
           <RequisitesArea
-            additionalOptions={additionalOptions}
-            creditSum={creditSum}
-            creditLegalEntity={creditLegalEntity}
-            creditBankAccountNumber={creditBankAccountNumber}
-            creditReceiverBank={creditReceiverBank}
+            application={application}
             setFinancingEnabled={setFinancingEnabled}
             changeRequisites={setIsEditRequisitesMode}
           />
         </Box>
       )}
-      {status != PreparedStatus.finallyApproved && !isDocsLoading && (
+      {preparedStatus != PreparedStatus.finallyApproved && !isDocsLoading && (
         <Box className={classes.buttonsContainer}>
           <SberTypography
             sberautoVariant="body3"
@@ -202,7 +205,7 @@ export function AgreementArea(props: Props) {
           >
             Вернуться на формирование договора
           </SberTypography>
-          {status == PreparedStatus.signed && (
+          {preparedStatus == PreparedStatus.signed && (
             <Button variant="contained" className={classes.button} disabled={!financingEnabled}>
               Отправить на финансирование
             </Button>

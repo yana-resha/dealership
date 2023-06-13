@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, useCallback, useState } from 'react'
 
 import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material'
 
@@ -13,14 +13,34 @@ type Props = {
   disabled?: boolean
   isError?: boolean
   errorMessage?: string
+  isInitialExpanded?: boolean
 }
 export const AdditionalServicesContainer = React.memo(
-  ({ title, disabled = false, isError = false, errorMessage, children }: PropsWithChildren<Props>) => {
+  ({
+    title,
+    disabled = false,
+    isError = false,
+    errorMessage,
+    isInitialExpanded = false,
+    children,
+  }: PropsWithChildren<Props>) => {
     const classes = useStyles()
 
+    const [expanded, setExpanded] = useState(isInitialExpanded)
+
+    const changeExpanded = useCallback(() => setExpanded(prev => !prev), [])
+
     return (
-      <Accordion disableGutters disabled={disabled} className={classes.accordionContainer}>
-        <AccordionSummary expandIcon={<OrderCreateIcon className={classes.summaryIcon} />}>
+      <Accordion
+        disableGutters
+        disabled={disabled}
+        className={classes.accordionContainer}
+        expanded={expanded}
+      >
+        <AccordionSummary
+          onClick={changeExpanded}
+          expandIcon={<OrderCreateIcon className={classes.summaryIcon} />}
+        >
           <Box gridColumn="1 / -1" minWidth="min-content">
             <Typography className={classes.title}>{title}</Typography>
             {isError && (

@@ -1,5 +1,3 @@
-import { GetVendorOptionsResponse } from '@sberauto/dictionarydc-proto/public'
-
 export const carBrands = [
   { brand: 'BMW', models: ['1 series', '3 series'] },
   { brand: 'Fiat', models: ['Ducato', 'Punto', '500'] },
@@ -15,7 +13,8 @@ export const creditProductListRsData = {
   fullDurationMax: 72,
   products: [
     {
-      productCode: '200039393',
+      productId: '499fa8d7-fe66-4898-829d-8364f3e22bb1',
+      productCode: '3',
       productName: 'Лайт A',
       downpaymentMin: '30',
       downpaymentMax: 70,
@@ -23,7 +22,8 @@ export const creditProductListRsData = {
       durationMax: 72,
     },
     {
-      productCode: '300039393',
+      productId: '499fa8d7-fe66-4898-829d-8364f3e22bb2',
+      productCode: '2',
       productName: 'Лайт В',
       downpaymentMin: '10',
       downpaymentMax: 50,
@@ -47,23 +47,23 @@ export const creditProductListRsData = {
   ],
 }
 
-//TODO DCB-238: Убрать мок после интеграции
+//TODO DCB-389: Убрать мок после интеграции
 export const mockGetVendorOptionsResponse = {
   options: [
     {
-      type: '12',
+      type: 1,
       optionName: 'ОСАГО',
     },
     {
-      type: '13',
+      type: 2,
       optionName: 'КАСКО',
     },
     {
-      type: '14',
+      type: 3,
       optionName: 'Перекрасить авто',
     },
     {
-      type: '15',
+      type: 4,
       optionName: 'Графика на кузове',
     },
   ],

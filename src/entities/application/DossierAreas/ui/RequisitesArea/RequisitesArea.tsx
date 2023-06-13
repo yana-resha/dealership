@@ -1,46 +1,53 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box, Divider } from '@mui/material'
 
+import { AdditionalOptionsType } from 'entities/application/constants'
 import { Requisite } from 'entities/application/DossierAreas/ui'
+import { AdditionalOptionFrontdc, ApplicationFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
-import { AdditionalOptionsTypes } from '../../../application.utils'
-import { AdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { useStyles } from './RequisitesArea.styles'
 
 type Props = {
-  creditLegalEntity: string
-  creditSum: number
-  creditReceiverBank: string
-  creditBankAccountNumber: string
-  additionalOptions: AdditionalOptions[]
+  application: ApplicationFrontdc
   setFinancingEnabled: (value: boolean) => void
   changeRequisites: (value: boolean) => void
 }
 
-export function RequisitesArea(props: Props) {
+export function RequisitesArea({ application, setFinancingEnabled, changeRequisites }: Props) {
   const classes = useStyles()
-  const {
-    creditLegalEntity,
-    creditReceiverBank,
-    creditBankAccountNumber,
-    creditSum,
-    additionalOptions,
-    setFinancingEnabled,
-    changeRequisites,
-  } = props
-  const additionalEquipment = additionalOptions.filter(
-    option => option.optionType === AdditionalOptionsTypes.additionalEquipment,
+
+  const { additionalEquipment, dealerServices, bankServices } = useMemo(
+    () =>
+      (application.loanData?.additionalOptions || []).reduce(
+        (acc, cur) => {
+          switch (cur.bankOptionType) {
+            case AdditionalOptionsType.BankServices:
+              acc.bankServices.push(cur)
+              break
+            case AdditionalOptionsType.Equipments:
+              acc.additionalEquipment.push(cur)
+              break
+            case AdditionalOptionsType.DealerServices:
+              acc.dealerServices.push(cur)
+              break
+          }
+
+          return acc
+        },
+        {
+          additionalEquipment: [] as AdditionalOptionFrontdc[],
+          dealerServices: [] as AdditionalOptionFrontdc[],
+          bankServices: [] as AdditionalOptionFrontdc[],
+          productSum: 0,
+        },
+      ),
+    [application.loanData?.additionalOptions],
   )
-  const dealerServices = additionalOptions.filter(
-    option => option.optionType === AdditionalOptionsTypes.dealerServices,
-  )
-  const bankServices = additionalOptions.filter(
-    option => option.optionType === AdditionalOptionsTypes.bankServices,
-  )
+
   const [creditConfirmation, setCreditConfirmation] = useState(false)
   const [additionalEquipmentConfirmation, setAdditionalEquipmentConfirmation] = useState(false)
   const [dealerServicesConfirmation, setDealerServicesConfirmation] = useState(false)
@@ -54,16 +61,16 @@ export function RequisitesArea(props: Props) {
     const requisiteType = event.target.id
     const { checked } = event.target
     switch (requisiteType) {
-      case AdditionalOptionsTypes.credit:
+      case 'credit':
         setCreditConfirmation(checked)
         break
-      case AdditionalOptionsTypes.additionalEquipment:
+      case `${AdditionalOptionsType.Equipments}`:
         setAdditionalEquipmentConfirmation(checked)
         break
-      case AdditionalOptionsTypes.dealerServices:
+      case `${AdditionalOptionsType.DealerServices}`:
         setDealerServicesConfirmation(checked)
         break
-      case AdditionalOptionsTypes.bankServices:
+      case `${AdditionalOptionsType.BankServices}`:
         setBankServicesConfirmation(checked)
         break
     }
@@ -90,13 +97,15 @@ export function RequisitesArea(props: Props) {
           <SberTypography sberautoVariant="h6" component="p">
             Кредит
           </SberTypography>
-          <SwitchInput label="Проверено" id={AdditionalOptionsTypes.credit} afterChange={handleChange} />
+          <SwitchInput label="Проверено" id="credit" afterChange={handleChange} />
         </Box>
         <Box className={classes.requisiteInfo}>
-          <InfoText label="Юридическое лицо">{creditLegalEntity}</InfoText>
-          <InfoText label="Сумма кредита">{creditSum} руб.</InfoText>
-          <InfoText label="Банк получатель">{creditReceiverBank}</InfoText>
-          <InfoText label="Номер счета банка">{creditBankAccountNumber}</InfoText>
+          <InfoText label="Юридическое лицо">{application.vendor?.vendorName || ''}</InfoText>
+          <InfoText label="Сумма кредита">{application?.loanData?.creditAmount || ''} руб.</InfoText>
+          <InfoText label="Банк получатель">{application.vendor?.vendorBankDetails?.bank || ''}</InfoText>
+          <InfoText label="Номер счета банка">
+            {application.vendor?.vendorBankDetails?.accountNumber || ''}
+          </InfoText>
         </Box>
         <Divider />
       </Box>
@@ -109,12 +118,12 @@ export function RequisitesArea(props: Props) {
             </SberTypography>
             <SwitchInput
               label="Проверено"
-              id={AdditionalOptionsTypes.additionalEquipment}
+              id={`${AdditionalOptionsType.Equipments}`}
               afterChange={handleChange}
             />
           </Box>
           {additionalEquipment.map(option => (
-            <Box key={option.productType} className={classes.requisiteElement}>
+            <Box key={option.name} className={classes.requisiteElement}>
               <Requisite additionalOption={option} />
               <Divider />
             </Box>
@@ -130,12 +139,12 @@ export function RequisitesArea(props: Props) {
             </SberTypography>
             <SwitchInput
               label="Проверено"
-              id={AdditionalOptionsTypes.dealerServices}
+              id={`${AdditionalOptionsType.DealerServices}`}
               afterChange={handleChange}
             />
           </Box>
           {dealerServices.map(option => (
-            <Requisite key={option.productType} additionalOption={option} />
+            <Requisite key={option.name} additionalOption={option} />
           ))}
           <Divider />
         </Box>
@@ -149,12 +158,12 @@ export function RequisitesArea(props: Props) {
             </SberTypography>
             <SwitchInput
               label="Проверено"
-              id={AdditionalOptionsTypes.bankServices}
+              id={`${AdditionalOptionsType.BankServices}`}
               afterChange={handleChange}
             />
           </Box>
           {bankServices.map(option => (
-            <Requisite key={option.productType} additionalOption={option} />
+            <Requisite key={option.name} additionalOption={option} />
           ))}
           <Divider />
         </Box>

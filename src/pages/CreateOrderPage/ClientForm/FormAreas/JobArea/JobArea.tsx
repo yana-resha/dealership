@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
 
+import { Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { maskDigitsOnly, maskNoRestrictions, maskPhoneNumber } from 'shared/masks/InputMasks'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -10,7 +11,7 @@ import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { ClientData } from '../../ClientForm.types'
-import { configAddressInitialValues } from '../../config/clientFormInitialValues'
+import { OCCUPATION_VALUES, configAddressInitialValues } from '../../config/clientFormInitialValues'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './JobArea.styles'
 
@@ -22,8 +23,7 @@ export function JobArea() {
   const { occupation, employerAddress, employerAddressString } = values
 
   useEffect(() => {
-    //DCB-390 брать значение из контрактов
-    if (occupation === 8) {
+    if (occupation === Occupation.WithoutWork) {
       setJobDisabled(true)
       setFieldValue('employmentDate', '')
       setFieldValue('employerName', '')
@@ -71,44 +71,7 @@ export function JobArea() {
         label="Должность/Вид занятости"
         placeholder="-"
         //TODO нужен enum в контракте DCB-390
-        options={[
-          {
-            label: 'работает/служит по временному контракту',
-            value: 1,
-          },
-          {
-            label: 'работает/cлужит по постоянному контракту',
-            value: 2,
-          },
-          {
-            label: 'частная практика',
-            value: 3,
-          },
-          {
-            label: 'индивидуальный предприниматель',
-            value: 4,
-          },
-          {
-            label: 'агент на комиссионном договоре',
-            value: 5,
-          },
-          {
-            label: 'пенсионер',
-            value: 6,
-          },
-          {
-            label: 'исполнитель по гражданско-правовому договору',
-            value: 7,
-          },
-          {
-            label: 'не работает',
-            value: 8,
-          },
-          {
-            label: 'самозанятый',
-            value: 9,
-          },
-        ]}
+        options={OCCUPATION_VALUES}
         gridColumn="span 8"
       />
       <DateInputFormik

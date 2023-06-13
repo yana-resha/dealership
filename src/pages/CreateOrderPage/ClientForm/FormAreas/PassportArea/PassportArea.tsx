@@ -17,7 +17,7 @@ import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { ClientData } from '../../ClientForm.types'
-import { configAddressInitialValues } from '../../config/clientFormInitialValues'
+import { FAMILY_STATUS_VALUES, configAddressInitialValues } from '../../config/clientFormInitialValues'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './PassportArea.styles'
 
@@ -110,10 +110,7 @@ export function PassportArea() {
         name="familyStatus"
         label="Семейное положение"
         placeholder="-"
-        options={[
-          { label: 'Женат', value: 1 },
-          { label: 'Не женат', value: 0 },
-        ]}
+        options={FAMILY_STATUS_VALUES}
         gridColumn="span 6"
       />
       <Box gridColumn="span 7" />

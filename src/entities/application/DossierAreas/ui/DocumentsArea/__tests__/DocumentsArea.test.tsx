@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { ThemeProviderMock } from 'tests/mocks'
@@ -40,7 +41,7 @@ describe('DocumentsAreaTest', () => {
           setQuestionnaire={mockedSetQuestionnaire}
           agreementDocs={[mockedFileAgreement, mockedFileExtra]}
           setAgreementDocs={jest.fn}
-          status={PreparedStatus.initial}
+          status={StatusCode.INITIAL}
         />,
         { wrapper: createWrapper },
       )
@@ -56,7 +57,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.initial}
+            status={StatusCode.INITIAL}
           />,
           { wrapper: createWrapper },
         )
@@ -71,7 +72,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.initial}
+            status={StatusCode.INITIAL}
           />,
           { wrapper: createWrapper },
         )
@@ -87,7 +88,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.initial}
+            status={StatusCode.INITIAL}
           />,
           { wrapper: createWrapper },
         )
@@ -104,7 +105,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.authorized}
+            status={StatusCode.AUTHORIZED}
           />,
           { wrapper: createWrapper },
         )
@@ -119,7 +120,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.financed}
+            status={StatusCode.ISSUED}
           />,
           { wrapper: createWrapper },
         )
@@ -134,7 +135,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.signed}
+            status={StatusCode.SIGNED}
           />,
           { wrapper: createWrapper },
         )
@@ -151,7 +152,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.processed}
+            status={StatusCode.PROCESSED}
           />,
           { wrapper: createWrapper },
         )
@@ -166,7 +167,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.approved}
+            status={StatusCode.APPROVED}
           />,
           { wrapper: createWrapper },
         )
@@ -181,7 +182,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.finallyApproved}
+            status={StatusCode.FINALLY_APPROVED}
           />,
           { wrapper: createWrapper },
         )
@@ -196,7 +197,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.formation}
+            status={StatusCode.FORMATION}
           />,
           { wrapper: createWrapper },
         )
@@ -211,7 +212,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.rejected}
+            status={StatusCode.REJECTED}
           />,
           { wrapper: createWrapper },
         )
@@ -226,7 +227,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.canceledDeal}
+            status={StatusCode.CANCELED_DEAL}
           />,
           { wrapper: createWrapper },
         )
@@ -239,7 +240,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.canceled}
+            status={StatusCode.CANCELED}
           />,
           { wrapper: createWrapper },
         )
@@ -254,7 +255,7 @@ describe('DocumentsAreaTest', () => {
             setQuestionnaire={mockedSetQuestionnaire}
             agreementDocs={[mockedFileAgreement, mockedFileExtra]}
             setAgreementDocs={jest.fn}
-            status={PreparedStatus.error}
+            status={StatusCode.ERROR}
           />,
           { wrapper: createWrapper },
         )

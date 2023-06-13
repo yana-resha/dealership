@@ -1,12 +1,13 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
 import { MockStore } from 'redux-mock-store'
 
-import { MockProviders, ThemeProviderMock } from 'tests/mocks'
+import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { ClientForm } from '../ClientForm'
+import * as useInitialValuesModule from '../useInitialValues'
 
 jest.mock('../FormAreas/PassportArea/PassportArea', () => ({
   PassportArea: () => <div data-testid="passportArea" />,
@@ -26,7 +27,7 @@ jest.mock('../FormAreas/JobArea/JobArea', () => ({
 jest.mock('../FormAreas/QuestionnaireUploadArea/QuestionnaireUploadArea', () => ({
   QuestionnaireUploadArea: () => <div data-testid="questionnaireUploadArea" />,
 }))
-jest.mock('../FormAreas/FraudDialog/FraudDialog', () => ({
+jest.mock('entities/SpecialMark', () => ({
   FraudDialog: () => <div data-testid="fraudDialog" />,
 }))
 
@@ -41,6 +42,12 @@ disableConsole('error')
 describe('ClientFormTest', () => {
   describe('Форма отображается корректно', () => {
     beforeEach(() => {
+      jest.spyOn(useInitialValuesModule, 'useInitialValues').mockImplementation(
+        () =>
+          ({
+            isShouldShowLoading: false,
+          } as ReturnType<typeof useInitialValuesModule.useInitialValues>),
+      )
       render(<ClientForm />, { wrapper: createWrapper })
     })
 

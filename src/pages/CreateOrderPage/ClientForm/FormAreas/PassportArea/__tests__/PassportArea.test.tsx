@@ -48,7 +48,7 @@ const mockedPassportAreaFields = {
   hasNameChanged: false,
   clientFormerName: '',
   numOfChildren: '',
-  familyStatus: '',
+  familyStatus: null,
   passport: '',
   birthDate: null,
   birthPlace: '',

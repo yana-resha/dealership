@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query'
 
-import { getVendorsList } from 'shared/api/requests/loanapplifecycledc'
+import { getVendorsList } from 'shared/api/requests/loanAppLifeCycleDc'
 
 export const useGetVendorsListQuery = () =>
   useQuery(['getVendorsList'], () => getVendorsList({}), {
