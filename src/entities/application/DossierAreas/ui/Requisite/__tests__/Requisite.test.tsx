@@ -30,7 +30,7 @@ describe('RequisiteTest', () => {
 
     it('Отображается "Страховая компания"', () => {
       expect(screen.getByText('Страховая компания')).toBeInTheDocument()
-      expect(screen.getByText('ОАО Рога и Копыта')).toBeInTheDocument()
+      expect(screen.getByText('РосГосСтрах')).toBeInTheDocument()
     })
 
     it('Отображается "Агент получатель"', () => {

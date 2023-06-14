@@ -76,7 +76,7 @@ export interface ClientDossier {
 export const mockRequisites = (): Requisites => ({
   dealerCenterRequisites: [
     {
-      legalEntityName: 'Anex',
+      legalEntityName: '2002703288',
       banks: [
         {
           bankName: 'Сбербанк',
@@ -303,7 +303,7 @@ const mockClientDossier: ClientDossier[] = [
     carBrand: 'KIA',
     carModel: 'RIO',
     creditSum: 2000000,
-    creditLegalEntity: 'Anex',
+    creditLegalEntity: '2002703288',
     creditReceiverBank: 'Сбербанк',
     creditBankAccountNumber: '40702810038000017240',
     monthlyPayment: 10400,
@@ -319,14 +319,14 @@ const mockClientDossier: ClientDossier[] = [
         productType: 'Название продукта',
         legalPerson: '',
         provider: 'РосГосСтрах',
-        agent: 'Имя агента',
+        agent: 'Почта Банк',
         productCost: 400000,
         loanTerm: 24,
         bankIdentificationCode: '',
         documentId: '6566644-33',
-        beneficiaryBank: 'ФК Открытие',
-        correspondentAccount: '40702810038000017240',
-        bankAccountNumber: '40702810038000017240',
+        beneficiaryBank: 'Альфабанк',
+        correspondentAccount: '40702810038000014263',
+        bankAccountNumber: '40702810038000014262',
         taxPresence: false,
         taxation: '0',
         isCredit: true,

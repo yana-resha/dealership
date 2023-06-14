@@ -22,9 +22,10 @@ const useStyles = makeStyles(theme => ({
 
 type Props = {
   nextStep: () => void
+  applicationId?: string
 }
 
-export function OrderSettings({ nextStep }: Props) {
+export function OrderSettings({ nextStep, applicationId }: Props) {
   const classes = useStyles()
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
   const [isOfferLoading, setIsOfferLoading] = useState(false)
@@ -71,6 +72,7 @@ export function OrderSettings({ nextStep }: Props) {
         isSubmitLoading={isOfferLoading}
         onSubmit={calculateCredit}
         onChangeForm={clearBankOfferList}
+        applicationId={applicationId}
       />
       {isError && (
         <Box className={classes.errorContainer}>

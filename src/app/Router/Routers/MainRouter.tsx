@@ -20,7 +20,6 @@ export function MainRouter(): JSX.Element {
         <Route path={appRoutePaths.dealership} element={<Navigate to={defaultRoute} replace />} />
         <Route path={appRoutePaths.orderList} element={<DealershipPage />} />
         <Route path={appRoutePaths.createOrder} element={<CreateOrderPage />} />
-        <Route path={appRoutePaths.fullOrderSettings} element={<FullOrderSettings />} />
       </Route>
     </Routes>
   )

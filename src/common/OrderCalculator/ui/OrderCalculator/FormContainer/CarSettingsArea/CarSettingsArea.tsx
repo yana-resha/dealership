@@ -15,12 +15,13 @@ import useStyles from './CarSettingsArea.styles'
 
 type Props = {
   onFilled: () => void
+  fetchProducts: () => void
 }
 
-export function CarSettingsArea({ onFilled }: Props) {
+export function CarSettingsArea({ onFilled, fetchProducts }: Props) {
   const classes = useStyles()
   const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
-  const { handleBtnClick } = useCarSettings(onFilled)
+  const { handleBtnClick } = useCarSettings(onFilled, fetchProducts)
 
   return (
     <CollapsibleFormAreaContainer title="Автомобиль">

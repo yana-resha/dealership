@@ -13,7 +13,7 @@ const CREDIT_PRODUCT_PARAMS_FIELDS = [
   FormFieldNameMap.carMileage,
 ]
 
-export function useCarSettings(onFilled: () => void) {
+export function useCarSettings(onFilled: () => void, fetchProducts: () => void) {
   const { errors, setFieldTouched } = useFormikContext()
 
   const [shouldChangeFillStatus, setShouldChangeFillStatus] = useState(false)
@@ -26,6 +26,7 @@ export function useCarSettings(onFilled: () => void) {
   const handleBtnClick = useCallback(() => {
     CREDIT_PRODUCT_PARAMS_FIELDS.forEach(f => setFieldTouched(f, true))
     setShouldChangeFillStatus(true)
+    fetchProducts()
   }, [setFieldTouched])
 
   useEffect(() => {

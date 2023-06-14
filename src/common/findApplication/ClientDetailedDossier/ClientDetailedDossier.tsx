@@ -27,7 +27,7 @@ type Props = {
 export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   const classes = useStyles()
   const { data: fullApplicationData } = useGetFullApplicationQuery(
-    { applicationId },
+    { applicationId: '111111' },
     { enabled: !!applicationId },
   )
   const [application, setApplication] = useState<ApplicationFrontdc | null>(null)

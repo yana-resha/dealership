@@ -18,11 +18,9 @@ import { configAddressInitialValues } from './config/clientFormInitialValues'
 import { addressTransformForForm } from './utils/addressTransformForRequest'
 import { makeClientForm } from './utils/makeClienForm'
 
-export function useInitialValues() {
+export function useInitialValues<D extends boolean | undefined>(applicationId?: string) {
   const initialValues = useAppSelector(state => makeClientForm(state.order.order))
 
-  // TODO DCB-363 | временное решение, удалить, когда будет принято решения по переходам
-  const applicationId = '545544'
   const { data: fullApplicationData, isLoading } = useGetFullApplicationQuery(
     { applicationId },
     { enabled: !!applicationId },

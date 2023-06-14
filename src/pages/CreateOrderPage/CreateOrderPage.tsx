@@ -5,10 +5,10 @@ import { Box, Step, StepIcon, StepLabel, Stepper, Typography } from '@mui/materi
 import { ClientDetailedDossier } from 'common/findApplication/ClientDetailedDossier/ClientDetailedDossier'
 import { SpecialMarkContextWrapper } from 'entities/SpecialMark'
 
+import { Calculator } from '../../common/OrderCalculator/ui/Calculator/Calculator'
 import { ClientForm } from './ClientForm'
 import { useStyles } from './CreateOrderPage.styles'
 import { OrderSearching } from './OrderSearching'
-import { OrderSettings } from './OrderSettings'
 
 enum StepKey {
   OrderSearchingForm = 'orderSearchingForm',
@@ -88,8 +88,10 @@ export function CreateOrderPage() {
             {currentStep.label === StepKey.OrderSearchingForm && (
               <OrderSearching nextStep={nextStep} onApplicationOpen={handleApplicationOpen} />
             )}
-            {currentStep.label === StepKey.OrderSettings && <OrderSettings nextStep={nextStep} />}
-            {currentStep.label === StepKey.ClientForm && <ClientForm />}
+            {currentStep.label === StepKey.OrderSettings && (
+              <Calculator applicationId="12345" nextStep={nextStep} />
+            )}
+            {currentStep.label === StepKey.ClientForm && <ClientForm applicationId="123456" />}
           </SpecialMarkContextWrapper>
         </Box>
       )}

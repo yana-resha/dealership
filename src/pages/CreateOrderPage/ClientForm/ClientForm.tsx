@@ -12,9 +12,13 @@ import { FormContainer } from './FormContainer'
 import { useGetDraftApplicationData } from './hooks/useGetDraftApplicationData'
 import { useInitialValues } from './useInitialValues'
 
-export function ClientForm() {
+type Props = {
+  applicationId?: string
+}
+
+export function ClientForm({ applicationId }: Props) {
   const classes = useStyles()
-  const { isShouldShowLoading, initialValues } = useInitialValues()
+  const { isShouldShowLoading, initialValues } = useInitialValues(applicationId)
   const { mutate: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation()
   const getDraftApplicationData = useGetDraftApplicationData()
   const disabledButtons = isDraftLoading

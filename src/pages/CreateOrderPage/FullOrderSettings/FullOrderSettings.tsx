@@ -10,7 +10,12 @@ import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api
 import { dataMock } from './__tests__/FullOrderSettings.test.mock'
 import { useStyles } from './FullOrderSettings.styles'
 
-export function FullOrderSettings() {
+type Props = {
+  nextStep: () => void
+  applicationId?: string
+}
+
+export function FullOrderSettings({ nextStep, applicationId }: Props) {
   const classes = useStyles()
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
   const [isOfferLoading, setIsOfferLoading] = useState(false)
@@ -55,13 +60,16 @@ export function FullOrderSettings() {
         isSubmitLoading={isOfferLoading}
         onSubmit={calculateCredit}
         onChangeForm={clearBankOfferList}
+        applicationId={applicationId}
       />
       {isError && (
         <Box className={classes.errorContainer}>
           <Typography>Произошла ошибка при загрузке данных. Попробуйте снова</Typography>
         </Box>
       )}
-      {!isError && bankOffers.length > 0 && <BankOffers data={dataMock} onRowClick={() => null} />}
+      {!isError && bankOffers.length > 0 && (
+        <BankOffers data={dataMock} onRowClick={nextStep} ref={bankOffersRef} />
+      )}
     </div>
   )
 }

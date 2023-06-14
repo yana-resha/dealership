@@ -108,7 +108,8 @@ export interface GetFullApplicationResponse extends Omit<GetFullApplicationRespo
 
 export const fullApplicationData: GetFullApplicationResponse = {
   application: {
-    status: 8,
+    status: StatusCode.INITIAL,
+    appType: 2,
     dcAppId: '544545',
     createdDate: '2023-06-08T07:44:00.355Z',
     applicant: {
@@ -290,7 +291,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
         {
           type: 2,
           name: 'Ароматная елочка',
-          vendor: 'ОАО Рога и Копыта',
+          vendor: 'Arex',
           broker: '343432323',
           inCreditFlag: true,
           inServicePackageFlag: false,
@@ -339,7 +340,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
         {
           type: 1,
           name: 'ОСАГО',
-          vendor: 'ОАО Рога и Копыта',
+          vendor: 'РосГосСтрах',
           broker: '043432323',
           inCreditFlag: true,
           inServicePackageFlag: false,
@@ -398,14 +399,14 @@ export const fullApplicationData: GetFullApplicationResponse = {
       address: 'Г Счастья ул радости дом 7',
       vendorBankDetails: {
         idAccount: 'fn39h4f93fuj340fj30j',
-        accountNumber: '12345678901234567890',
+        accountNumber: '40702810038000017240',
         accountCorrNumber: '12345678901234567890',
         tax: 11.1,
         inn: '12345678901',
         kpp: '12345678',
         ogrn: '1234567890123456789011',
         bic: '12345678',
-        bank: 'Росбанк',
+        bank: 'Сбербанк',
       },
     },
     specialMark: 'Находится в нетрезвом состоянии',

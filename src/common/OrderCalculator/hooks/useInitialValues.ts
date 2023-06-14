@@ -12,11 +12,10 @@ import { FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } fr
 type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : OrderCalculatorFields
 export function useInitialValues<D extends boolean | undefined>(
   initialData: CalculatorFields<D>,
+  applicationId?: string,
   isFullCalculator?: D,
 ) {
   const { vendorCode } = getPointOfSaleFromCookies()
-  // TODO DCB-363 | временное решение, удалить, когда будет принято решения по переходам
-  const applicationId = '545544'
   const { data: fullApplicationData, isLoading } = useGetFullApplicationQuery(
     { applicationId },
     { enabled: !!applicationId },
