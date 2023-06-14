@@ -45,14 +45,16 @@ export const addressTransformForRequest = (address: Address): AddressFrontdc => 
 
 export const addressTransformForForm = (address: AddressFrontdc, initialValuesMap?: Address): Address => ({
   region: address.region ?? initialValuesMap?.region ?? '',
-  district: address.area ?? initialValuesMap?.district ?? '',
+  area: address.area ?? initialValuesMap?.area ?? '',
+  areaType: address.areaType ?? initialValuesMap?.areaType ?? '',
   city: address.city ?? initialValuesMap?.city ?? '',
-  townType: address.settlementType ?? initialValuesMap?.townType ?? '',
-  town: address.settlement ?? initialValuesMap?.town ?? '',
+  cityType: address.cityType ?? initialValuesMap?.cityType ?? '',
+  settlementType: address.settlementType ?? initialValuesMap?.settlementType ?? '',
+  settlement: address.settlement ?? initialValuesMap?.settlement ?? '',
   streetType: address.streetType ?? initialValuesMap?.streetType ?? '',
   street: address.street ?? initialValuesMap?.street ?? '',
   house: address.house ?? initialValuesMap?.house ?? '',
-  building: address.unit ?? initialValuesMap?.building ?? '',
-  block: address.houseExt ?? initialValuesMap?.block ?? '',
-  flat: address.unitNum ?? initialValuesMap?.flat ?? '',
+  unit: address.unit ?? initialValuesMap?.unit ?? '',
+  houseExt: address.houseExt ?? initialValuesMap?.houseExt ?? '',
+  unitNum: address.unitNum ?? initialValuesMap?.unitNum ?? '',
 })
