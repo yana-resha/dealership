@@ -1,10 +1,13 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import { Box, CircularProgress } from '@mui/material'
 import { Formik, FormikProps } from 'formik'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useSaveDraftApplicationMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 
+import { appRoutePaths } from '../../../shared/navigation/routerPath'
+import { CreateOrderPageState } from '../CreateOrderPage'
 import { useStyles } from './ClientForm.styles'
 import { ClientData, SubmitAction } from './ClientForm.types'
 import { clientFormValidationSchema } from './config/clientFormValidation'
@@ -12,14 +15,15 @@ import { FormContainer } from './FormContainer'
 import { useGetDraftApplicationData } from './hooks/useGetDraftApplicationData'
 import { useInitialValues } from './useInitialValues'
 
-type Props = {
-  applicationId?: string
-}
-
-export function ClientForm({ applicationId }: Props) {
+export function ClientForm() {
   const classes = useStyles()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const state = location.state as CreateOrderPageState
+  const applicationId = state ? state.applicationId : undefined
+  const saveDraftDisabled = state && state.saveDraftDisabled != undefined ? state.saveDraftDisabled : false
   const { isShouldShowLoading, initialValues } = useInitialValues(applicationId)
-  const { mutate: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation()
+  const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation()
   const getDraftApplicationData = useGetDraftApplicationData()
   const disabledButtons = isDraftLoading
 
@@ -32,11 +36,17 @@ export function ClientForm({ applicationId }: Props) {
     if (!values.hasNameChanged) {
       values.clientFormerName = ''
     }
+
+    console.log('ClientForm.onSubmit values:', values)
+    console.log('Send to score')
   }, [])
 
   const saveApplicationDraft = useCallback(
     (values: ClientData) => {
-      saveDraft(getDraftApplicationData(values))
+      console.log('ClientForm.saveApplicationDraft values:', values)
+      saveDraft(getDraftApplicationData(values)).then(() =>
+        navigate(appRoutePaths.orderList, { state: { applicationId: applicationId } }),
+      )
     },
     [saveDraft, getDraftApplicationData],
   )

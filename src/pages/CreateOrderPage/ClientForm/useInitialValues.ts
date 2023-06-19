@@ -20,7 +20,6 @@ import { makeClientForm } from './utils/makeClienForm'
 
 export function useInitialValues<D extends boolean | undefined>(applicationId?: string) {
   const initialValues = useAppSelector(state => makeClientForm(state.order.order))
-
   const { data: fullApplicationData, isLoading } = useGetFullApplicationQuery(
     { applicationId },
     { enabled: !!applicationId },
@@ -176,7 +175,7 @@ export function useInitialValues<D extends boolean | undefined>(applicationId?: 
             email: applicant?.email ?? initialValues.email,
             averageIncome: `${applicant?.income?.basicIncome ?? initialValues.averageIncome}`,
             additionalIncome: `${applicant?.income?.addIncome ?? initialValues.additionalIncome}`,
-            incomeConfirmation: !!(applicant?.income?.incomeDocumentType ?? initialValues.incomeConfirmation),
+            incomeConfirmation: !!(applicant?.income?.incomeVerify ?? initialValues.incomeConfirmation),
             familyIncome: `${applicant?.income?.familyIncome ?? initialValues.familyIncome}`,
             expenses: `${applicant?.income?.expenses ?? initialValues.expenses}`,
             relatedToPublic: relatedToPublic,

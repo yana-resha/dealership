@@ -54,7 +54,7 @@ export const EXPECTED_DATA = {
   email: 'mail@mail.ru',
   averageIncome: '1000.45',
   additionalIncome: '1000.47',
-  incomeConfirmation: true,
+  incomeConfirmation: false,
   familyIncome: '44000.82',
   expenses: '12005.2',
   relatedToPublic: 1,

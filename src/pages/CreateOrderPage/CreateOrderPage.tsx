@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { Box, Step, StepIcon, StepLabel, Stepper, Typography } from '@mui/material'
+import { useLocation } from 'react-router-dom'
 
 import { ClientDetailedDossier } from 'common/findApplication/ClientDetailedDossier/ClientDetailedDossier'
 import { SpecialMarkContextWrapper } from 'entities/SpecialMark'
@@ -34,18 +35,30 @@ const steps = [
   },
 ]
 
+export interface CreateOrderPageState {
+  isFullCalculator: boolean
+  applicationId?: string
+  saveDraftDisabled?: boolean
+}
+
 export function CreateOrderPage() {
   const classes = useStyles()
-
-  const [currentStepIdx, setCurrentStepIdx] = useState(2)
-  const currentStep = useMemo(() => steps[currentStepIdx], [currentStepIdx])
+  const location = useLocation()
+  const state = location.state as CreateOrderPageState
+  const applicationId = state ? state.applicationId : undefined
+  const isFullCalculator = state ? state.isFullCalculator : false
+  const saveDraftDisabled = state && state.saveDraftDisabled != undefined ? state.saveDraftDisabled : false
+  const [currentStepIdx, setCurrentStepIdx] = useState(0)
+  const applicationSteps = state ? steps.slice(1) : steps
+  const currentStep = useMemo(() => applicationSteps[currentStepIdx], [currentStepIdx, applicationSteps])
 
   const handleStepChange = useCallback(
     (stepIdx: number) => () => setCurrentStepIdx(prevIdx => (prevIdx > stepIdx ? stepIdx : prevIdx)),
     [],
   )
   const nextStep = useCallback(
-    () => setCurrentStepIdx(prevIdx => (currentStepIdx < steps.length - 1 ? prevIdx + 1 : prevIdx)),
+    () =>
+      setCurrentStepIdx(prevIdx => (currentStepIdx < applicationSteps.length - 1 ? prevIdx + 1 : prevIdx)),
     [currentStepIdx],
   )
 
@@ -66,7 +79,7 @@ export function CreateOrderPage() {
           <Typography className={classes.pageTitle}>{currentStep.pageTitle}</Typography>
 
           <Stepper activeStep={currentStepIdx} className={classes.stepContainer}>
-            {steps.map((step, idx) => (
+            {applicationSteps.map((step, idx) => (
               <Step key={step.label} className={classes.step} onClick={handleStepChange(idx)}>
                 <StepLabel
                   StepIconComponent={props => (
@@ -88,10 +101,8 @@ export function CreateOrderPage() {
             {currentStep.label === StepKey.OrderSearchingForm && (
               <OrderSearching nextStep={nextStep} onApplicationOpen={handleApplicationOpen} />
             )}
-            {currentStep.label === StepKey.OrderSettings && (
-              <Calculator applicationId="12345" nextStep={nextStep} />
-            )}
-            {currentStep.label === StepKey.ClientForm && <ClientForm applicationId="123456" />}
+            {currentStep.label === StepKey.OrderSettings && <Calculator nextStep={nextStep} />}
+            {currentStep.label === StepKey.ClientForm && <ClientForm />}
           </SpecialMarkContextWrapper>
         </Box>
       )}

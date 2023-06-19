@@ -108,7 +108,7 @@ export interface GetFullApplicationResponse extends Omit<GetFullApplicationRespo
 
 export const fullApplicationData: GetFullApplicationResponse = {
   application: {
-    status: StatusCode.INITIAL,
+    status: StatusCode.FINALLY_APPROVED,
     appType: 2,
     dcAppId: '544545',
     createdDate: '2023-06-08T07:44:00.355Z',
@@ -243,8 +243,8 @@ export const fullApplicationData: GetFullApplicationResponse = {
       isCarNew: true,
       autoCreateYear: 2021,
       mileage: '9',
-      brand: 'BMW',
-      model: '1 series',
+      brand: 'Skoda',
+      model: 'Octavia',
       autoPrice: 1345333.54,
       // vinNumber: '12341234123412341',
       carBody: '12341234123412341', // номер кузова

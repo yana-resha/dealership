@@ -1,8 +1,9 @@
 import { PropsWithChildren } from 'react'
 
-import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { BrowserRouter } from 'react-router-dom'
 
 import { ApplicationFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock } from 'tests/mocks'
@@ -17,6 +18,9 @@ const mockedAgreementDocs = [
     type: 'application/pdf',
   }),
 ]
+const mockedVendor: Vendor = {
+  vendorCode: '2002703288',
+}
 
 jest.mock('shared/ui/ProgressBar/ProgressBar', () => ({
   ProgressBar: () => <div data-testid="progressBar" />,
@@ -31,12 +35,19 @@ jest.mock('../../../__tests__/mocks/clientDetailedDossier.mock', () => ({
   ...jest.requireActual('../../../__tests__/mocks/clientDetailedDossier.mock'),
   getMockAgreement: async () => mockedAgreementDocs,
 }))
+jest.mock('../../../../../pointOfSale', () => ({
+  getPointOfSaleFromCookies: () => mockedVendor,
+}))
 window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
 const mockUpdateStatus = jest.fn()
 const mockSetAgreementDocs = jest.fn()
 
-const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
+const createWrapper = ({ children }: PropsWithChildren) => (
+  <ThemeProviderMock>
+    <BrowserRouter>{children}</BrowserRouter>
+  </ThemeProviderMock>
+)
 
 describe('AgreementAreaTest', () => {
   describe('На каждом шаге отображаются все элементы', () => {

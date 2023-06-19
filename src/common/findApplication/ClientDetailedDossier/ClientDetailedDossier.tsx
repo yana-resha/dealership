@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box, CircularProgress } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
@@ -26,8 +26,9 @@ type Props = {
 
 export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   const classes = useStyles()
-  const { data: fullApplicationData } = useGetFullApplicationQuery(
-    { applicationId: '111111' },
+  const [fullApplicationId, setFullApplicationId] = useState(applicationId)
+  const { data: fullApplicationData, refetch } = useGetFullApplicationQuery(
+    { applicationId: '12345' },
     { enabled: !!applicationId },
   )
   const [application, setApplication] = useState<ApplicationFrontdc | null>(null)
@@ -37,10 +38,14 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   const [isEditRequisitesMode, setIsEditRequisitesMode] = useState(false)
 
   useEffect(() => {
-    if (!application && !!fullApplicationData?.application) {
+    refetch()
+  }, [fullApplicationId, refetch])
+
+  useEffect(() => {
+    if (fullApplicationData?.application) {
       setApplication(fullApplicationData.application as ApplicationFrontdc)
     }
-  }, [application, fullApplicationData])
+  }, [fullApplicationData])
 
   useEffect(() => {
     const fetchQuestionnaire = async () => {
@@ -104,6 +109,10 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
     ],
   )
 
+  const goToNewApplication = useCallback((newApplicationId: string) => {
+    setFullApplicationId(newApplicationId)
+  }, [])
+
   return (
     <Box className={classes.container}>
       {!application ? (
@@ -130,6 +139,7 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
             />
             <ActionArea
               application={application}
+              goToNewApplication={goToNewApplication}
               status={application.status}
               updateStatus={updateStatus}
               fileQuestionnaire={fileQuestionnaire}

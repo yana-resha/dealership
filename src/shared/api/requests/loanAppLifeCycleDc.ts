@@ -43,9 +43,6 @@ export const getVendorsList = (params: GetVendorsListRequest) =>
 export const saveLoanApplicationDraft = (params: SaveLoanApplicationDraftRequest) =>
   loanAppLifeCycleDcApi.saveLoanApplicationDraft({ data: params }).then(response => response.data ?? {})
 
-export const useCheckIfSberClientMutation = () =>
-  useMutation(['checkIfSberClient'], (params: IsClientRequest) => checkIfSberClient(params))
-
 export const useSaveDraftApplicationMutation = () =>
   useMutation(['saveLoanApplicationDraft'], (params: ApplicationFrontdc) =>
     saveLoanApplicationDraft({ application: params }),
@@ -75,7 +72,7 @@ export const useGetFullApplicationQuery = (
   params: GetFullApplicationRequest,
   options?: UseQueryOptions<GetFullApplicationResponse, unknown, GetFullApplicationResponse, string[]>,
 ) =>
-  useQuery(['getFullApplication'], () => getFullApplication(params), {
+  useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
     retry: false,
     ...options,
   })

@@ -1,7 +1,7 @@
 export const EXPECTED_FULL_DATA = {
   carCondition: 1,
-  carBrand: 'BMW',
-  carModel: '1 series',
+  carBrand: 'Skoda',
+  carModel: 'Octavia',
   carYear: 2021,
   carCost: '1345333.54',
   carMileage: '9',

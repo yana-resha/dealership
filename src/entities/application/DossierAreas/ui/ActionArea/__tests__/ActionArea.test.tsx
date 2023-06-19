@@ -1,16 +1,26 @@
 import { PropsWithChildren } from 'react'
 
-import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom'
+import { MockStore } from 'redux-mock-store'
 
 import { ApplicationFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
-import { ThemeProviderMock } from 'tests/mocks'
+import { ThemeProviderMock, StoreProviderMock } from 'tests/mocks'
 
 import { ActionArea } from '../ActionArea'
+
+interface WrapperProps extends PropsWithChildren {
+  store?: MockStore
+}
 
 const mockedFileQuestionnaire = new File(['anketa'], 'anketa.png', {
   type: 'image/png',
 })
+
+const mockedVendor: Vendor = {
+  vendorCode: '2002703288',
+}
 
 jest.mock('entities/application/DossierAreas/ui/AgreementArea/AgreementArea', () => ({
   AgreementArea: () => <div data-testid="agreementArea" />,
@@ -18,8 +28,17 @@ jest.mock('entities/application/DossierAreas/ui/AgreementArea/AgreementArea', ()
 jest.mock('shared/ui/ProgressBar/ProgressBar', () => ({
   ProgressBar: () => <div data-testid="progressBar" />,
 }))
+jest.mock('../../../../../pointOfSale', () => ({
+  getPointOfSaleFromCookies: () => mockedVendor,
+}))
 
-const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
+const createWrapper = ({ store, children }: WrapperProps) => (
+  <StoreProviderMock mockStore={store}>
+    <ThemeProviderMock>
+      <BrowserRouter>{children}</BrowserRouter>
+    </ThemeProviderMock>
+  </StoreProviderMock>
+)
 
 describe('ActionAreaTest', () => {
   describe('Отображаются все элементы для каждого статуса', () => {
@@ -27,6 +46,7 @@ describe('ActionAreaTest', () => {
       render(
         <ActionArea
           status={StatusCode.INITIAL}
+          goToNewApplication={jest.fn}
           application={fullApplicationData.application as ApplicationFrontdc}
           fileQuestionnaire={undefined}
           updateStatus={jest.fn}
@@ -46,7 +66,8 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.INITIAL}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            goToNewApplication={jest.fn}
+            application={{ ...fullApplicationData.application, appType: 1 } as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -65,7 +86,8 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.INITIAL}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            goToNewApplication={jest.fn}
+            application={{ ...fullApplicationData.application, appType: 1 } as ApplicationFrontdc}
             fileQuestionnaire={mockedFileQuestionnaire}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -87,6 +109,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.APPROVED}
+            goToNewApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
@@ -109,6 +132,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.FINALLY_APPROVED}
+            goToNewApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
@@ -130,6 +154,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.FORMATION}
+            goToNewApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
@@ -151,6 +176,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.CANCELED_DEAL}
+            goToNewApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
@@ -172,6 +198,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.CANCELED}
+            goToNewApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
@@ -193,6 +220,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.FINALLY_APPROVED}
+            goToNewApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
@@ -214,6 +242,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.ERROR}
+            goToNewApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
