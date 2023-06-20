@@ -1,7 +1,6 @@
+import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import * as Yup from 'yup'
 import { AnyObject } from 'yup/lib/types'
-
-import { Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 
 import { SubmitAction } from '../ClientForm.types'
 
@@ -135,7 +134,7 @@ export const clientFormValidationSchema = Yup.object().shape({
   }),
   mobileNumber: Yup.string().required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
   additionalNumber: Yup.string().when('occupation', {
-    is: Occupation.WithoutWork,
+    is: OccupationType.UNEMPLOYED,
     then: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
     otherwise: schema =>
       schema.test(
@@ -169,23 +168,23 @@ export const clientFormValidationSchema = Yup.object().shape({
   employmentDate: Yup.date()
     .nullable()
     .when('occupation', {
-      is: Occupation.WithoutWork,
+      is: OccupationType.UNEMPLOYED,
       otherwise: schema => setRequiredIfSave(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
     }),
   employerName: Yup.string().when('occupation', {
-    is: Occupation.WithoutWork,
+    is: OccupationType.UNEMPLOYED,
     otherwise: schema => setRequiredIfSave(schema),
   }),
   employerPhone: Yup.string().when('occupation', {
-    is: Occupation.WithoutWork,
+    is: OccupationType.UNEMPLOYED,
     otherwise: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
   }),
   employerAddressString: Yup.string().when('occupation', {
-    is: Occupation.WithoutWork,
+    is: OccupationType.UNEMPLOYED,
     otherwise: schema => setRequiredIfSave(schema),
   }),
   employerInn: Yup.string().when('occupation', {
-    is: Occupation.WithoutWork,
+    is: OccupationType.UNEMPLOYED,
     otherwise: schema => setRequiredIfSave(schema),
   }),
   questionnaireFile: setRequiredIfSave(Yup.string().nullable(), 'Необходимо загрузить анкету'),

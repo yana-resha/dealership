@@ -4,7 +4,7 @@ import { Box, Button, Divider } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
-import { ApplicationFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
@@ -21,7 +21,7 @@ import { useStyles } from './AgreementArea.styles'
 
 type Props = {
   status: StatusCode
-  application: ApplicationFrontdc
+  application: ApplicationFrontDc
   updateStatus: (statusCode: StatusCode) => void
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void

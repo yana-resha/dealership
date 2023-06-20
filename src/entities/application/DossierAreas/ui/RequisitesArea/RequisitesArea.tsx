@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box, Divider } from '@mui/material'
+import { BankOptionType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { AdditionalOptionsType } from 'entities/application/constants'
 import { Requisite } from 'entities/application/DossierAreas/ui'
-import { AdditionalOptionFrontdc, ApplicationFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { AdditionalOptionFrontdc, ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
@@ -12,7 +13,7 @@ import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { useStyles } from './RequisitesArea.styles'
 
 type Props = {
-  application: ApplicationFrontdc
+  application: ApplicationFrontDc
   setFinancingEnabled: (value: boolean) => void
   changeRequisites: (value: boolean) => void
 }
@@ -25,13 +26,13 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
       (application.loanData?.additionalOptions || []).reduce(
         (acc, cur) => {
           switch (cur.bankOptionType) {
-            case AdditionalOptionsType.BankServices:
+            case BankOptionType.BANKSERVICES:
               acc.bankServices.push(cur)
               break
-            case AdditionalOptionsType.Equipments:
+            case BankOptionType.EQUIPMENTS:
               acc.additionalEquipment.push(cur)
               break
-            case AdditionalOptionsType.DealerServices:
+            case BankOptionType.DEALERSERVICES:
               acc.dealerServices.push(cur)
               break
           }
@@ -101,7 +102,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
         </Box>
         <Box className={classes.requisiteInfo}>
           <InfoText label="Юридическое лицо">{application.vendor?.vendorName || ''}</InfoText>
-          <InfoText label="Сумма кредита">{application?.loanData?.creditAmount || ''} руб.</InfoText>
+          <InfoText label="Сумма кредита">{application?.loanData?.amount || ''} руб.</InfoText>
           <InfoText label="Банк получатель">{application.vendor?.vendorBankDetails?.bank || ''}</InfoText>
           <InfoText label="Номер счета банка">
             {application.vendor?.vendorBankDetails?.accountNumber || ''}

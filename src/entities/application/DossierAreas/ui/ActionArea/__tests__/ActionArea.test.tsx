@@ -1,11 +1,12 @@
 import { PropsWithChildren } from 'react'
 
-import { StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { ApplicationFrontdc, StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter } from 'react-router-dom'
 import { MockStore } from 'redux-mock-store'
 
-import { ApplicationFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicationFrontDc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock, StoreProviderMock } from 'tests/mocks'
 
 import { ActionArea } from '../ActionArea'
@@ -31,12 +32,21 @@ jest.mock('shared/ui/ProgressBar/ProgressBar', () => ({
 jest.mock('../../../../../pointOfSale', () => ({
   getPointOfSaleFromCookies: () => mockedVendor,
 }))
+jest.mock('notistack', () => ({
+  ...jest.requireActual('notistack'),
+  useSnackbar: () => ({
+    enqueueSnackbar: jest.fn(),
+  }),
+}))
+const queryClient = new QueryClient()
 
 const createWrapper = ({ store, children }: WrapperProps) => (
   <StoreProviderMock mockStore={store}>
-    <ThemeProviderMock>
-      <BrowserRouter>{children}</BrowserRouter>
-    </ThemeProviderMock>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProviderMock>
+        <BrowserRouter>{children}</BrowserRouter>
+      </ThemeProviderMock>
+    </QueryClientProvider>
   </StoreProviderMock>
 )
 
@@ -47,7 +57,11 @@ describe('ActionAreaTest', () => {
         <ActionArea
           status={StatusCode.INITIAL}
           goToNewApplication={jest.fn}
-          application={fullApplicationData.application as ApplicationFrontdc}
+          application={fullApplicationData.application as ApplicationFrontDc}
+          moratoryEndDate="1970-01-01"
+          targetDcAppId={undefined}
+          applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+          returnToList={jest.fn}
           fileQuestionnaire={undefined}
           updateStatus={jest.fn}
           agreementDocs={[]}
@@ -67,7 +81,11 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.INITIAL}
             goToNewApplication={jest.fn}
-            application={{ ...fullApplicationData.application, appType: 1 } as ApplicationFrontdc}
+            application={{ ...fullApplicationData.application, anketaType: 1 } as ApplicationFrontDc}
+            moratoryEndDate="1970-01-01"
+            targetDcAppId={undefined}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -87,7 +105,11 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.INITIAL}
             goToNewApplication={jest.fn}
-            application={{ ...fullApplicationData.application, appType: 1 } as ApplicationFrontdc}
+            application={{ ...fullApplicationData.application, anketaType: 1 } as ApplicationFrontDc}
+            moratoryEndDate="1970-01-01"
+            targetDcAppId={undefined}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={mockedFileQuestionnaire}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -110,7 +132,9 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.APPROVED}
             goToNewApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -133,7 +157,9 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.FINALLY_APPROVED}
             goToNewApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -155,7 +181,9 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.FORMATION}
             goToNewApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -177,7 +205,9 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.CANCELED_DEAL}
             goToNewApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -199,7 +229,9 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.CANCELED}
             goToNewApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -221,7 +253,9 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.FINALLY_APPROVED}
             goToNewApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}
@@ -243,7 +277,9 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.ERROR}
             goToNewApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
             fileQuestionnaire={undefined}
             updateStatus={jest.fn}
             agreementDocs={[]}

@@ -1,4 +1,6 @@
-import { ApplicantDocsType, MaritalStatus, Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicantDocsType, OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
+
+import { MaritalStatus } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 
 import { Address, ClientData, SubmitAction } from '../ClientForm.types'
 
@@ -76,24 +78,30 @@ export const FAMILY_STATUS_VALUES = [
 ]
 
 export const OCCUPATION_VALUES = [
-  { label: 'Работает/Служит по временному контракту', value: Occupation.TemporaryContract },
-  { label: 'Работает/Служит по постоянному контракту', value: Occupation.PermanentContract },
-  { label: 'Частная практика', value: Occupation.PrivatePractice },
-  { label: 'Индивидуальный предприниматель', value: Occupation.IndividualEntrepreneur },
-  { label: 'Агент на комиссионном договоре', value: Occupation.CommissionAgent },
-  { label: 'Пенсионер', value: Occupation.Pensioner },
-  { label: 'Исполнитель по гражданско-правовому договору', value: Occupation.LawContractExecutor },
-  { label: 'Не работает', value: Occupation.WithoutWork },
-  { label: 'Самозанятый', value: Occupation.SelfEmployed },
+  { label: 'Работает/Служит по временному контракту', value: OccupationType.WORKING_ON_A_TEMPORARY_CONTRACT },
+  {
+    label: 'Работает/Служит по постоянному контракту',
+    value: OccupationType.WORKING_ON_A_PERMANENT_CONTRACT,
+  },
+  { label: 'Частная практика', value: OccupationType.PRIVATE_PRACTICE },
+  { label: 'Индивидуальный предприниматель', value: OccupationType.INDIVIDUAL_ENTREPRENEUR },
+  { label: 'Агент на комиссионном договоре', value: OccupationType.AGENT_ON_COMMISSION_CONTRACT },
+  { label: 'Пенсионер', value: OccupationType.PENSIONER },
+  {
+    label: 'Исполнитель по гражданско-правовому договору',
+    value: OccupationType.CONTRACTOR_UNDER_CIVIL_LAW_CONTRACT,
+  },
+  { label: 'Не работает', value: OccupationType.UNEMPLOYED },
+  { label: 'Самозанятый', value: OccupationType.SELF_EMPLOYED },
 ]
 
 export const DOCUMENT_TYPE_VALUES = [
   {
     label: 'Заграничный паспорт (для граждан РФ для выезда за рубеж)',
-    value: ApplicantDocsType.InternationalPassportForRFCitizens,
+    value: ApplicantDocsType.INTERNATIONALPASSPORTFORRFCITIZENS,
   },
-  { label: 'Водительское удостоверение', value: ApplicantDocsType.DriverLicense },
-  { label: 'Страховое свидетельство пенсионного страхования', value: ApplicantDocsType.PensionCertificate },
+  { label: 'Водительское удостоверение', value: ApplicantDocsType.DRIVERLICENSE },
+  { label: 'Страховое свидетельство пенсионного страхования', value: ApplicantDocsType.PENSIONCERTIFICATE },
   // { label: 'Международный паспорт (для не граждан РФ)', value: ApplicantDocsType.InternationalPassport },
   // { label: 'Военный билет', value: ApplicantDocsType.MilitaryID },
   // { label: 'Удостоверение офицера', value: ApplicantDocsType.OfficerID },

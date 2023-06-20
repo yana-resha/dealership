@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
+import { BankOptionType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { AdditionalOptionsType } from 'entities/application/constants'
 import { AdditionalOptionFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 
@@ -15,7 +15,7 @@ export function Requisite({ additionalOption }: Props) {
   const { bankOptionType, name, vendor, broker, price, term, docNumber, brokerAccount, vendorAccount } =
     additionalOption
 
-  const label = bankOptionType === AdditionalOptionsType.Equipments ? 'Тип доп. оборудования' : 'Тип продукта'
+  const label = bankOptionType === BankOptionType.EQUIPMENTS ? 'Тип доп. оборудования' : 'Тип продукта'
   const beneficiaryBank = broker ? brokerAccount?.bank : vendorAccount?.bank
   const correspondentAccount = broker ? brokerAccount?.accountCorrNumber : vendorAccount?.accountCorrNumber
   const bankAccountNumber = broker ? brokerAccount?.accountNumber : vendorAccount?.accountNumber

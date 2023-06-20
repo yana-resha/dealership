@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box, CircularProgress } from '@mui/material'
-import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import {
+  ApplicantDocsType,
+  ApplicationFrontdc,
+  SendApplicationToScoringRequest,
+  StatusCode,
+} from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
 
 import { getMockQuestionnaire } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
@@ -13,7 +18,7 @@ import {
   InformationArea,
 } from 'entities/application/DossierAreas/ui'
 import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
-import { ApplicantDocsType, ApplicationFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName } from 'shared/utils/clientNameTransform'
 
@@ -28,11 +33,12 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   const classes = useStyles()
   const [fullApplicationId, setFullApplicationId] = useState(applicationId)
   const { data: fullApplicationData, refetch } = useGetFullApplicationQuery(
-    { applicationId: '12345' },
+    { applicationId: fullApplicationId },
     { enabled: !!applicationId },
   )
-  const [application, setApplication] = useState<ApplicationFrontdc | null>(null)
-
+  const [application, setApplication] = useState<ApplicationFrontDc | null>(null)
+  //TODO: Убрать мок после появления поля unit в Vendor
+  const unit = 'currentUnit'
   const [fileQuestionnaire, setFileQuestionnaire] = useState<File>()
   const [agreementDocs, setAgreementDocs] = useState<(File | undefined)[]>([])
   const [isEditRequisitesMode, setIsEditRequisitesMode] = useState(false)
@@ -43,7 +49,7 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
 
   useEffect(() => {
     if (fullApplicationData?.application) {
-      setApplication(fullApplicationData.application as ApplicationFrontdc)
+      setApplication(fullApplicationData.application as ApplicationFrontDc)
     }
   }, [fullApplicationData])
 
@@ -70,9 +76,22 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
     application?.applicant?.middleName,
   )
 
+  const prepareApplicationForScore = useCallback(() => {
+    const request: SendApplicationToScoringRequest = {
+      application: fullApplicationData
+        ? ({
+            ...fullApplicationData.application,
+            unit: unit,
+          } as ApplicationFrontdc)
+        : null,
+    }
+
+    return request
+  }, [fullApplicationData])
+
   const passport = useMemo(() => {
     const { series, number } =
-      application?.applicant?.documents?.find(d => d.type === ApplicantDocsType.Passport) || {}
+      application?.applicant?.documents?.find(d => d.type === ApplicantDocsType.PASSPORT) || {}
 
     return formatPassport(series, number)
   }, [application?.applicant?.documents])
@@ -84,7 +103,7 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
       vendorInfo: compact([application?.vendor?.vendorName, application?.vendor?.address]).join(', '),
       carBrand: application?.loanCar?.brand || '',
       carModel: application?.loanCar?.model || '',
-      creditAmount: application?.loanData?.creditAmount,
+      creditAmount: application?.loanData?.amount,
       monthlyPayment: application?.loanData?.monthlyPayment,
       downPayment: application?.loanData?.downPayment,
       rate: application?.loanData?.productRates?.baseRate,
@@ -99,7 +118,7 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
       application?.vendor?.address,
       application?.loanCar?.brand,
       application?.loanCar?.model,
-      application?.loanData?.creditAmount,
+      application?.loanData?.amount,
       application?.loanData?.monthlyPayment,
       application?.loanData?.downPayment,
       application?.loanData?.productRates?.baseRate,
@@ -126,7 +145,11 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
             clientName={clientName}
             passport={passport}
             onBackButton={onBackButton}
-            status={application.status}
+            status={
+              application.status || application.status === StatusCode.INITIAL
+                ? application.status
+                : StatusCode.ERROR
+            }
           />
           <Box className={classes.dossierContainer}>
             <InformationArea {...appInfo} />
@@ -135,12 +158,24 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
               setQuestionnaire={setFileQuestionnaire}
               agreementDocs={agreementDocs}
               setAgreementDocs={setAgreementDocs}
-              status={application?.status}
+              status={
+                application.status || application.status === StatusCode.INITIAL
+                  ? application.status
+                  : StatusCode.ERROR
+              }
             />
             <ActionArea
               application={application}
+              moratoryEndDate={fullApplicationData?.moratoryEndDate}
+              targetDcAppId={fullApplicationData?.targetDcAppId}
+              applicationForScore={prepareApplicationForScore()}
+              returnToList={onBackButton}
               goToNewApplication={goToNewApplication}
-              status={application.status}
+              status={
+                application.status || application.status === StatusCode.INITIAL
+                  ? application.status
+                  : StatusCode.ERROR
+              }
               updateStatus={updateStatus}
               fileQuestionnaire={fileQuestionnaire}
               agreementDocs={agreementDocs}

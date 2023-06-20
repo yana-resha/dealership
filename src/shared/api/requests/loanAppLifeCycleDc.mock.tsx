@@ -1,58 +1,15 @@
 import {
-  ApplicationFrontdc as ApplicationFrontdcProto,
+  AdditionalOptionFrontdc as AdditionalOptionFrontdcProto,
+  ApplicantDocsType,
   ApplicantFrontdc as ApplicantFrontdcProto,
+  ApplicationFrontdc as ApplicationFrontdcProto,
   GetFullApplicationResponse as GetFullApplicationResponseProto,
+  IncomeDocumentType,
   IncomeFrontdc as IncomeFrontdcProto,
   LoanDataFrontdc as LoanDataFrontdcProto,
-  AdditionalOptionFrontdc as AdditionalOptionFrontdcProto,
+  PhoneType,
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
-
-//TODO перенести эти справочники в контракты DCB-390
-export enum ApplicantDocsType {
-  InternationalPassport = 2,
-  MilitaryID = 3,
-  OfficerID = 4,
-  SailorPassport = 5,
-  TemporaryCertificate2P = 7,
-  InternationalPassportForRFCitizens = 11,
-  BirthCertificate = 12,
-  DiplomaticPassport = 13,
-  USSRPassport = 14,
-  DriverLicense = 15,
-  ResidentCard = 17,
-  PensionCertificate = 18,
-  FederalEmployeeID = 19,
-  soldierID = 20,
-  Passport = 21,
-  IdentityServiceCard = 22,
-  StudentID = 23,
-}
-
-//TODO перенести эти справочники в контракты DCB-390
-export enum AddressType {
-  Permanent = 1,
-  Actual = 2,
-  Temporary = 3,
-  Workplace = 4,
-}
-
-//TODO перенести эти справочники в контракты DCB-390
-export enum PhoneType {
-  Mobile = 1,
-  PermanentHome = 2,
-  ActualHome = 3,
-  Work = 4,
-  Additional = 4,
-}
-
-//TODO перенести эти справочники в контракты DCB-390
-export enum IncomeDocumentType {
-  NDFL2 = 3,
-  TaxDeclaration = 4,
-  EmploymentHistory = 5,
-  FreeFormCertificate = 6,
-}
 
 //TODO перенести эти справочники в контракты DCB-390
 export enum MaritalStatus {
@@ -63,22 +20,7 @@ export enum MaritalStatus {
   CivilMarriage = 5,
 }
 
-//TODO перенести эти справочники в контракты DCB-390
-export enum Occupation {
-  TemporaryContract = 1,
-  PermanentContract = 2,
-  PrivatePractice = 3,
-  IndividualEntrepreneur = 4,
-  CommissionAgent = 5,
-  Pensioner = 6,
-  LawContractExecutor = 7,
-  WithoutWork = 8,
-  SelfEmployed = 9,
-}
-
-export interface IncomeFrontdc extends Omit<IncomeFrontdcProto, 'proofOfIncomePapersType'> {
-  incomeDocumentType?: number
-}
+export interface IncomeFrontdc extends Omit<IncomeFrontdcProto, 'proofOfIncomePapersType'> {}
 
 /* TODO Прослойка добалена, потому что сейчас в протосах ручки getFullApplication type: string,
 а должен быть number */
@@ -95,22 +37,24 @@ export interface LoanDataFrontdc extends Omit<LoanDataFrontdcProto, 'additionalO
   additionalOptions?: AdditionalOptionFrontdc[] | null
 }
 
-export interface ApplicationFrontdc extends Omit<ApplicationFrontdcProto, 'applicant' | 'loanData'> {
-  status: StatusCode
+export interface ApplicationFrontDc extends Omit<ApplicationFrontdcProto, 'applicant' | 'loanData'> {
   applicant?: ApplicantFrontdc | null
   loanData?: LoanDataFrontdc | null
-  createdDate?: string
 }
 
 export interface GetFullApplicationResponse extends Omit<GetFullApplicationResponseProto, 'application'> {
-  application?: ApplicationFrontdc | null
+  application?: ApplicationFrontDc | null
 }
 
 export const fullApplicationData: GetFullApplicationResponse = {
+  moratoryEndDate: '2023-06-21',
+  targetDcAppId: '2023062280224',
   application: {
-    status: StatusCode.FINALLY_APPROVED,
-    appType: 2,
+    status: StatusCode.INITIAL,
+    anketaType: 1,
+    appType: 'CARLOANAPPLICATIONDC',
     dcAppId: '544545',
+    unit: 'unit',
     createdDate: '2023-06-08T07:44:00.355Z',
     applicant: {
       type: 'MainDebitor',
@@ -149,13 +93,19 @@ export const fullApplicationData: GetFullApplicationResponse = {
       ],
       phones: [
         {
-          type: 1,
+          type: PhoneType.MOBILE,
           countryPrefix: '7',
           prefix: '903',
           number: '3800013',
         },
         {
-          type: 4,
+          type: PhoneType.ADDITIONAL,
+          countryPrefix: '7',
+          prefix: '903',
+          number: '3800013',
+        },
+        {
+          type: PhoneType.WORKING,
           countryPrefix: '7',
           prefix: '903',
           number: '3800013',
@@ -231,7 +181,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       },
       income: {
         incomeVerify: false,
-        incomeDocumentType: 3,
+        incomeDocumentType: IncomeDocumentType.NDFL2,
         basicIncome: 1000.45,
         addIncome: 1000.47,
         // acceptedIncome?: number,
@@ -266,8 +216,8 @@ export const fullApplicationData: GetFullApplicationResponse = {
       dateEnd: '2099-01-01',
       crMinValue: 100000,
       crMaxValue: 12000000,
-      productMinDuration: 12,
-      productMaxDuration: 48,
+      crMinDuration: 12,
+      crMaxDuration: 48,
       npllzp: 3223.2,
       npllzak: 10000.99,
       approvalValidity: 45,
@@ -285,8 +235,8 @@ export const fullApplicationData: GetFullApplicationResponse = {
         // rateChangeCasco?: number,
       },
       incomeFlag: true,
-      creditAmount: 12121.33,
-      creditAmountWithoutAdd: 3242.2342,
+      amount: 12121.33,
+      amountWithoutAdd: 3242.2342,
       additionalOptions: [
         {
           type: 2,

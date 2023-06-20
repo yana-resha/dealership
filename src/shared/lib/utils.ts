@@ -34,7 +34,7 @@ export function formatTerm(term: number) {
 }
 
 export function formatPassport(series?: string, number?: string) {
-  const nameArr = [series?.slice(0, 2), series?.slice(2, 4), number]
+  const nameArr = [series?.slice(0, 4), number]
 
   return compact(nameArr).join(' ')
 }

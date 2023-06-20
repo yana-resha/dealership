@@ -1,15 +1,17 @@
 import {
-  IsClientRequest,
-  createLoanAppLifeCycleDc,
-  GetVendorsListRequest,
-  SaveLoanApplicationDraftRequest,
-  ApplicationFrontdc,
-  FindApplicationsRequest,
   Application,
-  StatusCode,
+  ApplicationFrontdc,
+  createLoanAppLifeCycleDc,
+  FindApplicationsRequest,
   GetFullApplicationRequest,
+  GetVendorsListRequest,
+  IsClientRequest,
+  SaveLoanApplicationDraftRequest,
+  SendApplicationToScoringRequest,
+  StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
-import { UseQueryOptions, useMutation, useQuery } from 'react-query'
+import { useSnackbar } from 'notistack'
+import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 
 import { appConfig } from 'config'
 
@@ -43,6 +45,32 @@ export const getVendorsList = (params: GetVendorsListRequest) =>
 export const saveLoanApplicationDraft = (params: SaveLoanApplicationDraftRequest) =>
   loanAppLifeCycleDcApi.saveLoanApplicationDraft({ data: params }).then(response => response.data ?? {})
 
+export const sendApplicationToScore = (params: SendApplicationToScoringRequest) =>
+  loanAppLifeCycleDcApi
+    .sendApplicationToScoring({ data: params })
+    .then(response => response.data ?? {})
+    .catch(response => response.errors ?? {})
+
+export const useSendApplicationToScore = ({ onSuccess }: { onSuccess: () => void }) => {
+  const { enqueueSnackbar } = useSnackbar()
+
+  return useMutation(
+    ['sendApplicationToScore'],
+    (params: SendApplicationToScoringRequest) => sendApplicationToScore(params),
+    {
+      onSuccess: () => onSuccess(),
+      onError: () => {
+        enqueueSnackbar('Ошибка. Не удалось отправить заявку на решение. Попробуйте позже', {
+          variant: 'error',
+        })
+      },
+    },
+  )
+}
+
+export const useCheckIfSberClient = (params: IsClientRequest) =>
+  useMutation(['checkIfSberClient'], () => checkIfSberClient(params))
+
 export const useSaveDraftApplicationMutation = () =>
   useMutation(['saveLoanApplicationDraft'], (params: ApplicationFrontdc) =>
     saveLoanApplicationDraft({ application: params }),
@@ -62,10 +90,16 @@ export const findApplications = (params: FindApplicationsRequest) =>
     }
   })
 
+const getApplicationWithFixedStatus = (data: GetFullApplicationResponse): GetFullApplicationResponse => {
+  const status = data.application?.status as unknown as keyof typeof StatusCode
+
+  return { application: { ...data.application, status: StatusCode[status] } }
+}
+
 const getFullApplication = (params: GetFullApplicationRequest) =>
   loanAppLifeCycleDcApi
     .getFullApplication({ data: params })
-    .then(response => (response.data ?? {}) as GetFullApplicationResponse)
+    .then(response => getApplicationWithFixedStatus((response.data ?? {}) as GetFullApplicationResponse))
     .catch(() => fullApplicationData)
 
 export const useGetFullApplicationQuery = (

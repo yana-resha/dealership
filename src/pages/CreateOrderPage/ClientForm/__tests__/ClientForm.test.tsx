@@ -30,6 +30,12 @@ jest.mock('../FormAreas/QuestionnaireUploadArea/QuestionnaireUploadArea', () => 
 jest.mock('entities/SpecialMark', () => ({
   FraudDialog: () => <div data-testid="fraudDialog" />,
 }))
+jest.mock('notistack', () => ({
+  ...jest.requireActual('notistack'),
+  useSnackbar: () => ({
+    enqueueSnackbar: jest.fn(),
+  }),
+}))
 
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore

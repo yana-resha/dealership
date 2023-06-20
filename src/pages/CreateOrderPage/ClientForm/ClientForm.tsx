@@ -1,10 +1,14 @@
 import { useCallback, useRef, useState } from 'react'
 
-import { Box, CircularProgress } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
+import { SendApplicationToScoringRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { Formik, FormikProps } from 'formik'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { useSaveDraftApplicationMutation } from 'shared/api/requests/loanAppLifeCycleDc'
+import {
+  useSaveDraftApplicationMutation,
+  useSendApplicationToScore,
+} from 'shared/api/requests/loanAppLifeCycleDc'
 
 import { appRoutePaths } from '../../../shared/navigation/routerPath'
 import { CreateOrderPageState } from '../CreateOrderPage'
@@ -24,8 +28,30 @@ export function ClientForm() {
   const saveDraftDisabled = state && state.saveDraftDisabled != undefined ? state.saveDraftDisabled : false
   const { isShouldShowLoading, initialValues } = useInitialValues(applicationId)
   const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation()
+  const { mutate: sendToScore } = useSendApplicationToScore({
+    onSuccess: () => navigate(appRoutePaths.orderList),
+  })
   const getDraftApplicationData = useGetDraftApplicationData()
   const disabledButtons = isDraftLoading
+  //TODO: Убрать мок после появления поля unit в Vendor
+  const unit = 'currentUnit'
+
+  const prepareApplicationForScoring = useCallback(
+    (values: ClientData) => {
+      const draftApplication = getDraftApplicationData(values)
+      const applicationForScoring: SendApplicationToScoringRequest = {
+        application: {
+          ...draftApplication,
+          dcAppId: applicationId,
+          appType: 'CARLOANAPPLICATIONDC',
+          unit: unit,
+        },
+      }
+
+      return applicationForScoring
+    },
+    [getDraftApplicationData, applicationId],
+  )
 
   const onSubmit = useCallback((values: ClientData) => {
     if (values.regAddrIsLivingAddr) {
@@ -38,15 +64,14 @@ export function ClientForm() {
     }
 
     console.log('ClientForm.onSubmit values:', values)
-    console.log('Send to score')
+    const application = prepareApplicationForScoring(values)
+    sendToScore(application)
   }, [])
 
   const saveApplicationDraft = useCallback(
     (values: ClientData) => {
       console.log('ClientForm.saveApplicationDraft values:', values)
-      saveDraft(getDraftApplicationData(values)).then(() =>
-        navigate(appRoutePaths.orderList, { state: { applicationId: applicationId } }),
-      )
+      saveDraft(getDraftApplicationData(values)).then(() => navigate(appRoutePaths.orderList))
     },
     [saveDraft, getDraftApplicationData],
   )
@@ -59,7 +84,10 @@ export function ClientForm() {
         return
       }
 
-      if (formRef.current.values.submitAction === SubmitAction.Draft) {
+      if (
+        formRef.current.values.submitAction === SubmitAction.Draft ||
+        (formRef.current.values.submitAction === SubmitAction.Save && !saveDraftDisabled)
+      ) {
         saveApplicationDraft(values)
       } else {
         onSubmit(values)
@@ -79,7 +107,11 @@ export function ClientForm() {
           onSubmit={getSubmitAction}
           innerRef={formRef}
         >
-          <FormContainer isDraftLoading={isDraftLoading} disabledButtons={disabledButtons} />
+          <FormContainer
+            isDraftLoading={isDraftLoading}
+            disabledButtons={disabledButtons}
+            saveDraftDisabled={saveDraftDisabled}
+          />
         </Formik>
       )}
     </Box>

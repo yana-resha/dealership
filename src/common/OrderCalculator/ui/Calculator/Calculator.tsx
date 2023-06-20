@@ -16,7 +16,7 @@ export function Calculator({ nextStep }: Props) {
   const location = useLocation()
   const state = location.state as CreateOrderPageState
   const applicationId = state ? state.applicationId : undefined
-  const isFullCalculator = state ? state.isFullCalculator : false
+  const isFullCalculator = state?.isFullCalculator ?? false
   const { isLoading } = useGetFullApplicationQuery({ applicationId }, { enabled: !!applicationId })
 
   if (isLoading) {

@@ -5,7 +5,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 
-import { ApplicationFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicationFrontDc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 
 import { AgreementArea } from '../AgreementArea'
@@ -55,7 +55,7 @@ describe('AgreementAreaTest', () => {
       render(
         <AgreementArea
           status={StatusCode.INITIAL}
-          application={fullApplicationData.application as ApplicationFrontdc}
+          application={fullApplicationData.application as ApplicationFrontDc}
           updateStatus={mockUpdateStatus}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
@@ -73,7 +73,7 @@ describe('AgreementAreaTest', () => {
         render(
           <AgreementArea
             status={StatusCode.FINALLY_APPROVED}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -104,7 +104,7 @@ describe('AgreementAreaTest', () => {
         render(
           <AgreementArea
             status={StatusCode.FORMATION}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -121,7 +121,7 @@ describe('AgreementAreaTest', () => {
         render(
           <AgreementArea
             status={StatusCode.FORMATION}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -139,7 +139,7 @@ describe('AgreementAreaTest', () => {
       render(
         <AgreementArea
           status={StatusCode.FORMATION}
-          application={fullApplicationData.application as ApplicationFrontdc}
+          application={fullApplicationData.application as ApplicationFrontDc}
           updateStatus={mockUpdateStatus}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
@@ -156,7 +156,7 @@ describe('AgreementAreaTest', () => {
       render(
         <AgreementArea
           status={StatusCode.FORMATION}
-          application={fullApplicationData.application as ApplicationFrontdc}
+          application={fullApplicationData.application as ApplicationFrontDc}
           updateStatus={mockUpdateStatus}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
@@ -176,7 +176,7 @@ describe('AgreementAreaTest', () => {
         render(
           <AgreementArea
             status={StatusCode.FORMATION}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -198,7 +198,7 @@ describe('AgreementAreaTest', () => {
         render(
           <AgreementArea
             status={StatusCode.FORMATION}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
@@ -226,7 +226,7 @@ describe('AgreementAreaTest', () => {
         render(
           <AgreementArea
             status={StatusCode.SIGNED}
-            application={fullApplicationData.application as ApplicationFrontdc}
+            application={fullApplicationData.application as ApplicationFrontDc}
             updateStatus={mockUpdateStatus}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}

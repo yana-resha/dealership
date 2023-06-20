@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
+import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useFormikContext } from 'formik'
 
-import { Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { maskDigitsOnly, maskNoRestrictions, maskPhoneNumber } from 'shared/masks/InputMasks'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -23,7 +23,7 @@ export function JobArea() {
   const { occupation, employerAddress, employerAddressString } = values
 
   useEffect(() => {
-    if (occupation === Occupation.WithoutWork) {
+    if (occupation === OccupationType.UNEMPLOYED) {
       setJobDisabled(true)
       setFieldValue('employmentDate', '')
       setFieldValue('employerName', '')

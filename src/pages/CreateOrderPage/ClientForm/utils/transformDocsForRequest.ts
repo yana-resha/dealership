@@ -1,4 +1,5 @@
 import { DocumentFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
+import { ApplicantDocsType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
@@ -14,7 +15,12 @@ export const transformDocsForRequest = (
   let number
 
   switch (type) {
-    case SecondDocs.DriverLicense: {
+    case ApplicantDocsType.PASSPORT: {
+      series = docNumber.slice(0, 4)
+      number = docNumber.slice(-6)
+      break
+    }
+    case ApplicantDocsType.DRIVERLICENSE: {
       series = docNumber.slice(0, 4)
       number = docNumber.slice(-6)
       break
@@ -23,7 +29,7 @@ export const transformDocsForRequest = (
       number = docNumber
       break
     }
-    case SecondDocs.InternationalPassport: {
+    case ApplicantDocsType.INTERNATIONALPASSPORT: {
       series = docNumber.slice(0, 2)
       number = docNumber.slice(-7)
       break

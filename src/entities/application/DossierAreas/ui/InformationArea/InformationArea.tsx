@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 
 import Box from '@mui/material/Box'
-import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { BankOptionType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { ReactComponent as ShareIcon } from 'assets/icons/share.svg'
-import { AdditionalOptionsType } from 'entities/application/constants'
 import { AdditionalOptionFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { formatNumber, formatTerm } from 'shared/lib/utils'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
@@ -56,13 +55,13 @@ export function InformationArea({
           }
 
           switch (cur.bankOptionType) {
-            case AdditionalOptionsType.BankServices:
+            case BankOptionType.BANKSERVICES:
               acc.bankServices.push(additionalOptionInfo)
               break
-            case AdditionalOptionsType.Equipments:
+            case BankOptionType.EQUIPMENTS:
               acc.additionalEquipment.push(additionalOptionInfo)
               break
-            case AdditionalOptionsType.DealerServices:
+            case BankOptionType.DEALERSERVICES:
               acc.dealerServices.push(additionalOptionInfo)
               break
           }

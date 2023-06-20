@@ -16,10 +16,11 @@ import { SecondDocArea } from './FormAreas/SecondDocArea/SecondDocArea'
 
 interface Props {
   isDraftLoading: boolean
+  saveDraftDisabled: boolean
   disabledButtons: boolean
 }
 
-export function FormContainer({ isDraftLoading, disabledButtons }: Props) {
+export function FormContainer({ isDraftLoading, disabledButtons, saveDraftDisabled }: Props) {
   const classes = useStyles()
   const { handleSubmit, setFieldValue } = useFormikContext()
   const [isShouldSubmit, setShouldSubmit] = useState(false)
@@ -53,15 +54,17 @@ export function FormContainer({ isDraftLoading, disabledButtons }: Props) {
       <Box className={classes.buttonsArea}>
         <FraudDialog />
         <Box className={classes.buttonsContainer}>
-          <Button
-            className={classes.button}
-            variant="outlined"
-            disabled={disabledButtons}
-            onClick={handleDraftClick}
-          >
-            Сохранить черновик
-            {isDraftLoading && <CircularProgress color="inherit" size={25} />}
-          </Button>
+          {!saveDraftDisabled && (
+            <Button
+              className={classes.button}
+              variant="outlined"
+              disabled={disabledButtons}
+              onClick={handleDraftClick}
+            >
+              Сохранить черновик
+              {isDraftLoading && <CircularProgress color="inherit" size={25} />}
+            </Button>
+          )}
           <Button className={classes.button} variant="outlined" disabled={disabledButtons}>
             Распечатать
           </Button>

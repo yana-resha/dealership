@@ -1,25 +1,35 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
-import { IsClientRequest, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import {
+  IsClientRequest,
+  SendApplicationToScoringRequest,
+  StatusCode,
+} from '@sberauto/loanapplifecycledc-proto/public'
+import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
 import { setOrder } from 'pages/CreateOrderPage/model/orderSlice'
 import { NoMatchesModal } from 'pages/CreateOrderPage/OrderSearching/components/NoMatchesModal/NoMatchesModal'
 import { checkIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
-import { ApplicantDocsType, PhoneType, ApplicationFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'
+import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { AgreementArea } from '../'
 import { getPointOfSaleFromCookies } from '../../../../pointOfSale'
-import { getStatus, PreparedStatus } from '../../../application.utils'
+import { ApplicationTypes, getStatus, PreparedStatus } from '../../../application.utils'
 import { useStyles } from './ActionArea.styles'
 
 type Props = {
   status: StatusCode
-  application: ApplicationFrontdc
+  application: ApplicationFrontDc
+  moratoryEndDate?: string
+  targetDcAppId?: string
+  applicationForScore: SendApplicationToScoringRequest
+  returnToList: () => void
   goToNewApplication: (value: string) => void
   updateStatus: (statusCode: StatusCode) => void
   fileQuestionnaire: File | undefined
@@ -34,6 +44,10 @@ export function ActionArea(props: Props) {
   const {
     status,
     application,
+    moratoryEndDate,
+    targetDcAppId,
+    applicationForScore,
+    returnToList,
     goToNewApplication,
     updateStatus,
     fileQuestionnaire,
@@ -57,12 +71,9 @@ export function ActionArea(props: Props) {
   const navigate = useNavigate()
   const { applicant } = application
   const { vendorCode } = getPointOfSaleFromCookies()
-  const passport = applicant?.documents?.find(document => document.type === ApplicantDocsType.Passport)
-  const phoneNumber = applicant?.phones?.find(document => document.type === PhoneType.Mobile)
-  //TODO Убрать после появления moratoryEndDate и targetAppId в GetFullApplicationResponse
-  const mockMoratoryEndDate = new Date('2023-06-17')
-  // const mockTargetAppId = '202306143827'
-  const mockTargetAppId = undefined
+  const { mutateAsync: sendToScore } = useSendApplicationToScore({ onSuccess: returnToList })
+  const passport = applicant?.documents?.find(document => document.type === ApplicantDocsType.PASSPORT)
+  const phoneNumber = applicant?.phones?.find(document => document.type === PhoneType.MOBILE)
 
   const openModal = useCallback(() => {
     setVisibleModal(true)
@@ -71,27 +82,26 @@ export function ActionArea(props: Props) {
   const closeModal = useCallback(() => setVisibleModal(false), [])
 
   const getToNewApplication = useCallback(() => {
-    if (mockTargetAppId) {
-      goToNewApplication(mockTargetAppId)
+    if (targetDcAppId) {
+      goToNewApplication(targetDcAppId)
     }
-  }, [mockTargetAppId, goToNewApplication])
+  }, [targetDcAppId, goToNewApplication])
 
   const editApplicationWithInitialStatus = useCallback(() => {
-    const isFullCalculator = application.appType === 1 ? true : false
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator, applicationId: application.dcAppId },
+      state: { isFullCalculator: false, applicationId: application.dcAppId },
     })
-  }, [application.appType, application.dcAppId, navigate])
+  }, [application.anketaType, application.dcAppId, navigate])
 
   const editApplicationWithErrorStatus = useCallback(() => {
     let isFullCalculator = false
-    if (application.vendor?.vendorCode === vendorCode && application.appType === 2) {
+    if (application.vendor?.vendorCode === vendorCode && application.anketaType === 2) {
       isFullCalculator = true
     }
     navigate(appRoutePaths.createOrder, {
       state: { isFullCalculator, applicationId: application.dcAppId, saveDraftDisabled: true },
     })
-  }, [application.vendor?.vendorCode, vendorCode, application.appType, application.dcAppId])
+  }, [application.vendor?.vendorCode, vendorCode, application.anketaType, application.dcAppId])
 
   const editApplicationWithApprovedStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
@@ -132,6 +142,10 @@ export function ActionArea(props: Props) {
     }
   }, [clientData, application.dcAppId, navigate, dispatch, checkIfSberClient])
 
+  const sendApplicationToScore = useCallback(() => {
+    sendToScore(applicationForScore)
+  }, [])
+
   const shownBlock = useMemo(() => {
     if (preparedStatus == PreparedStatus.initial) {
       return (
@@ -139,7 +153,11 @@ export function ActionArea(props: Props) {
           <Button variant="contained" onClick={editApplicationWithInitialStatus}>
             Редактировать
           </Button>
-          {application.appType == 1 && <Button variant="contained">Отправить на решение</Button>}
+          {application.anketaType == ApplicationTypes.initial && (
+            <Button variant="contained" onClick={sendApplicationToScore}>
+              Отправить на решение
+            </Button>
+          )}
         </Box>
       )
     }
@@ -165,10 +183,10 @@ export function ActionArea(props: Props) {
       return (
         <Box className={classes.actionButtons}>
           {((preparedStatus == PreparedStatus.rejected &&
-            (new Date() > mockMoratoryEndDate || mockTargetAppId)) ||
+            ((moratoryEndDate && new Date() > new Date(moratoryEndDate)) || targetDcAppId)) ||
             preparedStatus != PreparedStatus.rejected) && (
             <>
-              {mockTargetAppId ? (
+              {targetDcAppId ? (
                 <Button variant="contained" onClick={getToNewApplication}>
                   Перейти на новую заявку
                 </Button>
@@ -222,8 +240,8 @@ export function ActionArea(props: Props) {
     fileQuestionnaire,
     status,
     application,
-    mockMoratoryEndDate,
-    mockTargetAppId,
+    moratoryEndDate,
+    targetDcAppId,
     updateStatus,
     agreementDocs,
     setAgreementDocs,

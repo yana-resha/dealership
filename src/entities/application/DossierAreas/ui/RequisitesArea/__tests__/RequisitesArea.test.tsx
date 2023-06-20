@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { ApplicationFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicationFrontDc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 
 import { RequisitesArea } from '../RequisitesArea'
@@ -21,7 +21,7 @@ describe('RequisiteAreaTest', () => {
     beforeEach(() => {
       render(
         <RequisitesArea
-          application={fullApplicationData.application as ApplicationFrontdc}
+          application={fullApplicationData.application as ApplicationFrontDc}
           setFinancingEnabled={mockedSetFinancingEnabled}
           changeRequisites={jest.fn}
         />,
@@ -50,7 +50,7 @@ describe('RequisiteAreaTest', () => {
     beforeEach(() => {
       render(
         <RequisitesArea
-          application={fullApplicationData.application as ApplicationFrontdc}
+          application={fullApplicationData.application as ApplicationFrontDc}
           setFinancingEnabled={mockedSetFinancingEnabled}
           changeRequisites={jest.fn}
         />,

@@ -6,7 +6,7 @@ export const EXPECTED_DATA = {
   clientFormerName: 'Иванова Ивана Ивановна',
   numOfChildren: '5',
   familyStatus: 1,
-  passport: '12 34 123456',
+  passport: '1234 123456',
   birthDate: new Date('2000-01-01T00:00:00.000Z'),
   birthPlace: 'Саратов',
   passportDate: new Date('2023-12-15T00:00:00.000Z'),
