@@ -2,7 +2,7 @@ import { FindApplicationsRequest } from '@sberauto/loanapplifecycledc-proto/publ
 
 export type FormApplicationFiltersValues = {
   findApplication: string
-  applicationUpdateDate: string
+  applicationUpdateDate: Date | null
   isMyApplication: boolean
 }
 

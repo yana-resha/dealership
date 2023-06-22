@@ -13,7 +13,7 @@ const standardError =
 export const validateFiltersFields = (
   values: {
     findApplication: string
-    applicationUpdateDate: string
+    applicationUpdateDate: Date | null
     onlyUserApplications: {
       employeeId?: string
       onlyUserApplicationsFlag?: boolean
@@ -23,7 +23,7 @@ export const validateFiltersFields = (
   setErrors: (errors: FormikErrors<FormApplicationFiltersValues>) => void,
 ) => {
   const { findApplication, applicationUpdateDate: updateDate, onlyUserApplications } = values
-  const applicationUpdateDate = updateDate ? DateTime.fromJSDate(new Date(updateDate)).toISODate() : undefined
+  const applicationUpdateDate = updateDate ? DateTime.fromJSDate(updateDate).toISODate() : undefined
   const noSpacing = findApplication.replace(/ /g, '')
 
   //Если значение полностью числовое
