@@ -1,3 +1,5 @@
+import { SubmitAction } from '../ClientForm.types'
+
 export const EXPECTED_DATA = {
   clientName: 'Иванов Иван Иванович',
   hasNameChanged: true,
@@ -89,4 +91,5 @@ export const EXPECTED_DATA = {
   employerInn: '123123123',
   specialMark: 'Находится в нетрезвом состоянии',
   questionnaireFile: null,
+  submitAction: SubmitAction.Save,
 }

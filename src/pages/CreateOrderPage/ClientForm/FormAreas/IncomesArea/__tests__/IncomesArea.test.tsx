@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
@@ -36,6 +37,7 @@ const mockedIncomeAreaFields = {
   familyIncome: '',
   expenses: '',
   relatedToPublic: '',
+  submitAction: SubmitAction.Save,
 }
 
 const createWrapper = ({ children }: PropsWithChildren) => (

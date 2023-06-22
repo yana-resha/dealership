@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 import { MockedDateInput } from 'shared/ui/DateInput/__mocks__/DateInput.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
@@ -40,6 +41,7 @@ const mockedJobAreaFields = {
   employerAddressString: '',
   emplNotKladr: false,
   employerInn: '',
+  submitAction: SubmitAction.Save,
 }
 
 const createWrapper = ({ children }: PropsWithChildren) => (

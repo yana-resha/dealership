@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 import { Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { ThemeProviderMock } from 'tests/mocks'
@@ -24,11 +25,13 @@ let mockedCommunicationFields: {
   mobileNumber: string
   additionalNumber: string
   email: string
+  submitAction: SubmitAction
 } = {
   occupation: null,
   mobileNumber: '',
   additionalNumber: '',
   email: '',
+  submitAction: SubmitAction.Save,
 }
 
 const createWrapper = ({ children }: PropsWithChildren) => (
