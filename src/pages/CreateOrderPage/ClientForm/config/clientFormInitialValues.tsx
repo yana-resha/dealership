@@ -88,30 +88,33 @@ export const OCCUPATION_VALUES = [
 ]
 
 export const DOCUMENT_TYPE_VALUES = [
-  { label: 'Международный паспорт (для не граждан РФ)', value: ApplicantDocsType.InternationalPassport },
-  { label: 'Военный билет', value: ApplicantDocsType.MilitaryID },
-  { label: 'Удостоверение офицера', value: ApplicantDocsType.OfficerID },
-  { label: 'Паспорт моряка', value: ApplicantDocsType.SailorPassport },
-  { label: 'Временное удостоверение по форме № 2-П', value: ApplicantDocsType.TemporaryCertificate2P },
   {
     label: 'Заграничный паспорт (для граждан РФ для выезда за рубеж)',
     value: ApplicantDocsType.InternationalPassportForRFCitizens,
   },
-  {
-    label: 'Свидетельство о рождении (для граждан РФ, не достигших 14 лет)',
-    value: ApplicantDocsType.BirthCertificate,
-  },
-  { label: 'Дипломатический паспорт гражданина РФ', value: ApplicantDocsType.DiplomaticPassport },
-  { label: 'Паспорт гражданина СССР', value: ApplicantDocsType.USSRPassport },
   { label: 'Водительское удостоверение', value: ApplicantDocsType.DriverLicense },
-  { label: 'Вид на жительство', value: ApplicantDocsType.ResidentCard },
   { label: 'Страховое свидетельство пенсионного страхования', value: ApplicantDocsType.PensionCertificate },
-  {
-    label: 'Удостоверение личности сотрудника федеральных органов власти',
-    value: ApplicantDocsType.FederalEmployeeID,
-  },
-  { label: 'Удостоверение личности военнослужащего', value: ApplicantDocsType.soldierID },
-  { label: 'Паспорт РФ', value: ApplicantDocsType.Passport },
-  { label: 'Удостоверение личности/служебное удостоверение', value: ApplicantDocsType.IdentityServiceCard },
-  { label: 'Студенческий билет', value: ApplicantDocsType.StudentID },
+  // { label: 'Международный паспорт (для не граждан РФ)', value: ApplicantDocsType.InternationalPassport },
+  // { label: 'Военный билет', value: ApplicantDocsType.MilitaryID },
+  // { label: 'Удостоверение офицера', value: ApplicantDocsType.OfficerID },
+  // { label: 'Паспорт моряка', value: ApplicantDocsType.SailorPassport },
+  // { label: 'Временное удостоверение по форме № 2-П', value: ApplicantDocsType.TemporaryCertificate2P },
+  // {
+  //   label: 'Свидетельство о рождении (для граждан РФ, не достигших 14 лет)',
+  //   value: ApplicantDocsType.BirthCertificate,
+  // },
+  // { label: 'Дипломатический паспорт гражданина РФ', value: ApplicantDocsType.DiplomaticPassport },
+  // { label: 'Паспорт гражданина СССР', value: ApplicantDocsType.USSRPassport },
+  // { label: 'Вид на жительство', value: ApplicantDocsType.ResidentCard },
+  // {
+  //   label: 'Удостоверение личности сотрудника федеральных органов власти',
+  //   value: ApplicantDocsType.FederalEmployeeID,
+  // },
+  // { label: 'Удостоверение личности военнослужащего', value: ApplicantDocsType.soldierID },
+  // { label: 'Паспорт РФ', value: ApplicantDocsType.Passport },
+  // {
+  //   label: 'Удостоверение личности/служебное удостоверение',
+  //   value: ApplicantDocsType.IdentityServiceCard,
+  // },
+  // { label: 'Студенческий билет', value: ApplicantDocsType.StudentID },
 ]
