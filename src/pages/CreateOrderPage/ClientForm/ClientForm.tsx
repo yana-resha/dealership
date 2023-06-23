@@ -1,20 +1,14 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef } from 'react'
 
-import { Box, Button, CircularProgress } from '@mui/material'
-import { Form, Formik } from 'formik'
+import { Box, CircularProgress } from '@mui/material'
+import { Formik, FormikProps } from 'formik'
 
-import { FraudDialog } from 'entities/SpecialMark'
 import { useSaveDraftApplicationMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 
 import { useStyles } from './ClientForm.styles'
-import { ClientData } from './ClientForm.types'
+import { ClientData, SubmitAction } from './ClientForm.types'
 import { clientFormValidationSchema } from './config/clientFormValidation'
-import { CommunicationArea } from './FormAreas/CommunicationArea/CommunicationArea'
-import { IncomesArea } from './FormAreas/IncomesArea/IncomesArea'
-import { JobArea } from './FormAreas/JobArea/JobArea'
-import { PassportArea } from './FormAreas/PassportArea/PassportArea'
-import { QuestionnaireUploadArea } from './FormAreas/QuestionnaireUploadArea/QuestionnaireUploadArea'
-import { SecondDocArea } from './FormAreas/SecondDocArea/SecondDocArea'
+import { FormContainer } from './FormContainer'
 import { useGetDraftApplicationData } from './hooks/useGetDraftApplicationData'
 import { useInitialValues } from './useInitialValues'
 
@@ -24,7 +18,6 @@ export function ClientForm() {
   const { mutate: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation()
   const getDraftApplicationData = useGetDraftApplicationData()
   const disabledButtons = isDraftLoading
-  const [submitAction, setSubmitAction] = useState<'draft' | 'save' | undefined>(undefined)
 
   const onSubmit = useCallback((values: ClientData) => {
     if (values.regAddrIsLivingAddr) {
@@ -35,27 +28,30 @@ export function ClientForm() {
     if (!values.hasNameChanged) {
       values.clientFormerName = ''
     }
-
-    console.log('ClientForm.onSubmit values:', values)
   }, [])
 
   const saveApplicationDraft = useCallback(
     (values: ClientData) => {
-      console.log('ClientForm.saveApplicationDraft values:', values)
       saveDraft(getDraftApplicationData(values))
     },
     [saveDraft, getDraftApplicationData],
   )
 
+  const formRef = useRef<FormikProps<ClientData> | null>(null)
+
   const getSubmitAction = useCallback(
     (values: ClientData) => {
-      if (submitAction === 'draft') {
+      if (!formRef.current) {
+        return
+      }
+
+      if (formRef.current.values.submitAction === SubmitAction.Draft) {
         saveApplicationDraft(values)
       } else {
         onSubmit(values)
       }
     },
-    [saveApplicationDraft, onSubmit, submitAction],
+    [saveApplicationDraft, onSubmit],
   )
 
   return (
@@ -67,49 +63,9 @@ export function ClientForm() {
           initialValues={initialValues}
           validationSchema={clientFormValidationSchema}
           onSubmit={getSubmitAction}
+          innerRef={formRef}
         >
-          {({ handleSubmit, values }) => (
-            <Form className={classes.clientForm}>
-              <PassportArea />
-              <CommunicationArea />
-              <IncomesArea />
-              <SecondDocArea />
-              <JobArea />
-              <QuestionnaireUploadArea />
-
-              <Box className={classes.buttonsArea}>
-                <FraudDialog />
-                <Box className={classes.buttonsContainer}>
-                  <Button
-                    className={classes.button}
-                    variant="outlined"
-                    disabled={disabledButtons}
-                    onClick={() => {
-                      setSubmitAction('draft')
-                      handleSubmit()
-                    }}
-                  >
-                    Сохранить черновик
-                    {isDraftLoading && <CircularProgress color="inherit" size={25} />}
-                  </Button>
-                  <Button className={classes.button} variant="outlined" disabled={disabledButtons}>
-                    Распечатать
-                  </Button>
-                  <Button
-                    className={classes.button}
-                    variant="contained"
-                    disabled={disabledButtons}
-                    onClick={() => {
-                      setSubmitAction('save')
-                      handleSubmit()
-                    }}
-                  >
-                    Отправить
-                  </Button>
-                </Box>
-              </Box>
-            </Form>
-          )}
+          <FormContainer isDraftLoading={isDraftLoading} disabledButtons={disabledButtons} />
         </Formik>
       )}
     </Box>

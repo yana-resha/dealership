@@ -18,6 +18,11 @@ export interface Address {
   unitNum: string
 }
 
+export enum SubmitAction {
+  Save = 'save',
+  Draft = 'draft',
+}
+
 export interface ClientData {
   clientName: string
   hasNameChanged: boolean
@@ -64,4 +69,5 @@ export interface ClientData {
   employerInn: string
   specialMark: string
   questionnaireFile: File | null
+  submitAction: SubmitAction
 }

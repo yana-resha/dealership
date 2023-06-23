@@ -1,6 +1,9 @@
 import * as Yup from 'yup'
+import { AnyObject } from 'yup/lib/types'
 
 import { Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+
+import { SubmitAction } from '../ClientForm.types'
 
 const minAge = 21
 const maxAge = 65
@@ -66,6 +69,13 @@ function isIncomeProofUploaded(
   return true
 }
 
+function setRequiredIfSave<T extends Yup.BaseSchema<any, AnyObject, any>>(schema: T, message?: string) {
+  return schema.when(['submitAction'], {
+    is: (submitAction: string) => submitAction === SubmitAction.Save,
+    then: schema => schema.required(message || 'Поле обязательно для заполнения'),
+  })
+}
+
 export const clientAddressValidationSchema = Yup.object().shape(
   {
     region: Yup.string().required('Поле обязательно для заполнения'),
@@ -104,36 +114,29 @@ export const clientFormValidationSchema = Yup.object().shape({
   clientFormerName: Yup.string().when('hasNameChanged', {
     is: true,
     then: schema =>
-      schema
-        .required('Поле обязательно для заполнения')
-        .test('nameIsCorrect', 'Введите корректное ФИО', clientNameIsCorrect),
+      setRequiredIfSave(schema).test('nameIsCorrect', 'Введите корректное ФИО', clientNameIsCorrect),
   }),
-  numOfChildren: Yup.string()
-    .required('Поле обязательно для заполнения')
-    .max(20, 'Введено слишком большое значение'),
-  familyStatus: Yup.number().required('Поле обязательно для заполнения'),
+  numOfChildren: setRequiredIfSave(Yup.number()).max(20, 'Введено слишком большое значение'),
+  familyStatus: setRequiredIfSave(Yup.number().nullable()),
   passport: Yup.string().required('Поле обязательно для заполнения').min(10, 'Введите данные полностью'),
   birthDate: Yup.date()
     .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Превышен максимальный возраст')
     .max(getMaxBirthDate(), `Минимальный возраст ${minAge} год`),
-  birthPlace: Yup.string().required('Поле обязательно для заполнения'),
-  passportDate: Yup.date()
-    .nullable()
-    .required('Поле обязательно для заполнения')
-    .min(getMinPassportDate(), 'Дата слишком ранняя'),
-  divisionCode: Yup.string().required('Поле обязательно для заполнения').min(6, 'Введите данные полностью'),
-  issuedBy: Yup.string().required('Поле обязательно для заполнения'),
-  registrationAddressString: Yup.string().required('Поле обязательно для заполнения'),
+  birthPlace: setRequiredIfSave(Yup.string()),
+  passportDate: setRequiredIfSave(Yup.date().nullable()).min(getMinPassportDate(), 'Дата слишком ранняя'),
+  divisionCode: setRequiredIfSave(Yup.string()).min(6, 'Введите данные полностью'),
+  issuedBy: setRequiredIfSave(Yup.string()),
+  registrationAddressString: setRequiredIfSave(Yup.string()),
   livingAddressString: Yup.string().when('regAddrIsLivingAddr', {
     is: false,
-    then: schema => schema.required('Поле обязательно для заполнения'),
+    then: schema => setRequiredIfSave(schema),
   }),
   mobileNumber: Yup.string().required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
   additionalNumber: Yup.string().when('occupation', {
     is: Occupation.WithoutWork,
-    then: schema => schema.required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
+    then: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
     otherwise: schema =>
       schema.test(
         'additionalNumber',
@@ -141,11 +144,9 @@ export const clientFormValidationSchema = Yup.object().shape({
         (value: string | undefined) => value === undefined || value.trim().length == 11,
       ),
   }),
-  email: Yup.string().required('Поле обязательно для заполнения').email('Введите корректный Email'),
-  averageIncome: Yup.string().required('Поле обязательно для заполнения').max(13, 'Значение слишком большое'),
-  additionalIncome: Yup.string()
-    .required('Поле обязательно для заполнения')
-    .max(13, 'Значение слишком большое'),
+  email: setRequiredIfSave(Yup.string()).email('Введите корректный Email'),
+  averageIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
+  additionalIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   incomeProofUploadValidator: Yup.string()
     .when(['incomeConfirmation', 'ndfl2File', 'ndfl3File', 'bankStatementFile'], {
       is: isIncomeProofUploaded,
@@ -157,40 +158,35 @@ export const clientFormValidationSchema = Yup.object().shape({
       otherwise: schema =>
         schema.test('badUpload', '2НДФЛ не может быть загружен вместе с другими документами', () => false),
     }),
-  familyIncome: Yup.string().required('Поле обязательно для заполнения').max(13, 'Значение слишком большое'),
-  expenses: Yup.string().required('Поле обязательно для заполнения').max(13, 'Значение слишком большое'),
-  relatedToPublic: Yup.number().required('Поле обязательно для заполнения'),
-  secondDocumentType: Yup.number().required('Поле обязательно для заполнения'),
-  secondDocumentNumber: Yup.string().required('Поле обязательно для заполнения'),
-  secondDocumentDate: Yup.date()
-    .nullable()
-    .required('Поле обязательно для заполнения')
-    .min(getMinBirthDate(), 'Дата слишком ранняя'),
-  secondDocumentIssuedBy: Yup.string().required('Поле обязательно для заполнения'),
-  occupation: Yup.number().required('Поле обязательно для заполнения'),
+  familyIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
+  expenses: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
+  relatedToPublic: setRequiredIfSave(Yup.number().nullable()),
+  secondDocumentType: setRequiredIfSave(Yup.number().nullable()),
+  secondDocumentNumber: setRequiredIfSave(Yup.string()),
+  secondDocumentDate: setRequiredIfSave(Yup.date().nullable()).min(getMinBirthDate(), 'Дата слишком ранняя'),
+  secondDocumentIssuedBy: setRequiredIfSave(Yup.string()),
+  occupation: setRequiredIfSave(Yup.number().nullable()),
   employmentDate: Yup.date()
     .nullable()
     .when('occupation', {
       is: Occupation.WithoutWork,
-      otherwise: schema =>
-        schema.required('Поле обязательно для заполнения').min(getMinBirthDate(), 'Дата слишком ранняя'),
+      otherwise: schema => setRequiredIfSave(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
     }),
   employerName: Yup.string().when('occupation', {
     is: Occupation.WithoutWork,
-    otherwise: schema => schema.required('Поле обязательно для заполнения'),
+    otherwise: schema => setRequiredIfSave(schema),
   }),
   employerPhone: Yup.string().when('occupation', {
     is: Occupation.WithoutWork,
-    otherwise: schema =>
-      schema.required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
+    otherwise: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
   }),
   employerAddressString: Yup.string().when('occupation', {
     is: Occupation.WithoutWork,
-    otherwise: schema => schema.required('Поле обязательно для заполнения'),
+    otherwise: schema => setRequiredIfSave(schema),
   }),
   employerInn: Yup.string().when('occupation', {
     is: Occupation.WithoutWork,
-    otherwise: schema => schema.required('Поле обязательно для заполнения'),
+    otherwise: schema => setRequiredIfSave(schema),
   }),
-  questionnaireFile: Yup.string().nullable().required('Необходимо загрузить анкету'),
+  questionnaireFile: setRequiredIfSave(Yup.string().nullable(), 'Необходимо загрузить анкету'),
 })

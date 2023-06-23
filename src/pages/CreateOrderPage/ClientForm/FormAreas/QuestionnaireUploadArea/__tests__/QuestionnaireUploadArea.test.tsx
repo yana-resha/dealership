@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -13,6 +14,7 @@ import { QuestionnaireUploadArea } from '../QuestionnaireUploadArea'
 
 const mockedQuestionnaireUploadFields = {
   questionnaireFile: null,
+  submitAction: SubmitAction.Save,
 }
 
 const createWrapper = ({ children }: PropsWithChildren) => (

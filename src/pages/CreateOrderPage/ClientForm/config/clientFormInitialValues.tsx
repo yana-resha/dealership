@@ -1,6 +1,6 @@
 import { ApplicantDocsType, MaritalStatus, Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 
-import { Address, ClientData } from '../ClientForm.types'
+import { Address, ClientData, SubmitAction } from '../ClientForm.types'
 
 export const configAddressInitialValues: Address = {
   region: '',
@@ -64,6 +64,7 @@ export const configInitialValues: ClientData = {
   employerInn: '',
   specialMark: '',
   questionnaireFile: null,
+  submitAction: SubmitAction.Save,
 }
 
 export const FAMILY_STATUS_VALUES = [
