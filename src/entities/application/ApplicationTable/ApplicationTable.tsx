@@ -14,6 +14,7 @@ import {
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import SberTypography from 'shared/ui/SberTypography'
+import { convertedDateToString } from 'shared/utils/dateTransform'
 
 import { ApplicationStatus } from '../ApplicationStatus/ApplicationStatus'
 import { applicationHeaders } from './ApplicationTable.config'
@@ -94,10 +95,14 @@ export const ApplicationTable = (props: Props) => {
             {getCellsChildrens(row).map(cell => (
               <TableCell key={cell.name} align="left" className={styles.bodyCell}>
                 {cell.name === 'status' && <ApplicationStatus status={cell.value as StatusCode} />}
-
                 {cell.name === 'isDC' && cell.value && <MailOutlineIcon htmlColor="#DADADA" />}
-
-                {cell.name !== 'status' && cell.name !== 'isDC' && cell.value}
+                {cell.name === 'applicationUpdateDate' &&
+                  !!cell.value &&
+                  convertedDateToString(new Date(cell.value as string), 'dd.LL.yyyy')}
+                {cell.name !== 'status' &&
+                  cell.name !== 'isDC' &&
+                  cell.name !== 'applicationUpdateDate' &&
+                  cell.value}
               </TableCell>
             ))}
           </TableRow>
