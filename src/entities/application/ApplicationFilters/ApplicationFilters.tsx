@@ -32,7 +32,7 @@ export const ApplicationFilters = ({ onSubmitClick }: Props) => {
   const initialValues = useMemo(
     () => ({
       findApplication: '',
-      applicationUpdateDate: '',
+      applicationUpdateDate: null,
       isMyApplication: false,
       statusCodes: [],
     }),
@@ -63,7 +63,7 @@ export const ApplicationFilters = ({ onSubmitClick }: Props) => {
       onSubmitClick({
         ...onlyUserApplications,
         applicationUpdateDate: values.applicationUpdateDate
-          ? DateTime.fromJSDate(new Date(values.applicationUpdateDate)).toISODate()
+          ? DateTime.fromJSDate(values.applicationUpdateDate).toISODate()
           : undefined,
       })
     }

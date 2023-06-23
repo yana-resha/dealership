@@ -35,8 +35,7 @@ export const searchingOrderFormValidationSchema = Yup.object().shape(
           passport || (clientName?.trim?.() && phoneNumber),
         otherwise: schema => schema.required(FILL_ONE_OF_FIELDS_MESSAGE),
       })
-      .nullable()
-      .default(null),
+      .nullable(),
     phoneNumber: Yup.string()
       .min(9, 'Введите номер полностью')
       .when(['passport', 'clientName', 'birthDate'], {
@@ -61,6 +60,7 @@ export const orderFormValidationSchema = Yup.object().shape({
     .test('nameIsCorrect', 'Введите корректное ФИО', clientNameIsCorrect),
   passport: Yup.string().required(FieldMessages.required).min(10, 'Введите данные полностью'),
   birthDate: Yup.date()
+    .nullable()
     .required(FieldMessages.required)
     .min(getMinBirthDate(), 'Превышен максимальный возраст')
     .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`),
