@@ -1,15 +1,11 @@
 import { useMemo } from 'react'
 
+import { AddressType, PhoneType, ApplicantDocsType } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
 import { DateTime } from 'luxon'
 
 import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
-import {
-  AddressType,
-  ApplicantDocsType,
-  ApplicationFrontdc,
-  PhoneType,
-} from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName } from 'shared/utils/clientNameTransform'
@@ -18,18 +14,15 @@ import { configAddressInitialValues } from './config/clientFormInitialValues'
 import { addressTransformForForm } from './utils/addressTransformForRequest'
 import { makeClientForm } from './utils/makeClienForm'
 
-export function useInitialValues() {
+export function useInitialValues<D extends boolean | undefined>(applicationId?: string) {
   const initialValues = useAppSelector(state => makeClientForm(state.order.order))
-
-  // TODO DCB-363 | временное решение, удалить, когда будет принято решения по переходам
-  const applicationId = '545544'
   const { data: fullApplicationData, isLoading } = useGetFullApplicationQuery(
     { applicationId },
     { enabled: !!applicationId },
   )
 
   const { applicant, specialMark, createdDate } = useMemo(
-    () => fullApplicationData?.application || ({} as ApplicationFrontdc),
+    () => fullApplicationData?.application || ({} as ApplicationFrontDc),
     [fullApplicationData?.application],
   )
 
@@ -40,8 +33,8 @@ export function useInitialValues() {
   )
 
   const { passport, secondDocument } = useMemo(() => {
-    const passport = applicant?.documents?.find(d => d.type === ApplicantDocsType.Passport) || {}
-    const secondDocument = applicant?.documents?.find(d => d.type !== ApplicantDocsType.Passport) || {}
+    const passport = applicant?.documents?.find(d => d.type === ApplicantDocsType.PASSPORT) || {}
+    const secondDocument = applicant?.documents?.find(d => d.type !== ApplicantDocsType.PASSPORT) || {}
 
     return { passport, secondDocument }
   }, [applicant?.documents])
@@ -60,15 +53,15 @@ export function useInitialValues() {
           const preparedAddress = addressTransformForForm(cur, configAddressInitialValues)
           const preparedAddressString = compact(Object.values(preparedAddress)).join(', ')
 
-          if (cur.type === AddressType.Permanent) {
+          if (cur.type === AddressType.PERMANENT_REGISTRATION) {
             acc.registrationAddress = preparedAddress
             acc.registrationAddressString = preparedAddressString
           }
-          if (cur.type === AddressType.Actual) {
+          if (cur.type === AddressType.ACTUAL_RESIDENCE) {
             acc.livingAddress = preparedAddress
             acc.livingAddressString = preparedAddressString
           }
-          if (cur.type === AddressType.Workplace) {
+          if (cur.type === AddressType.WORKPLACE) {
             acc.employerAddress = preparedAddress
             acc.employerAddressString = preparedAddressString
           }
@@ -113,13 +106,13 @@ export function useInitialValues() {
           }
           const phone = cur.countryPrefix + cur.prefix + cur.number
 
-          if (cur.type === PhoneType.Mobile) {
+          if (cur.type === PhoneType.MOBILE) {
             acc.mobileNumber = phone
           }
-          if (cur.type === PhoneType.Additional) {
+          if (cur.type === PhoneType.ADDITIONAL) {
             acc.additionalNumber = phone
           }
-          if (cur.type === PhoneType.Work) {
+          if (cur.type === PhoneType.WORKING) {
             acc.employerPhone = phone
           }
 
@@ -178,7 +171,7 @@ export function useInitialValues() {
             email: applicant?.email ?? initialValues.email,
             averageIncome: `${applicant?.income?.basicIncome ?? initialValues.averageIncome}`,
             additionalIncome: `${applicant?.income?.addIncome ?? initialValues.additionalIncome}`,
-            incomeConfirmation: !!(applicant?.income?.incomeDocumentType ?? initialValues.incomeConfirmation),
+            incomeConfirmation: !!(applicant?.income?.incomeVerify ?? initialValues.incomeConfirmation),
             familyIncome: `${applicant?.income?.familyIncome ?? initialValues.familyIncome}`,
             expenses: `${applicant?.income?.expenses ?? initialValues.expenses}`,
             relatedToPublic: relatedToPublic,

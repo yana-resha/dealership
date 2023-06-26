@@ -30,7 +30,7 @@ describe('useInitialValues', () => {
             isLoading: true,
           } as any),
       )
-      expect(useInitialValues(fullInitialValueMap, true)).toEqual({
+      expect(useInitialValues(fullInitialValueMap, '12345', true)).toEqual({
         isShouldShowLoading: true,
         hasCustomInitialValues: true,
         initialValues: EXPECTED_FULL_DATA,
@@ -44,7 +44,7 @@ describe('useInitialValues', () => {
             isLoading: true,
           } as any),
       )
-      expect(useInitialValues(fullInitialValueMap, true)).toEqual({
+      expect(useInitialValues(fullInitialValueMap, '12345', true)).toEqual({
         isShouldShowLoading: true,
         hasCustomInitialValues: true,
         initialValues: fullInitialValueMap,

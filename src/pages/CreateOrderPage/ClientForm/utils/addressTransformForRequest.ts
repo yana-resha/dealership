@@ -1,8 +1,9 @@
 import { AddressFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
+import { AddressType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { Address } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 
-export const addressTransformForRequest = (address: Address): AddressFrontdc => {
+export const addressTransformForRequest = (address: Address, addressType: AddressType): AddressFrontdc => {
   const {
     region,
     areaType,
@@ -20,7 +21,7 @@ export const addressTransformForRequest = (address: Address): AddressFrontdc => 
   } = address
 
   const result = {
-    type: 1,
+    type: addressType,
     country: 'Россия',
     // postalCode: string, //дополнить из дадаты DCB-353
     // regCode: string, //дополнить из дадаты DCB-353

@@ -34,8 +34,7 @@ describe('useInitialValues', () => {
             isLoading: true,
           } as any),
       )
-
-      expect(useInitialValues()).toEqual({
+      expect(useInitialValues('12345')).toEqual({
         isShouldShowLoading: true,
         initialValues: EXPECTED_DATA,
       })
@@ -49,8 +48,7 @@ describe('useInitialValues', () => {
             isLoading: true,
           } as any),
       )
-
-      expect(useInitialValues()).toEqual({
+      expect(useInitialValues('12345')).toEqual({
         isShouldShowLoading: true,
         initialValues: configInitialValues,
       })

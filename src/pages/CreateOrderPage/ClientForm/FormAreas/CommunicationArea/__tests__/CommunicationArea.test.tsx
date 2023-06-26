@@ -1,12 +1,12 @@
 import React, { PropsWithChildren } from 'react'
 
 import { Button } from '@mui/material'
+import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
 import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
-import { Occupation } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
@@ -97,7 +97,7 @@ describe('CommunicationAreaTest', () => {
     it('Поле "additionalNumber" валидируется, если клиент не работает', async () => {
       mockedCommunicationFields = {
         ...mockedCommunicationFields,
-        occupation: Occupation.WithoutWork,
+        occupation: OccupationType.UNEMPLOYED,
       }
       render(<CommunicationArea />, {
         wrapper: createWrapper,

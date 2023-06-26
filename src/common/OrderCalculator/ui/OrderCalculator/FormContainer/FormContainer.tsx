@@ -27,6 +27,10 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
     [shouldFetchProductsOnStart],
   )
 
+  const fetchProducts = useCallback(() => {
+    setShouldFetchProducts(true)
+  }, [])
+
   const isChangedBaseValues = useMemo(
     () => Object.entries(sentParams).some(e => values[e[0] as keyof OrderCalculatorFields] !== e[1]),
     [sentParams, values],
@@ -85,7 +89,7 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
 
   return (
     <Form>
-      <CarSettingsArea onFilled={changeShouldFetchProducts} />
+      <CarSettingsArea onFilled={changeShouldFetchProducts} fetchProducts={fetchProducts} />
       <OrderSettingsArea disabled={!shouldShowOrderSettings} isSubmitLoading={isSubmitLoading} />
     </Form>
   )

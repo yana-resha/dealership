@@ -44,6 +44,7 @@ describe('ClientDetailedDossierTest', () => {
         () =>
           ({
             data: fullApplicationData,
+            refetch: jest.fn(),
           } as any),
       )
       render(<ClientDetailedDossier applicationId="1" onBackButton={jest.fn} />, { wrapper: createWrapper })

@@ -5,7 +5,6 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.spacing(6),
 
     [theme.breakpoints.down('sm')]: {
       alignItems: 'unset',

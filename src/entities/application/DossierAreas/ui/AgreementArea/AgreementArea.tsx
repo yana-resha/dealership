@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Box, Button, Divider } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { useNavigate } from 'react-router-dom'
 
-import { ApplicationFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
@@ -11,6 +12,8 @@ import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { UploadFile } from 'shared/ui/UploadFile/UploadFile'
 
 import { RequisitesArea } from '../'
+import { appRoutePaths } from '../../../../../shared/navigation/routerPath'
+import { getPointOfSaleFromCookies } from '../../../../pointOfSale'
 import { getStatus, PreparedStatus } from '../../../application.utils'
 import { getMockAgreement } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { progressBarConfig } from '../../configs/clientDetailedDossier.config'
@@ -18,7 +21,7 @@ import { useStyles } from './AgreementArea.styles'
 
 type Props = {
   status: StatusCode
-  application: ApplicationFrontdc
+  application: ApplicationFrontDc
   updateStatus: (statusCode: StatusCode) => void
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void
@@ -41,12 +44,14 @@ export function AgreementArea({
   const classes = useStyles()
   const preparedStatus = getStatus(status)
 
+  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(CREATE_AGREEMENT_STEP)
   const [isDocsLoading, setIsDocsLoading] = useState(false)
   const [docsStatus, setDocsStatus] = useState<string[]>([])
   const [rightsAssigned, setRightsAssigned] = useState(false)
   const [financingEnabled, setFinancingEnabled] = useState(true)
   const agreementAreaRef = useRef<HTMLDivElement | undefined>()
+  const { vendorCode } = getPointOfSaleFromCookies()
 
   const getToSecondStage = useCallback(() => {
     const fetchAgreement = async () => {
@@ -71,7 +76,7 @@ export function AgreementArea({
       setCurrentStep(CHECK_REQUISITES)
       agreementAreaRef.current?.scrollIntoView()
     }
-  }, [status, getToSecondStage])
+  }, [preparedStatus, agreementAreaRef.current])
 
   const returnToFirstStage = useCallback(() => {
     setAgreementDocs([])
@@ -118,17 +123,30 @@ export function AgreementArea({
     [updateDocumentStatus, setRightsAssigned],
   )
 
+  const editApplicationWithFinallyApprovedStatus = useCallback(() => {
+    const isFullCalculator = application.vendor?.vendorCode === vendorCode ? true : false
+    navigate(appRoutePaths.createOrder, {
+      state: { isFullCalculator, applicationId: application.dcAppId, saveDraftDisabled: true },
+    })
+  }, [application.vendor?.vendorCode, vendorCode, application.dcAppId, navigate])
+
   return (
     <Box className={classes.blockContainer} ref={agreementAreaRef}>
       <ProgressBar {...progressBarConfig} currentStep={currentStep} />
       {preparedStatus == PreparedStatus.finallyApproved && (
         <Box className={classes.actionButtons}>
-          <Button variant="contained" className={classes.button}>
+          <Button
+            variant="contained"
+            className={classes.button}
+            onClick={editApplicationWithFinallyApprovedStatus}
+          >
             Редактировать
           </Button>
-          <Button variant="contained" className={classes.button} onClick={getToSecondStage}>
-            Сформировать договор
-          </Button>
+          {application.vendor?.vendorCode === vendorCode && (
+            <Button variant="contained" className={classes.button} onClick={getToSecondStage}>
+              Сформировать договор
+            </Button>
+          )}
         </Box>
       )}
 

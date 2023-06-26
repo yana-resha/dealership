@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
 
 import { ApplicationFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
+import { AddressType } from '@sberauto/loanapplifecycledc-proto/public'
+import { ApplicantDocsType } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
 import { DateTime, Interval } from 'luxon'
 
@@ -8,8 +10,7 @@ import { ApplicationTypes } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useGetUserQuery } from 'shared/api/requests/authdc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { getFullName } from 'shared/utils/clientNameTransform'
-import { getSplitedName } from 'shared/utils/clientNameTransform'
+import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
@@ -39,6 +40,7 @@ export const useGetDraftApplicationData = () => {
         familyStatus,
         registrationAddress,
         livingAddress,
+        employerAddress,
         additionalNumber,
         mobileNumber,
         incomeConfirmation,
@@ -46,6 +48,9 @@ export const useGetDraftApplicationData = () => {
         additionalIncome,
         familyIncome,
         expenses,
+        passport,
+        passportDate,
+        issuedBy,
         secondDocumentType,
         secondDocumentNumber,
         secondDocumentDate,
@@ -73,19 +78,19 @@ export const useGetDraftApplicationData = () => {
       return {
         //номер заявки если был уже созданный черновик из getFullApplication
         // dcAppId: string,  //добавить при интеграции экранов DCB-363
-        appType: ApplicationTypes.initial,
+        anketaType: ApplicationTypes.initial,
         vendor: {
           vendorCode,
         },
         employees: {
           tabNumActual: user?.employeeId,
-          fullNameActual: getFullName(user?.firstName, user?.lastName),
+          fullNameCreated: getFullName(user?.firstName, user?.lastName),
         },
         specialMark,
         // unit: string, //добавить после расширения ручки getVendorOptions DCB-389
         applicant: {
           type: 'MainDebitor',
-          category: '0',
+          category: 0,
           lastName: clientLastName,
           firstName: clientFirstName,
           middleName: clientMiddleName,
@@ -100,8 +105,13 @@ export const useGetDraftApplicationData = () => {
           children: numOfChildren ? parseInt(numOfChildren, 10) : 0,
           publicPerson: !!relatedToPublic,
           addresses: compact([
-            registrationAddress ? addressTransformForRequest(registrationAddress) : undefined,
-            livingAddress ? addressTransformForRequest(livingAddress) : undefined,
+            registrationAddress
+              ? addressTransformForRequest(registrationAddress, AddressType.PERMANENT_REGISTRATION)
+              : undefined,
+            livingAddress
+              ? addressTransformForRequest(livingAddress, AddressType.ACTUAL_RESIDENCE)
+              : undefined,
+            employerAddress ? addressTransformForRequest(employerAddress, AddressType.WORKPLACE) : undefined,
           ]),
           phones: compact([
             mobileNumber ? transformPhoneForRequest(mobileNumber, PhoneType.mob) : undefined,
@@ -110,7 +120,7 @@ export const useGetDraftApplicationData = () => {
           ]),
           income: {
             incomeVerify: incomeConfirmation,
-            proofOfIncomePapersType: 1, //тип документа подтверждающего доход, взять из контрактов, когда там появится
+            incomeDocumentType: 1, //тип документа подтверждающего доход, взять из контрактов, когда там появится
             basicIncome: stringToNumber(averageIncome),
             addIncome: stringToNumber(additionalIncome),
             // acceptedIncome: number,
@@ -125,6 +135,9 @@ export const useGetDraftApplicationData = () => {
                   secondDocumentDate,
                   secondDocumentIssuedBy,
                 )
+              : undefined,
+            !!passport && !!passportDate && !!issuedBy
+              ? transformDocsForRequest(ApplicantDocsType.PASSPORT, passport, passportDate, issuedBy)
               : undefined,
           ]),
           employment: {

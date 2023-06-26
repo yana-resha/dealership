@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import Box from '@mui/material/Box'
+import { useLocation } from 'react-router-dom'
 
 import { ClientDetailedDossier } from 'common/findApplication/ClientDetailedDossier'
 import { ApplicationFilters } from 'entities/application/ApplicationFilters/ApplicationFilters'
@@ -11,9 +12,14 @@ import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useFindApplicationsQuery } from '../hooks/useFindApplicationsQuery'
 import { useStyles } from './FindApplication.styles'
 
+interface FindApplicationState {
+  applicationId: string
+}
+
 export const FindApplication = () => {
   const classes = useStyles()
-
+  const location = useLocation()
+  const state = location.state as FindApplicationState
   const [request, setRequest] = useState<FindApplicationsReq>({
     passportSeries: '',
     passportNumber: '',
@@ -26,7 +32,9 @@ export const FindApplication = () => {
     // statuses: [],
   })
   const [page, setPage] = useState(1)
-  const [detailedApplicationId, setDetailedApplicationId] = useState<string | undefined>(undefined)
+  const [detailedApplicationId, setDetailedApplicationId] = useState<string | undefined>(
+    state ? state.applicationId : undefined,
+  )
 
   const { vendorCode } = getPointOfSaleFromCookies()
 
@@ -39,12 +47,12 @@ export const FindApplication = () => {
   }
 
   /* TODO: DCB-387 Решили не делать до старта MVP
-    const setStatuses = (statusValues: StatusCode[]) => {
-      const newValue = { ...request, statuses: statusValues }
-
-      setRequest(newValue)
-    }
-  */
+      const setStatuses = (statusValues: StatusCode[]) => {
+        const newValue = { ...request, statuses: statusValues }
+  
+        setRequest(newValue)
+      }
+    */
 
   const getDetailedDossier = (applicationId: string, page: number) => {
     setPage(page)

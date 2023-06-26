@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 
 import { DefaultLayout } from 'common/layout/DefaultLayout'
 import { CreateOrderPage } from 'pages/CreateOrderPage'
-import { FullOrderSettings } from 'pages/CreateOrderPage/FullOrderSettings'
 import { DealershipPage } from 'pages/Dealership'
 import { NotFoundPage } from 'pages/NotFound'
 import { appRoutePaths, defaultRoute } from 'shared/navigation/routerPath'
@@ -20,7 +19,6 @@ export function MainRouter(): JSX.Element {
         <Route path={appRoutePaths.dealership} element={<Navigate to={defaultRoute} replace />} />
         <Route path={appRoutePaths.orderList} element={<DealershipPage />} />
         <Route path={appRoutePaths.createOrder} element={<CreateOrderPage />} />
-        <Route path={appRoutePaths.fullOrderSettings} element={<FullOrderSettings />} />
       </Route>
     </Routes>
   )

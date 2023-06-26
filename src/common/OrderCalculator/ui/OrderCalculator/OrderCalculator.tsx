@@ -20,9 +20,10 @@ type Props = {
   isSubmitLoading: boolean
   onSubmit: (data: CalculateCreditRequest) => void
   onChangeForm: () => void
+  applicationId?: string
 }
 
-export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }: Props) {
+export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm, applicationId }: Props) {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data: vendorOptions } = useGetVendorOptionsQuery({
@@ -30,6 +31,7 @@ export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }: Pro
   })
   const { isShouldShowLoading, initialValues, hasCustomInitialValues } = useInitialValues(
     initialValueMap,
+    applicationId,
     undefined,
   )
 

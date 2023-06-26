@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 
-import { AdditionalOptionsType } from 'entities/application/constants'
+import { BankOptionType } from '@sberauto/loanapplifecycledc-proto/public'
+
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
-import { ApplicationFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 
 import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
 import { FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
@@ -12,18 +13,17 @@ import { FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } fr
 type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : OrderCalculatorFields
 export function useInitialValues<D extends boolean | undefined>(
   initialData: CalculatorFields<D>,
+  applicationId?: string,
   isFullCalculator?: D,
 ) {
   const { vendorCode } = getPointOfSaleFromCookies()
-  // TODO DCB-363 | временное решение, удалить, когда будет принято решения по переходам
-  const applicationId = '545544'
   const { data: fullApplicationData, isLoading } = useGetFullApplicationQuery(
     { applicationId },
     { enabled: !!applicationId },
   )
 
   const { loanCar, loanData, vendor, specialMark } = useMemo(
-    () => fullApplicationData?.application || ({} as ApplicationFrontdc),
+    () => fullApplicationData?.application || ({} as ApplicationFrontDc),
     [fullApplicationData?.application],
   )
 
@@ -31,7 +31,7 @@ export function useInitialValues<D extends boolean | undefined>(
     () =>
       (loanData?.additionalOptions || []).reduce(
         (acc, cur) => {
-          if (!cur.bankOptionType && cur.bankOptionType !== AdditionalOptionsType.BankServices) {
+          if (!cur.bankOptionType && cur.bankOptionType !== BankOptionType.BANKSERVICES) {
             return acc
           }
 
@@ -79,7 +79,7 @@ export function useInitialValues<D extends boolean | undefined>(
             : {}
 
           switch (cur.bankOptionType) {
-            case AdditionalOptionsType.Equipments: {
+            case BankOptionType.EQUIPMENTS: {
               if (acc.additionalEquipments.length === 1 && !acc.additionalEquipments[0].productType) {
                 acc.additionalEquipments.shift()
               }
@@ -92,7 +92,7 @@ export function useInitialValues<D extends boolean | undefined>(
               })
               break
             }
-            case AdditionalOptionsType.DealerServices: {
+            case BankOptionType.DEALERSERVICES: {
               if (acc.dealerAdditionalServices.length === 1 && !acc.dealerAdditionalServices[0].productType) {
                 acc.dealerAdditionalServices.shift()
               }
@@ -103,17 +103,17 @@ export function useInitialValues<D extends boolean | undefined>(
               })
               break
             }
-            case AdditionalOptionsType.BankServices: {
-              if (acc.bankAdditionalServices.length === 1 && !acc.bankAdditionalServices[0].productType) {
-                acc.bankAdditionalServices.shift()
-              }
-              acc.bankAdditionalServices.push({
-                ...additionalServiceBaseData,
-                ...dealerAdditionalServiceData,
-                ...additionalServiceRequisitesData,
-              })
-              break
-            }
+            // case BankOptionType.BANKSERVICES: {
+            //   if (acc.bankAdditionalServices.length === 1 && !acc.bankAdditionalServices[0].productType) {
+            //     acc.bankAdditionalServices.shift()
+            //   }
+            //   acc.bankAdditionalServices.push({
+            //     ...additionalServiceBaseData,
+            //     ...dealerAdditionalServiceData,
+            //     ...additionalServiceRequisitesData,
+            //   })
+            //   break
+            // }
           }
 
           return acc
@@ -152,7 +152,7 @@ export function useInitialValues<D extends boolean | undefined>(
         [FormFieldNameMap.legalPerson]:
           vendor?.vendorCode ?? vendorCode ?? (initialData as FullOrderCalculatorFields).legalPerson,
         [FormFieldNameMap.loanAmount]: `${
-          loanData?.creditAmountWithoutAdd ?? (initialData as FullOrderCalculatorFields).loanAmount
+          loanData?.amountWithoutAdd ?? (initialData as FullOrderCalculatorFields).loanAmount
         }`,
         [FormFieldNameMap.bankIdentificationCode]:
           vendor?.vendorBankDetails?.bic ?? (initialData as FullOrderCalculatorFields).bankIdentificationCode,
