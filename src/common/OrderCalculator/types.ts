@@ -101,7 +101,7 @@ export interface OrderCalculatorFields {
   [FormFieldNameMap.creditProduct]: string
   [FormFieldNameMap.initialPayment]: string
   [FormFieldNameMap.initialPaymentPercent]: string
-  [FormFieldNameMap.loanTerm]: number | undefined
+  [FormFieldNameMap.loanTerm]: number | string
   [ServicesGroupName.additionalEquipments]: OrderCalculatorAdditionalService[]
   [ServicesGroupName.dealerAdditionalServices]: OrderCalculatorAdditionalService[]
   [ServicesGroupName.bankAdditionalServices]: OrderCalculatorAdditionalService[]

@@ -1,22 +1,24 @@
 import { useCallback, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
-import { useField } from 'formik'
+import { useFormikContext } from 'formik'
 
 import { ReactComponent as WarningIcon } from 'assets/icons/warning.svg'
-import { SPECIAL_MARK_OPTIONS, useSpecialMarkContext } from 'entities/SpecialMark'
+import { FormFieldNameMap } from 'common/OrderCalculator/types'
+import { SPECIAL_MARK_OPTIONS } from 'entities/SpecialMark'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
 
+import { useAppSelector } from '../../shared/hooks/store/useAppSelector'
 import { useStyles } from './FraudDialog.styles'
 
 export const FraudDialog = () => {
   const classes = useStyles()
-  const { specialMark, onChangeSpecialMark } = useSpecialMarkContext()
-  const [specialMarkField] = useField<string | null>('specialMark')
+  const { setFieldValue } = useFormikContext()
   const [isVisible, setIsVisible] = useState(false)
-  const [fraudReason, setFraudReason] = useState(specialMarkField.value || specialMark)
+  const savedApplication = useAppSelector(state => state.order.order)
+  const [fraudReason, setFraudReason] = useState(savedApplication?.orderData?.application?.specialMark || '')
   const handleChange = useCallback(
     (fieldValue: string) => {
       setFraudReason(fieldValue)
@@ -34,8 +36,8 @@ export const FraudDialog = () => {
 
   const onSubmit = useCallback(() => {
     setIsVisible(false)
-    onChangeSpecialMark(fraudReason)
-  }, [fraudReason, onChangeSpecialMark])
+    setFieldValue(FormFieldNameMap.specialMark, fraudReason)
+  }, [fraudReason, setFieldValue])
 
   return (
     <Box className={classes.fraudButtonContainer}>

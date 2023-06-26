@@ -1,13 +1,14 @@
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
+import { FormikProps } from 'formik'
 import { MockStore } from 'redux-mock-store'
 
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { ClientForm } from '../ClientForm'
-import * as useInitialValuesModule from '../useInitialValues'
+import { ClientData } from '../ClientForm.types'
 
 jest.mock('../FormAreas/PassportArea/PassportArea', () => ({
   PassportArea: () => <div data-testid="passportArea" />,
@@ -27,15 +28,13 @@ jest.mock('../FormAreas/JobArea/JobArea', () => ({
 jest.mock('../FormAreas/QuestionnaireUploadArea/QuestionnaireUploadArea', () => ({
   QuestionnaireUploadArea: () => <div data-testid="questionnaireUploadArea" />,
 }))
-jest.mock('entities/SpecialMark', () => ({
-  FraudDialog: () => <div data-testid="fraudDialog" />,
-}))
 jest.mock('notistack', () => ({
   ...jest.requireActual('notistack'),
   useSnackbar: () => ({
     enqueueSnackbar: jest.fn(),
   }),
 }))
+const formRef = React.createRef<FormikProps<ClientData>>()
 
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore
@@ -48,13 +47,7 @@ disableConsole('error')
 describe('ClientFormTest', () => {
   describe('Форма отображается корректно', () => {
     beforeEach(() => {
-      jest.spyOn(useInitialValuesModule, 'useInitialValues').mockImplementation(
-        () =>
-          ({
-            isShouldShowLoading: false,
-          } as ReturnType<typeof useInitialValuesModule.useInitialValues>),
-      )
-      render(<ClientForm />, { wrapper: createWrapper })
+      render(<ClientForm formRef={formRef} />, { wrapper: createWrapper })
     })
 
     it('Отображается блок "Паспортные данные"', () => {

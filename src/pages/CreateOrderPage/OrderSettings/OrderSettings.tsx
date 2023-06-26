@@ -7,9 +7,6 @@ import { CalculateCreditRequest, CalculatedProduct } from '@sberauto/dictionaryd
 import { OrderCalculator } from 'common/OrderCalculator'
 import { BankOffers } from 'entities/BankOffers'
 import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
-import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
-
-import { updateOrder } from '../model/orderSlice'
 
 const useStyles = makeStyles(theme => ({
   errorContainer: {
@@ -21,16 +18,14 @@ const useStyles = makeStyles(theme => ({
 
 type Props = {
   nextStep: () => void
-  applicationId?: string
 }
 
-export function OrderSettings({ nextStep, applicationId }: Props) {
+export function OrderSettings({ nextStep }: Props) {
   const classes = useStyles()
-  const dispatch = useAppDispatch()
 
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
 
-  const { mutateAsync, isError, error, isLoading: isOfferLoading } = useCalculateCreditMutation()
+  const { mutateAsync, isError, isLoading: isOfferLoading } = useCalculateCreditMutation()
 
   const clearBankOfferList = useCallback(() => {
     if (!bankOffers.length) {
@@ -48,13 +43,12 @@ export function OrderSettings({ nextStep, applicationId }: Props) {
 
   const calculateCredit = useCallback(
     async (data: CalculateCreditRequest) => {
-      dispatch(updateOrder({ orderData: data }))
       const res = await mutateAsync(data)
       if (res && res.products) {
         setBankOffers(res.products)
       }
     },
-    [mutateAsync, dispatch],
+    [mutateAsync],
   )
 
   const bankOffersRef = useRef<HTMLDivElement | null>(null)
@@ -70,7 +64,6 @@ export function OrderSettings({ nextStep, applicationId }: Props) {
         isSubmitLoading={isOfferLoading}
         onSubmit={calculateCredit}
         onChangeForm={clearBankOfferList}
-        applicationId={applicationId}
       />
 
       {isError && (

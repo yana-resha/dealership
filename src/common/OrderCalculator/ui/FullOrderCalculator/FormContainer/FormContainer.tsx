@@ -62,7 +62,7 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
       }
       setShouldFetchProducts(false)
       setSentParams(formFields)
-      if (!shouldFetchProductsOnStart || (shouldFetchProductsOnStart && isFetched)) {
+      if (!shouldFetchProductsOnStart || isChangedBaseValues) {
         setValues({ ...fullInitialValueMap, ...formFields })
       }
     }

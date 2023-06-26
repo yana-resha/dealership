@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 
-import { Box, CircularProgress } from '@mui/material'
+import { Box } from '@mui/material'
 import { CalculateCreditRequest } from '@sberauto/dictionarydc-proto/public'
 import { Formik, FormikProps } from 'formik'
 
@@ -20,19 +20,17 @@ type Props = {
   isSubmitLoading: boolean
   onSubmit: (data: CalculateCreditRequest) => void
   onChangeForm: () => void
-  applicationId?: string
 }
 
-export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm, applicationId }: Props) {
+export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }: Props) {
   const classes = useStyles()
 
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data: vendorOptions } = useGetVendorOptionsQuery({
     vendorCode: vendorCode,
   })
-  const { isShouldShowLoading, initialValues, hasCustomInitialValues } = useInitialValues(
+  const { remapApplicationValues, initialValues, hasCustomInitialValues } = useInitialValues(
     initialValueMap,
-    applicationId,
     undefined,
   )
 
@@ -45,6 +43,7 @@ export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm, appli
 
   const handleSubmit = useCallback(
     async (values: OrderCalculatorFields) => {
+      remapApplicationValues(values)
       onSubmit(
         mapValuesForCalculateCreditRequest(
           values,
@@ -53,26 +52,27 @@ export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm, appli
         ),
       )
     },
-    [creditProductListData?.productsMap, onSubmit, vendorOptions?.additionalOptionsMap],
+    [
+      creditProductListData?.productsMap,
+      onSubmit,
+      vendorOptions?.additionalOptionsMap,
+      remapApplicationValues,
+    ],
   )
 
   return (
     <Box className={classes.formContainer} data-testid="orderCalculatorForm">
-      {isShouldShowLoading ? (
-        <CircularProgress className={classes.circular} />
-      ) : (
-        <Formik
-          initialValues={initialValues}
-          validationSchema={orderFormValidationSchema}
-          onSubmit={handleSubmit}
-        >
-          <FormContainer
-            isSubmitLoading={isSubmitLoading}
-            onChangeForm={onChangeForm}
-            shouldFetchProductsOnStart={hasCustomInitialValues}
-          />
-        </Formik>
-      )}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={orderFormValidationSchema}
+        onSubmit={handleSubmit}
+      >
+        <FormContainer
+          isSubmitLoading={isSubmitLoading}
+          onChangeForm={onChangeForm}
+          shouldFetchProductsOnStart={hasCustomInitialValues}
+        />
+      </Formik>
     </Box>
   )
 }

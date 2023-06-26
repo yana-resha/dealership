@@ -9,7 +9,7 @@ import {
 import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
-import { setOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
 import { NoMatchesModal } from 'pages/CreateOrderPage/OrderSearching/components/NoMatchesModal/NoMatchesModal'
 import { checkIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'
@@ -75,6 +75,16 @@ export function ActionArea(props: Props) {
   const passport = applicant?.documents?.find(document => document.type === ApplicantDocsType.PASSPORT)
   const phoneNumber = applicant?.phones?.find(document => document.type === PhoneType.MOBILE)
 
+  const deleteLoanDataFromApplication = useCallback(() => {
+    dispatch(
+      updateOrder({
+        orderData: {
+          application: { ...application, loanData: undefined, loanCar: undefined, specialMark: undefined },
+        },
+      }),
+    )
+  }, [application, dispatch, updateOrder])
+
   const openModal = useCallback(() => {
     setVisibleModal(true)
   }, [])
@@ -89,31 +99,29 @@ export function ActionArea(props: Props) {
 
   const editApplicationWithInitialStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator: false, applicationId: application.dcAppId },
+      state: { isFullCalculator: false },
     })
-  }, [application.anketaType, application.dcAppId, navigate])
+  }, [application.anketaType, navigate])
 
   const editApplicationWithErrorStatus = useCallback(() => {
-    let isFullCalculator = false
-    if (application.vendor?.vendorCode === vendorCode && application.anketaType === 2) {
-      isFullCalculator = true
-    }
+    const isFullCalculator =
+      application.vendor?.vendorCode === vendorCode && application.anketaType === 2 ? true : false
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator, applicationId: application.dcAppId, saveDraftDisabled: true },
+      state: { isFullCalculator, saveDraftDisabled: true },
     })
-  }, [application.vendor?.vendorCode, vendorCode, application.anketaType, application.dcAppId])
+  }, [application.vendor?.vendorCode, vendorCode, application.anketaType, navigate])
 
   const editApplicationWithApprovedStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator: false, applicationId: application.dcAppId, saveDraftDisabled: true },
+      state: { isFullCalculator: false, saveDraftDisabled: true },
     })
-  }, [application.dcAppId, navigate])
+  }, [navigate])
 
   const extendApplicationWithApprovedStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator: true, applicationId: application.dcAppId, saveDraftDisabled: true },
+      state: { isFullCalculator: true, saveDraftDisabled: true },
     })
-  }, [application.dcAppId, navigate])
+  }, [navigate])
 
   const clientData = useMemo(
     (): IsClientRequest => ({
@@ -133,14 +141,14 @@ export function ActionArea(props: Props) {
   const recreateApplication = useCallback(async () => {
     const response = await checkIfSberClient(clientData)
     if (response.isClient) {
-      dispatch(setOrder(clientData))
+      deleteLoanDataFromApplication()
       navigate(appRoutePaths.createOrder, {
-        state: { isFullCalculator: false, applicationId: application.dcAppId },
+        state: { isFullCalculator: false },
       })
     } else {
       openModal()
     }
-  }, [clientData, application.dcAppId, navigate, dispatch, checkIfSberClient])
+  }, [clientData, navigate, dispatch, checkIfSberClient, deleteLoanDataFromApplication])
 
   const sendApplicationToScore = useCallback(() => {
     sendToScore(applicationForScore)

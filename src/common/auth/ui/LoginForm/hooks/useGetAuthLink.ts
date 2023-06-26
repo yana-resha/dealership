@@ -31,7 +31,7 @@ export const useGetAuthLink = (code?: string | null) => {
     if (appConfig.sberTeamAuthEnv === 'dev') {
       return (
         appConfig.appUrl +
-        `/auth?code=${code ?? '11111'}&state=${data?.state ?? 'e544b6f3-0697-49af-ac8b-72a39f20f7b8'}`
+        `/auth?code=${code ?? '22222'}&state=${data?.state ?? 'e544b6f3-0697-49af-ac8b-72a39f20f7b8'}`
       )
     } else {
       return data ? authorizeUrl(data) : undefined

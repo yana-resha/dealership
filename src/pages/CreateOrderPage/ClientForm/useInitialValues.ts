@@ -1,25 +1,36 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { AddressType, PhoneType, ApplicantDocsType } from '@sberauto/loanapplifecycledc-proto/public'
+import { AddressType, ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
-import { DateTime } from 'luxon'
+import { DateTime, Interval } from 'luxon'
+import { useDispatch } from 'react-redux'
 
-import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
-import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { ApplicantFrontdc, ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
-import { getFullName } from 'shared/utils/clientNameTransform'
+import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
+import { convertedDateToString } from 'shared/utils/dateTransform'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
+import { updateOrder } from '../model/orderSlice'
+import { ClientData } from './ClientForm.types'
 import { configAddressInitialValues } from './config/clientFormInitialValues'
-import { addressTransformForForm } from './utils/addressTransformForRequest'
+import {
+  AREA_TYPES,
+  CITY_TYPES,
+  SETTLEMENT_TYPES,
+  STREET_TYPES,
+} from './FormAreas/AddressDialog/AddressDialog.config'
+import { addressTransformForForm, addressTransformForRequest } from './utils/addressTransformForRequest'
 import { makeClientForm } from './utils/makeClienForm'
+import { transformDocsForRequest } from './utils/transformDocsForRequest'
+import { transformPhoneForRequest } from './utils/transformPhoneForRequest'
 
-export function useInitialValues<D extends boolean | undefined>(applicationId?: string) {
+export function useInitialValues<D extends boolean | undefined>() {
   const initialValues = useAppSelector(state => makeClientForm(state.order.order))
-  const { data: fullApplicationData, isLoading } = useGetFullApplicationQuery(
-    { applicationId },
-    { enabled: !!applicationId },
-  )
+  const initialOrder = useAppSelector(state => state.order.order)
+  const dispatch = useDispatch()
+  const fullApplicationData = initialOrder?.orderData
 
   const { applicant, specialMark, createdDate } = useMemo(
     () => fullApplicationData?.application || ({} as ApplicationFrontDc),
@@ -39,6 +50,8 @@ export function useInitialValues<D extends boolean | undefined>(applicationId?: 
     return { passport, secondDocument }
   }, [applicant?.documents])
 
+  const getStringIfPresent = useCallback((value: string) => (value ? value + ' ' : ''), [])
+
   const {
     registrationAddress,
     registrationAddressString,
@@ -50,8 +63,35 @@ export function useInitialValues<D extends boolean | undefined>(applicationId?: 
     () =>
       (applicant?.addresses || []).reduce(
         (acc, cur) => {
+          function getLabel(
+            values: {
+              value: string
+              label: string
+            }[],
+            value?: string,
+          ): string {
+            if (!value) {
+              return ''
+            }
+
+            return values.find(item => item.value === value)?.label ?? value ?? ''
+          }
+
           const preparedAddress = addressTransformForForm(cur, configAddressInitialValues)
-          const preparedAddressString = compact(Object.values(preparedAddress)).join(', ')
+          const preparedAddressString =
+            getStringIfPresent(preparedAddress.region) +
+            getStringIfPresent(getLabel(AREA_TYPES, preparedAddress.areaType)) +
+            getStringIfPresent(preparedAddress.area) +
+            getStringIfPresent(getLabel(CITY_TYPES, preparedAddress.cityType)) +
+            getStringIfPresent(preparedAddress.city) +
+            getStringIfPresent(getLabel(SETTLEMENT_TYPES, preparedAddress.settlementType)) +
+            getStringIfPresent(preparedAddress.settlement) +
+            getStringIfPresent(getLabel(STREET_TYPES, preparedAddress.streetType)) +
+            getStringIfPresent(preparedAddress.street) +
+            getStringIfPresent(preparedAddress.house) +
+            getStringIfPresent(preparedAddress.unit) +
+            getStringIfPresent(preparedAddress.houseExt) +
+            getStringIfPresent(preparedAddress.unitNum)
 
           if (cur.type === AddressType.PERMANENT_REGISTRATION) {
             acc.registrationAddress = preparedAddress
@@ -142,11 +182,139 @@ export function useInitialValues<D extends boolean | undefined>(applicationId?: 
     [applicant?.employment?.currentWorkExperience, createdDate, initialValues.employmentDate],
   )
 
+  const remapApplicationValues = useCallback(
+    (values: ClientData) => {
+      const {
+        clientName,
+        clientFormerName,
+        birthPlace,
+        birthDate,
+        issuedBy,
+        secondDocumentIssuedBy,
+        secondDocumentNumber,
+        mobileNumber,
+        additionalNumber,
+        relatedToPublic,
+        secondDocumentType,
+        secondDocumentDate,
+        employmentDate,
+        employerName,
+        employerInn,
+        employerPhone,
+        employerAddress,
+        livingAddress,
+        regAddrIsLivingAddr,
+        registrationAddress,
+        passportDate,
+        passport,
+        email,
+        numOfChildren,
+        additionalIncome,
+        familyIncome,
+        expenses,
+        incomeConfirmation,
+        averageIncome,
+        familyStatus,
+        occupation,
+        divisionCode,
+        specialMark,
+      } = values
+
+      const application = fullApplicationData?.application
+      if (!application) {
+        return
+      }
+      const {
+        firstName: clientFirstName,
+        lastName: clientLastName,
+        middleName: clientMiddleName,
+      } = getSplitedName(clientName)
+      const {
+        firstName: previousClientFirstName,
+        lastName: previousClientLastName,
+        middleName: previousClientMiddleName,
+      } = getSplitedName(clientFormerName)
+      const actualLivingAddress = regAddrIsLivingAddr ? registrationAddress : livingAddress
+
+      const newApplicant: ApplicantFrontdc = {
+        firstName: clientFirstName,
+        lastName: clientLastName,
+        middleName: clientMiddleName,
+        prevFirstName: previousClientFirstName,
+        prevLastName: previousClientLastName,
+        prevMiddleName: previousClientMiddleName,
+        birthDate: convertedDateToString(birthDate),
+        children: numOfChildren ? parseInt(numOfChildren, 10) : undefined,
+        marital: familyStatus ?? undefined,
+        birthPlace: birthPlace,
+        email: email,
+        publicPerson: relatedToPublic === 1,
+        documents: compact([
+          {
+            ...transformDocsForRequest(ApplicantDocsType.PASSPORT, passport, passportDate, issuedBy),
+            issuedCode: divisionCode,
+          },
+          transformDocsForRequest(
+            secondDocumentType,
+            secondDocumentNumber,
+            secondDocumentDate,
+            secondDocumentIssuedBy,
+          ),
+        ]),
+        addresses: compact([
+          registrationAddress
+            ? addressTransformForRequest(registrationAddress, AddressType.PERMANENT_REGISTRATION)
+            : undefined,
+          livingAddress
+            ? addressTransformForRequest(actualLivingAddress, AddressType.ACTUAL_RESIDENCE)
+            : undefined,
+          employerAddress ? addressTransformForRequest(employerAddress, AddressType.WORKPLACE) : undefined,
+        ]),
+        phones: compact([
+          mobileNumber ? transformPhoneForRequest(mobileNumber, PhoneType.MOBILE) : undefined,
+          additionalNumber ? transformPhoneForRequest(additionalNumber, PhoneType.ADDITIONAL) : undefined,
+          employerPhone ? transformPhoneForRequest(employerPhone, PhoneType.WORKING) : undefined,
+        ]),
+        income: {
+          incomeVerify: incomeConfirmation,
+          basicIncome: stringToNumber(averageIncome),
+          addIncome: stringToNumber(additionalIncome),
+          familyIncome: stringToNumber(familyIncome),
+          expenses: stringToNumber(expenses),
+        },
+        employment: {
+          occupation: occupation ?? undefined,
+          currentWorkExperience: employmentDate
+            ? parseInt(
+                Interval.fromDateTimes(DateTime.fromJSDate(employmentDate), DateTime.now())
+                  .toDuration(['months'])
+                  .toFormat('MM'),
+                10,
+              )
+            : undefined,
+          orgName: employerName,
+          inn: employerInn,
+        },
+      }
+
+      const updatedApplication = {
+        ...application,
+        applicant: newApplicant,
+        specialMark: specialMark,
+        createdDate: convertedDateToString(new Date()),
+      }
+
+      dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
+    },
+    [fullApplicationData],
+  )
+
   return {
-    isShouldShowLoading: applicationId && isLoading,
+    remapApplicationValues,
+    isShouldShowLoading: false,
     initialValues: {
       ...initialValues,
-      ...(applicationId
+      ...(fullApplicationData?.application?.applicant
         ? {
             clientName:
               getFullName(applicant?.firstName, applicant?.lastName, applicant?.middleName) ||
