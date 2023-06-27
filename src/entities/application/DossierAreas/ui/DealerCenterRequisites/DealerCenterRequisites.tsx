@@ -30,7 +30,7 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
   const classes = useStyles()
   const { vendorName, vendorCode } = getPointOfSaleFromCookies()
   const { values, setFieldValue } = useFormikContext<DossierRequisites>()
-  const { legalPerson, beneficiaryBank, bankAccountNumber, taxPresence, isCustomFields } = values
+  const { legalPerson, beneficiaryBank, bankAccountNumber, taxPresence, isCustomFields, loanAmount } = values
   const initialValues = useRef(values)
 
   const legalPersonOptions = useMemo(
@@ -47,6 +47,17 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
     setAccountNumberOptions,
     previousAccountNumber,
   } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
+
+  const calculateTaxForLegalPerson = useCallback(() => {
+    const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
+    if (requisiteForLegalName) {
+      setFieldValue(namePrefix + 'taxPercent', requisiteForLegalName.tax)
+      setFieldValue(namePrefix + 'taxValue', requisiteForLegalName.tax * parseFloat(loanAmount))
+    } else {
+      setFieldValue(namePrefix + 'taxPercent', null)
+      setFieldValue(namePrefix + 'taxValue', null)
+    }
+  }, [legalPerson, loanAmount, namePrefix, requisites, setFieldValue])
 
   const updateRequisites = useCallback(() => {
     const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
@@ -107,6 +118,10 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
     },
     [clearFieldsForManualEntry, namePrefix, resetInitialValues, setFieldValue],
   )
+
+  useEffect(() => {
+    calculateTaxForLegalPerson()
+  }, [loanAmount, legalPerson])
 
   useEffect(() => {
     if (previousLegalPerson === legalPerson || beneficiaryBank === '' || isCustomFields) {

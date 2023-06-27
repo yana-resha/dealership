@@ -20,6 +20,8 @@ export const EXPECTED_FULL_DATA = {
   bankAdditionalServices: [
     {
       agent: '',
+      agentTaxPercent: null,
+      agentTaxValue: null,
       bankAccountNumber: '',
       bankIdentificationCode: '',
       beneficiaryBank: '',
@@ -31,8 +33,10 @@ export const EXPECTED_FULL_DATA = {
       isCustomFields: false,
       loanTerm: undefined,
       productCost: '',
-      productType: undefined,
+      productType: '',
       provider: '',
+      providerTaxPercent: null,
+      providerTaxValue: null,
       taxation: undefined,
     },
   ],

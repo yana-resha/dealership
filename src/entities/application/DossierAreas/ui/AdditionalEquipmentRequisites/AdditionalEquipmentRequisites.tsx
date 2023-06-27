@@ -53,7 +53,8 @@ export function AdditionalEquipmentRequisites(props: Props) {
     productOptions,
   } = props
   const { values, setFieldValue } = useFormikContext<DossierRequisites>()
-  const { legalPerson, beneficiaryBank, bankAccountNumber, taxPresence } = values.additionalEquipments[index]
+  const { legalPerson, beneficiaryBank, bankAccountNumber, taxPresence, productCost } =
+    values.additionalEquipments[index]
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
     parentName,
     index,
@@ -82,6 +83,17 @@ export function AdditionalEquipmentRequisites(props: Props) {
     parentName,
     options: productOptions,
   })
+
+  const calculateTaxForLegalPerson = useCallback(() => {
+    const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
+    if (requisiteForLegalName) {
+      setFieldValue(namePrefix + 'taxPercent', requisiteForLegalName.tax)
+      setFieldValue(namePrefix + 'taxValue', requisiteForLegalName.tax * productCost)
+    } else {
+      setFieldValue(namePrefix + 'taxPercent', null)
+      setFieldValue(namePrefix + 'taxValue', null)
+    }
+  }, [legalPerson, namePrefix, productCost, requisites, setFieldValue])
 
   const updateRequisites = useCallback(() => {
     const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
@@ -148,6 +160,10 @@ export function AdditionalEquipmentRequisites(props: Props) {
     },
     [clearFieldsForManualEntry, resetInitialValues, setManualEntry],
   )
+
+  useEffect(() => {
+    calculateTaxForLegalPerson()
+  }, [productCost, legalPerson])
 
   useEffect(() => {
     if (previousLegalPerson === legalPerson || beneficiaryBank === '' || manualEntry) {

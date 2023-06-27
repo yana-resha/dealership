@@ -57,7 +57,7 @@ export const INITIAL_CAR_ID_TYPE = [
 ]
 
 const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
-  productType: undefined,
+  productType: '',
   productCost: '',
   isCredit: false,
   [FormFieldNameMap.documentType]: '',
@@ -77,6 +77,8 @@ const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
 const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments = {
   ...INITIAL_ADDITIONAL_SERVICE,
   [FormFieldNameMap.legalPerson]: '',
+  [FormFieldNameMap.taxValue]: null,
+  [FormFieldNameMap.taxPercent]: null,
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 
@@ -85,6 +87,10 @@ const FULL_INITIAL_ADDITIONAL_SERVICE: FullInitialAdditionalService = {
   [FormFieldNameMap.provider]: '',
   [FormFieldNameMap.agent]: '',
   [FormFieldNameMap.loanTerm]: undefined,
+  [FormFieldNameMap.providerTaxValue]: null,
+  [FormFieldNameMap.providerTaxPercent]: null,
+  [FormFieldNameMap.agentTaxValue]: null,
+  [FormFieldNameMap.agentTaxPercent]: null,
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 
@@ -127,6 +133,8 @@ export const fullInitialValueMap: FullOrderCalculatorFields = {
   [FormFieldNameMap.salesContractDate]: null,
   [FormFieldNameMap.legalPerson]: '',
   [FormFieldNameMap.loanAmount]: '',
+  [FormFieldNameMap.taxValue]: null,
+  [FormFieldNameMap.taxPercent]: null,
   ...INITIAL_BANK_DETAILS_VALUE,
   [ServicesGroupName.additionalEquipments]: [FULL_INITIAL_ADDITIONAL_EQUIPMENTS],
   [ServicesGroupName.dealerAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],

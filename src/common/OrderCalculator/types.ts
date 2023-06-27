@@ -3,40 +3,46 @@ import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 
 export enum FormFieldNameMap {
-  carCondition = 'carCondition',
-  carBrand = 'carBrand',
-  carModel = 'carModel',
-  carYear = 'carYear',
-  carCost = 'carCost',
-  carMileage = 'carMileage',
-  creditProduct = 'creditProduct',
-  initialPayment = 'initialPayment',
-  initialPaymentPercent = 'initialPaymentPercent',
-  loanTerm = 'loanTerm',
-  productType = 'productType',
-  productCost = 'productCost',
-  isCredit = 'isCredit',
-  specialMark = 'specialMark',
-  carPassportType = 'carPassportType',
-  carPassportId = 'carPassportId',
-  carPassportCreationDate = 'carPassportCreationDate',
-  carIdType = 'carIdType',
-  carId = 'carId',
-  salesContractId = 'salesContractId',
-  salesContractDate = 'salesContractDate',
-  legalPerson = 'legalPerson',
-  loanAmount = 'loanAmount',
-  beneficiaryBank = 'beneficiaryBank',
-  bankAccountNumber = 'bankAccountNumber',
-  documentType = 'documentType',
-  documentNumber = 'documentNumber',
-  documentDate = 'documentDate',
-  bankIdentificationCode = 'bankIdentificationCode',
-  correspondentAccount = 'correspondentAccount',
-  taxation = 'taxation',
-  provider = 'provider',
-  agent = 'agent',
-  isCustomFields = 'isCustomFields',
+  carCondition = 'carCondition', //Состояние
+  carBrand = 'carBrand', //Марка
+  carModel = 'carModel', //Модель
+  carYear = 'carYear', //Год выпуска
+  carCost = 'carCost', //Стоимость
+  carMileage = 'carMileage', //Пробег
+  creditProduct = 'creditProduct', //Кредитный продукт
+  initialPayment = 'initialPayment', //Первоначальный взнос
+  initialPaymentPercent = 'initialPaymentPercent', //Первоначальный взнос в %
+  loanTerm = 'loanTerm', //Срок
+  productType = 'productType', //Вип оборудования / Тип продукта доп. услуги
+  productCost = 'productCost', //Стоимость доп. услуги
+  isCredit = 'isCredit', //В кредит
+  specialMark = 'specialMark', //Специальная отметка
+  carPassportType = 'carPassportType', //Тип ПТС
+  carPassportId = 'carPassportId', //Серия и номер ПТС
+  carPassportCreationDate = 'carPassportCreationDate', //Дата выдачи ПТС
+  carIdType = 'carIdType', //VIN или номер кузова
+  carId = 'carId', //Номер кузова/VIN
+  salesContractId = 'salesContractId', //Номер ДКП
+  salesContractDate = 'salesContractDate', //Дата ДКП
+  legalPerson = 'legalPerson', //Юридическое лицо
+  loanAmount = 'loanAmount', //Сумма кредита
+  taxValue = 'taxValue', //НДС вендора
+  taxPercent = 'taxPercent', //НДС вендора в %
+  providerTaxValue = 'providerTaxValue', //НДС страховой компании или поставщика доп. услуги дилера
+  providerTaxPercent = 'providerTaxPercent', //НДС страховой компании или поставщика доп. услуги дилера в %
+  agentTaxValue = 'agentTaxValue', //НДС агента доп. услуги дилера
+  agentTaxPercent = 'agentTaxPercent', //НДС агента доп. услуги дилера в %
+  beneficiaryBank = 'beneficiaryBank', //Банк получатель денежных средств
+  bankAccountNumber = 'bankAccountNumber', //Номер счета банка
+  documentType = 'documentType', //Тип документа
+  documentNumber = 'documentNumber', //Номер документа
+  documentDate = 'documentDate', //Дата документа
+  bankIdentificationCode = 'bankIdentificationCode', //БИК
+  correspondentAccount = 'correspondentAccount', //Корреспондентский счет
+  taxation = 'taxation', //Налог
+  provider = 'provider', //Страховая компания или поставщик
+  agent = 'agent', //Агент получатель
+  isCustomFields = 'isCustomFields', //Ручной ввод
   commonError = 'commonError',
   isExceededServicesTotalLimit = 'isExceededServicesTotalLimit',
   isExceededAdditionalEquipmentsLimit = 'isExceededAdditionalEquipmentsLimit',
@@ -46,7 +52,7 @@ export enum FormFieldNameMap {
 }
 
 export interface OrderCalculatorAdditionalService {
-  [FormFieldNameMap.productType]: OptionID | undefined
+  [FormFieldNameMap.productType]: OptionID | string
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
   [FormFieldNameMap.documentType]: number | string
@@ -67,6 +73,8 @@ export interface FullInitialAdditionalEquipments
   extends OrderCalculatorAdditionalService,
     InitialBankDetailsValue {
   [FormFieldNameMap.legalPerson]: string
+  [FormFieldNameMap.taxValue]: number | null
+  [FormFieldNameMap.taxPercent]: number | null
 }
 
 export interface FullInitialAdditionalService
@@ -75,6 +83,10 @@ export interface FullInitialAdditionalService
   [FormFieldNameMap.provider]: string
   [FormFieldNameMap.agent]: string
   [FormFieldNameMap.loanTerm]: number | undefined
+  [FormFieldNameMap.providerTaxValue]: number | null
+  [FormFieldNameMap.providerTaxPercent]: number | null
+  [FormFieldNameMap.agentTaxValue]: number | null
+  [FormFieldNameMap.agentTaxPercent]: number | null
 }
 
 export interface CommonError {
@@ -128,6 +140,8 @@ export interface FullOrderCalculatorFields
   [FormFieldNameMap.salesContractDate]: Date | null
   [FormFieldNameMap.legalPerson]: string
   [FormFieldNameMap.loanAmount]: string
+  [FormFieldNameMap.taxValue]: number | null
+  [FormFieldNameMap.taxPercent]: number | null
   [ServicesGroupName.additionalEquipments]: FullInitialAdditionalEquipments[]
   [ServicesGroupName.dealerAdditionalServices]: FullInitialAdditionalService[]
   [ServicesGroupName.bankAdditionalServices]: FullInitialAdditionalService[]

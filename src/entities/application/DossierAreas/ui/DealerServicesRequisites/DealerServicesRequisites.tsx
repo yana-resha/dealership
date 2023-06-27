@@ -63,7 +63,7 @@ export function DealerServicesRequisites(props: Props) {
     productOptions,
   } = props
   const { values, setFieldValue } = useFormikContext<DossierRequisites>()
-  const { provider, bankAccountNumber, agent, beneficiaryBank, taxPresence } =
+  const { provider, bankAccountNumber, agent, beneficiaryBank, taxPresence, isCredit, productCost } =
     values.dealerAdditionalServices[index]
   const initialValues = useRef(values.dealerAdditionalServices[index])
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
@@ -97,6 +97,27 @@ export function DealerServicesRequisites(props: Props) {
     options: productOptions,
   })
 
+  const calculateTaxForProviderAndAgent = useCallback(() => {
+    const requisiteForProviders = requisites.find(requisite => requisite.provider === provider)
+    if (requisiteForProviders) {
+      setFieldValue(namePrefix + 'providerTaxPercent', requisiteForProviders.tax)
+      setFieldValue(namePrefix + 'providerTaxValue', requisiteForProviders.tax * productCost)
+      const chosenAgent = requisiteForProviders.agents.find(receiver => receiver.agentName === agent)
+      if (chosenAgent) {
+        setFieldValue(namePrefix + 'agentTaxPercent', chosenAgent.tax)
+        setFieldValue(namePrefix + 'agentTaxValue', chosenAgent.tax * productCost)
+      } else {
+        setFieldValue(namePrefix + 'agentTaxPercent', null)
+        setFieldValue(namePrefix + 'agentTaxValue', null)
+      }
+    } else {
+      setFieldValue(namePrefix + 'providerTaxPercent', null)
+      setFieldValue(namePrefix + 'providerTaxValue', null)
+      setFieldValue(namePrefix + 'agentTaxPercent', null)
+      setFieldValue(namePrefix + 'agentTaxValue', null)
+    }
+  }, [requisites, provider, setFieldValue, namePrefix, productCost, agent])
+
   const updateRequisites = useCallback(() => {
     const requisiteForProviders = requisites.find(requisite => requisite.provider === provider)
     if (requisiteForProviders) {
@@ -116,7 +137,17 @@ export function DealerServicesRequisites(props: Props) {
       setBanksOptions([])
       setAccountNumberOptions([])
     }
-  }, [requisites, provider, agent, beneficiaryBank, namePrefix])
+  }, [
+    requisites,
+    provider,
+    setBanksOptions,
+    setAccountNumberOptions,
+    manualEntry,
+    agent,
+    beneficiaryBank,
+    setFieldValue,
+    namePrefix,
+  ])
 
   const resetInitialValues = useCallback(() => {
     if (!isRequisiteEditable) {
@@ -129,7 +160,7 @@ export function DealerServicesRequisites(props: Props) {
     setFieldValue(`${namePrefix}beneficiaryBank`, '')
     setFieldValue(`${namePrefix}bankAccountNumber`, '')
     setAccountNumberOptions([])
-  }, [namePrefix])
+  }, [isRequisiteEditable, namePrefix, setAccountNumberOptions, setFieldValue])
 
   const clearFieldsForManualEntry = useCallback(() => {
     if (!isRequisiteEditable) {
@@ -141,7 +172,7 @@ export function DealerServicesRequisites(props: Props) {
     setFieldValue(`${namePrefix}taxPresence`, false)
     setFieldValue(`${namePrefix}taxation`, '0')
     setFieldValue(`${namePrefix}correspondentAccount`, '')
-  }, [namePrefix])
+  }, [isRequisiteEditable, namePrefix, setFieldValue])
 
   //Метод активирует поля для ручного ввода реквизитов. Не используется, пока отключен ручной ввод
   const handleManualEntryChange = useCallback(
@@ -154,7 +185,7 @@ export function DealerServicesRequisites(props: Props) {
         resetInitialValues()
       }
     },
-    [clearFieldsForManualEntry, resetInitialValues],
+    [clearFieldsForManualEntry, resetInitialValues, setManualEntry],
   )
 
   const toggleTaxInPercentField = useCallback(
@@ -162,8 +193,12 @@ export function DealerServicesRequisites(props: Props) {
       setFieldValue(`${namePrefix}taxPresence`, value)
       setFieldValue(`${namePrefix}taxation`, value ? '' : '0')
     },
-    [namePrefix],
+    [namePrefix, setFieldValue],
   )
+
+  useEffect(() => {
+    calculateTaxForProviderAndAgent()
+  }, [productCost, agent])
 
   useEffect(() => {
     if (previousInsuranceCompany === provider || agent === '') {
