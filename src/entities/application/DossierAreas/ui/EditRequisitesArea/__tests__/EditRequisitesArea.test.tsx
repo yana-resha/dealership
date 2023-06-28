@@ -28,7 +28,7 @@ jest.mock('../../../__tests__/mocks/clientDetailedDossier.mock', () => ({
 }))
 
 const mockedReturnToDetailedDossier = jest.fn()
-const mockedDossier = getMockedClientDossier('1')
+getMockedClientDossier('1')
 
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 disableConsole('error')

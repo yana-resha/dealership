@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { Box } from '@mui/material'
+import { OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
 
 import { useGetVendorOptionsQuery } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPayment'
@@ -28,13 +29,31 @@ type Props = {
 
 export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Props) {
   const classes = useStyles()
+
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data: vendorOptions, isError: vendorOptionsIsError } = useGetVendorOptionsQuery({
     vendorCode: vendorCode,
   })
+
+  const additionalEquipments = useMemo(
+    () =>
+      vendorOptions?.additionalOptions
+        ?.filter(option => option.optionType === OptionType.EQUIPMENT)
+        .map(option => ({
+          value: option.optionId,
+          label: option.optionName,
+        })) || [],
+    [vendorOptions?.additionalOptions],
+  )
   const dealerAdditionalServices = useMemo(
-    () => vendorOptions?.options?.map(option => ({ value: option.type, label: option.optionName })) || [],
-    [vendorOptions?.options],
+    () =>
+      vendorOptions?.additionalOptions
+        ?.filter(option => option.optionType === OptionType.ADDITIONAL)
+        .map(option => ({
+          value: option.optionId,
+          label: option.optionName,
+        })) || [],
+    [vendorOptions?.additionalOptions],
   )
 
   const {
@@ -43,9 +62,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
     initialPaymentPercentHelperText,
     loanTerms,
     commonErrors,
-  } = useLimits({
-    vendorCode,
-  })
+  } = useLimits({ vendorCode })
 
   const {
     handleInitialPaymentFocus,
@@ -105,7 +122,12 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
           />
         </Box>
 
-        <AdditionalEquipment requisites={requisites.additionalEquipmentRequisites} />
+        <AdditionalEquipment
+          options={{ productType: additionalEquipments, loanTerms }}
+          requisites={requisites.additionalEquipmentRequisites}
+          isError={vendorOptionsIsError}
+          errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
+        />
         <AdditionalServices
           title="Дополнительные услуги дилера"
           options={{ productType: dealerAdditionalServices, loanTerms }}

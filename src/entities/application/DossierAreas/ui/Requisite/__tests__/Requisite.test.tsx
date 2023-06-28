@@ -40,7 +40,7 @@ describe('RequisiteTest', () => {
 
     it('Отображается "Стоимость"', () => {
       expect(screen.getByText('Стоимость')).toBeInTheDocument()
-      expect(screen.getByText('21 руб.')).toBeInTheDocument()
+      expect(screen.getByText('21 ₽')).toBeInTheDocument()
     })
 
     it('Отображается "Срок"', () => {

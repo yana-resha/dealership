@@ -25,6 +25,7 @@ type Props = {
 
 export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm, applicationId }: Props) {
   const classes = useStyles()
+
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data: vendorOptions } = useGetVendorOptionsQuery({
     vendorCode: vendorCode,
@@ -47,12 +48,12 @@ export function OrderCalculator({ isSubmitLoading, onSubmit, onChangeForm, appli
       onSubmit(
         mapValuesForCalculateCreditRequest(
           values,
-          vendorOptions?.options || [],
+          vendorOptions?.additionalOptionsMap || {},
           creditProductListData?.productsMap,
         ),
       )
     },
-    [creditProductListData?.productsMap, onSubmit, vendorOptions?.options],
+    [creditProductListData?.productsMap, onSubmit, vendorOptions?.additionalOptionsMap],
   )
 
   return (

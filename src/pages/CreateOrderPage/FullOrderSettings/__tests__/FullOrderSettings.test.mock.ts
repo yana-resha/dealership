@@ -1,6 +1,8 @@
-export const dataMock = [
+import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
+
+export const dataMock: CalculatedProduct[] = [
   {
-    productFamilyCode: 'DRVBF',
+    productCodeName: 'DRVBF',
     productCode: 'DRVB',
     productName: 'Драйв В',
     downpayment: 200000,
@@ -13,7 +15,7 @@ export const dataMock = [
     totalSum: 1821466,
   },
   {
-    productFamilyCode: 'DRVCF',
+    productCodeName: 'DRVCF',
     productCode: 'DRVC',
     productName: 'Драйв C',
     downpayment: 300000,
@@ -26,7 +28,7 @@ export const dataMock = [
     totalSum: 2100000,
   },
   {
-    productFamilyCode: 'DRVDF',
+    productCodeName: 'DRVDF',
     productCode: 'DRVD',
     productName: 'Драйв D',
     downpayment: 250000,

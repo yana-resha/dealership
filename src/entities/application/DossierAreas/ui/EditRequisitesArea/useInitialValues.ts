@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { AdditionalOptionsType } from 'entities/application/constants'
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
 import { AdditionalOptions, getMockedClientDossier } from '../../__tests__/mocks/clientDetailedDossier.mock'
 
@@ -32,8 +32,8 @@ export function useInitialValues(applicationId: string) {
 
   const [dealerServices, additionalEquipment] = useMemo(
     () => [
-      additionalOptions.filter(option => option.bankOptionType === AdditionalOptionsType.DealerServices),
-      additionalOptions.filter(option => option.bankOptionType === AdditionalOptionsType.Equipments),
+      additionalOptions.filter(option => option.bankOptionType === OptionType.ADDITIONAL),
+      additionalOptions.filter(option => option.bankOptionType === OptionType.EQUIPMENT),
     ],
     [additionalOptions],
   )

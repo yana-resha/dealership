@@ -19,38 +19,45 @@ type Props = {
 export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProductsOnStart }: Props) {
   const { values, setValues } = useFormikContext<OrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
+
   const [sentParams, setSentParams] = useState({})
   const [shouldShowOrderSettings, setShouldShowOrderSettings] = useState(false)
   const [shouldFetchProducts, setShouldFetchProducts] = useState(shouldFetchProductsOnStart)
-  const changeShouldFetchProducts = useCallback(
-    () => setShouldFetchProducts(shouldFetchProductsOnStart),
-    [shouldFetchProductsOnStart],
-  )
 
-  const fetchProducts = useCallback(() => {
-    setShouldFetchProducts(true)
-  }, [])
+  const changeShouldFetchProducts = useCallback(() => setShouldFetchProducts(true), [])
 
   const isChangedBaseValues = useMemo(
     () => Object.entries(sentParams).some(e => values[e[0] as keyof OrderCalculatorFields] !== e[1]),
     [sentParams, values],
   )
 
-  const { data, isError, isFetching, isFetched } = useGetCreditProductListQuery({
+  const { data, isError, isFetching, isFetched, isLoading, remove } = useGetCreditProductListQuery({
     vendorCode,
     values,
     enabled: shouldFetchProducts,
   })
+
+  const formFields = useMemo(
+    () => ({
+      carCondition: values.carCondition,
+      carBrand: values.carBrand,
+      carModel: values.carModel,
+      carYear: values.carYear,
+      carCost: values.carCost,
+      carMileage: values.carMileage,
+    }),
+    [
+      values.carBrand,
+      values.carCondition,
+      values.carCost,
+      values.carMileage,
+      values.carModel,
+      values.carYear,
+    ],
+  )
+
   useEffect(() => {
     if (isFetching) {
-      const formFields = {
-        carCondition: values.carCondition,
-        carBrand: values.carBrand,
-        carModel: values.carModel,
-        carYear: values.carYear,
-        carCost: values.carCost,
-        carMileage: values.carMileage,
-      }
       setShouldFetchProducts(false)
       setSentParams(formFields)
 
@@ -58,18 +65,14 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
         setValues({ ...initialValueMap, ...formFields })
       }
     }
-  }, [
-    isFetched,
-    isFetching,
-    setValues,
-    shouldFetchProductsOnStart,
-    values.carBrand,
-    values.carCondition,
-    values.carCost,
-    values.carMileage,
-    values.carModel,
-    values.carYear,
-  ])
+  }, [formFields, isFetched, isFetching, setValues, shouldFetchProductsOnStart])
+
+  const fetchProducts = useCallback(() => {
+    if (isChangedBaseValues) {
+      remove()
+    }
+    setShouldFetchProducts(true)
+  }, [remove, isChangedBaseValues])
 
   useEffect(() => {
     if (!isError && data && !isChangedBaseValues) {
@@ -85,11 +88,16 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
 
   useEffect(() => {
     onChangeForm()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values])
 
   return (
     <Form>
-      <CarSettingsArea onFilled={changeShouldFetchProducts} fetchProducts={fetchProducts} />
+      <CarSettingsArea
+        onFilled={changeShouldFetchProducts}
+        fetchProducts={fetchProducts}
+        isLoading={isLoading}
+      />
       <OrderSettingsArea disabled={!shouldShowOrderSettings} isSubmitLoading={isSubmitLoading} />
     </Form>
   )

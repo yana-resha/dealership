@@ -1,3 +1,5 @@
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
+
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 
 export enum FormFieldNameMap {
@@ -42,7 +44,7 @@ export enum FormFieldNameMap {
 }
 
 export interface OrderCalculatorAdditionalService {
-  [FormFieldNameMap.productType]: number | undefined
+  [FormFieldNameMap.productType]: OptionID | undefined
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
 }

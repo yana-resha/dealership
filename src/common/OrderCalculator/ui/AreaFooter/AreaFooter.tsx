@@ -25,6 +25,7 @@ export function AreaFooter({
   return (
     <Box className={classes.footerContainer} gridColumn="1 / -1">
       {children}
+
       <Button
         type={btnType}
         className={classes.submitBtn}

@@ -34,7 +34,7 @@ export const useGetVendorOptionsQuery = (
   params: GetVendorOptionsRequest,
   options?: UseQueryOptions<unknown, unknown, GetVendorOptionsResponse, string[]>,
 ) =>
-  useQuery(['getVendorOptions'], () => createDictionaryDcApi.method(params), {
+  useQuery(['getVendorOptionsList'], () => createDictionaryDcApi.method(params), {
     retry: false,
     cacheTime: Infinity,
     ...options,

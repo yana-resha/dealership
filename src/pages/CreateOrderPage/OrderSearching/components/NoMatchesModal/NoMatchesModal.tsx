@@ -1,16 +1,5 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-} from '@mui/material'
-import cx from 'classnames'
+import { Button } from '@mui/material'
 
-import { ReactComponent as CloseIcon } from 'assets/icons/close.svg'
 import { ReactComponent as NoMatchesCircleIcon } from 'assets/icons/noMatchesCircle.svg'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'

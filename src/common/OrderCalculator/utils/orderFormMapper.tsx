@@ -1,8 +1,14 @@
-import { AdditionalOption, CalculateCreditRequest, LoanCar } from '@sberauto/dictionarydc-proto/public'
+import {
+  AdditionalOption as VendorOptionProto,
+  AdditionalOptionCalculateCredit,
+  CalculateCreditRequest,
+  LoanCar,
+  OptionID,
+} from '@sberauto/dictionarydc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
-import { VendorOption } from '../hooks/useGetVendorOptionsQuery'
 import {
   FormFieldNameMap,
   FullOrderCalculatorFields,
@@ -13,17 +19,27 @@ import { ProductsMap } from './prepareCreditProductListData'
 
 const mapAdditionalOptions = (
   additionalOptions: OrderCalculatorAdditionalService[],
-  // TODO это не корректно, тип должен быть индивидуальным для каждой опции,
-  // переделать, когда бэк переделает ручки
-  type: string,
-): AdditionalOption[] => {
-  const filteredOptions = additionalOptions.filter(option => !!option.productType)
-  const additionalOptionsFormatted: AdditionalOption[] = filteredOptions.map(option => {
-    const additionalOption: AdditionalOption = {
-      type: type,
-      name: `${option.productType as number}`,
-      price: Number(option.productCost),
-      inCreditFlag: option.isCredit,
+  vendorOptionsMap: Record<OptionID, VendorOptionProto>,
+): AdditionalOptionCalculateCredit[] => {
+  const filteredOptions = additionalOptions.filter(
+    (option): option is Omit<typeof option, 'productType'> & { productType: OptionID } =>
+      typeof option.productType !== 'undefined',
+  )
+
+  const additionalOptionsFormatted: AdditionalOptionCalculateCredit[] = filteredOptions.map(filterOption => {
+    const option = vendorOptionsMap[filterOption.productType]
+
+    const additionalOption: AdditionalOptionCalculateCredit = {
+      optionId: option.optionId,
+      optionType: option.optionType,
+      optionName: option.optionName,
+      cascoType: option.cascoType,
+      franchise: option.franchise,
+      inServicePackageFlag: option.inServicePackageFlag,
+      tariff: option.tariff,
+
+      price: parseInt(filterOption?.productCost || '0', 10),
+      inCreditFlag: filterOption.isCredit,
     }
 
     return additionalOption
@@ -32,45 +48,48 @@ const mapAdditionalOptions = (
   return additionalOptionsFormatted
 }
 
-const getAdditionalOptionsPrice = (options: AdditionalOption[]) =>
-  options.reduce((acc: number, element: AdditionalOption) => acc + (element.price || 0), 0)
+const getAdditionalOptionsPrice = (options: AdditionalOptionCalculateCredit[]) =>
+  options.reduce((acc: number, element) => acc + (element.price || 0), 0)
 
-const getAdditionalOptionsPriceInCredit = (options: AdditionalOption[]) =>
-  options.reduce(
-    (acc: number, element: AdditionalOption) => acc + (element.inCreditFlag ? element.price || 0 : 0),
-    0,
-  )
+const getAdditionalOptionsPriceInCredit = (options: AdditionalOptionCalculateCredit[]) =>
+  options.reduce((acc: number, element) => acc + (element.inCreditFlag ? element.price || 0 : 0), 0)
 
 export const mapValuesForCalculateCreditRequest = (
   values: OrderCalculatorFields | FullOrderCalculatorFields,
-  vendorOptions: VendorOption[],
+  vendorOptionsMap: Record<OptionID, VendorOptionProto>,
   productsMap?: ProductsMap,
 ): CalculateCreditRequest => {
-  const additionalOptions: AdditionalOption[] = [
-    ...mapAdditionalOptions(values[ServicesGroupName.additionalEquipments], 'additionalEquipment'),
-    ...mapAdditionalOptions(values[ServicesGroupName.dealerAdditionalServices], 'dealerServices'),
+  const { vendorCode } = getPointOfSaleFromCookies()
+
+  const additionalOptions: AdditionalOptionCalculateCredit[] = [
+    ...mapAdditionalOptions(values[ServicesGroupName.additionalEquipments], vendorOptionsMap),
+    ...mapAdditionalOptions(values[ServicesGroupName.dealerAdditionalServices], vendorOptionsMap),
   ]
+
   const loanCar: LoanCar = {
     isCarNew: !!values[FormFieldNameMap.carCondition],
-    autoCreateYear: Number(values[FormFieldNameMap.carYear]),
-    mileage: Number(values[FormFieldNameMap.carMileage]),
+    autoCreateYear: values[FormFieldNameMap.carYear],
+    mileage: parseInt(values[FormFieldNameMap.carMileage], 10),
     brand: values[FormFieldNameMap.carBrand] || '',
     model: values[FormFieldNameMap.carModel] || '',
-    autoPrice: Number(values[FormFieldNameMap.carCost]),
+    autoPrice: parseInt(values[FormFieldNameMap.carCost], 10),
     equipmentPrice: getAdditionalOptionsPrice(additionalOptions),
     equipmentPriceInCredit: getAdditionalOptionsPriceInCredit(additionalOptions),
   }
   const calculateCreditRequest: CalculateCreditRequest = {
+    vendorCode,
     productCode: values[FormFieldNameMap.creditProduct],
-    productName: productsMap?.[values[FormFieldNameMap.creditProduct]].productName,
-    downpayment: Number(values[FormFieldNameMap.initialPayment]),
-    term: Number(values[FormFieldNameMap.loanTerm]),
-    creditAmountWithAddons:
-      Number(values[FormFieldNameMap.carCost]) +
-      Number(getAdditionalOptionsPrice(additionalOptions)) -
-      Number(values[FormFieldNameMap.initialPayment]),
-    creditAmountWithoutAddons:
-      Number(values[FormFieldNameMap.carCost]) - Number(values[FormFieldNameMap.initialPayment]),
+    productCodeName: productsMap?.[values[FormFieldNameMap.creditProduct]].productCodeName ?? '',
+    productName: productsMap?.[values[FormFieldNameMap.creditProduct]].productName ?? '',
+    downpayment: parseInt(values[FormFieldNameMap.initialPayment], 10),
+    term: values[FormFieldNameMap.loanTerm],
+    amountWithOptions:
+      parseInt(values[FormFieldNameMap.carCost] ?? 0, 10) +
+      getAdditionalOptionsPriceInCredit(additionalOptions) -
+      parseInt(values[FormFieldNameMap.initialPayment] ?? 0, 10),
+    amountWithoutOptions:
+      parseInt(values[FormFieldNameMap.carCost] ?? 0, 10) -
+      parseInt(values[FormFieldNameMap.initialPayment] ?? 0, 10),
     additionalOptions: additionalOptions,
     loanCar: loanCar,
   }

@@ -18,6 +18,7 @@ export function useCarSettings(onFilled: () => void, fetchProducts: () => void) 
 
   const [shouldChangeFillStatus, setShouldChangeFillStatus] = useState(false)
   const [isFilled, setFilled] = useState(false)
+
   const hasErrors = useMemo(
     () => Object.keys(errors).some(k => CREDIT_PRODUCT_PARAMS_FIELDS.includes(k as FormFieldNameMap)),
     [errors],
@@ -27,7 +28,7 @@ export function useCarSettings(onFilled: () => void, fetchProducts: () => void) 
     CREDIT_PRODUCT_PARAMS_FIELDS.forEach(f => setFieldTouched(f, true))
     setShouldChangeFillStatus(true)
     fetchProducts()
-  }, [setFieldTouched])
+  }, [fetchProducts, setFieldTouched])
 
   useEffect(() => {
     if (!isFilled) {

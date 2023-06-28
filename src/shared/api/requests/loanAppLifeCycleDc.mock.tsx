@@ -1,8 +1,9 @@
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
 import {
   AdditionalOptionFrontdc as AdditionalOptionFrontdcProto,
-  ApplicantDocsType,
   ApplicantFrontdc as ApplicantFrontdcProto,
   ApplicationFrontdc as ApplicationFrontdcProto,
+  BankOptionType,
   GetFullApplicationResponse as GetFullApplicationResponseProto,
   IncomeDocumentType,
   IncomeFrontdc as IncomeFrontdcProto,
@@ -239,7 +240,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       amountWithoutAdd: 3242.2342,
       additionalOptions: [
         {
-          type: 2,
+          type: OptionType.EQUIPMENT,
           name: 'Ароматная елочка',
           vendor: 'Arex',
           broker: '343432323',
@@ -248,7 +249,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           price: 20,
           tariff: 'string',
           term: 36,
-          bankOptionType: 2,
+          bankOptionType: BankOptionType.EQUIPMENTS,
           cascoType: false,
           franchise: false,
           cascoLimit: 0,
@@ -288,7 +289,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           },
         },
         {
-          type: 1,
+          type: OptionType.ADDITIONAL,
           name: 'ОСАГО',
           vendor: 'РосГосСтрах',
           broker: '043432323',
@@ -297,7 +298,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           price: 21,
           tariff: 'string',
           term: 24,
-          bankOptionType: 1,
+          bankOptionType: BankOptionType.DEALERSERVICES,
           cascoType: false,
           franchise: false,
           cascoLimit: 0,

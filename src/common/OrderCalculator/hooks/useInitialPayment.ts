@@ -28,7 +28,7 @@ export function getValueFromPercent(percentStr: string, baseStr: string) {
     return ''
   }
 
-  return `${Math.round((percent / 100) * base)}`
+  return `${Math.ceil((percent / 100) * base)}`
 }
 
 export function useInitialPayment(

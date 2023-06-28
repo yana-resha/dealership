@@ -14,12 +14,15 @@ import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import useStyles from './CarSettingsArea.styles'
 
 type Props = {
+  /** Срабатывает когда форма заполнена */
   onFilled: () => void
   fetchProducts: () => void
+  isLoading?: boolean
 }
 
-export function CarSettingsArea({ onFilled, fetchProducts }: Props) {
+export function CarSettingsArea({ onFilled, fetchProducts, isLoading }: Props) {
   const classes = useStyles()
+
   const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
   const { handleBtnClick } = useCarSettings(onFilled, fetchProducts)
 
@@ -70,7 +73,8 @@ export function CarSettingsArea({ onFilled, fetchProducts }: Props) {
           mask={maskOnlyDigitsWithSeparator}
           gridColumn="span 1"
         />
-        <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} />
+
+        <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} isLoadingBtn={isLoading} />
       </Box>
     </CollapsibleFormAreaContainer>
   )

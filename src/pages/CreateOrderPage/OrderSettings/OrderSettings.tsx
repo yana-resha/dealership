@@ -8,7 +8,6 @@ import { OrderCalculator } from 'common/OrderCalculator'
 import { BankOffers } from 'entities/BankOffers'
 import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
-import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
 import { updateOrder } from '../model/orderSlice'
 
@@ -27,33 +26,32 @@ type Props = {
 
 export function OrderSettings({ nextStep, applicationId }: Props) {
   const classes = useStyles()
-  const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
-  const [isOfferLoading, setIsOfferLoading] = useState(false)
   const dispatch = useAppDispatch()
 
-  const { mutateAsync, isError } = useCalculateCreditMutation()
-  useEffect(() => {
-    if (isError) {
-      setIsOfferLoading(false)
-      setBankOffers([])
-    }
-  }, [isError])
+  const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
+
+  const { mutateAsync, isError, error, isLoading: isOfferLoading } = useCalculateCreditMutation()
 
   const clearBankOfferList = useCallback(() => {
     if (!bankOffers.length) {
       return
     }
+
     setBankOffers([])
   }, [bankOffers.length])
+
+  useEffect(() => {
+    if (isError) {
+      clearBankOfferList()
+    }
+  }, [isError, clearBankOfferList])
 
   const calculateCredit = useCallback(
     async (data: CalculateCreditRequest) => {
       dispatch(updateOrder({ orderData: data }))
-      setIsOfferLoading(true)
       const res = await mutateAsync(data)
       if (res && res.products) {
         setBankOffers(res.products)
-        setIsOfferLoading(false)
       }
     },
     [mutateAsync, dispatch],
@@ -74,9 +72,11 @@ export function OrderSettings({ nextStep, applicationId }: Props) {
         onChangeForm={clearBankOfferList}
         applicationId={applicationId}
       />
+
       {isError && (
         <Box className={classes.errorContainer}>
           <Typography>Произошла ошибка при загрузке данных. Попробуйте снова</Typography>
+          <Typography>Возможно для кредитного продукта не хватает услуги КАСКО</Typography>
         </Box>
       )}
       {!isError && bankOffers.length > 0 && (

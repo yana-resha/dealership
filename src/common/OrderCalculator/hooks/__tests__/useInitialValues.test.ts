@@ -21,6 +21,7 @@ describe('useInitialValues', () => {
   beforeEach(() => {
     mockedUseMemo.mockImplementation(fn => fn())
   })
+
   describe('Преобразование данных работает корректно', () => {
     it('Заменяет начальное значение на данные из запроса', () => {
       mockedUseGetFullApplicationQuery.mockImplementation(
@@ -36,6 +37,7 @@ describe('useInitialValues', () => {
         initialValues: EXPECTED_FULL_DATA,
       })
     })
+
     it('При отсутствии данных из запроса отдает начальные данные', () => {
       mockedUseGetFullApplicationQuery.mockImplementation(
         () =>

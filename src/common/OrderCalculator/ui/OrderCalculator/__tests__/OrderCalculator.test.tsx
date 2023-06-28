@@ -1,18 +1,17 @@
 import { PropsWithChildren } from 'react'
 
-import { render, screen } from '@testing-library/react'
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
 
-import { ADDITIONAL_EQUIPMENTS, initialValueMap } from 'common/OrderCalculator/config'
+import { initialValueMap } from 'common/OrderCalculator/config'
 import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
-import {
-  prepareBankOptions,
-  prepareCreditProduct,
-} from 'common/OrderCalculator/utils/prepareCreditProductListData'
+import { prepareCreditProduct } from 'common/OrderCalculator/utils/prepareCreditProductListData'
 import { creditProductListRsData, mockGetVendorOptionsResponse } from 'shared/api/requests/dictionaryDc.mock'
+import { sleep } from 'shared/lib/sleep'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -31,8 +30,7 @@ const mockedUseGetCreditProductListQuery = jest.spyOn(
 
 const getCreditProductListData = {
   ...creditProductListRsData,
-  ...prepareCreditProduct(creditProductListRsData.products),
-  ...prepareBankOptions(creditProductListRsData.bankOptions),
+  ...prepareCreditProduct(creditProductListRsData.creditProducts),
 }
 
 const mockedUseInitialValues = jest.spyOn(useInitialValuesModule, 'useInitialValues')
@@ -192,7 +190,12 @@ describe('OrderCalculator', () => {
       userEvent.type(carCostInput, '100')
 
       userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
-      await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
+      const additionalOptions = mockGetVendorOptionsResponse.additionalOptions || []
+      userEvent.click(
+        await screen.findByText(
+          additionalOptions?.filter?.(el => el.optionType === OptionType.EQUIPMENT)[0].optionName as string,
+        ),
+      )
       const additionalEquipmentsCostField = orderCalculatorForm.querySelector(
         '[id="additionalEquipments[0].productCost"]',
       )!
@@ -201,8 +204,12 @@ describe('OrderCalculator', () => {
       userEvent.click(
         screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
-      await act(async () =>
-        userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
+      userEvent.click(
+        await screen.findByText(
+          mockGetVendorOptionsResponse?.additionalOptions?.filter?.(
+            el => el.optionType === OptionType.ADDITIONAL,
+          )?.[0].optionName as string,
+        ),
       )
       const dealerAdditionalServiceCostField = orderCalculatorForm.querySelector(
         '[id="dealerAdditionalServices[0].productCost"]',
@@ -222,7 +229,14 @@ describe('OrderCalculator', () => {
       userEvent.type(carCostInput, '100')
 
       userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
-      await act(async () => userEvent.click(await screen.findByText(ADDITIONAL_EQUIPMENTS[0].optionName)))
+      await act(async () => {
+        const additionalOptions = mockGetVendorOptionsResponse.additionalOptions || []
+        userEvent.click(
+          await screen.findByText(
+            additionalOptions?.filter?.(el => el.optionType === OptionType.EQUIPMENT)[0].optionName as string,
+          ),
+        )
+      })
       const additionalEquipmentsCostField = orderCalculatorForm.querySelector(
         '[id="additionalEquipments[0].productCost"]',
       )!
@@ -243,7 +257,9 @@ describe('OrderCalculator', () => {
         screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
       )
       await act(async () =>
-        userEvent.click(await screen.findByText(mockGetVendorOptionsResponse.options[0].optionName)),
+        userEvent.click(
+          await screen.findByText(mockGetVendorOptionsResponse?.additionalOptions?.[0]?.optionName as string),
+        ),
       )
       const dealerAdditionalServiceCostField = orderCalculatorForm.querySelector(
         '[id="dealerAdditionalServices[0].productCost"]',
@@ -265,11 +281,13 @@ describe('OrderCalculator', () => {
       })
     })
 
-    it('Item добавляется и удаляется, но не последний', () => {
+    it('Item добавляется и удаляется, но не последний', async () => {
       expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
-      const addingSquareBtn = screen.getAllByTestId('addingSquareBtn')[0]
-      userEvent.click(addingSquareBtn)
-      userEvent.click(addingSquareBtn)
+
+      await waitFor(() => userEvent.click(screen.getAllByTestId('addingSquareBtn')[0]))
+      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(4)
+      await sleep(100)
+      await waitFor(() => userEvent.click(screen.getAllByTestId('addingSquareBtn')[0]))
       expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(5)
 
       userEvent.click(screen.getAllByTestId('closeSquareBtn')[0])

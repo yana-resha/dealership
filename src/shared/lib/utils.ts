@@ -18,8 +18,18 @@ export function transformResponseData(responseData: any) {
   return responseData
 }
 
-export function formatNumber(number: number) {
-  return new Intl.NumberFormat('ru-RU').format(number) + ' руб.'
+export function formatNumber(number: number, postfix?: string) {
+  const postfixStr = postfix ? `${postfix}` : ''
+
+  return new Intl.NumberFormat('ru-RU').format(number) + postfixStr
+}
+
+export function formatMoney(number?: number) {
+  if (typeof number !== 'number') {
+    return ''
+  }
+
+  return formatNumber(number, ' ₽')
 }
 
 export function formatTerm(term: number) {

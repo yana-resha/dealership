@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import { BankOptionType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { AdditionalOptionFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { formatMoney } from 'shared/lib/utils'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 
 import { useStyles } from './Requisite.styles'
@@ -27,7 +28,7 @@ export function Requisite({ additionalOption }: Props) {
         <InfoText label={label}>{name || ''}</InfoText>
         {vendor && <InfoText label="Страховая компания">{vendor}</InfoText>}
         {broker && <InfoText label="Агент получатель">{broker}</InfoText>}
-        {price !== undefined && <InfoText label="Стоимость">{price} руб.</InfoText>}
+        {price !== undefined && <InfoText label="Стоимость">{formatMoney(price)}</InfoText>}
         {term && <InfoText label="Срок">{term} мес.</InfoText>}
         {docNumber && <InfoText label="Номер полиса">{docNumber}</InfoText>}
         {beneficiaryBank && <InfoText label="Получатель">{beneficiaryBank}</InfoText>}

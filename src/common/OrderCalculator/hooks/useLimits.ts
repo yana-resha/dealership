@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { useField, useFormikContext } from 'formik'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { formatMoney, formatNumber } from 'shared/lib/utils'
 
 import { formMessages } from '../config'
 import {
@@ -28,7 +29,7 @@ type Params = {
 
 function getServicesTotalCost(services: OrderCalculatorAdditionalService[]) {
   return services.reduce((acc, cur) => {
-    if (!cur.productType || !cur.productCost) {
+    if (typeof cur.productType !== 'number' || !cur.productCost) {
       return acc
     }
     const productCost = parseFloat(cur.productCost)
@@ -91,43 +92,52 @@ export function useLimits({ vendorCode }: Params) {
   */
   const loanTerms = useMemo(() => {
     const durationMin =
-      Math.ceil((data?.fullDurationMin || 0) / LOAN_TERM_GRADUATION_VALUE) * LOAN_TERM_GRADUATION_VALUE
+      Math.ceil((currentProduct?.durationMin || data?.fullDurationMin || 0) / LOAN_TERM_GRADUATION_VALUE) *
+      LOAN_TERM_GRADUATION_VALUE
     const durationMax =
-      Math.floor((data?.fullDurationMax || 0) / LOAN_TERM_GRADUATION_VALUE) * LOAN_TERM_GRADUATION_VALUE
+      Math.floor((currentProduct?.durationMax || data?.fullDurationMax || 0) / LOAN_TERM_GRADUATION_VALUE) *
+      LOAN_TERM_GRADUATION_VALUE
+
+    if (durationMin > durationMax) {
+      return []
+    }
+
     const scaleLength = (durationMax - durationMin) / LOAN_TERM_GRADUATION_VALUE + 1
     const loanTerms = [...new Array(scaleLength)].map((v, i) => ({
       value: (i + 1) * LOAN_TERM_GRADUATION_VALUE + durationMin - LOAN_TERM_GRADUATION_VALUE,
     }))
 
     return loanTerms
-  }, [data?.fullDurationMax, data?.fullDurationMin])
+  }, [currentProduct?.durationMax, currentProduct?.durationMin, data?.fullDurationMax, data?.fullDurationMin])
+
   /*
   Сформирована на основе минимального и максимального Первоначального взноса
-  посказка для данного поля. Просто возвращается компоненту.
+  подсказка для данного поля. Просто возвращается компоненту.
   */
   const initialPaymentPercentHelperText = useMemo(() => {
     if (minInitialPaymentPercent && maxInitialPaymentPercent) {
-      return `от ${minInitialPaymentPercent} до ${maxInitialPaymentPercent}`
+      return `от ${formatNumber(minInitialPaymentPercent)} до ${formatNumber(maxInitialPaymentPercent, '%')}`
     }
     if (minInitialPaymentPercent && !maxInitialPaymentPercent) {
-      return `от ${minInitialPaymentPercent}`
+      return `от ${formatNumber(minInitialPaymentPercent, '%')}`
     }
     if (!minInitialPaymentPercent && maxInitialPaymentPercent) {
-      return `до ${maxInitialPaymentPercent}`
+      return `до ${formatNumber(maxInitialPaymentPercent, '%')}`
     }
 
     return ''
   }, [maxInitialPaymentPercent, minInitialPaymentPercent])
+
   // То же для процентного ПВ
   const initialPaymentHelperText = useMemo(() => {
     if (minInitialPayment && maxInitialPayment) {
-      return `от ${minInitialPayment} до ${maxInitialPayment}`
+      return `от ${formatNumber(minInitialPayment)} до ${formatMoney(maxInitialPayment)}`
     }
     if (minInitialPayment && !maxInitialPayment) {
-      return `от ${minInitialPayment}`
+      return `от ${formatMoney(minInitialPayment)}`
     }
     if (!minInitialPayment && maxInitialPayment) {
-      return `до ${maxInitialPayment}`
+      return `до ${formatMoney(maxInitialPayment)}`
     }
 
     return ''
@@ -191,6 +201,7 @@ export function useLimits({ vendorCode }: Params) {
       ),
     [carCost, dealerAdditionalServicesCost],
   )
+
   const isExceededBankAdditionalServicesLimit = useMemo(
     () =>
       checkIfExceededServicesLimit(
@@ -214,6 +225,7 @@ export function useLimits({ vendorCode }: Params) {
       isExceededDealerAdditionalServicesLimit: isExceededDealerServicesLimit,
       isExceededBankAdditionalServicesLimit: isExceededBankServicesLimit,
     } = commonErrorsField.value
+
     if (
       isExceededTotalLimit !== isExceededServicesTotalLimit ||
       isExceededEquipmentsLimit !== isExceededAdditionalEquipmentsLimit ||
@@ -227,6 +239,8 @@ export function useLimits({ vendorCode }: Params) {
         isExceededBankAdditionalServicesLimit: isExceededBankAdditionalServicesLimit,
       })
     }
+    // Исключили setCommonErrors что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     commonErrorsField.value,
     isExceededAdditionalEquipmentsLimit,
