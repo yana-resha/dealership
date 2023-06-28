@@ -38,12 +38,14 @@ type Props = {
 
 export function CarSettingsArea({ onFilled, requisites }: Props) {
   const classes = useStyles()
+
   const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
   const { handleBtnClick } = useCarSettings(onFilled, () => {})
 
   const { setFieldValue } = useFormikContext()
   const [carPassportTypeField] = useField(FormFieldNameMap.carPassportType)
   const prevCarPassportType = usePrevious(carPassportTypeField.value)
+
   useEffect(() => {
     if (carPassportTypeField.value !== prevCarPassportType) {
       setFieldValue(FormFieldNameMap.carPassportId, '')

@@ -1,11 +1,12 @@
 import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box, Divider } from '@mui/material'
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
 import { BankOptionType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { AdditionalOptionsType } from 'entities/application/constants'
 import { Requisite } from 'entities/application/DossierAreas/ui'
 import { AdditionalOptionFrontdc, ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { formatMoney } from 'shared/lib/utils'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
@@ -65,13 +66,13 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
       case 'credit':
         setCreditConfirmation(checked)
         break
-      case `${AdditionalOptionsType.Equipments}`:
+      case `${OptionType.EQUIPMENT}`:
         setAdditionalEquipmentConfirmation(checked)
         break
-      case `${AdditionalOptionsType.DealerServices}`:
+      case `${OptionType.ADDITIONAL}`:
         setDealerServicesConfirmation(checked)
         break
-      case `${AdditionalOptionsType.BankServices}`:
+      case `${OptionType.BANK}`:
         setBankServicesConfirmation(checked)
         break
     }
@@ -102,7 +103,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
         </Box>
         <Box className={classes.requisiteInfo}>
           <InfoText label="Юридическое лицо">{application.vendor?.vendorName || ''}</InfoText>
-          <InfoText label="Сумма кредита">{application?.loanData?.amount || ''} руб.</InfoText>
+          <InfoText label="Сумма кредита">{formatMoney(application?.loanData?.amount)}</InfoText>
           <InfoText label="Банк получатель">{application.vendor?.vendorBankDetails?.bank || ''}</InfoText>
           <InfoText label="Номер счета банка">
             {application.vendor?.vendorBankDetails?.accountNumber || ''}
@@ -117,11 +118,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SberTypography sberautoVariant="h6" component="p">
               Дополнительное оборудование
             </SberTypography>
-            <SwitchInput
-              label="Проверено"
-              id={`${AdditionalOptionsType.Equipments}`}
-              afterChange={handleChange}
-            />
+            <SwitchInput label="Проверено" id={`${OptionType.EQUIPMENT}`} afterChange={handleChange} />
           </Box>
           {additionalEquipment.map(option => (
             <Box key={option.name} className={classes.requisiteElement}>
@@ -138,11 +135,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SberTypography sberautoVariant="h6" component="p">
               Дополнительные услуги дилера
             </SberTypography>
-            <SwitchInput
-              label="Проверено"
-              id={`${AdditionalOptionsType.DealerServices}`}
-              afterChange={handleChange}
-            />
+            <SwitchInput label="Проверено" id={`${OptionType.ADDITIONAL}`} afterChange={handleChange} />
           </Box>
           {dealerServices.map(option => (
             <Requisite key={option.name} additionalOption={option} />
@@ -157,11 +150,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SberTypography sberautoVariant="h6" component="p">
               Дополнительные услуги банка
             </SberTypography>
-            <SwitchInput
-              label="Проверено"
-              id={`${AdditionalOptionsType.BankServices}`}
-              afterChange={handleChange}
-            />
+            <SwitchInput label="Проверено" id={`${OptionType.BANK}`} afterChange={handleChange} />
           </Box>
           {bankServices.map(option => (
             <Requisite key={option.name} additionalOption={option} />

@@ -11,9 +11,11 @@ import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
 import { FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
 
 type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : OrderCalculatorFields
+
 export function useInitialValues<D extends boolean | undefined>(
   initialData: CalculatorFields<D>,
   applicationId?: string,
+  // applicationId = '545544'
   isFullCalculator?: D,
 ) {
   const { vendorCode } = getPointOfSaleFromCookies()

@@ -63,23 +63,23 @@ describe('InformationAreaTest', () => {
 
     it('Отображается Сумма кредита', () => {
       expect(screen.getByText('Сумма кредита')).toBeInTheDocument()
-      expect(screen.getByText('2 000 000 руб.')).toBeInTheDocument()
+      expect(screen.getByText('2 000 000 ₽')).toBeInTheDocument()
     })
 
     it('Отображается платеж', () => {
       expect(screen.getByText('Платеж')).toBeInTheDocument()
-      expect(screen.getByText('10 400 руб.')).toBeInTheDocument()
+      expect(screen.getByText('10 400 ₽')).toBeInTheDocument()
     })
 
     it('Отображается ПВ', () => {
       expect(screen.getByText('ПВ')).toBeInTheDocument()
-      expect(screen.getByText('200 000 руб.')).toBeInTheDocument()
+      expect(screen.getByText('200 000 ₽')).toBeInTheDocument()
     })
 
     it('Отображается Переплата', () => {
       expect(screen.getByText('Переплата')).toBeInTheDocument()
       /* TODO Добавить после подключения ручки getFullApplication */
-      // expect(screen.getByText('0 руб.')).toBeInTheDocument()
+      // expect(screen.getByText('0 ₽')).toBeInTheDocument()
     })
 
     it('Отображается Процентная ставка', () => {
@@ -94,7 +94,7 @@ describe('InformationAreaTest', () => {
 
     it('Отображается Сумма продуктов', () => {
       expect(screen.getByText('Сумма продуктов')).toBeInTheDocument()
-      expect(screen.getByText('700 000 руб.')).toBeInTheDocument()
+      expect(screen.getByText('700 000 ₽')).toBeInTheDocument()
     })
 
     it('Отображается Срок кредита', () => {
@@ -114,12 +114,12 @@ describe('InformationAreaTest', () => {
 
     it('Отображается информация о дополнительном оборудовании', () => {
       expect(screen.getByText('Название продукта 2')).toBeInTheDocument()
-      expect(screen.getByText('300000 руб.')).toBeInTheDocument()
+      expect(screen.getByText('300 000 ₽')).toBeInTheDocument()
     })
 
     it('Отображается информация о дополнительных услугах дилера', () => {
       expect(screen.getByText('Название продукта')).toBeInTheDocument()
-      expect(screen.getByText('400000 руб.')).toBeInTheDocument()
+      expect(screen.getByText('400 000 ₽')).toBeInTheDocument()
     })
   })
 

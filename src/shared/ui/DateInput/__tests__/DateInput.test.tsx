@@ -1,8 +1,7 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MockStore } from 'redux-mock-store'
 
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'

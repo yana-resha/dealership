@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { Box } from '@mui/material'
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
-import { ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
 import { useGetVendorOptionsQuery } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPayment'
 import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
@@ -34,12 +34,24 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
   })
 
   const additionalEquipments = useMemo(
-    () => ADDITIONAL_EQUIPMENTS.map(option => ({ value: option.type, label: option.optionName })),
-    [],
+    () =>
+      vendorOptions?.additionalOptions
+        ?.filter(option => option.optionType === OptionType.EQUIPMENT)
+        .map(option => ({
+          value: option.optionId,
+          label: option.optionName,
+        })) || [],
+    [vendorOptions?.additionalOptions],
   )
   const dealerAdditionalServices = useMemo(
-    () => vendorOptions?.options?.map(option => ({ value: option.type, label: option.optionName })) || [],
-    [vendorOptions?.options],
+    () =>
+      vendorOptions?.additionalOptions
+        ?.filter(option => option.optionType === OptionType.ADDITIONAL)
+        .map(option => ({
+          value: option.optionId,
+          label: option.optionName,
+        })) || [],
+    [vendorOptions?.additionalOptions],
   )
 
   const {
@@ -48,9 +60,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
     initialPaymentPercentHelperText,
     loanTerms,
     commonErrors,
-  } = useLimits({
-    vendorCode,
-  })
+  } = useLimits({ vendorCode })
 
   const {
     handleInitialPaymentFocus,
@@ -115,6 +125,8 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
           options={additionalEquipments}
           name={ServicesGroupName.additionalEquipments}
           productLabel="Вид оборудования"
+          isError={vendorOptionsIsError}
+          errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
         />
         <AdditionalServices
           title="Дополнительные услуги дилера"
@@ -131,6 +143,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
           name={ServicesGroupName.bankAdditionalServices}
           productLabel="Тип продукта"
         />
+
         {!!commonErrors.length && (
           <Box className={classes.errorList}>
             {commonErrors.map(e => (
@@ -140,6 +153,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
             ))}
           </Box>
         )}
+
         <AreaFooter btnTitle="Рассчитать" btnType="submit" isLoadingBtn={isSubmitLoading}>
           <FraudDialog />
         </AreaFooter>

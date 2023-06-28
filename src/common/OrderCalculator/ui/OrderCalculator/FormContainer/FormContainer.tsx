@@ -19,13 +19,12 @@ type Props = {
 export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProductsOnStart }: Props) {
   const { values, setValues } = useFormikContext<OrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
+
   const [sentParams, setSentParams] = useState({})
   const [shouldShowOrderSettings, setShouldShowOrderSettings] = useState(false)
   const [shouldFetchProducts, setShouldFetchProducts] = useState(shouldFetchProductsOnStart)
-  const changeShouldFetchProducts = useCallback(
-    () => setShouldFetchProducts(shouldFetchProductsOnStart),
-    [shouldFetchProductsOnStart],
-  )
+
+  const changeShouldFetchProducts = useCallback(() => setShouldFetchProducts(true), [])
 
   const fetchProducts = useCallback(() => {
     setShouldFetchProducts(true)
@@ -36,11 +35,12 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
     [sentParams, values],
   )
 
-  const { data, isError, isFetching, isFetched } = useGetCreditProductListQuery({
+  const { data, isError, isFetching, isFetched, isLoading } = useGetCreditProductListQuery({
     vendorCode,
     values,
     enabled: shouldFetchProducts,
   })
+
   useEffect(() => {
     if (isFetching) {
       const formFields = {
@@ -85,11 +85,16 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
 
   useEffect(() => {
     onChangeForm()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values])
 
   return (
     <Form>
-      <CarSettingsArea onFilled={changeShouldFetchProducts} fetchProducts={fetchProducts} />
+      <CarSettingsArea
+        onFilled={changeShouldFetchProducts}
+        fetchProducts={fetchProducts}
+        isLoading={isLoading}
+      />
       <OrderSettingsArea disabled={!shouldShowOrderSettings} isSubmitLoading={isSubmitLoading} />
     </Form>
   )

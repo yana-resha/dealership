@@ -1,3 +1,5 @@
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
+
 export const EXPECTED_FULL_DATA = {
   carCondition: 1,
   carBrand: 'Skoda',
@@ -26,7 +28,7 @@ export const EXPECTED_FULL_DATA = {
   taxation: '11.1',
   additionalEquipments: [
     {
-      productType: 2,
+      productType: OptionType.EQUIPMENT,
       productCost: '20',
       isCredit: true,
       legalPerson: 'Arex',
@@ -40,7 +42,7 @@ export const EXPECTED_FULL_DATA = {
   ],
   dealerAdditionalServices: [
     {
-      productType: 1,
+      productType: OptionType.ADDITIONAL,
       productCost: '21',
       isCredit: true,
       provider: 'РосГосСтрах',
@@ -66,10 +68,6 @@ export const EXPECTED_FULL_DATA = {
       beneficiaryBank: '',
       bankAccountNumber: '',
       isCustomFields: false,
-      correspondentAccount: undefined,
-      loanTerm: undefined,
-      productType: undefined,
-      taxation: undefined,
     },
   ],
   commonError: {
@@ -80,3 +78,5 @@ export const EXPECTED_FULL_DATA = {
   },
   validationParams: {},
 }
+
+// 1

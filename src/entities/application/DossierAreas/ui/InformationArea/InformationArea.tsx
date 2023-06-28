@@ -6,7 +6,7 @@ import { BankOptionType, StatusCode } from '@sberauto/loanapplifecycledc-proto/p
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { ReactComponent as ShareIcon } from 'assets/icons/share.svg'
 import { AdditionalOptionFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
-import { formatNumber, formatTerm } from 'shared/lib/utils'
+import { formatMoney, formatTerm } from 'shared/lib/utils'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
 
@@ -50,7 +50,7 @@ export function InformationArea({
         (acc, cur) => {
           const additionalOptionInfo = {
             name: cur.name || '',
-            price: `${cur.price || ''}  руб.`,
+            price: cur.price ? formatMoney(cur.price) : '',
             creditStatus: cur.inCreditFlag ? 'В кредит' : 'Не в кредит',
           }
 
@@ -112,16 +112,16 @@ export function InformationArea({
           {carBrand} {carModel}
         </InfoText>
       </Box>
-      <InfoText label="Сумма кредита">{creditAmount ? formatNumber(creditAmount) : ''}</InfoText>
-      <InfoText label="Платеж">{monthlyPayment ? formatNumber(monthlyPayment) : ''}</InfoText>
-      <InfoText label="ПВ">{downPayment ? formatNumber(downPayment) : ''}</InfoText>
+      <InfoText label="Сумма кредита">{creditAmount ? formatMoney(creditAmount) : ''}</InfoText>
+      <InfoText label="Платеж">{monthlyPayment ? formatMoney(monthlyPayment) : ''}</InfoText>
+      <InfoText label="ПВ">{downPayment ? formatMoney(downPayment) : ''}</InfoText>
       {/* TODO DCB-421 | Прокинуть значение, когда Аналитики дадут ответ, как его вычеслять или где взять */}
-      <InfoText label="Переплата">{/* formatNumber(overdraft) */}</InfoText>
+      <InfoText label="Переплата">{/* formatMoney(overdraft) */}</InfoText>
       <InfoText label="% ставка">{rate || ''}%</InfoText>
       <Box className={classes.infoTextContainer} gridColumn="span 2">
         <InfoText label="Кредитный продукт">{productName}</InfoText>
       </Box>
-      <InfoText label="Сумма продуктов">{formatNumber(productSum)}</InfoText>
+      <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
       <InfoText label="Срок кредита">{term ? formatTerm(term) : ''}</InfoText>
       {showGraphicButton && (
         <Box className={classes.textButtonContainer} gridColumn="span 2">

@@ -5,7 +5,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { ThemeProviderMock } from 'tests/mocks'
 
-import { PreparedStatus } from '../../../../application.utils'
 import { DocumentsArea } from '../DocumentsArea'
 
 const mockedFileQuestionnaire = new File(['questionnaire'], 'Анкета', {

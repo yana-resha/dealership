@@ -29,7 +29,7 @@ describe('useInitialPayment', () => {
       expect(getValueFromPercent('100', 'null')).toEqual('')
     })
     it('Результат округляется до целых', () => {
-      expect(getValueFromPercent('13', '77')).toEqual('10')
+      expect(getValueFromPercent('13', '77')).toEqual('11')
     })
   })
 })

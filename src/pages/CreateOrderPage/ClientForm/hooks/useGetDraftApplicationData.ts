@@ -87,7 +87,7 @@ export const useGetDraftApplicationData = () => {
           fullNameCreated: getFullName(user?.firstName, user?.lastName),
         },
         specialMark,
-        // unit: string, //добавить после расширения ручки getVendorOptions DCB-389
+        // unit: string, //добавить после расширения ручки getVendorOptionsList DCB-389
         applicant: {
           type: 'MainDebitor',
           category: 0,

@@ -4,7 +4,6 @@ import { Box, IconButton } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
-import { formatPassport } from 'shared/lib/utils'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { ApplicationStatus } from '../../../ApplicationStatus/ApplicationStatus'

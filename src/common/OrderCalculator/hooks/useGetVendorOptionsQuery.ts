@@ -1,36 +1,55 @@
 import {
-  GetVendorOptionsRequest,
-  GetVendorOptionsResponse as GetVendorOptionsResponseProto,
-  VendorOption as VendorOptionProto,
+  GetVendorOptionsListRequest,
+  AdditionalOption,
+  OptionType,
+  OptionID,
 } from '@sberauto/dictionarydc-proto/public'
+import keyBy from 'lodash/keyBy'
 import { UseQueryOptions, useQuery } from 'react-query'
 
-import { getVendorOptions } from 'shared/api/requests/dictionaryDc.api'
+import { getVendorOptionsList } from 'shared/api/requests/dictionaryDc.api'
 
-/* TODO DCB-389 | Прослойка добалена, потому что сейчас в протосах ручки getVendorOptions type: string,
-а должен быть number */
-export type VendorOption = Omit<VendorOptionProto, 'type'> & {
-  type?: number
-}
-/* TODO DCB-389 | Прослойка добалена, потому что сейчас в протосах ручки getVendorOptions type: string,
-а должен быть number */
-type GetVendorOptionsResponse = Omit<GetVendorOptionsResponseProto, 'options'> & {
-  options?: VendorOption[] | null
+type NonNullableAdditionalOption = Omit<AdditionalOption, 'optionType' | 'optionName' | 'optionId'> & {
+  optionType: OptionType
+  optionName: string
+  optionId: OptionID
 }
 
-type RequiredVendorOptions = Required<VendorOption>
-type NormalizedVendorOptions = {
-  options: RequiredVendorOptions[]
+type NonNullableGetVendorOptionsListResponse = {
+  additionalOptions: NonNullableAdditionalOption[]
 }
 
 export const useGetVendorOptionsQuery = (
-  params: GetVendorOptionsRequest,
-  options?: UseQueryOptions<GetVendorOptionsResponse, unknown, NormalizedVendorOptions, string[]>,
+  params: GetVendorOptionsListRequest,
+  options?: UseQueryOptions<
+    Awaited<ReturnType<typeof getVendorOptionsList>>,
+    unknown,
+    NonNullableGetVendorOptionsListResponse,
+    string[]
+  >,
 ) =>
-  useQuery(['getVendorOptions'], () => getVendorOptions(params), {
+  useQuery(['getVendorOptionsList'], () => getVendorOptionsList(params), {
     retry: false,
     cacheTime: Infinity,
     ...options,
-    select: res =>
-      ({ options: res.options?.filter(o => !!o.type && !!o.optionName) || [] } as NormalizedVendorOptions),
+    select: res => {
+      /** Часть справочников хранится на фронте, но потом будет перенесена на бэк
+       * Для унификации логики смешиваем эти справочники */
+      const additionalOptions = (res.additionalOptions || []).filter(
+        (option): option is NonNullableAdditionalOption =>
+          typeof option.optionType !== undefined &&
+          !!option.optionName &&
+          typeof option.optionId !== undefined,
+      )
+
+      const additionalOptionsMap: Record<number, NonNullableAdditionalOption> = keyBy(
+        additionalOptions,
+        'optionId',
+      )
+
+      return {
+        additionalOptions,
+        additionalOptionsMap,
+      }
+    },
   })

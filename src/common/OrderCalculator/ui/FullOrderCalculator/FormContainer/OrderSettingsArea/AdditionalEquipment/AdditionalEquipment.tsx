@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import { Box, Divider } from '@mui/material'
 import { FieldArray, useField } from 'formik'
@@ -9,30 +9,32 @@ import { RequisitesAdditionalOptions } from 'entities/application/DossierAreas/_
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { AdditionalEquipmentRequisites } from 'entities/application/DossierAreas/ui'
 
-import { ADDITIONAL_EQUIPMENTS } from '../../../../../config'
 import useStyles from './AdditionalEquipment.styles'
 
 type Props = {
   requisites: RequisitesAdditionalOptions[]
   disabled?: boolean
+  isError?: boolean
+  errorMessage?: string
+  options: {
+    productType: { value: string | number; label: string }[]
+    loanTerms: { value: string | number }[]
+  }
 }
 
-export function AdditionalEquipment({ requisites, disabled = false }: Props) {
+export function AdditionalEquipment({ requisites, disabled = false, options, isError, errorMessage }: Props) {
   const classes = useStyles()
   const [field] = useField(ServicesGroupName.additionalEquipments)
-  const additionalEquipments = useMemo(
-    () => ADDITIONAL_EQUIPMENTS.map(o => ({ value: o.type, label: o.optionName })),
-    [],
-  )
 
   const { ids, changeIds } = useAdditionalServiceIds()
-
   const isInitialExpanded = !!field.value.length && !!field.value[0].productType
 
   return (
     <AdditionalServicesContainer
       title="Дополнительное оборудование"
       disabled={disabled}
+      isError={isError}
+      errorMessage={errorMessage}
       isInitialExpanded={isInitialExpanded}
     >
       <FieldArray name={ServicesGroupName.additionalEquipments}>
@@ -45,7 +47,7 @@ export function AdditionalEquipment({ requisites, disabled = false }: Props) {
                   index={index}
                   parentName={ServicesGroupName.additionalEquipments}
                   isRequisiteEditable={true}
-                  productOptions={additionalEquipments}
+                  productOptions={options.productType}
                   arrayHelpers={arrayHelpers}
                   arrayLength={arr.length}
                   changeIds={changeIds}

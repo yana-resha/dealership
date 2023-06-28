@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 // import { PropsWithChildren } from 'react'
 
 // import { render, screen } from '@testing-library/react'
@@ -67,3 +67,5 @@ describe('OrderSettings', () => {
   //TODO https://jira.x.sberauto.com/browse/DCB-313
   it.todo('Тесты выполняются непростительно долго! нужно оптимизировать')
 })
+
+export {}

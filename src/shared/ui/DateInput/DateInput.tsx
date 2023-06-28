@@ -24,6 +24,7 @@ export const DateInput = React.memo((props: DateInputProps) => {
     if (value != null && DateTime.fromJSDate(value) !== fieldValue) {
       setFieldValue(DateTime.fromJSDate(value))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
   const onBlur = useCallback(

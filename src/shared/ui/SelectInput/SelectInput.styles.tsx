@@ -1,7 +1,4 @@
-import { alpha } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-
-import { PRIMARY_MAIN } from 'app/theme/palette'
 
 export default makeStyles(theme => ({
   inputContainer: {

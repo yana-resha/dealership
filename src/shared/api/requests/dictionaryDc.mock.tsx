@@ -1,4 +1,13 @@
-export const carBrands = [
+import {
+  CalculateCreditResponse,
+  Car,
+  GetCreditProductListResponse,
+  GetVendorOptionsListResponse,
+  OptionID,
+  OptionType,
+} from '@sberauto/dictionarydc-proto/public'
+
+export const carBrands: Car[] = [
   { brand: 'BMW', models: ['1 series', '3 series'] },
   { brand: 'Fiat', models: ['Ducato', 'Punto', '500'] },
   { brand: 'KIA', models: ['Picanto', 'Rio', 'Ceed'] },
@@ -6,73 +15,121 @@ export const carBrands = [
   { brand: 'Skoda', models: ['Rapid', 'Octavia', 'Superb'] },
 ]
 
-export const creditProductListRsData = {
+export const creditProductListRsData: GetCreditProductListResponse = {
   fullDownpaymentMin: 20,
   fullDownpaymentMax: 60,
   fullDurationMin: 12,
   fullDurationMax: 72,
-  products: [
+  creditProducts: [
     {
-      productId: '499fa8d7-fe66-4898-829d-8364f3e22bb1',
       productCode: '3',
       productName: 'Лайт A',
-      downpaymentMin: '30',
+      downpaymentMin: 30,
       downpaymentMax: 70,
       durationMin: 24,
       durationMax: 72,
     },
     {
-      productId: '499fa8d7-fe66-4898-829d-8364f3e22bb2',
       productCode: '2',
       productName: 'Лайт В',
-      downpaymentMin: '10',
+      downpaymentMin: 10,
       downpaymentMax: 50,
       durationMin: 12,
       durationMax: 36,
     },
   ],
-  bankOptions: [
-    {
-      productCode: '1111',
-      optionCode: '1000',
-      optionName: 'КАСКО для всех',
-      optionType: 'КАСКО',
-    },
-    {
-      productCode: '2222',
-      optionCode: '2000',
-      optionName: 'ОСАГО для всех',
-      optionType: 'ОСАГО',
-    },
-  ],
+  bankOptions: [],
 }
 
-//TODO DCB-389: Убрать мок после интеграции
-export const mockGetVendorOptionsResponse = {
-  options: [
+export const mockGetVendorOptionsResponse: GetVendorOptionsListResponse = {
+  additionalOptions: [
     {
-      type: 1,
+      optionId: OptionID.GAP,
+      optionType: OptionType.ADDITIONAL,
       optionName: 'ОСАГО',
     },
     {
-      type: 2,
+      optionId: OptionID.CASCO,
+      optionType: OptionType.ADDITIONAL,
       optionName: 'КАСКО',
     },
     {
-      type: 3,
+      optionId: OptionID.TONING_PAINTING,
+      optionType: OptionType.ADDITIONAL,
       optionName: 'Перекрасить авто',
     },
     {
-      type: 4,
+      optionId: OptionID.OTHER,
+      optionType: OptionType.ADDITIONAL,
       optionName: 'Графика на кузове',
+    },
+    {
+      optionId: OptionID.VEHICLE_ADAPTATION,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Адаптация и подготовка автомобиля',
+    },
+    {
+      optionId: OptionID.ALARM_AUTOSTART,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Автосигнализация, автозапуск/установка',
+    },
+    {
+      optionId: OptionID.ACOUSTIC_SYSTEM,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Акустическая система, автозвук/установка',
+    },
+    {
+      optionId: OptionID.DVR,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Видеорегистратор/установка',
+    },
+    {
+      optionId: OptionID.RIMS_TIRES_WHEELS,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Диски/резина/колеса',
+    },
+    {
+      optionId: OptionID.CRANKCASE_GEARBOXES,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Защита картера, коробки передач/установка',
+    },
+    {
+      optionId: OptionID.RADIATOR_PROTECTIVE_FILMS,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Защита решётки радиатора, защитные плёнки/установка',
+    },
+    {
+      optionId: OptionID.CARPETS,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Ковры в салон/багажник',
+    },
+    {
+      optionId: OptionID.CAR_TREATMENT_KIT,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Комплект для обработки автомобиля',
+    },
+    {
+      optionId: OptionID.ANTINOISE_ANTICORRSION,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Обработка антишум, антикоррозия, полировка',
+    },
+    {
+      optionId: OptionID.FENDERS_CROSSBARS_ROOFRAILS,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Подкрылки,брызговики, дуги поперечные,рейлинги /установка',
+    },
+    {
+      optionId: OptionID.CAR_TUNING,
+      optionType: OptionType.EQUIPMENT,
+      optionName: 'Тюнинг автомобиля',
     },
   ],
 }
 
-export const mockCalculateCreditResponse = {
+export const mockCalculateCreditResponse: CalculateCreditResponse = {
   products: [
     {
-      productFamilyCode: 'DRVBF',
+      productCodeName: 'DRVBF',
       productCode: 'DRVB',
       productName: 'Драйв В', //creditProduct
       downpayment: 200000, //initialPayment
@@ -85,7 +142,7 @@ export const mockCalculateCreditResponse = {
       totalSum: 1821466, //loanAmount
     },
     {
-      productFamilyCode: 'DRVCF',
+      productCodeName: 'DRVCF',
       productCode: 'DRVC',
       productName: 'Драйв C',
       downpayment: 300000,

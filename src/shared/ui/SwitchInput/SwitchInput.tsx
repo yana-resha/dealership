@@ -17,6 +17,7 @@ export const SwitchInput = (props: SwitchInputProps) => {
     if (value != undefined && value !== fieldValue) {
       setFieldValue(value)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
   function handleSwitch(event: React.ChangeEvent<HTMLInputElement>) {

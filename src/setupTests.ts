@@ -10,3 +10,11 @@ jest.mock('redux-state-sync', () => ({
 }))
 
 jest.spyOn(console, 'error').mockImplementation(() => {})
+
+const mockEnqueue = jest.fn()
+jest.mock('notistack', () => ({
+  ...jest.requireActual('notistack'),
+  useSnackbar: () => ({
+    enqueueSnackbar: mockEnqueue,
+  }),
+}))

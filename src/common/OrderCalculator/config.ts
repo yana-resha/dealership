@@ -1,3 +1,5 @@
+import { AdditionalOption, OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
+
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 
 import {
@@ -52,23 +54,6 @@ export const INITIAL_CAR_ID_TYPE = [
     value: 0,
     label: 'Номер кузова',
   },
-]
-
-export const ADDITIONAL_EQUIPMENTS = [
-  { type: 1, optionName: 'Адаптация и подготовка автомобиля' },
-  { type: 2, optionName: 'Автосигнализация, автозапуск/установка' },
-  { type: 3, optionName: 'Акустическая система, автозвук/установка' },
-  { type: 4, optionName: 'Видеорегистратор/установка' },
-  { type: 5, optionName: 'Диски/резина/колеса' },
-  { type: 6, optionName: 'Защита картера, коробки передач/установка' },
-  { type: 7, optionName: 'Защита решётки радиатора, защитные плёнки/установка' },
-  { type: 8, optionName: 'Ковры в салон/багажник' },
-  { type: 9, optionName: 'Комплект для обработки автомобиля' },
-  { type: 10, optionName: 'Обработка антишум, антикоррозия, полировка' },
-  { type: 11, optionName: 'Подкрылки,брызговики, дуги поперечные,рейлинги /установка' },
-  { type: 12, optionName: 'Тонировка, покраска, колеровка' },
-  { type: 13, optionName: 'Тюнинг автомобиля' },
-  { type: 14, optionName: 'Прочее' },
 ]
 
 const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
