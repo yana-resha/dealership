@@ -1,3 +1,5 @@
+import throttle from 'lodash/throttle'
+
 import { getUserSessionId } from 'shared/lib/getUserSessionId'
 
 import { Options } from '../helpers/baseFetch'
@@ -5,6 +7,34 @@ import { authToken } from '../token'
 
 type RefreshMethod = () => Promise<any>
 type LogoutMethod = () => Promise<void> | void
+
+type FetchError = {
+  success: false
+  errors: {
+    code: string
+    description: string
+    data?: {
+      description?: string
+    }
+  }[]
+}
+
+export type CustomFetchError = {
+  code: string
+  status: number
+  info?: string
+  ok: false
+}
+
+function makeError(code: string, status: number, info?: string): CustomFetchError {
+  return { code, status, ok: false, info }
+}
+
+function checkIsAuthError(error?: CustomFetchError) {
+  const { code, status } = error || {}
+
+  return (!!code && ['Unauthorized', 'Unauthenticated'].includes(code)) || status === 401
+}
 
 let instance: Rest
 
@@ -38,20 +68,22 @@ class Rest {
 
   /** Рефрешим токены */
   refresh = async (attempt = 0) => {
+    if (!authToken.jwt.get()) {
+      throw makeError('Unauthorized', 401, 'Token is empty')
+    }
+
     if (!this.isRefreshing) {
       this.setIsRefreshing(true)
 
       try {
         await this.refreshMethod?.()
-      } catch (error: any) {
-        console.warn('Rest.refresh err:', error)
+      } catch (err) {
+        const error = err as unknown as CustomFetchError
 
-        const isAuthError = error.errors?.some?.(
-          (error: { code: string }) => error.code === 'Unauthenticated',
-        )
+        const isAuthError = checkIsAuthError(error)
 
-        if (isAuthError || attempt >= 5) {
-          await this.logoutMethod?.()
+        if (isAuthError || attempt <= 5) {
+          throttle(() => this.logoutMethod?.(), 1500)()
         } else {
           await this.refresh(attempt + 1)
 
@@ -117,26 +149,42 @@ class Rest {
     })
       .then(async response => {
         if (isResponseBlob) {
-          return (await response.blob()) as any
+          try {
+            return (await response.blob()) as any
+          } catch (err) {
+            throw makeError(response.statusText, response.status, `blob parser error, info: ${err}`)
+          }
         }
 
         if (!response.ok) {
-          throw await response.json()
+          let error: FetchError | undefined
+          try {
+            error = (await response.json()) as FetchError
+          } catch (err) {
+            throw makeError(response.statusText, response.status, `${err}`)
+          }
+
+          const { code, description } = error?.errors?.[0] || {}
+          throw makeError(code, response.status, description)
         }
 
-        const data: ResponseType = await response.json()
-
-        return data
+        try {
+          return (await response.json()) as ResponseType
+        } catch (err) {
+          throw makeError(response.statusText, response.status, `json parser error, info: ${err}`)
+        }
       })
-      .catch(async error => {
+      .catch(async (error: CustomFetchError) => {
+        console.error('fetch error: ', url, JSON.stringify(error))
         if (
-          error.errors?.some((error: { code: string }) => error.code === 'Unauthenticated') &&
+          checkIsAuthError(error) &&
           !isRepeated &&
           // Если упал метод refreshAuthByToken, то он не должен тригерить повторный запуск рефреша
           !url.includes('refreshAuthByToken')
         ) {
-          this.refresh()
+          await this.refresh()
           await this.waitingRefreshed()
+
           // Если после рефреша есть токен, значит рефрешнулись успешно
           if (authToken.jwt.get()) {
             /** Запускаем запрос повторно, помечаем что он повторный,

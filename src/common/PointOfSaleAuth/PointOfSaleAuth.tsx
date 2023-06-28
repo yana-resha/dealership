@@ -21,7 +21,7 @@ export function PointOfSaleAuth() {
 
   return (
     <Box className={classes.pointOfSaleFormContainer}>
-      <IconButton className={classes.backArrow} onClick={onLogout} data-testid="backButton">
+      <IconButton className={classes.backArrow} onClick={() => onLogout()} data-testid="backButton">
         <KeyboardArrowLeft />
       </IconButton>
 

@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import Cookies from 'js-cookie'
+import { useSnackbar, VariantType } from 'notistack'
 import { useQueryClient } from 'react-query'
 
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
@@ -13,19 +14,32 @@ export const useLogout = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
 
-  const onLogout = useCallback(() => {
-    // Чистим данные стора
-    dispatch(removeUserInfo())
-    dispatch(clearOrder())
+  const { enqueueSnackbar } = useSnackbar()
 
-    // Чистим куки
-    authToken.jwt.delete()
-    authToken.refresh.delete()
-    Cookies.remove(COOKIE_POINT_OF_SALE)
+  const onLogout = useCallback(
+    (message?: { text: string; variant?: VariantType }) => {
+      const isTokens = authToken.jwt.get() && authToken.refresh.get()
 
-    //Чистим кеш
-    queryClient.invalidateQueries()
-  }, [dispatch, queryClient])
+      // Чистим данные стора
+      dispatch(removeUserInfo())
+      dispatch(clearOrder())
+
+      // Чистим куки
+      authToken.jwt.delete()
+      authToken.refresh.delete()
+      Cookies.remove(COOKIE_POINT_OF_SALE)
+
+      //Чистим кеш
+      queryClient.invalidateQueries()
+
+      if (isTokens) {
+        if (message?.text) {
+          enqueueSnackbar(message.text, { variant: message.variant ?? 'error' })
+        }
+      }
+    },
+    [dispatch, enqueueSnackbar, queryClient],
+  )
 
   return { onLogout }
 }

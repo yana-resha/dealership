@@ -21,7 +21,11 @@ export const useFindApplicationsQuery = (
       staleTime: 1000 * 30,
 
       select: response => makeApplicationTableData(response.applicationList ?? []),
-      onError: () => enqueueSnackbar('Ошибка. Не удалось получить список заявок', { variant: 'error' }),
+      onError: (err: any) => {
+        if (err?.status !== 401) {
+          enqueueSnackbar('Ошибка. Не удалось получить список заявок', { variant: 'error' })
+        }
+      },
       ...(option || {}),
     },
   )
