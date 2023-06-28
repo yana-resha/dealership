@@ -26,31 +26,38 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
 
   const changeShouldFetchProducts = useCallback(() => setShouldFetchProducts(true), [])
 
-  const fetchProducts = useCallback(() => {
-    setShouldFetchProducts(true)
-  }, [])
-
   const isChangedBaseValues = useMemo(
     () => Object.entries(sentParams).some(e => values[e[0] as keyof OrderCalculatorFields] !== e[1]),
     [sentParams, values],
   )
 
-  const { data, isError, isFetching, isFetched, isLoading } = useGetCreditProductListQuery({
+  const { data, isError, isFetching, isFetched, isLoading, remove } = useGetCreditProductListQuery({
     vendorCode,
     values,
     enabled: shouldFetchProducts,
   })
 
+  const formFields = useMemo(
+    () => ({
+      carCondition: values.carCondition,
+      carBrand: values.carBrand,
+      carModel: values.carModel,
+      carYear: values.carYear,
+      carCost: values.carCost,
+      carMileage: values.carMileage,
+    }),
+    [
+      values.carBrand,
+      values.carCondition,
+      values.carCost,
+      values.carMileage,
+      values.carModel,
+      values.carYear,
+    ],
+  )
+
   useEffect(() => {
     if (isFetching) {
-      const formFields = {
-        carCondition: values.carCondition,
-        carBrand: values.carBrand,
-        carModel: values.carModel,
-        carYear: values.carYear,
-        carCost: values.carCost,
-        carMileage: values.carMileage,
-      }
       setShouldFetchProducts(false)
       setSentParams(formFields)
 
@@ -58,18 +65,14 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
         setValues({ ...initialValueMap, ...formFields })
       }
     }
-  }, [
-    isFetched,
-    isFetching,
-    setValues,
-    shouldFetchProductsOnStart,
-    values.carBrand,
-    values.carCondition,
-    values.carCost,
-    values.carMileage,
-    values.carModel,
-    values.carYear,
-  ])
+  }, [formFields, isFetched, isFetching, setValues, shouldFetchProductsOnStart])
+
+  const fetchProducts = useCallback(() => {
+    if (isChangedBaseValues) {
+      remove()
+    }
+    setShouldFetchProducts(true)
+  }, [remove, isChangedBaseValues])
 
   useEffect(() => {
     if (!isError && data && !isChangedBaseValues) {
