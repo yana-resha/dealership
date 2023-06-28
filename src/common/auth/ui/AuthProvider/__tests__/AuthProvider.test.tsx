@@ -11,6 +11,14 @@ import { AuthProvider } from '../AuthProvider'
 jest.mock('shared/api/client')
 jest.mock('../../../hooks/useLogout')
 
+const mockEnqueue = jest.fn()
+jest.mock('notistack', () => ({
+  ...jest.requireActual('notistack'),
+  useSnackbar: () => ({
+    enqueueSnackbar: mockEnqueue,
+  }),
+}))
+
 describe('AuthProvider', () => {
   const useLogoutMock = jest.spyOn(useLogoutHooks, 'useLogout')
   const onLogoutMock = jest.fn()
@@ -45,7 +53,6 @@ describe('AuthProvider', () => {
     )
 
     expect(Rest.setLogout).toHaveBeenCalledTimes(1)
-    expect(Rest.setLogout).toHaveBeenCalledWith(onLogoutMock)
   })
 
   it('должен настроить клиент Rest с правильной функцией logout-а', () => {

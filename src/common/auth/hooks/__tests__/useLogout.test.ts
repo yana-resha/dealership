@@ -9,10 +9,19 @@ import { MockProviders } from 'tests/mocks'
 
 import { useLogout } from '../useLogout'
 
+const mockEnqueue = jest.fn()
+jest.mock('notistack', () => ({
+  ...jest.requireActual('notistack'),
+  useSnackbar: () => ({
+    enqueueSnackbar: mockEnqueue,
+  }),
+}))
+
 jest.mock('shared/hooks/store/useAppDispatch', () => ({ useAppDispatch: () => (param: any) => {} }))
 
 jest.mock('js-cookie', () => ({
   remove: jest.fn(),
+  get: jest.fn(() => 'token'),
 }))
 
 describe('useLogout', () => {

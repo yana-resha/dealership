@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Настраиваем сервис отправки запросов
   useEffect(() => {
     Rest.setRefresh(refreshAuthByToken)
-    Rest.setLogout(onLogout)
+    Rest.setLogout(() => onLogout({ text: 'Ошибка авторизации' }))
   }, [onLogout])
 
   return <AuthContext.Provider value={{ isAuth }}>{children}</AuthContext.Provider>
