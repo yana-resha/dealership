@@ -21,8 +21,6 @@ export enum MaritalStatus {
   CivilMarriage = 5,
 }
 
-export interface IncomeFrontdc extends Omit<IncomeFrontdcProto, 'proofOfIncomePapersType'> {}
-
 /* TODO Прослойка добалена, потому что сейчас в протосах ручки getFullApplication type: string,
 а должен быть number */
 export interface ApplicantFrontdc extends ApplicantFrontdcProto {}
@@ -56,7 +54,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       prevMiddleName: 'Ивановна',
       birthDate: '2000-01-01',
       birthPlace: 'Саратов',
-      // sex?: number,
+      sex: 0,
       // citizenship?: string,
       email: 'mail@mail.ru',
       marital: 1,

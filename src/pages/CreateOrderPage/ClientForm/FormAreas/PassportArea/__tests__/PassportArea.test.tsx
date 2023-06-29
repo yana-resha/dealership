@@ -55,6 +55,7 @@ const mockedPassportAreaFields = {
   birthPlace: '',
   passportDate: null,
   divisionCode: '',
+  sex: null,
   issuedBy: '',
   registrationAddressString: '',
   registrationAddress: configAddressInitialValues,

@@ -33,6 +33,7 @@ export interface ClientData {
   birthDate: Date | null
   birthPlace: string
   passportDate: Date | null
+  sex: number | null
   divisionCode: string
   issuedBy: string
   registrationAddressString: string

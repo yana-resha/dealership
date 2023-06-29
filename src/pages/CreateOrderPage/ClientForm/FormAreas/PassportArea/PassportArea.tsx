@@ -17,7 +17,11 @@ import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { ClientData } from '../../ClientForm.types'
-import { FAMILY_STATUS_VALUES, configAddressInitialValues } from '../../config/clientFormInitialValues'
+import {
+  FAMILY_STATUS_VALUES,
+  SEX_VALUES,
+  configAddressInitialValues,
+} from '../../config/clientFormInitialValues'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './PassportArea.styles'
 
@@ -82,11 +86,45 @@ export function PassportArea() {
         label="Серия и номер паспорта"
         placeholder="-"
         mask={maskPassport}
-        gridColumn="span 4"
+        gridColumn="span 3"
         disabled
       />
+
+      <DateInputFormik name="passportDate" label="Дата выдачи" gridColumn="span 3" />
+
+      <MaskedInputFormik
+        name="divisionCode"
+        label="Код подразделения"
+        placeholder="-"
+        mask={maskDivisionCode}
+        gridColumn="span 3"
+      />
+
+      <SelectInputFormik name="sex" label="Пол" placeholder="-" options={SEX_VALUES} gridColumn="span 3" />
+
+      <Box gridColumn="span 4" />
+
       <DateInputFormik name="birthDate" label="Дата рождения" gridColumn="span 4" disabled />
-      <Box gridColumn="span 8" />
+
+      <MaskedInputFormik
+        name="birthPlace"
+        label="Место рождения"
+        placeholder="-"
+        mask={maskNoRestrictions}
+        gridColumn="span 8"
+      />
+
+      <Box gridColumn="span 4" />
+
+      <MaskedInputFormik
+        name="issuedBy"
+        label="Кем выдан"
+        placeholder="-"
+        mask={maskCyrillicAndDigits}
+        gridColumn="span 12"
+      />
+
+      <Box gridColumn="span 4" />
 
       {hasNameChanged && (
         <MaskedInputFormik
@@ -114,31 +152,6 @@ export function PassportArea() {
         gridColumn="span 6"
       />
       <Box gridColumn="span 7" />
-
-      <MaskedInputFormik
-        name="birthPlace"
-        label="Место рождения"
-        placeholder="-"
-        mask={maskNoRestrictions}
-        gridColumn="span 6"
-      />
-      <DateInputFormik name="passportDate" label="Дата выдачи" gridColumn="span 3" />
-      <MaskedInputFormik
-        name="divisionCode"
-        label="Код подразделения"
-        placeholder="-"
-        mask={maskDivisionCode}
-        gridColumn="span 3"
-      />
-      <Box gridColumn="span 4" />
-
-      <MaskedInputFormik
-        name="issuedBy"
-        label="Кем выдан"
-        placeholder="-"
-        mask={maskCyrillicAndDigits}
-        gridColumn="span 12"
-      />
 
       <MaskedInputFormik
         name="registrationAddressString"
