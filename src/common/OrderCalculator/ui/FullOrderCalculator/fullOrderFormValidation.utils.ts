@@ -85,13 +85,6 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
           then: schema => schema.required(FieldMessages.required),
         },
       ),
-      [FormFieldNameMap.documentId]: Yup.string().when(
-        [FormFieldNameMap.productType, FormFieldNameMap.isCredit],
-        {
-          is: (productType: string, isCredit: boolean) => !!productType && isCredit,
-          then: schema => schema.required(FieldMessages.required),
-        },
-      ),
       ...bankDetailsFormValidation,
     }),
   ),

@@ -119,39 +119,38 @@ describe('DealerServicesRequisitesTest', () => {
       expect(screen.getByTestId('dealerAdditionalServices[0].bankAccountNumber')).toBeInTheDocument()
     })
 
-    it('Отображается switch "Ввести вручную"', () => {
-      expect(screen.getByText('Ввести вручную')).toBeInTheDocument()
-    })
+    //Тесты отключены, пока выключен ручной ввод
 
-    it('Отображается поле "Номер полиса"', () => {
-      expect(screen.getByTestId('dealerAdditionalServices[0].documentId')).toBeInTheDocument()
-    })
-
-    it('Отображается поле "БИК"', () => {
-      expect(screen.getByTestId('dealerAdditionalServices[0].bankIdentificationCode')).toBeInTheDocument()
-    })
-
-    it('Поле "Кор. счет" отображается, если включен ручной ввод', async () => {
-      expect(screen.queryByTestId('dealerAdditionalServices[0].correspondentAccount')).not.toBeInTheDocument()
-      userEvent.click(screen.getByText('Ввести вручную'))
-      expect(
-        await screen.findByTestId('dealerAdditionalServices[0].correspondentAccount'),
-      ).toBeInTheDocument()
-    })
-
-    it('Radio для выбора налога отображаются, если включен ручной ввод', async () => {
-      expect(screen.queryByText('С НДС')).not.toBeInTheDocument()
-      expect(screen.queryByText('Без НДС')).not.toBeInTheDocument()
-      userEvent.click(screen.getByText('Ввести вручную'))
-      expect(await screen.findByText('С НДС')).toBeInTheDocument()
-      expect(await screen.findByText('Без НДС')).toBeInTheDocument()
-    })
-
-    it('Поле "Налог" отображается, если включен ручной ввод', async () => {
-      expect(screen.queryByTestId('dealerAdditionalServices[0].taxation')).not.toBeInTheDocument()
-      userEvent.click(screen.getByText('Ввести вручную'))
-      expect(await screen.findByTestId('dealerAdditionalServices[0].taxation')).toBeInTheDocument()
-    })
+    // it('Отображается switch "Ввести вручную"', () => {
+    //   expect(screen.getByText('Ввести вручную')).toBeInTheDocument()
+    // })
+    //
+    // it('Отображается поле "БИК"', () => {
+    //   expect(screen.getByTestId('dealerAdditionalServices[0].bankIdentificationCode')).toBeInTheDocument()
+    // })
+    //
+    // it('Поле "Кор. счет" отображается, если включен ручной ввод', async () => {
+    //   expect(screen.queryByTestId('dealerAdditionalServices[0]
+    //   .correspondentAccount')).not.toBeInTheDocument()
+    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   expect(
+    //     await screen.findByTestId('dealerAdditionalServices[0].correspondentAccount'),
+    //   ).toBeInTheDocument()
+    // })
+    //
+    // it('Radio для выбора налога отображаются, если включен ручной ввод', async () => {
+    //   expect(screen.queryByText('С НДС')).not.toBeInTheDocument()
+    //   expect(screen.queryByText('Без НДС')).not.toBeInTheDocument()
+    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   expect(await screen.findByText('С НДС')).toBeInTheDocument()
+    //   expect(await screen.findByText('Без НДС')).toBeInTheDocument()
+    // })
+    //
+    // it('Поле "Налог" отображается, если включен ручной ввод', async () => {
+    //   expect(screen.queryByTestId('dealerAdditionalServices[0].taxation')).not.toBeInTheDocument()
+    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   expect(await screen.findByTestId('dealerAdditionalServices[0].taxation')).toBeInTheDocument()
+    // })
 
     it('Поле "Банк получатель" заблокировано, если агент не выбран', () => {
       expect(screen.getByTestId('dealerAdditionalServices[0].beneficiaryBank')).not.toBeEnabled()
@@ -175,7 +174,7 @@ describe('DealerServicesRequisitesTest', () => {
           wrapper: createWrapper,
         },
       )
-      userEvent.click(screen.getByText('Ввести вручную'))
+      // userEvent.click(screen.getByText('Ввести вручную'))
       userEvent.click(screen.getByTestId('submit'))
     })
 
@@ -211,41 +210,37 @@ describe('DealerServicesRequisitesTest', () => {
       ).toBeInTheDocument()
     })
 
-    it('Валидируется поле "Номер полиса"', async () => {
-      expect(
-        await screen.findByTestId('dealerAdditionalServices[0].documentIdErrorMessage'),
-      ).toBeInTheDocument()
-    })
+    //Тесты отключены, пока выключен ручной ввод
 
-    it('Валидируется поле "БИК"', async () => {
-      expect(
-        await screen.findByTestId('dealerAdditionalServices[0].bankIdentificationCodeErrorMessage'),
-      ).toBeInTheDocument()
-    })
-
-    it('Валидируется поле "Банк получатель"', async () => {
-      expect(
-        await screen.findByTestId('dealerAdditionalServices[0].beneficiaryBankErrorMessage'),
-      ).toBeInTheDocument()
-    })
-
-    it('Валидируется поле "Номер счета банка"', async () => {
-      expect(
-        await screen.findByTestId('dealerAdditionalServices[0].bankAccountNumberErrorMessage'),
-      ).toBeInTheDocument()
-    })
-
-    it('Валидируется поле "Кор. счет"', async () => {
-      expect(
-        await screen.findByTestId('dealerAdditionalServices[0].correspondentAccountErrorMessage'),
-      ).toBeInTheDocument()
-    })
-
-    it('Валидируется поле "Налог"', async () => {
-      userEvent.click(screen.getByText('С НДС'))
-      expect(
-        await screen.findByTestId('dealerAdditionalServices[0].taxationErrorMessage'),
-      ).toBeInTheDocument()
-    })
+    // it('Валидируется поле "БИК"', async () => {
+    //   expect(
+    //     await screen.findByTestId('dealerAdditionalServices[0].bankIdentificationCodeErrorMessage'),
+    //   ).toBeInTheDocument()
+    // })
+    //
+    // it('Валидируется поле "Банк получатель"', async () => {
+    //   expect(
+    //     await screen.findByTestId('dealerAdditionalServices[0].beneficiaryBankErrorMessage'),
+    //   ).toBeInTheDocument()
+    // })
+    //
+    // it('Валидируется поле "Номер счета банка"', async () => {
+    //   expect(
+    //     await screen.findByTestId('dealerAdditionalServices[0].bankAccountNumberErrorMessage'),
+    //   ).toBeInTheDocument()
+    // })
+    //
+    // it('Валидируется поле "Кор. счет"', async () => {
+    //   expect(
+    //     await screen.findByTestId('dealerAdditionalServices[0].correspondentAccountErrorMessage'),
+    //   ).toBeInTheDocument()
+    // })
+    //
+    // it('Валидируется поле "Налог"', async () => {
+    //   userEvent.click(screen.getByText('С НДС'))
+    //   expect(
+    //     await screen.findByTestId('dealerAdditionalServices[0].taxationErrorMessage'),
+    //   ).toBeInTheDocument()
+    // })
   })
 })

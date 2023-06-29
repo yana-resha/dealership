@@ -14,7 +14,6 @@ import {
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
-import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
 import { RequisitesAdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
 import { useBanksOptions } from '../../hooks/useBanksOptions'
@@ -60,19 +59,31 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
         setFieldValue(namePrefix + 'correspondentAccount', chosenBank ? chosenBank.bankCorrAccount : '')
       }
     }
-  }, [requisites, legalPerson, beneficiaryBank])
+  }, [
+    requisites,
+    legalPerson,
+    setBanksOptions,
+    setAccountNumberOptions,
+    isCustomFields,
+    beneficiaryBank,
+    setFieldValue,
+    namePrefix,
+  ])
 
-  const toggleTaxInPercentField = useCallback((value: boolean) => {
-    setFieldValue(namePrefix + 'taxPresence', value)
-    setFieldValue(namePrefix + 'taxation', value ? '' : '0')
-  }, [])
+  const toggleTaxInPercentField = useCallback(
+    (value: boolean) => {
+      setFieldValue(namePrefix + 'taxPresence', value)
+      setFieldValue(namePrefix + 'taxation', value ? '' : '0')
+    },
+    [namePrefix, setFieldValue],
+  )
 
   const resetInitialValues = useCallback(() => {
     setFieldValue(namePrefix + 'bankAccountNumber', '')
     setFieldValue(namePrefix + 'beneficiaryBank', '')
     setFieldValue(namePrefix + 'taxPresence', initialValues.current.taxPresence)
     setFieldValue(namePrefix + 'taxation', initialValues.current.taxation)
-  }, [])
+  }, [namePrefix, setFieldValue])
 
   const clearFieldsForManualEntry = useCallback(() => {
     setFieldValue(namePrefix + 'beneficiaryBank', '')
@@ -81,17 +92,21 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
     setFieldValue(namePrefix + 'taxPresence', false)
     setFieldValue(namePrefix + 'taxation', '0')
     setFieldValue(namePrefix + 'bankIdentificationCode', '')
-  }, [])
+  }, [namePrefix, setFieldValue])
 
-  const handleManualEntryChange = useCallback((manual: boolean) => {
-    if (manual) {
-      clearFieldsForManualEntry()
-      setFieldValue(namePrefix + 'isCustomFields', true)
-    } else {
-      setFieldValue(namePrefix + 'isCustomFields', false)
-      resetInitialValues()
-    }
-  }, [])
+  //Метод активирует поля для ручного ввода реквизитов. Не используется, пока отключен ручной ввод
+  const handleManualEntryChange = useCallback(
+    (manual: boolean) => {
+      if (manual) {
+        clearFieldsForManualEntry()
+        setFieldValue(namePrefix + 'isCustomFields', true)
+      } else {
+        setFieldValue(namePrefix + 'isCustomFields', false)
+        resetInitialValues()
+      }
+    },
+    [clearFieldsForManualEntry, namePrefix, resetInitialValues, setFieldValue],
+  )
 
   useEffect(() => {
     if (previousLegalPerson === legalPerson || beneficiaryBank === '' || isCustomFields) {
@@ -136,17 +151,16 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
         disabled={!isRequisiteEditable}
       />
       <Box gridColumn="span 6" />
-      <MaskedInputFormik
-        name={namePrefix + 'bankIdentificationCode'}
-        label="БИК"
-        placeholder="-"
-        mask={maskBankIdentificationCode}
-        gridColumn="span 3"
-        disabled={!isCustomFields}
-      />
 
       {isCustomFields ? (
         <>
+          <MaskedInputFormik
+            name={namePrefix + 'bankIdentificationCode'}
+            label="БИК"
+            placeholder="-"
+            mask={maskBankIdentificationCode}
+            gridColumn="span 3"
+          />
           <MaskedInputFormik
             name={namePrefix + 'beneficiaryBank'}
             label="Банк Получатель средств за авто"
@@ -169,27 +183,18 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
             label="Банк Получатель средств за авто"
             placeholder="-"
             options={banksOptions}
-            gridColumn="span 5"
+            gridColumn="span 6"
           />
           <SelectInputFormik
             name={namePrefix + 'bankAccountNumber'}
             label="Номер Счета банка"
             placeholder="-"
             options={accountNumberOptions}
-            gridColumn="span 4"
+            gridColumn="span 6"
             disabled={!accountNumberOptions.length}
           />
         </>
       )}
-      <Box gridColumn="span 3" width="auto" minWidth="min-content">
-        <SwitchInput
-          id="manualInput"
-          value={isCustomFields}
-          label="Ввести вручную"
-          onChange={handleManualEntryChange}
-          centered
-        />
-      </Box>
 
       {isCustomFields && (
         <>

@@ -60,6 +60,9 @@ const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
   productType: undefined,
   productCost: '',
   isCredit: false,
+  [FormFieldNameMap.documentType]: '',
+  [FormFieldNameMap.documentNumber]: '',
+  [FormFieldNameMap.documentDate]: null,
 }
 
 const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
@@ -82,7 +85,6 @@ const FULL_INITIAL_ADDITIONAL_SERVICE: FullInitialAdditionalService = {
   [FormFieldNameMap.provider]: '',
   [FormFieldNameMap.agent]: '',
   [FormFieldNameMap.loanTerm]: undefined,
-  [FormFieldNameMap.documentId]: '',
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 

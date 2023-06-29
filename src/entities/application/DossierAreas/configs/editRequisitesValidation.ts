@@ -3,6 +3,14 @@ import * as Yup from 'yup'
 const MANDATORY_FIELD_MESSAGE = 'Поле обязательно для заполнения'
 const FIELD_NOT_COMPLETED = 'Введите значение полностью'
 
+//TODO: Убрать, когда будет Enum с типами документа
+export const DOCUMENT_TYPES = [
+  { label: 'Полис', value: 1 },
+  { label: 'Счет', value: 2 },
+  { label: 'Договор', value: 3 },
+  { label: 'Акт', value: 4 },
+]
+
 const dealerServiceValidationSchema = Yup.object().shape({
   productType: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   provider: Yup.string().required(MANDATORY_FIELD_MESSAGE),

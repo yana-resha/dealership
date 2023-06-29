@@ -41,6 +41,12 @@ export function useInitialValues<D extends boolean | undefined>(
             [FormFieldNameMap.productType]: cur.type ?? initialData.additionalEquipments[0].productType,
             [FormFieldNameMap.productCost]: `${cur.price ?? initialData.additionalEquipments[0].productCost}`,
             [FormFieldNameMap.isCredit]: cur.inCreditFlag ?? initialData.additionalEquipments[0].isCredit,
+            [FormFieldNameMap.documentType]: cur.docType ?? initialData.additionalEquipments[0].documentType,
+            [FormFieldNameMap.documentNumber]:
+              cur.docNumber ?? initialData.additionalEquipments[0].documentNumber,
+            [FormFieldNameMap.documentDate]: cur.docDate
+              ? new Date(cur.docDate)
+              : initialData.additionalEquipments[0].documentDate,
           }
           const additionalServiceRequisitesData = isFullCalculator
             ? {
@@ -74,9 +80,6 @@ export function useInitialValues<D extends boolean | undefined>(
                   cur.broker ?? (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].agent,
                 [FormFieldNameMap.loanTerm]:
                   cur.term ?? (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].loanTerm,
-                [FormFieldNameMap.documentId]:
-                  cur.docNumber ??
-                  (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].documentId,
               }
             : {}
 

@@ -83,33 +83,31 @@ describe('DealerCenterRequisitesTest', () => {
       expect(screen.getByTestId('bankAccountNumber')).toBeInTheDocument()
     })
 
-    it('Отображается switch "Ввести вручную"', () => {
-      expect(screen.getByText('Ввести вручную')).toBeInTheDocument()
-    })
+    //Тесты отключены, пока выключен ручной ввод
 
-    it('Отображается поле "БИК"', () => {
-      expect(screen.getByTestId('bankIdentificationCode')).toBeInTheDocument()
-    })
+    // it('Отображается switch "Ввести вручную"', () => {
+    //   expect(screen.getByText('Ввести вручную')).toBeInTheDocument()
+    // })
 
-    it('Поле Кор. счет отображается, если включен ручной ввод', async () => {
-      expect(screen.queryByTestId('correspondentAccount')).not.toBeInTheDocument()
-      userEvent.click(screen.getByText('Ввести вручную'))
-      expect(await screen.findByTestId('correspondentAccount')).toBeInTheDocument()
-    })
+    // it('Поле Кор. счет отображается, если включен ручной ввод', async () => {
+    //   expect(screen.queryByTestId('correspondentAccount')).not.toBeInTheDocument()
+    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   expect(await screen.findByTestId('correspondentAccount')).toBeInTheDocument()
+    // })
 
-    it('Radio для выбора налога отображаются, если включен ручной ввод', async () => {
-      expect(screen.queryByText('С НДС')).not.toBeInTheDocument()
-      expect(screen.queryByText('Без НДС')).not.toBeInTheDocument()
-      userEvent.click(screen.getByText('Ввести вручную'))
-      expect(await screen.findByText('С НДС')).toBeInTheDocument()
-      expect(await screen.findByText('Без НДС')).toBeInTheDocument()
-    })
+    // it('Radio для выбора налога отображаются, если включен ручной ввод', async () => {
+    //   expect(screen.queryByText('С НДС')).not.toBeInTheDocument()
+    //   expect(screen.queryByText('Без НДС')).not.toBeInTheDocument()
+    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   expect(await screen.findByText('С НДС')).toBeInTheDocument()
+    //   expect(await screen.findByText('Без НДС')).toBeInTheDocument()
+    // })
 
-    it('Поле "Налог" отображается, если включен ручной ввод', async () => {
-      expect(screen.queryByTestId('taxation')).not.toBeInTheDocument()
-      userEvent.click(screen.getByText('Ввести вручную'))
-      expect(await screen.findByTestId('taxation')).toBeInTheDocument()
-    })
+    // it('Поле "Налог" отображается, если включен ручной ввод', async () => {
+    //   expect(screen.queryByTestId('taxation')).not.toBeInTheDocument()
+    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   expect(await screen.findByTestId('taxation')).toBeInTheDocument()
+    // })
 
     it('Поле "Номер счета банка" заблокировано, если банк не выбран', () => {
       expect(screen.getByTestId('bankAccountNumber')).not.toBeEnabled()
@@ -121,7 +119,7 @@ describe('DealerCenterRequisitesTest', () => {
       render(<DealerCenterRequisites requisites={mockedRequisites} isRequisiteEditable={false} />, {
         wrapper: createWrapper,
       })
-      userEvent.click(screen.getByText('Ввести вручную'))
+      // userEvent.click(screen.getByText('Ввести вручную'))
       userEvent.click(screen.getByTestId('submit'))
     })
 
@@ -141,17 +139,19 @@ describe('DealerCenterRequisitesTest', () => {
       expect(await screen.findByTestId('bankAccountNumberErrorMessage')).toBeInTheDocument()
     })
 
-    it('Валидируется поле "БИК"', async () => {
-      expect(await screen.findByTestId('bankIdentificationCodeErrorMessage')).toBeInTheDocument()
-    })
+    //Тесты отключены, пока выключен ручной ввод
 
-    it('Валидируется поле "Кор. счет"', async () => {
-      expect(await screen.findByTestId('correspondentAccountErrorMessage')).toBeInTheDocument()
-    })
-
-    it('Валидируется поле "Налог"', async () => {
-      userEvent.click(screen.getByText('С НДС'))
-      expect(await screen.findByTestId('taxationErrorMessage')).toBeInTheDocument()
-    })
+    // it('Валидируется поле "БИК"', async () => {
+    //   expect(await screen.findByTestId('bankIdentificationCodeErrorMessage')).toBeInTheDocument()
+    // })
+    //
+    // it('Валидируется поле "Кор. счет"', async () => {
+    //   expect(await screen.findByTestId('correspondentAccountErrorMessage')).toBeInTheDocument()
+    // })
+    //
+    // it('Валидируется поле "Налог"', async () => {
+    //   userEvent.click(screen.getByText('С НДС'))
+    //   expect(await screen.findByTestId('taxationErrorMessage')).toBeInTheDocument()
+    // })
   })
 })

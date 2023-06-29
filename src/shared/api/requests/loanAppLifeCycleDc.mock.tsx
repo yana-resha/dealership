@@ -304,10 +304,10 @@ export const fullApplicationData: GetFullApplicationResponse = {
           cascoLimit: 0,
           minDateOfBirth: '2011-01-01',
           minDriveExp: 4,
-          docType: 2,
+          docType: 3,
           certNumber: 'ув3а3а3а3м3',
-          docNumber: '32ук23к22',
-          docDate: '2023-04-23',
+          docNumber: 'gfdgsdfgf',
+          docDate: '2022-01-20',
           dateStart: '2020-04-23',
           dateEnd: '2025-04-23',
           vendorAccount: {
