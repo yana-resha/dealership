@@ -28,12 +28,14 @@ export enum FormFieldNameMap {
   loanAmount = 'loanAmount',
   beneficiaryBank = 'beneficiaryBank',
   bankAccountNumber = 'bankAccountNumber',
+  documentType = 'documentType',
+  documentNumber = 'documentNumber',
+  documentDate = 'documentDate',
   bankIdentificationCode = 'bankIdentificationCode',
   correspondentAccount = 'correspondentAccount',
   taxation = 'taxation',
   provider = 'provider',
   agent = 'agent',
-  documentId = 'documentId',
   isCustomFields = 'isCustomFields',
   commonError = 'commonError',
   isExceededServicesTotalLimit = 'isExceededServicesTotalLimit',
@@ -47,6 +49,9 @@ export interface OrderCalculatorAdditionalService {
   [FormFieldNameMap.productType]: OptionID | undefined
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
+  [FormFieldNameMap.documentType]: number | string
+  [FormFieldNameMap.documentNumber]: string
+  [FormFieldNameMap.documentDate]: Date | null
 }
 
 export interface InitialBankDetailsValue {
@@ -70,7 +75,6 @@ export interface FullInitialAdditionalService
   [FormFieldNameMap.provider]: string
   [FormFieldNameMap.agent]: string
   [FormFieldNameMap.loanTerm]: number | undefined
-  [FormFieldNameMap.documentId]: string
 }
 
 export interface CommonError {

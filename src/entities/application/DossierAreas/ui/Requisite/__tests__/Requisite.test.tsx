@@ -48,11 +48,6 @@ describe('RequisiteTest', () => {
       expect(screen.getByText('24 мес.')).toBeInTheDocument()
     })
 
-    it('Отображается "Номер полиса"', () => {
-      expect(screen.getByText('Номер полиса')).toBeInTheDocument()
-      expect(screen.getByText('32ук23к22')).toBeInTheDocument()
-    })
-
     it('Отображается "Получатель"', () => {
       expect(screen.getByText('Получатель')).toBeInTheDocument()
       expect(screen.getByText('Росбанк')).toBeInTheDocument()

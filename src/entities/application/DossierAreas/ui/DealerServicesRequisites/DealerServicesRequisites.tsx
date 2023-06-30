@@ -11,15 +11,16 @@ import {
   maskNoRestrictions,
   maskOnlyDigitsWithSeparator,
 } from 'shared/masks/InputMasks'
+import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { AddingSquareBtn } from 'shared/ui/SquareBtn/AddingSquareBtn'
 import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
-import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { RequisitesDealerServices } from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { DOCUMENT_TYPES } from '../../configs/editRequisitesValidation'
 import { useAdditionalServices } from '../../hooks/useAdditionalServices'
 import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
 import { useBanksOptions } from '../../hooks/useBanksOptions'
@@ -62,7 +63,7 @@ export function DealerServicesRequisites(props: Props) {
     productOptions,
   } = props
   const { values, setFieldValue } = useFormikContext<DossierRequisites>()
-  const { provider, bankAccountNumber, agent, beneficiaryBank, taxPresence, isCredit } =
+  const { provider, bankAccountNumber, agent, beneficiaryBank, taxPresence } =
     values.dealerAdditionalServices[index]
   const initialValues = useRef(values.dealerAdditionalServices[index])
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
@@ -142,6 +143,7 @@ export function DealerServicesRequisites(props: Props) {
     setFieldValue(`${namePrefix}correspondentAccount`, '')
   }, [namePrefix])
 
+  //Метод активирует поля для ручного ввода реквизитов. Не используется, пока отключен ручной ввод
   const handleManualEntryChange = useCallback(
     (manual: boolean) => {
       if (manual) {
@@ -159,14 +161,6 @@ export function DealerServicesRequisites(props: Props) {
     (value: boolean) => {
       setFieldValue(`${namePrefix}taxPresence`, value)
       setFieldValue(`${namePrefix}taxation`, value ? '' : '0')
-    },
-    [namePrefix],
-  )
-
-  const handleInCreditChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFieldValue(`${namePrefix}loanTerm`, '')
-      setFieldValue(`${namePrefix}documentId`, '')
     },
     [namePrefix],
   )
@@ -236,7 +230,6 @@ export function DealerServicesRequisites(props: Props) {
         name={`${namePrefix}isCredit`}
         label="В кредит"
         gridColumn="span 2"
-        afterChange={handleInCreditChange}
         centered
         disabled={!isRequisiteEditable}
       />
@@ -246,7 +239,6 @@ export function DealerServicesRequisites(props: Props) {
           <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />
         </Box>
       )}
-
       <SelectInputFormik
         name={`${namePrefix}agent`}
         label="Агент получатель"
@@ -263,39 +255,29 @@ export function DealerServicesRequisites(props: Props) {
         gridColumn="span 3"
         disabled={!isRequisiteEditable}
       />
-      {isCredit ? (
-        <>
-          {isRequisiteEditable ? (
-            <SelectInputFormik
-              name={`${namePrefix}loanTerm`}
-              label="Срок"
-              placeholder="-"
-              options={terms}
-              gridColumn="span 3"
-            />
-          ) : (
-            <MaskedInputFormik
-              name={`${namePrefix}loanTerm`}
-              label="Срок"
-              placeholder="-"
-              mask={maskDigitsOnly}
-              gridColumn="span 3"
-              disabled
-            />
-          )}
-          <MaskedInputFormik
-            name={`${namePrefix}documentId`}
-            label="Номер полиса/сертификата"
-            placeholder="-"
-            mask={maskNoRestrictions}
-            gridColumn="span 3"
-            disabled={!(isRequisiteEditable || manualEntry)}
-          />
-        </>
-      ) : (
-        <Box gridColumn="span 6" />
-      )}
+      <SelectInputFormik
+        name={`${namePrefix}loanTerm`}
+        label="Срок"
+        placeholder="-"
+        options={terms}
+        gridColumn="span 3"
+      />
 
+      <SelectInputFormik
+        name={`${namePrefix}documentType`}
+        label="Тип документа"
+        placeholder="-"
+        options={DOCUMENT_TYPES}
+        gridColumn="span 4"
+      />
+      <MaskedInputFormik
+        name={`${namePrefix}documentNumber`}
+        label="Номер документа"
+        placeholder="-"
+        mask={maskNoRestrictions}
+        gridColumn="span 4"
+      />
+      <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
       {manualEntry ? (
         <>
           <MaskedInputFormik
@@ -322,20 +304,12 @@ export function DealerServicesRequisites(props: Props) {
         </>
       ) : (
         <>
-          <MaskedInputFormik
-            name={`${namePrefix}bankIdentificationCode`}
-            label="БИК"
-            placeholder="-"
-            mask={maskBankIdentificationCode}
-            gridColumn="span 3"
-            disabled
-          />
           <SelectInputFormik
             name={`${namePrefix}beneficiaryBank`}
             label="Банк получатель денежных средств"
             placeholder="-"
             options={banksOptions}
-            gridColumn="span 5"
+            gridColumn="span 6"
             disabled={!banksOptions.length}
           />
           <SelectInputFormik
@@ -343,15 +317,11 @@ export function DealerServicesRequisites(props: Props) {
             label="Номер Счета банка"
             placeholder="-"
             options={accountNumberOptions}
-            gridColumn="span 4"
+            gridColumn="span 6"
             disabled={!accountNumberOptions.length}
           />
         </>
       )}
-      <Box gridColumn="span 3" width="auto" minWidth="min-content">
-        <SwitchInput value={manualEntry} label="Ввести вручную" onChange={handleManualEntryChange} centered />
-      </Box>
-
       {manualEntry && (
         <>
           <MaskedInputFormik

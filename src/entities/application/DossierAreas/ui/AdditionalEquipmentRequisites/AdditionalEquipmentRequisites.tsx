@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 
 import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
@@ -10,18 +10,16 @@ import {
   maskNoRestrictions,
   maskOnlyDigitsWithSeparator,
 } from 'shared/masks/InputMasks'
+import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { AddingSquareBtn } from 'shared/ui/SquareBtn/AddingSquareBtn'
 import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
-import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
-import {
-  AdditionalOptions,
-  RequisitesAdditionalOptions,
-} from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { RequisitesAdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
+import { DOCUMENT_TYPES } from '../../configs/editRequisitesValidation'
 import { useAdditionalServices } from '../../hooks/useAdditionalServices'
 import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
 import { useBanksOptions } from '../../hooks/useBanksOptions'
@@ -99,14 +97,23 @@ export function AdditionalEquipmentRequisites(props: Props) {
       setBanksOptions([])
       setAccountNumberOptions([])
     }
-  }, [requisites, legalPerson, beneficiaryBank, namePrefix])
+  }, [
+    requisites,
+    legalPerson,
+    setBanksOptions,
+    setAccountNumberOptions,
+    manualEntry,
+    beneficiaryBank,
+    setFieldValue,
+    namePrefix,
+  ])
 
   const toggleTaxInPercentField = useCallback(
     (value: boolean) => {
       setFieldValue(`${namePrefix}taxPresence`, value)
       setFieldValue(`${namePrefix}taxation`, value ? '' : '0')
     },
-    [namePrefix],
+    [namePrefix, setFieldValue],
   )
 
   const resetInitialValues = useCallback(() => {
@@ -117,7 +124,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
     setFieldValue(`${namePrefix}beneficiaryBank`, '')
     setFieldValue(`${namePrefix}bankAccountNumber`, '')
     setAccountNumberOptions([])
-  }, [namePrefix])
+  }, [namePrefix, setAccountNumberOptions, setFieldValue])
 
   const clearFieldsForManualEntry = useCallback(() => {
     setFieldValue(`${namePrefix}beneficiaryBank`, '')
@@ -126,8 +133,9 @@ export function AdditionalEquipmentRequisites(props: Props) {
     setFieldValue(`${namePrefix}taxPresence`, false)
     setFieldValue(`${namePrefix}taxation`, '0')
     setFieldValue(`${namePrefix}correspondentAccount`, '')
-  }, [namePrefix])
+  }, [namePrefix, setFieldValue])
 
+  //Метод активирует поля для ручного ввода реквизитов. Не используется, пока отключен ручной ввод
   const handleManualEntryChange = useCallback(
     (manual: boolean) => {
       if (manual) {
@@ -138,7 +146,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
         resetInitialValues()
       }
     },
-    [clearFieldsForManualEntry, resetInitialValues],
+    [clearFieldsForManualEntry, resetInitialValues, setManualEntry],
   )
 
   useEffect(() => {
@@ -215,17 +223,32 @@ export function AdditionalEquipmentRequisites(props: Props) {
         gridColumn="span 6"
       />
       <Box gridColumn="span 9" />
-      <MaskedInputFormik
-        name={`${namePrefix}bankIdentificationCode`}
-        label="БИК"
+
+      <SelectInputFormik
+        name={`${namePrefix}documentType`}
+        label="Тип документа"
         placeholder="-"
-        mask={maskBankIdentificationCode}
-        gridColumn="span 3"
-        disabled={!manualEntry}
+        options={DOCUMENT_TYPES}
+        gridColumn="span 4"
       />
+      <MaskedInputFormik
+        name={`${namePrefix}documentNumber`}
+        label="Номер документа"
+        placeholder="-"
+        mask={maskNoRestrictions}
+        gridColumn="span 4"
+      />
+      <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
 
       {manualEntry ? (
         <>
+          <MaskedInputFormik
+            name={`${namePrefix}bankIdentificationCode`}
+            label="БИК"
+            placeholder="-"
+            mask={maskBankIdentificationCode}
+            gridColumn="span 3"
+          />
           <MaskedInputFormik
             name={`${namePrefix}beneficiaryBank`}
             label="Банк получатель денежных средств"
@@ -248,7 +271,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
             label="Банк получатель денежных средств"
             placeholder="-"
             options={banksOptions}
-            gridColumn="span 5"
+            gridColumn="span 6"
             disabled={!banksOptions.length}
           />
           <SelectInputFormik
@@ -256,14 +279,11 @@ export function AdditionalEquipmentRequisites(props: Props) {
             label="Номер Счета банка"
             placeholder="-"
             options={accountNumberOptions}
-            gridColumn="span 4"
+            gridColumn="span 6"
             disabled={!accountNumberOptions.length}
           />
         </>
       )}
-      <Box gridColumn="span 3" width="auto" minWidth="min-content">
-        <SwitchInput value={manualEntry} label="Ввести вручную" onChange={handleManualEntryChange} centered />
-      </Box>
 
       {manualEntry && (
         <>
