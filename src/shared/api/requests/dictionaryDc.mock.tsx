@@ -25,6 +25,7 @@ export const creditProductListRsData: GetCreditProductListResponse = {
       productCode: '3',
       productName: 'Лайт A',
       productId: 'S',
+      cascoFlag: true,
       downpaymentMin: 0.3,
       downpaymentMax: 0.7,
       durationMin: 24,

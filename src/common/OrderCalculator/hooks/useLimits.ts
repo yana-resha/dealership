@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { useField, useFormikContext } from 'formik'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
@@ -157,12 +158,15 @@ export function useLimits({ vendorCode }: Params) {
       validationParamsField.value.minInitialPaymentPercent !== minInitialPaymentPercent
     ) {
       setValidationParams({
+        ...validationParamsField.value,
         maxInitialPayment,
         maxInitialPaymentPercent,
         minInitialPayment,
         minInitialPaymentPercent,
       })
     }
+    // Исключили setValidationParams что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     maxInitialPayment,
     maxInitialPaymentPercent,
@@ -233,10 +237,11 @@ export function useLimits({ vendorCode }: Params) {
       isExceededBankServicesLimit !== isExceededBankAdditionalServicesLimit
     ) {
       setCommonErrors({
-        isExceededServicesTotalLimit: isExceededServicesTotalLimit,
-        isExceededAdditionalEquipmentsLimit: isExceededAdditionalEquipmentsLimit,
-        isExceededDealerAdditionalServicesLimit: isExceededDealerAdditionalServicesLimit,
-        isExceededBankAdditionalServicesLimit: isExceededBankAdditionalServicesLimit,
+        ...commonErrorsField.value,
+        isExceededServicesTotalLimit,
+        isExceededAdditionalEquipmentsLimit,
+        isExceededDealerAdditionalServicesLimit,
+        isExceededBankAdditionalServicesLimit,
       })
     }
     // Исключили setCommonErrors что бы избежать случайного перерендера
@@ -249,6 +254,51 @@ export function useLimits({ vendorCode }: Params) {
     isExceededServicesTotalLimit,
   ])
 
+  const isNecessaryCasco = !!currentProduct?.cascoFlag
+
+  /*
+  В initialValues формика прописано свойство validationParams. Поля для него нет,
+  оно служит для передачи внешних данных (isNecessaryCasco...) в схему валидации.
+  В данном эффекте это и производится, если значение изменилось
+  */
+  useEffect(() => {
+    if (validationParamsField.value.isNecessaryCasco !== !!currentProduct?.cascoFlag) {
+      setValidationParams({
+        ...validationParamsField.value,
+        isNecessaryCasco: !!currentProduct?.cascoFlag,
+      })
+    }
+    // Исключили setValidationParams что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentProduct?.cascoFlag, validationParamsField.value])
+
+  const isHasCasco = values.dealerAdditionalServices.some(e => e.productType === OptionID.CASCO)
+
+  /*
+  В initialValues формика прописано свойство commonErrors. Поля для него нет,
+  оно служит для передачи внешних данных - ошибок (isHasNotCascoOption...) в схему валидации.
+  В данном эффекте это и производится, если значение изменилось
+  */
+  useEffect(() => {
+    if (isNecessaryCasco && !isHasCasco) {
+      if (!commonErrorsField.value.isHasNotCascoOption) {
+        setCommonErrors({
+          ...commonErrorsField.value,
+          isHasNotCascoOption: true,
+        })
+      }
+    } else {
+      if (commonErrorsField.value.isHasNotCascoOption) {
+        setCommonErrors({
+          ...commonErrorsField.value,
+          isHasNotCascoOption: false,
+        })
+      }
+    }
+    // Исключили setCommonErrors что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commonErrorsField.value, currentProduct?.cascoFlag, isHasCasco])
+
   /*
   Если поля были предзаполнены, и кнопка submit не нажималась,
   то в случае ошики (стоимость одного допа увеличили) нужно подсветить все поля стоимостей допов.
@@ -260,16 +310,22 @@ export function useLimits({ vendorCode }: Params) {
       )
     }
     if (commonErrorsField.value.isExceededDealerAdditionalServicesLimit) {
-      values.additionalEquipments.forEach((e, i) =>
+      values.dealerAdditionalServices.forEach((e, i) =>
         setFieldTouched(`${ServicesGroupName.dealerAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
     if (commonErrorsField.value.isExceededBankAdditionalServicesLimit) {
-      values.additionalEquipments.forEach((e, i) =>
+      values.bankAdditionalServices.forEach((e, i) =>
         setFieldTouched(`${ServicesGroupName.bankAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
-  }, [commonErrorsField.value, setFieldTouched, values.additionalEquipments])
+  }, [
+    commonErrorsField.value,
+    setFieldTouched,
+    values.additionalEquipments,
+    values.bankAdditionalServices,
+    values.dealerAdditionalServices,
+  ])
 
   // Сформирован на основе поля commonErrors массив ошибок стоимостей допов. Просто возвращается компоненту.
   const commonErrors = useMemo(
@@ -290,5 +346,6 @@ export function useLimits({ vendorCode }: Params) {
     initialPaymentHelperText,
     loanTerms,
     commonErrors,
+    isNecessaryCasco,
   }
 }

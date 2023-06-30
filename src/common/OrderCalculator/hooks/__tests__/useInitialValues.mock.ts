@@ -58,6 +58,7 @@ export const EXPECTED_FULL_DATA = {
     isExceededBankAdditionalServicesLimit: false,
     isExceededDealerAdditionalServicesLimit: false,
     isExceededServicesTotalLimit: false,
+    isHasNotCascoOption: false,
   },
   correspondentAccount: '40702810038000017249',
   creditProduct: '3',

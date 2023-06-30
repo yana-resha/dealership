@@ -1,3 +1,4 @@
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import * as Yup from 'yup'
 import { InternalOptions } from 'yup/lib/types'
 
@@ -25,6 +26,17 @@ export const additionalServiceBaseValidation = (checkFn: (commonError: CommonErr
         '',
         // @ts-ignore
         (value, context) => checkFn(context.from[1].value.commonError),
+      ),
+  }),
+  [FormFieldNameMap.cascoLimit]: Yup.string().when([FormFieldNameMap.productType], {
+    is: (productType: string) => productType === `${OptionID.CASCO}`,
+    then: schema =>
+      schema.test(
+        'isHasNotCascoLimit',
+        FieldMessages.required,
+        // @ts-ignore
+        (value, context) =>
+          !(context.options as InternalOptions)?.from?.[1].value.validationParams.isNecessaryCasco || !!value,
       ),
   }),
 })
@@ -76,4 +88,19 @@ export const baseFormValidation = {
         : true
     }),
   [FormFieldNameMap.loanTerm]: Yup.number().required(FieldMessages.required),
+  [FormFieldNameMap.commonError]: Yup.object({
+    [FormFieldNameMap.isExceededAdditionalEquipmentsLimit]: Yup.bool().test(
+      'isExceededAdditionalEquipmentsLimit',
+      value => !value,
+    ),
+    [FormFieldNameMap.isExceededDealerAdditionalServicesLimit]: Yup.bool().test(
+      'isExceededDealerAdditionalServicesLimit',
+      value => !value,
+    ),
+    [FormFieldNameMap.isExceededBankAdditionalServicesLimit]: Yup.bool().test(
+      'isExceededBankAdditionalServicesLimit',
+      value => !value,
+    ),
+    [FormFieldNameMap.isHasNotCascoOption]: Yup.bool().test('isHasNotCascoOption', value => !value),
+  }),
 }

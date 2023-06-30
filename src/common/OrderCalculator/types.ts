@@ -50,12 +50,15 @@ export enum FormFieldNameMap {
   isExceededDealerAdditionalServicesLimit = 'isExceededDealerAdditionalServicesLimit',
   isExceededBankAdditionalServicesLimit = 'isExceededBankAdditionalServicesLimit',
   validationParams = 'validationParams',
+  cascoLimit = 'cascoLimit',
+  isHasNotCascoOption = 'isHasNotCascoOption',
 }
 
 export interface OrderCalculatorAdditionalService {
   [FormFieldNameMap.productType]: OptionID | string
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
+  [FormFieldNameMap.cascoLimit]?: string
 }
 
 export interface OrderCalculatorAdditionalServiceDocInfo {
@@ -100,6 +103,7 @@ export interface CommonError {
   isExceededAdditionalEquipmentsLimit: boolean
   isExceededDealerAdditionalServicesLimit: boolean
   isExceededBankAdditionalServicesLimit: boolean
+  isHasNotCascoOption: boolean
 }
 
 export interface ValidationParams {
@@ -107,6 +111,7 @@ export interface ValidationParams {
   maxInitialPaymentPercent?: number
   minInitialPayment?: number
   minInitialPaymentPercent?: number
+  isNecessaryCasco?: boolean
 }
 
 export interface OrderCalculatorFields {
@@ -158,6 +163,7 @@ export type FormMessages = {
   [FormFieldNameMap.isExceededAdditionalEquipmentsLimit]: string
   [FormFieldNameMap.isExceededDealerAdditionalServicesLimit]: string
   [FormFieldNameMap.isExceededBankAdditionalServicesLimit]: string
+  [FormFieldNameMap.isHasNotCascoOption]: string
 }
 
 export type CreditProductParams = Partial<
