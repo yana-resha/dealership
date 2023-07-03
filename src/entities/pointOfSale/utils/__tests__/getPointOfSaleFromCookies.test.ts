@@ -7,9 +7,7 @@ import { getPointOfSaleFromCookies } from '../getPointOfSaleFromCookies'
 const vendorMock = {
   vendorCode: '2002852',
   vendorName: 'Сармат',
-  cityName: 'Ханты-Мансийск',
-  houseNumber: '4',
-  streetName: 'Зябликова',
+  address: 'Ханты-Мансийск Зябликова 4',
 }
 
 describe('getPointOfSaleFromCookies', () => {

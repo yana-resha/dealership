@@ -88,7 +88,7 @@ export function useInitialValues<D extends boolean | undefined>(
                 [FormFieldNameMap.correspondentAccount]:
                   cur.bankOptionType === OptionType.DEALER
                     ? cur.broker?.requisites?.accountRequisites?.accountCorrNumber
-                    : cur.broker?.requisites?.accountRequisites?.accountCorrNumber ??
+                    : cur.vendor?.requisites?.accountRequisites?.accountCorrNumber ??
                       (initialData as FullOrderCalculatorFields).additionalEquipments[0].correspondentAccount,
                 [FormFieldNameMap.taxation]: `${
                   cur.bankOptionType === OptionType.DEALER

@@ -18,6 +18,7 @@ import {
   EditRequisitesArea,
   InformationArea,
 } from 'entities/application/DossierAreas/ui'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
 import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
@@ -42,8 +43,7 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   )
   const fullApplicationData = useAppSelector(state => state.order.order)?.orderData
   const application = fullApplicationData?.application
-  //TODO: Убрать мок после появления поля unit в Vendor
-  const unit = 'currentUnit'
+  const { unit } = getPointOfSaleFromCookies()
   const [fileQuestionnaire, setFileQuestionnaire] = useState<File>()
   const [agreementDocs, setAgreementDocs] = useState<(File | undefined)[]>([])
   const [isEditRequisitesMode, setIsEditRequisitesMode] = useState(false)
@@ -93,7 +93,7 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
     }
 
     return request
-  }, [fullApplicationData])
+  }, [fullApplicationData, unit])
 
   const passport = useMemo(() => {
     const { series, number } =

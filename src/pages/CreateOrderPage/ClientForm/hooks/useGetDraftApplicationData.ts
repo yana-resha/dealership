@@ -10,13 +10,14 @@ import { getFullName } from 'shared/utils/clientNameTransform'
 
 export const useGetDraftApplicationData = () => {
   const { data: user } = useGetUserQuery()
-  const { vendorCode } = getPointOfSaleFromCookies()
+  const { vendorCode, unit } = getPointOfSaleFromCookies()
   const initialOrder = useAppSelector(state => state.order.order)
   const applicationId = initialOrder?.orderData?.application?.dcAppId
 
   return useCallback(
     (): ApplicationFrontdc => ({
       dcAppId: applicationId,
+      unit,
       anketaType: ApplicationTypes.initial,
       vendor: {
         vendorCode,
