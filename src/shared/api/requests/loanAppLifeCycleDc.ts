@@ -109,6 +109,7 @@ export const useGetFullApplicationQuery = (
   options?: UseQueryOptions<GetFullApplicationResponse, unknown, GetFullApplicationResponse, string[]>,
 ) => {
   const dispatch = useDispatch()
+
   return useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
     retry: false,
     onSuccess: response => dispatch(setOrder({ orderData: response })),

@@ -63,7 +63,12 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
       setShouldFetchProducts(false)
       setSentParams(formFields)
       if (!shouldFetchProductsOnStart || isChangedBaseValues) {
-        setValues({ ...fullInitialValueMap, ...formFields })
+        setValues({
+          ...fullInitialValueMap,
+          ...formFields,
+          taxValue: values.taxValue,
+          taxPercent: values.taxPercent,
+        })
       }
     }
   }, [

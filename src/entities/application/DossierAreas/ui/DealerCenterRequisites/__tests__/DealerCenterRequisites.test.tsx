@@ -28,6 +28,7 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
 const mockedRequisites: RequisitesAdditionalOptions[] = [
   {
     legalEntityName: '',
+    tax: 0.15,
     banks: [],
   },
 ]

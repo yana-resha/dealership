@@ -12,16 +12,19 @@ export interface RequisitesBanks {
 
 export interface RequisitesAdditionalOptions {
   legalEntityName: string
+  tax: number
   banks: RequisitesBanks[]
 }
 
 export interface RequisitesAgents {
   agentName: string
+  tax: number
   banks: RequisitesBanks[]
 }
 
 export interface RequisitesDealerServices {
   provider: string
+  tax: number
   agents: RequisitesAgents[]
 }
 
@@ -77,7 +80,8 @@ export interface ClientDossier {
 export const mockRequisites = (): Requisites => ({
   dealerCenterRequisites: [
     {
-      legalEntityName: '2002703288',
+      legalEntityName: '2002985190',
+      tax: 0.146,
       banks: [
         {
           bankName: 'Сбербанк',
@@ -101,6 +105,7 @@ export const mockRequisites = (): Requisites => ({
     },
     {
       legalEntityName: 'САРМАТ',
+      tax: 0.134,
       banks: [
         {
           bankName: 'ДальКомБанк',
@@ -114,9 +119,11 @@ export const mockRequisites = (): Requisites => ({
   dealerServicesRequisites: [
     {
       provider: 'РосГосСтрах',
+      tax: 0.158,
       agents: [
         {
           agentName: 'Райффайзен Банк',
+          tax: 0.195,
           banks: [
             {
               bankName: 'МТС Банк',
@@ -140,6 +147,7 @@ export const mockRequisites = (): Requisites => ({
         },
         {
           agentName: 'Почта Банк',
+          tax: 0.166,
           banks: [
             {
               bankName: 'Альфабанк',
@@ -157,6 +165,7 @@ export const mockRequisites = (): Requisites => ({
         },
         {
           agentName: 'Сбербанк',
+          tax: 0.137,
           banks: [
             {
               bankName: 'Банк Открытие',
@@ -170,9 +179,11 @@ export const mockRequisites = (): Requisites => ({
     },
     {
       provider: 'Газпром страхование',
+      tax: 0.101,
       agents: [
         {
           agentName: 'МТС Банк',
+          tax: 0.127,
           banks: [
             {
               bankName: 'Банк Русский Стандарт',
@@ -184,6 +195,7 @@ export const mockRequisites = (): Requisites => ({
         },
         {
           agentName: 'Qiwi Банк',
+          tax: 0.14,
           banks: [
             {
               bankName: 'Webmoney',
@@ -197,9 +209,11 @@ export const mockRequisites = (): Requisites => ({
     },
     {
       provider: 'Ингосстрах',
+      tax: 0.199,
       agents: [
         {
           agentName: 'ЛокоБанк',
+          tax: 0.178,
           banks: [
             {
               bankName: 'ДальКомБанк',
@@ -215,6 +229,7 @@ export const mockRequisites = (): Requisites => ({
   additionalEquipmentRequisites: [
     {
       legalEntityName: 'Arex',
+      tax: 0.161,
       banks: [
         {
           bankName: 'Сбербанк',
@@ -232,6 +247,7 @@ export const mockRequisites = (): Requisites => ({
     },
     {
       legalEntityName: 'САРМАТ',
+      tax: 0.119,
       banks: [
         {
           bankName: 'ДальКомБанк',
@@ -248,6 +264,7 @@ export const mockRequisitesForTest = (): Requisites => ({
   dealerCenterRequisites: [
     {
       legalEntityName: 'Anex',
+      tax: 0.157,
       banks: [
         {
           bankName: 'Сбербанк',
@@ -261,9 +278,11 @@ export const mockRequisitesForTest = (): Requisites => ({
   dealerServicesRequisites: [
     {
       provider: 'РосГосСтрах',
+      tax: 0.141,
       agents: [
         {
           agentName: 'Райффайзен Банк',
+          tax: 0.156,
           banks: [
             {
               bankName: 'МТС Банк',
@@ -279,6 +298,7 @@ export const mockRequisitesForTest = (): Requisites => ({
   additionalEquipmentRequisites: [
     {
       legalEntityName: 'Arex',
+      tax: 0.099,
       banks: [
         {
           bankName: 'Сбербанк',

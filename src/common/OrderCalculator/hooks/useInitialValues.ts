@@ -209,7 +209,7 @@ export function useInitialValues<D extends boolean | undefined>(
           const { productCost, productType, isCredit } = option
           const additionalOption: AdditionalOptionFrontdc = {
             bankOptionType: i === 0 ? BankOptionType.EQUIPMENTS : BankOptionType.DEALERSERVICES,
-            type: productType,
+            type: parseInt(productType.toString(), 10) ?? undefined,
             inCreditFlag: isCredit,
             price: parseInt(productCost, 10),
           }
@@ -234,7 +234,8 @@ export function useInitialValues<D extends boolean | undefined>(
       (acc: AdditionalOptionFrontdc[], option) => {
         const {
           productCost,
-          taxation,
+          taxValue,
+          taxPercent,
           bankAccountNumber,
           correspondentAccount,
           legalPerson,
@@ -249,7 +250,7 @@ export function useInitialValues<D extends boolean | undefined>(
 
         const additionalOption: AdditionalOptionFrontdc = {
           bankOptionType: BankOptionType.EQUIPMENTS,
-          type: productType,
+          type: parseInt(productType.toString(), 10) ?? undefined,
           inCreditFlag: isCredit,
           price: parseInt(productCost, 10),
           vendor: legalPerson,
@@ -261,7 +262,7 @@ export function useInitialValues<D extends boolean | undefined>(
             accountCorrNumber: correspondentAccount,
             bank: beneficiaryBank,
             bic: bankIdentificationCode,
-            tax: taxation ? parseInt(taxation, 10) : undefined,
+            tax: taxValue ?? undefined, //TODO Добавить taxPercent после изменения типа tax
           },
         }
         if (additionalOption.type) {
@@ -282,7 +283,10 @@ export function useInitialValues<D extends boolean | undefined>(
           isCredit,
           bankAccountNumber,
           correspondentAccount,
-          taxation,
+          providerTaxPercent,
+          providerTaxValue,
+          agentTaxPercent,
+          agentTaxValue,
           bankIdentificationCode,
           beneficiaryBank,
           loanTerm,
@@ -295,7 +299,7 @@ export function useInitialValues<D extends boolean | undefined>(
           bankOptionType: BankOptionType.DEALERSERVICES,
           vendor: provider,
           broker: agent,
-          type: productType,
+          type: parseInt(productType.toString(), 10) ?? undefined,
           inCreditFlag: isCredit,
           price: parseInt(productCost, 10),
           term: loanTerm,
@@ -307,7 +311,10 @@ export function useInitialValues<D extends boolean | undefined>(
             accountCorrNumber: correspondentAccount,
             bank: beneficiaryBank,
             bic: bankIdentificationCode,
-            tax: taxation ? parseInt(taxation, 10) : undefined,
+            tax: agentTaxValue ?? undefined, //TODO Добавить agentTaxPercent после изменения типа tax
+          },
+          vendorAccount: {
+            tax: providerTaxValue ?? undefined, //TODO Добавить providerTaxPercent после изменения типа tax
           },
         }
         if (additionalOption.type) {
@@ -396,7 +403,8 @@ export function useInitialValues<D extends boolean | undefined>(
         loanTerm,
         creditProduct,
         carId,
-        taxation,
+        taxValue,
+        taxPercent,
         bankAccountNumber,
         carIdType,
         bankIdentificationCode,
@@ -432,7 +440,7 @@ export function useInitialValues<D extends boolean | undefined>(
           bic: bankIdentificationCode,
           accountNumber: bankAccountNumber,
           accountCorrNumber: correspondentAccount,
-          tax: taxation ? parseInt(taxation, 10) : undefined,
+          tax: taxValue ?? undefined, //TODO Добавить taxPercent после изменения типа tax
         },
       }
       const newLoanData: LoanDataFrontdc = {
