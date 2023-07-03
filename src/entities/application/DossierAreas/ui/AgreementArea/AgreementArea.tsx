@@ -5,6 +5,7 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
 import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
@@ -12,7 +13,6 @@ import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { UploadFile } from 'shared/ui/UploadFile/UploadFile'
 
 import { RequisitesArea } from '../'
-import { appRoutePaths } from '../../../../../shared/navigation/routerPath'
 import { getPointOfSaleFromCookies } from '../../../../pointOfSale'
 import { getStatus, PreparedStatus } from '../../../application.utils'
 import { getMockAgreement } from '../../__tests__/mocks/clientDetailedDossier.mock'
@@ -126,9 +126,9 @@ export function AgreementArea({
   const editApplicationWithFinallyApprovedStatus = useCallback(() => {
     const isFullCalculator = application.vendor?.vendorCode === vendorCode ? true : false
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator, applicationId: application.dcAppId, saveDraftDisabled: true },
+      state: { isFullCalculator, saveDraftDisabled: true },
     })
-  }, [application.vendor?.vendorCode, vendorCode, application.dcAppId, navigate])
+  }, [application.vendor?.vendorCode, vendorCode, navigate])
 
   return (
     <Box className={classes.blockContainer} ref={agreementAreaRef}>

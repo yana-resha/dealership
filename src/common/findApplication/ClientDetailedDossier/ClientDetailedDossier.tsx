@@ -8,6 +8,7 @@ import {
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
+import { useDispatch } from 'react-redux'
 
 import { getMockQuestionnaire } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
 import {
@@ -17,8 +18,9 @@ import {
   EditRequisitesArea,
   InformationArea,
 } from 'entities/application/DossierAreas/ui'
+import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
 import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
-import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName } from 'shared/utils/clientNameTransform'
 
@@ -31,12 +33,14 @@ type Props = {
 
 export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const [fullApplicationId, setFullApplicationId] = useState(applicationId)
-  const { data: fullApplicationData, refetch } = useGetFullApplicationQuery(
+  const { refetch } = useGetFullApplicationQuery(
     { applicationId: fullApplicationId },
     { enabled: !!applicationId },
   )
-  const [application, setApplication] = useState<ApplicationFrontDc | null>(null)
+  const fullApplicationData = useAppSelector(state => state.order.order)?.orderData
+  const application = fullApplicationData?.application
   //TODO: Убрать мок после появления поля unit в Vendor
   const unit = 'currentUnit'
   const [fileQuestionnaire, setFileQuestionnaire] = useState<File>()
@@ -46,12 +50,6 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   useEffect(() => {
     refetch()
   }, [fullApplicationId, refetch])
-
-  useEffect(() => {
-    if (fullApplicationData?.application) {
-      setApplication(fullApplicationData.application as ApplicationFrontDc)
-    }
-  }, [fullApplicationData])
 
   useEffect(() => {
     const fetchQuestionnaire = async () => {
@@ -67,7 +65,14 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
 
   function updateStatus(statusCode: StatusCode) {
     //sendRequest
-    setApplication(prev => ({ ...prev, status: statusCode }))
+    dispatch(
+      updateOrder({
+        orderData: {
+          ...fullApplicationData,
+          application: { ...application, status: statusCode },
+        },
+      }),
+    )
   }
 
   const clientName = getFullName(
@@ -80,7 +85,7 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
     const request: SendApplicationToScoringRequest = {
       application: fullApplicationData
         ? ({
-            ...fullApplicationData.application,
+            fullApplicationData,
             unit: unit,
           } as ApplicationFrontdc)
         : null,

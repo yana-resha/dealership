@@ -25,33 +25,21 @@ export interface IncomeFrontdc extends Omit<IncomeFrontdcProto, 'proofOfIncomePa
 
 /* TODO Прослойка добалена, потому что сейчас в протосах ручки getFullApplication type: string,
 а должен быть number */
-export interface ApplicantFrontdc extends Omit<ApplicantFrontdcProto, 'category' | 'income'> {
-  category?: number
-  income?: IncomeFrontdc | null
-}
+export interface ApplicantFrontdc extends ApplicantFrontdcProto {}
 
-export interface AdditionalOptionFrontdc extends Omit<AdditionalOptionFrontdcProto, 'docType'> {
-  docType?: number
-}
+export interface AdditionalOptionFrontdc extends AdditionalOptionFrontdcProto {}
 
-export interface LoanDataFrontdc extends Omit<LoanDataFrontdcProto, 'additionalOptions'> {
-  additionalOptions?: AdditionalOptionFrontdc[] | null
-}
+export interface LoanDataFrontdc extends LoanDataFrontdcProto {}
 
-export interface ApplicationFrontDc extends Omit<ApplicationFrontdcProto, 'applicant' | 'loanData'> {
-  applicant?: ApplicantFrontdc | null
-  loanData?: LoanDataFrontdc | null
-}
+export interface ApplicationFrontDc extends ApplicationFrontdcProto {}
 
-export interface GetFullApplicationResponse extends Omit<GetFullApplicationResponseProto, 'application'> {
-  application?: ApplicationFrontDc | null
-}
+export interface GetFullApplicationResponse extends GetFullApplicationResponseProto {}
 
 export const fullApplicationData: GetFullApplicationResponse = {
   moratoryEndDate: '2023-06-21',
   targetDcAppId: '2023062280224',
   application: {
-    status: StatusCode.INITIAL,
+    status: StatusCode.APPROVED,
     anketaType: 1,
     appType: 'CARLOANAPPLICATIONDC',
     dcAppId: '544545',
@@ -255,7 +243,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           cascoLimit: 0,
           minDateOfBirth: '2000-01-01',
           minDriveExp: 5,
-          docType: 2,
+          docType: '2',
           certNumber: 'ув3а3а3а3м3',
           docNumber: '32ук23к22',
           docDate: '2023-04-23',
@@ -263,14 +251,14 @@ export const fullApplicationData: GetFullApplicationResponse = {
           dateEnd: '2025-04-23',
           vendorAccount: {
             idAccount: 'fn39h4f93fuj340fj30j',
-            accountNumber: '12345678901234567890',
-            accountCorrNumber: '12345678901234567899',
+            accountNumber: '40702810038000017241',
+            accountCorrNumber: '40702810038000017243',
             tax: 13.5,
             inn: '12345678901',
             kpp: '12345678',
             ogrn: '1234567890123',
-            bank: 'Росбанк',
-            bic: '12345678',
+            bank: 'Сбербанк',
+            bic: '646494334',
             address: 'Г Москва ул. Собаки баскервилей д7',
             accManualEnter: false,
           },
@@ -292,7 +280,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           type: OptionType.ADDITIONAL,
           name: 'ОСАГО',
           vendor: 'РосГосСтрах',
-          broker: '043432323',
+          broker: 'Почта Банк',
           inCreditFlag: true,
           inServicePackageFlag: false,
           price: 21,
@@ -304,7 +292,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           cascoLimit: 0,
           minDateOfBirth: '2011-01-01',
           minDriveExp: 4,
-          docType: 3,
+          docType: '2',
           certNumber: 'ув3а3а3а3м3',
           docNumber: 'gfdgsdfgf',
           docDate: '2022-01-20',
@@ -312,27 +300,27 @@ export const fullApplicationData: GetFullApplicationResponse = {
           dateEnd: '2025-04-23',
           vendorAccount: {
             idAccount: 'fn39h4f93fuj340fj30j',
-            accountNumber: '12345678901234567890',
-            accountCorrNumber: '12345678901234567891',
+            accountNumber: '40702810038000012344',
+            accountCorrNumber: '40702810038000054323',
             tax: 13.5,
             inn: '12345678901',
             kpp: '12345678',
             ogrn: '1234567890123',
-            bank: 'Росбанк',
-            bic: '12345678',
+            bank: 'Банк Открытие',
+            bic: '527494329',
             address: 'Г Москва ул. Собаки баскервилей д7',
             accManualEnter: false,
           },
           brokerAccount: {
             idAccount: 'fn39h4f93fuj340fj30j',
-            accountNumber: '12345678901234567890',
-            accountCorrNumber: '12345678901234567891',
+            accountNumber: '40702810038000012344',
+            accountCorrNumber: '40702810038000054323',
             tax: 13.5,
             inn: '12345678901',
             kpp: '12345678',
             ogrn: '1234567890123',
-            bank: 'Росбанк',
-            bic: '12345678',
+            bank: 'Банк Открытие',
+            bic: '527494329',
             address: 'Г Москва ул. Собаки баскервилей д7',
             accManualEnter: false,
           },
@@ -351,12 +339,12 @@ export const fullApplicationData: GetFullApplicationResponse = {
       vendorBankDetails: {
         idAccount: 'fn39h4f93fuj340fj30j',
         accountNumber: '40702810038000017240',
-        accountCorrNumber: '12345678901234567890',
-        tax: 11.1,
+        accountCorrNumber: '40702810038000017249',
+        tax: 111,
         inn: '12345678901',
         kpp: '12345678',
         ogrn: '1234567890123456789011',
-        bic: '12345678',
+        bic: '646494331',
         bank: 'Сбербанк',
       },
     },

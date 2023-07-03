@@ -1,9 +1,12 @@
 import React, { useCallback } from 'react'
 
 import { Box, Button, ListItemText, Tab, Tabs } from '@mui/material'
+import { useDispatch } from 'react-redux'
 import { useNavigate, useLocation, matchPath } from 'react-router-dom'
 
 import { AuthType } from 'common/auth'
+import { clearOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { MenuItem } from './hooks/types'
 import { useGetItems } from './hooks/useGetItems'
@@ -18,6 +21,7 @@ export function NavigationMenu(props: Props) {
   const { authType } = props
 
   const classes = useStyles()
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -27,6 +31,9 @@ export function NavigationMenu(props: Props) {
   const onClick = useCallback(
     (item: MenuItem) => {
       item.onCallback?.()
+      if (item.path === appRoutePaths.createOrder) {
+        dispatch(clearOrder())
+      }
       navigate(item.path)
     },
     [navigate],

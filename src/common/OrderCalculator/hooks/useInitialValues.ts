@@ -1,11 +1,19 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { BankOptionType } from '@sberauto/loanapplifecycledc-proto/public'
+import { BankOptionType, LoanCarFrontdc, VendorFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
+import { useDispatch } from 'react-redux'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
-import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import {
+  AdditionalOptionFrontdc,
+  ApplicationFrontDc,
+  GetFullApplicationResponse,
+  LoanDataFrontdc,
+} from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+import { convertedDateToString } from 'shared/utils/dateTransform'
 
 import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
 import { FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
@@ -14,15 +22,12 @@ type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : Order
 
 export function useInitialValues<D extends boolean | undefined>(
   initialData: CalculatorFields<D>,
-  applicationId?: string,
-  // applicationId = '545544'
   isFullCalculator?: D,
 ) {
+  const initialOrder = useAppSelector(state => state.order.order)
+  const dispatch = useDispatch()
   const { vendorCode } = getPointOfSaleFromCookies()
-  const { data: fullApplicationData, isLoading } = useGetFullApplicationQuery(
-    { applicationId },
-    { enabled: !!applicationId },
-  )
+  const fullApplicationData = initialOrder?.orderData
 
   const { loanCar, loanData, vendor, specialMark } = useMemo(
     () => fullApplicationData?.application || ({} as ApplicationFrontDc),
@@ -51,23 +56,36 @@ export function useInitialValues<D extends boolean | undefined>(
           const additionalServiceRequisitesData = isFullCalculator
             ? {
                 [FormFieldNameMap.bankIdentificationCode]:
-                  cur.vendorAccount?.bic ??
-                  (initialData as FullOrderCalculatorFields).additionalEquipments[0].bankIdentificationCode,
+                  cur.bankOptionType === BankOptionType.DEALERSERVICES
+                    ? cur.brokerAccount?.bic
+                    : cur.vendorAccount?.bic ??
+                      (initialData as FullOrderCalculatorFields).additionalEquipments[0]
+                        .bankIdentificationCode,
                 [FormFieldNameMap.beneficiaryBank]:
-                  cur.vendorAccount?.bank ??
-                  (initialData as FullOrderCalculatorFields).additionalEquipments[0].beneficiaryBank,
+                  cur.bankOptionType === BankOptionType.DEALERSERVICES
+                    ? cur.brokerAccount?.bank
+                    : cur.vendorAccount?.bank ??
+                      (initialData as FullOrderCalculatorFields).additionalEquipments[0].beneficiaryBank,
                 [FormFieldNameMap.bankAccountNumber]:
-                  cur.vendorAccount?.accountNumber ??
-                  (initialData as FullOrderCalculatorFields).additionalEquipments[0].bankAccountNumber,
+                  cur.bankOptionType === BankOptionType.DEALERSERVICES
+                    ? cur.brokerAccount?.accountNumber
+                    : cur.vendorAccount?.accountNumber ??
+                      (initialData as FullOrderCalculatorFields).additionalEquipments[0].bankAccountNumber,
                 [FormFieldNameMap.isCustomFields]:
-                  cur.vendorAccount?.accManualEnter ??
-                  (initialData as FullOrderCalculatorFields).additionalEquipments[0].isCustomFields,
+                  cur.bankOptionType === BankOptionType.DEALERSERVICES
+                    ? cur.brokerAccount?.accManualEnter
+                    : cur.vendorAccount?.accManualEnter ??
+                      (initialData as FullOrderCalculatorFields).additionalEquipments[0].isCustomFields,
                 [FormFieldNameMap.correspondentAccount]:
-                  cur.vendorAccount?.accountCorrNumber ??
-                  (initialData as FullOrderCalculatorFields).additionalEquipments[0].correspondentAccount,
+                  cur.bankOptionType === BankOptionType.DEALERSERVICES
+                    ? cur.brokerAccount?.accountCorrNumber
+                    : cur.vendorAccount?.accountCorrNumber ??
+                      (initialData as FullOrderCalculatorFields).additionalEquipments[0].correspondentAccount,
                 [FormFieldNameMap.taxation]: `${
-                  cur.vendorAccount?.tax ??
-                  (initialData as FullOrderCalculatorFields).additionalEquipments[0].taxation
+                  cur.bankOptionType === BankOptionType.DEALERSERVICES
+                    ? cur.brokerAccount?.tax
+                    : cur.vendorAccount?.tax ??
+                      (initialData as FullOrderCalculatorFields).additionalEquipments[0].taxation
                 }`,
               }
             : {}
@@ -180,10 +198,280 @@ export function useInitialValues<D extends boolean | undefined>(
         [FormFieldNameMap.specialMark]: specialMark ?? (initialData as OrderCalculatorFields).specialMark,
       }
 
+  const remapAdditionalOptionsForSmallCalculator = useCallback((values: OrderCalculatorFields) => {
+    const { additionalEquipments, dealerAdditionalServices } = values
+    const additionalOptionsFromCalculator = [additionalEquipments, dealerAdditionalServices]
+    const additionalOptionsForApplication: AdditionalOptionFrontdc[] = []
+    for (let i = 0; i < additionalOptionsFromCalculator.length; i++) {
+      const additionalOption = additionalOptionsFromCalculator[i]
+      const additionalOptionForApplication = additionalOption.reduce(
+        (acc: AdditionalOptionFrontdc[], option) => {
+          const { productCost, productType, isCredit } = option
+          const additionalOption: AdditionalOptionFrontdc = {
+            bankOptionType: i === 0 ? BankOptionType.EQUIPMENTS : BankOptionType.DEALERSERVICES,
+            type: productType,
+            inCreditFlag: isCredit,
+            price: parseInt(productCost, 10),
+          }
+          if (additionalOption.type) {
+            acc.push(additionalOption)
+          }
+
+          return acc
+        },
+        [],
+      )
+
+      additionalOptionsForApplication.push(...additionalOptionForApplication)
+    }
+
+    return additionalOptionsForApplication
+  }, [])
+
+  const remapAdditionalOptionsForFullCalculator = useCallback((values: FullOrderCalculatorFields) => {
+    const { additionalEquipments, dealerAdditionalServices } = values
+    const additionalEquipmentForApplication = additionalEquipments.reduce(
+      (acc: AdditionalOptionFrontdc[], option) => {
+        const {
+          productCost,
+          taxation,
+          bankAccountNumber,
+          correspondentAccount,
+          legalPerson,
+          bankIdentificationCode,
+          beneficiaryBank,
+          productType,
+          documentType,
+          documentNumber,
+          documentDate,
+          isCredit,
+        } = option
+
+        const additionalOption: AdditionalOptionFrontdc = {
+          bankOptionType: BankOptionType.EQUIPMENTS,
+          type: productType,
+          inCreditFlag: isCredit,
+          price: parseInt(productCost, 10),
+          vendor: legalPerson,
+          docType: documentType.toString(),
+          docNumber: documentNumber,
+          docDate: convertedDateToString(documentDate),
+          vendorAccount: {
+            accountNumber: bankAccountNumber,
+            accountCorrNumber: correspondentAccount,
+            bank: beneficiaryBank,
+            bic: bankIdentificationCode,
+            tax: taxation ? parseInt(taxation, 10) : undefined,
+          },
+        }
+        if (additionalOption.type) {
+          acc.push(additionalOption)
+        }
+
+        return acc
+      },
+      [],
+    )
+
+    const additionalDealerServicesForApplication = dealerAdditionalServices.reduce(
+      (acc: AdditionalOptionFrontdc[], option) => {
+        const {
+          provider,
+          productCost,
+          productType,
+          isCredit,
+          bankAccountNumber,
+          correspondentAccount,
+          taxation,
+          bankIdentificationCode,
+          beneficiaryBank,
+          loanTerm,
+          agent,
+          documentType,
+          documentNumber,
+          documentDate,
+        } = option
+        const additionalOption: AdditionalOptionFrontdc = {
+          bankOptionType: BankOptionType.DEALERSERVICES,
+          vendor: provider,
+          broker: agent,
+          type: productType,
+          inCreditFlag: isCredit,
+          price: parseInt(productCost, 10),
+          term: loanTerm,
+          docType: documentType.toString(),
+          docNumber: documentNumber,
+          docDate: convertedDateToString(documentDate),
+          brokerAccount: {
+            accountNumber: bankAccountNumber,
+            accountCorrNumber: correspondentAccount,
+            bank: beneficiaryBank,
+            bic: bankIdentificationCode,
+            tax: taxation ? parseInt(taxation, 10) : undefined,
+          },
+        }
+        if (additionalOption.type) {
+          acc.push(additionalOption)
+        }
+
+        return acc
+      },
+      [],
+    )
+
+    return [...additionalEquipmentForApplication, ...additionalDealerServicesForApplication]
+  }, [])
+
+  const getPriceOfAdditionalOptionsInCredit = useCallback((values: FullOrderCalculatorFields) => {
+    const equipmentCost = values.additionalEquipments.reduce((acc, option) => {
+      if (option[FormFieldNameMap.isCredit]) {
+        acc += parseInt(option[FormFieldNameMap.productCost], 10)
+      }
+
+      return acc
+    }, 0)
+    const dealerServicesConst = values.dealerAdditionalServices.reduce((acc, option) => {
+      if (option[FormFieldNameMap.isCredit]) {
+        acc += parseInt(option[FormFieldNameMap.productCost], 10)
+      }
+
+      return acc
+    }, 0)
+
+    return equipmentCost + dealerServicesConst
+  }, [])
+
+  const remapApplicationValuesForSmallCalculator = useCallback(
+    (values: OrderCalculatorFields) => {
+      const {
+        specialMark,
+        carCost,
+        carModel,
+        carBrand,
+        carCondition,
+        carMileage,
+        carYear,
+        initialPayment,
+        loanTerm,
+        creditProduct,
+      } = values
+
+      const fullApplication: GetFullApplicationResponse = fullApplicationData ? fullApplicationData : {}
+      const application = fullApplication.application ? fullApplication.application : {}
+      const newLoanCar: LoanCarFrontdc = {
+        brand: carBrand ?? undefined,
+        isCarNew: !!carCondition,
+        autoPrice: parseInt(carCost, 10),
+        mileage: carMileage,
+        model: carModel ?? undefined,
+        autoCreateYear: carYear,
+      }
+      const newLoanData: LoanDataFrontdc = {
+        productCode: parseInt(creditProduct, 10),
+        downPayment: parseInt(initialPayment, 10),
+        term: parseInt(loanTerm.toString(), 10),
+        additionalOptions: remapAdditionalOptionsForSmallCalculator(values),
+      }
+      const updatedApplication = {
+        ...application,
+        loanCar: newLoanCar,
+        loanData: newLoanData,
+        specialMark: specialMark ?? undefined,
+      }
+      dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
+    },
+    [fullApplicationData, dispatch],
+  )
+
+  const remapApplicationValuesForFullCalculator = useCallback(
+    (values: FullOrderCalculatorFields) => {
+      const {
+        carCost,
+        carModel,
+        carBrand,
+        carCondition,
+        carMileage,
+        carYear,
+        initialPayment,
+        loanTerm,
+        creditProduct,
+        carId,
+        taxation,
+        bankAccountNumber,
+        carIdType,
+        bankIdentificationCode,
+        beneficiaryBank,
+        carPassportId,
+        carPassportCreationDate,
+        correspondentAccount,
+        legalPerson,
+        loanAmount,
+        salesContractDate,
+        salesContractId,
+      } = values
+      const fullApplication: GetFullApplicationResponse = fullApplicationData ? fullApplicationData : {}
+      const application = fullApplication.application ? fullApplication.application : {}
+      const newLoanCar: LoanCarFrontdc = {
+        brand: carBrand ?? undefined,
+        isCarNew: !!carCondition,
+        autoPrice: parseInt(carCost, 10),
+        mileage: carMileage,
+        model: carModel ?? undefined,
+        autoCreateYear: carYear,
+        ptsNumber: carPassportId,
+        ptsDate: convertedDateToString(carPassportCreationDate),
+        vinNumber: carIdType === 1 ? carId : undefined,
+        carBody: carIdType === 0 ? carId : undefined,
+        dkpNumber: salesContractId,
+        dkpDate: convertedDateToString(salesContractDate),
+      }
+      const newVendor: VendorFrontdc = {
+        vendorCode: legalPerson,
+        vendorBankDetails: {
+          bank: beneficiaryBank,
+          bic: bankIdentificationCode,
+          accountNumber: bankAccountNumber,
+          accountCorrNumber: correspondentAccount,
+          tax: taxation ? parseInt(taxation, 10) : undefined,
+        },
+      }
+      const newLoanData: LoanDataFrontdc = {
+        productCode: parseInt(creditProduct, 10),
+        downPayment: parseInt(initialPayment, 10),
+        term: parseInt(loanTerm.toString(), 10),
+        amountWithoutAdd: parseInt(loanAmount, 10),
+        amount: getPriceOfAdditionalOptionsInCredit(values) + parseInt(loanAmount, 10),
+        additionalOptions: remapAdditionalOptionsForFullCalculator(values),
+      }
+
+      const updatedApplication = {
+        ...application,
+        loanCar: newLoanCar,
+        loanData: newLoanData,
+        vendor: newVendor,
+        specialMark: application.specialMark,
+      }
+
+      dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
+    },
+    [fullApplicationData, dispatch],
+  )
+
+  const remapApplicationValues = useCallback(
+    (values: OrderCalculatorFields | FullOrderCalculatorFields) => {
+      if (isFullCalculator) {
+        remapApplicationValuesForFullCalculator(values as FullOrderCalculatorFields)
+      } else {
+        remapApplicationValuesForSmallCalculator(values as OrderCalculatorFields)
+      }
+    },
+    [isFullCalculator, remapApplicationValuesForSmallCalculator, remapApplicationValuesForFullCalculator],
+  )
+
   return {
-    isShouldShowLoading: applicationId && isLoading,
-    hasCustomInitialValues: !!applicationId,
-    initialValues: applicationId
+    remapApplicationValues,
+    hasCustomInitialValues: !!fullApplicationData?.application,
+    initialValues: fullApplicationData?.application
       ? ({
           [FormFieldNameMap.carCondition]: loanCar?.isCarNew ?? initialData.carCondition ? 1 : 0,
           [FormFieldNameMap.carBrand]: loanCar?.brand ?? initialData.carBrand,

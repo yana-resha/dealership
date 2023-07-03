@@ -1,21 +1,15 @@
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 
-import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
+import { MockStore } from 'redux-mock-store'
 
+import { Order } from 'pages/CreateOrderPage/model/orderSlice'
 import * as useGetFullApplicationQueryModule from 'shared/api/requests/loanAppLifeCycleDc'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
-import { ThemeProviderMock } from 'tests/mocks'
+import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
+import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
 
 import { ClientDetailedDossier } from '../ClientDetailedDossier'
-
-const mockedClientDossier = {
-  status: StatusCode.INITIAL,
-}
-
-const mockedFileQuestionnaire = new File(['questionnaire'], 'Анкета', {
-  type: 'application/pdf',
-})
 
 jest.mock('entities/application/DossierAreas/ui/DossierIdArea/DossierIdArea', () => ({
   DossierIdArea: () => <div data-testid="DossierIdArea" />,
@@ -35,7 +29,17 @@ const mockedUseGetFullApplicationQuery = jest.spyOn(
   'useGetFullApplicationQuery',
 )
 
-const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
+const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
+
+interface WrapperProps extends PropsWithChildren {
+  store?: MockStore
+}
+
+const createWrapper = ({ store, children }: WrapperProps) => (
+  <StoreProviderMock mockStore={store}>
+    <ThemeProviderMock>{children}</ThemeProviderMock>
+  </StoreProviderMock>
+)
 
 describe('ClientDetailedDossierTest', () => {
   describe('Отображаются все области экрана', () => {
@@ -47,6 +51,11 @@ describe('ClientDetailedDossierTest', () => {
             refetch: jest.fn(),
           } as any),
       )
+      mockedUseAppSelector.mockImplementation(() => {
+        const orderData: Order = { orderData: fullApplicationData }
+
+        return orderData
+      })
       render(<ClientDetailedDossier applicationId="1" onBackButton={jest.fn} />, { wrapper: createWrapper })
     })
     it('Отображается область DossierIdArea', () => {

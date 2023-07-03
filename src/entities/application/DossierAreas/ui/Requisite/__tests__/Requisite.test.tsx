@@ -35,7 +35,7 @@ describe('RequisiteTest', () => {
 
     it('Отображается "Агент получатель"', () => {
       expect(screen.getByText('Агент получатель')).toBeInTheDocument()
-      expect(screen.getByText('043432323')).toBeInTheDocument()
+      expect(screen.getByText('Почта Банк')).toBeInTheDocument()
     })
 
     it('Отображается "Стоимость"', () => {
@@ -50,17 +50,17 @@ describe('RequisiteTest', () => {
 
     it('Отображается "Получатель"', () => {
       expect(screen.getByText('Получатель')).toBeInTheDocument()
-      expect(screen.getByText('Росбанк')).toBeInTheDocument()
+      expect(screen.getByText('Почта Банк')).toBeInTheDocument()
     })
 
     it('Отображается "Номер счета банка"', () => {
       expect(screen.getByText('Номер счета банка')).toBeInTheDocument()
-      expect(screen.getByText('12345678901234567891')).toBeInTheDocument()
+      expect(screen.getByText('40702810038000054323')).toBeInTheDocument()
     })
 
     it('Отображается "Расчетный счет"', () => {
       expect(screen.getByText('Расчетный счет')).toBeInTheDocument()
-      expect(screen.getByText('12345678901234567890')).toBeInTheDocument()
+      expect(screen.getByText('40702810038000012344')).toBeInTheDocument()
     })
 
     it('Отображается "Налог"', () => {

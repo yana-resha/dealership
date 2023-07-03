@@ -107,7 +107,7 @@ export const initialValueMap: OrderCalculatorFields = {
   [FormFieldNameMap.creditProduct]: '',
   [FormFieldNameMap.initialPayment]: '',
   [FormFieldNameMap.initialPaymentPercent]: '',
-  [FormFieldNameMap.loanTerm]: undefined,
+  [FormFieldNameMap.loanTerm]: '',
   [ServicesGroupName.additionalEquipments]: [INITIAL_ADDITIONAL_SERVICE],
   [ServicesGroupName.dealerAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
   [ServicesGroupName.bankAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],

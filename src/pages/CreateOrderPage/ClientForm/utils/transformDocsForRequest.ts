@@ -34,6 +34,9 @@ export const transformDocsForRequest = (
       number = docNumber.slice(-7)
       break
     }
+    default: {
+      number = docNumber
+    }
   }
 
   const result = {

@@ -12,8 +12,10 @@ import {
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
+import { useDispatch } from 'react-redux'
 
 import { appConfig } from 'config'
+import { setOrder } from 'pages/CreateOrderPage/model/orderSlice'
 
 import { Rest } from '../client'
 import { fullApplicationData, GetFullApplicationResponse } from './loanAppLifeCycleDc.mock'
@@ -105,8 +107,11 @@ const getFullApplication = (params: GetFullApplicationRequest) =>
 export const useGetFullApplicationQuery = (
   params: GetFullApplicationRequest,
   options?: UseQueryOptions<GetFullApplicationResponse, unknown, GetFullApplicationResponse, string[]>,
-) =>
-  useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
+) => {
+  const dispatch = useDispatch()
+  return useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
     retry: false,
+    onSuccess: response => dispatch(setOrder({ orderData: response })),
     ...options,
   })
+}

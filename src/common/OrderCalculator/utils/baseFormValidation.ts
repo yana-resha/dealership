@@ -27,20 +27,6 @@ export const additionalServiceBaseValidation = (checkFn: (commonError: CommonErr
         (value, context) => checkFn(context.from[1].value.commonError),
       ),
   }),
-  [FormFieldNameMap.documentType]: Yup.string().when([FormFieldNameMap.productType], {
-    is: (productType: string) => !!productType,
-    then: schema => schema.required(FieldMessages.required),
-  }),
-  [FormFieldNameMap.documentNumber]: Yup.string().when([FormFieldNameMap.productType], {
-    is: (productType: string) => !!productType,
-    then: schema => schema.required(FieldMessages.required),
-  }),
-  [FormFieldNameMap.documentDate]: Yup.string()
-    .nullable()
-    .when([FormFieldNameMap.productType], {
-      is: (productType: string) => !!productType,
-      then: schema => schema.required(FieldMessages.required),
-    }),
 })
 
 export const baseFormValidation = {

@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { CalculateCreditRequest } from '@sberauto/dictionarydc-proto/public'
 
-type Order = {
+import { GetFullApplicationResponse } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+
+export type Order = {
+  currentStep?: number
   passportSeries?: string
   passportNumber?: string
   lastName?: string
@@ -9,7 +11,7 @@ type Order = {
   middleName?: string
   birthDate?: string
   phoneNumber?: string
-  orderData?: CalculateCreditRequest
+  orderData?: GetFullApplicationResponse | null | undefined
 }
 
 interface OrderState {

@@ -12,10 +12,9 @@ import { useStyles } from './FullOrderSettings.styles'
 
 type Props = {
   nextStep: () => void
-  applicationId?: string
 }
 
-export function FullOrderSettings({ nextStep, applicationId }: Props) {
+export function FullOrderSettings({ nextStep }: Props) {
   const classes = useStyles()
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
   const [isOfferLoading, setIsOfferLoading] = useState(false)
@@ -60,7 +59,6 @@ export function FullOrderSettings({ nextStep, applicationId }: Props) {
         isSubmitLoading={isOfferLoading}
         onSubmit={calculateCredit}
         onChangeForm={clearBankOfferList}
-        applicationId={applicationId}
       />
       {isError && (
         <Box className={classes.errorContainer}>
