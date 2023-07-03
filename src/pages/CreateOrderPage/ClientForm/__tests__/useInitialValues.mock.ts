@@ -2,6 +2,9 @@ export const EXPECTED_DATA = {
   additionalIncome: '1000.47',
   additionalNumber: '79033800013',
   averageIncome: '1000.45',
+  hasNameChanged: true,
+  numOfChildren: '5',
+  familyStatus: 1,
   birthDate: new Date('2000-01-01T00:00:00.000Z'),
   birthPlace: 'Саратов',
   clientFormerName: 'Иванова Ивана Ивановна',
@@ -30,8 +33,6 @@ export const EXPECTED_DATA = {
   employmentDate: new Date('2021-09-08T07:44:00.355Z'),
   expenses: '12005.2',
   familyIncome: '44000.82',
-  familyStatus: 1,
-  hasNameChanged: true,
   incomeConfirmation: false,
   issuedBy: 'МВД',
   livingAddress: {
@@ -51,7 +52,6 @@ export const EXPECTED_DATA = {
   },
   livingAddressString: 'Москва 55 Усть-Курдюмский 77 Москва 45 Курдюм 34 Севастопольская 17 ж 5 174 ',
   mobileNumber: '79033800013',
-  numOfChildren: '5',
   occupation: 2,
   orderData: {
     application: {
@@ -170,6 +170,7 @@ export const EXPECTED_DATA = {
         prevLastName: 'Иванова',
         prevMiddleName: 'Ивановна',
         publicPerson: true,
+        sex: 0,
         type: 'MainDebitor',
       },
       createdDate: '2023-06-08T07:44:00.355Z',
@@ -372,5 +373,6 @@ export const EXPECTED_DATA = {
   secondDocumentIssuedBy: 'МВД',
   secondDocumentNumber: '1234123456',
   secondDocumentType: 15,
+  sex: 0,
   specialMark: 'Находится в нетрезвом состоянии',
 }

@@ -322,6 +322,7 @@ export function useInitialValues<D extends boolean | undefined>() {
             hasNameChanged: !!clientFormerName,
             clientFormerName: clientFormerName || initialValues.clientFormerName,
             numOfChildren: `${applicant?.children ?? initialValues.numOfChildren}`,
+            sex: applicant?.sex ?? initialValues.sex,
             familyStatus: applicant?.marital ?? initialValues.familyStatus,
             birthDate: applicant?.birthDate ? new Date(applicant.birthDate) : initialValues.birthDate,
             birthPlace: applicant?.birthPlace ?? initialValues.birthPlace,
