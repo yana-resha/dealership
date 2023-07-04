@@ -48,7 +48,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
   const dealerAdditionalServices = useMemo(
     () =>
       vendorOptions?.additionalOptions
-        ?.filter(option => option.optionType === OptionType.ADDITIONAL)
+        ?.filter(option => option.optionType === OptionType.DEALER)
         .map(option => ({
           value: option.optionId,
           label: option.optionName,
@@ -69,12 +69,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
     handleInitialPaymentPercentFocus,
     handleInitialPaymentBlur,
     handleInitialPaymentPercentBlur,
-  } = useInitialPayment(
-    FormFieldNameMap.carCost,
-    FormFieldNameMap.initialPayment,
-    FormFieldNameMap.initialPaymentPercent,
-    disabled,
-  )
+  } = useInitialPayment(disabled)
 
   return (
     <CollapsibleFormAreaContainer

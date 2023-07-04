@@ -1,5 +1,6 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
+import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -12,27 +13,21 @@ import { ChoosePoint } from '../ChoosePoint'
 import * as ChoosePointApi from '../ChoosePoint.api'
 import * as ChoosePointUtils from '../ChoosePoint.utils'
 
-const mockResponse = [
+const mockResponse: Vendor[] = [
   {
     vendorCode: '2002852',
     vendorName: 'Сармат',
-    cityName: 'Ханты-Мансийск',
-    houseNumber: '4',
-    streetName: 'Зябликова',
+    address: 'Ханты-Мансийск Зябликова 4',
   },
   {
     vendorCode: '4003390',
     vendorName: 'ХимкиАвто',
-    cityName: 'Саратов',
-    houseNumber: '2',
-    streetName: 'Симонова',
+    address: 'Саратов Симонова 2',
   },
   {
     vendorCode: '3444920',
     vendorName: 'СайгакФорд',
-    cityName: 'Москва',
-    houseNumber: '4',
-    streetName: 'Курдюка',
+    address: 'Москва Курдюка 4',
   },
 ]
 

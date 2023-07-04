@@ -78,9 +78,9 @@ export const mapValuesForCalculateCreditRequest = (
   }
   const calculateCreditRequest: CalculateCreditRequest = {
     vendorCode,
-    productCode: values[FormFieldNameMap.creditProduct],
-    productCodeName: productsMap?.[values[FormFieldNameMap.creditProduct]].productCodeName ?? '',
-    productName: productsMap?.[values[FormFieldNameMap.creditProduct]].productName ?? '',
+    productId: values[FormFieldNameMap.creditProduct],
+    productCodeName: productsMap?.[values[FormFieldNameMap.creditProduct]]?.productCodeName,
+    productName: productsMap?.[values[FormFieldNameMap.creditProduct]]?.productName,
     downpayment: parseInt(values[FormFieldNameMap.initialPayment], 10),
     term: parseInt(values[FormFieldNameMap.loanTerm].toString(), 10),
     amountWithOptions:

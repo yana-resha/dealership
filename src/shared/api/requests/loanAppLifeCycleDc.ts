@@ -1,13 +1,22 @@
 import {
+  AddressType,
+  ApplicantDocsType,
   Application,
   ApplicationFrontdc,
+  OptionType,
   createLoanAppLifeCycleDc,
   FindApplicationsRequest,
   GetFullApplicationRequest,
+  GetFullApplicationResponse,
   GetVendorsListRequest,
+  IncomeDocumentType,
   IsClientRequest,
+  MaritalStatus,
+  OccupationType,
+  PhoneType,
   SaveLoanApplicationDraftRequest,
   SendApplicationToScoringRequest,
+  Sex,
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
@@ -18,7 +27,6 @@ import { appConfig } from 'config'
 import { setOrder } from 'pages/CreateOrderPage/model/orderSlice'
 
 import { Rest } from '../client'
-import { fullApplicationData, GetFullApplicationResponse } from './loanAppLifeCycleDc.mock'
 
 /** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,
  * поэтому приводим к изначальному виду */
@@ -92,17 +100,77 @@ export const findApplications = (params: FindApplicationsRequest) =>
     }
   })
 
-const getApplicationWithFixedStatus = (data: GetFullApplicationResponse): GetFullApplicationResponse => {
+const getPreparedApplication = (data: GetFullApplicationResponse): GetFullApplicationResponse => {
   const status = data.application?.status as unknown as keyof typeof StatusCode
+  const applicant = data.application?.applicant
+    ? {
+        ...data.application?.applicant,
+        sex: data.application?.applicant.sex
+          ? Sex[data.application?.applicant.sex as unknown as keyof typeof Sex]
+          : data.application?.applicant.sex,
+        marital: data.application?.applicant.marital
+          ? MaritalStatus[data.application?.applicant.marital as unknown as keyof typeof MaritalStatus]
+          : data.application?.applicant.marital,
+        documents:
+          data.application?.applicant.documents?.map(d => ({
+            ...d,
+            type: d.type ? ApplicantDocsType[d.type as unknown as keyof typeof ApplicantDocsType] : d.type,
+          })) || data.application?.applicant.documents,
+        phones:
+          data.application?.applicant.phones?.map(p => ({
+            ...p,
+            type: p.type ? PhoneType[p.type as unknown as keyof typeof PhoneType] : p.type,
+          })) || data.application?.applicant.phones,
+        addresses:
+          data.application?.applicant.addresses?.map(a => ({
+            ...a,
+            type: a.type ? AddressType[a.type as unknown as keyof typeof AddressType] : a.type,
+          })) || data.application?.applicant.addresses,
+        employment: data.application?.applicant.employment
+          ? {
+              ...data.application?.applicant.employment,
+              occupation: data.application?.applicant.employment.occupation
+                ? OccupationType[
+                    data.application?.applicant.employment
+                      .occupation as unknown as keyof typeof OccupationType
+                  ]
+                : data.application?.applicant.employment.occupation,
+            }
+          : data.application?.applicant.employment,
+        income: data.application?.applicant.income
+          ? {
+              ...data.application?.applicant.income,
+              incomeDocumentType: data.application?.applicant.income.incomeDocumentType
+                ? IncomeDocumentType[
+                    data.application?.applicant.income
+                      .incomeDocumentType as unknown as keyof typeof IncomeDocumentType
+                  ]
+                : data.application?.applicant.income.incomeDocumentType,
+            }
+          : data.application?.applicant.income,
+      }
+    : data.application?.applicant
 
-  return { application: { ...data.application, status: StatusCode[status] } }
+  const loanData = data.application?.loanData
+    ? {
+        ...data.application?.loanData,
+        additionalOptions:
+          data.application?.loanData.additionalOptions?.map(o => ({
+            ...o,
+            bankOptionType: o.bankOptionType
+              ? OptionType[o.bankOptionType as unknown as keyof typeof OptionType]
+              : o.bankOptionType,
+          })) || data.application?.loanData.additionalOptions,
+      }
+    : data.application?.loanData
+
+  return { ...data, application: { ...data.application, status: StatusCode[status], applicant, loanData } }
 }
 
 const getFullApplication = (params: GetFullApplicationRequest) =>
   loanAppLifeCycleDcApi
     .getFullApplication({ data: params })
-    .then(response => getApplicationWithFixedStatus((response.data ?? {}) as GetFullApplicationResponse))
-    .catch(() => fullApplicationData)
+    .then(response => (response.data ? getPreparedApplication(response.data) : response.data))
 
 export const useGetFullApplicationQuery = (
   params: GetFullApplicationRequest,

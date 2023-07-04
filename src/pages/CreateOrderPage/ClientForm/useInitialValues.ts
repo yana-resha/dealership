@@ -1,11 +1,16 @@
 import { useCallback, useMemo } from 'react'
 
-import { AddressType, ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
+import {
+  AddressType,
+  ApplicantDocsType,
+  ApplicantFrontdc,
+  ApplicationFrontdc,
+  PhoneType,
+} from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
 import { DateTime, Interval } from 'luxon'
 import { useDispatch } from 'react-redux'
 
-import { ApplicantFrontdc, ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
@@ -26,14 +31,14 @@ import { makeClientForm } from './utils/makeClienForm'
 import { transformDocsForRequest } from './utils/transformDocsForRequest'
 import { transformPhoneForRequest } from './utils/transformPhoneForRequest'
 
-export function useInitialValues<D extends boolean | undefined>() {
+export function useInitialValues() {
   const initialValues = useAppSelector(state => makeClientForm(state.order.order))
   const initialOrder = useAppSelector(state => state.order.order)
   const dispatch = useDispatch()
   const fullApplicationData = initialOrder?.orderData
 
   const { applicant, specialMark, createdDate } = useMemo(
-    () => fullApplicationData?.application || ({} as ApplicationFrontDc),
+    () => fullApplicationData?.application || ({} as ApplicationFrontdc),
     [fullApplicationData?.application],
   )
 

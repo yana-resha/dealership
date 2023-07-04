@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { Form, useFormikContext } from 'formik'
 
 import { initialValueMap } from 'common/OrderCalculator/config'
-import { useGetCreditProductListQuery } from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
+import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProducts'
 import { OrderCalculatorFields } from 'common/OrderCalculator/types'
-import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
@@ -17,25 +16,7 @@ type Props = {
 }
 
 export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProductsOnStart }: Props) {
-  const { values, setValues } = useFormikContext<OrderCalculatorFields>()
-  const { vendorCode } = getPointOfSaleFromCookies()
-
-  const [sentParams, setSentParams] = useState({})
-  const [shouldShowOrderSettings, setShouldShowOrderSettings] = useState(false)
-  const [shouldFetchProducts, setShouldFetchProducts] = useState(shouldFetchProductsOnStart)
-
-  const changeShouldFetchProducts = useCallback(() => setShouldFetchProducts(true), [])
-
-  const isChangedBaseValues = useMemo(
-    () => Object.entries(sentParams).some(e => values[e[0] as keyof OrderCalculatorFields] !== e[1]),
-    [sentParams, values],
-  )
-
-  const { data, isError, isFetching, isFetched, isLoading, remove } = useGetCreditProductListQuery({
-    vendorCode,
-    values,
-    enabled: shouldFetchProducts,
-  })
+  const { values } = useFormikContext<OrderCalculatorFields>()
 
   const formFields = useMemo(
     () => ({
@@ -56,48 +37,16 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
     ],
   )
 
-  useEffect(() => {
-    if (isFetching) {
-      setShouldFetchProducts(false)
-      setSentParams(formFields)
-
-      if (!shouldFetchProductsOnStart || isChangedBaseValues) {
-        setValues({ ...initialValueMap, ...formFields })
-      }
-    }
-  }, [formFields, isFetched, isFetching, setValues, shouldFetchProductsOnStart])
-
-  const fetchProducts = useCallback(() => {
-    if (isChangedBaseValues) {
-      remove()
-    }
-    setShouldFetchProducts(true)
-  }, [remove, isChangedBaseValues])
-
-  useEffect(() => {
-    if (!isError && data && !isChangedBaseValues) {
-      setShouldShowOrderSettings(true)
-    }
-  }, [data, isChangedBaseValues, isError])
-
-  useEffect(() => {
-    if (isChangedBaseValues) {
-      setShouldShowOrderSettings(false)
-    }
-  }, [isChangedBaseValues])
-
-  useEffect(() => {
-    onChangeForm()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values])
+  const { isLoading, shouldShowOrderSettings, changeShouldFetchProducts } = useCreditProducts({
+    shouldFetchProductsOnStart,
+    formFields,
+    initialValueMap,
+    onChangeForm,
+  })
 
   return (
     <Form>
-      <CarSettingsArea
-        onFilled={changeShouldFetchProducts}
-        fetchProducts={fetchProducts}
-        isLoading={isLoading}
-      />
+      <CarSettingsArea onFilled={changeShouldFetchProducts} isLoading={isLoading} />
       <OrderSettingsArea disabled={!shouldShowOrderSettings} isSubmitLoading={isSubmitLoading} />
     </Form>
   )

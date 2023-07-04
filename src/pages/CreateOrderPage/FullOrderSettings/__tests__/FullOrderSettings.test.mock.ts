@@ -3,7 +3,7 @@ import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 export const dataMock: CalculatedProduct[] = [
   {
     productCodeName: 'DRVBF',
-    productCode: 'DRVB',
+    productId: 'DRVB',
     productName: 'Драйв В',
     downpayment: 200000,
     term: 24, //term
@@ -16,7 +16,7 @@ export const dataMock: CalculatedProduct[] = [
   },
   {
     productCodeName: 'DRVCF',
-    productCode: 'DRVC',
+    productId: 'DRVC',
     productName: 'Драйв C',
     downpayment: 300000,
     term: 36,
@@ -29,7 +29,7 @@ export const dataMock: CalculatedProduct[] = [
   },
   {
     productCodeName: 'DRVDF',
-    productCode: 'DRVD',
+    productId: 'DRVD',
     productName: 'Драйв D',
     downpayment: 250000,
     term: 24,

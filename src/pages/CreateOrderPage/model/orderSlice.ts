@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-import { GetFullApplicationResponse } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { GetFullApplicationResponse } from '@sberauto/loanapplifecycledc-proto/public'
 
 export type Order = {
   currentStep?: number

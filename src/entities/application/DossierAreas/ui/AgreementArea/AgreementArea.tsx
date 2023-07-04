@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Box, Button, Divider } from '@mui/material'
-import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { ApplicationFrontdc, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
-import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
@@ -21,7 +20,7 @@ import { useStyles } from './AgreementArea.styles'
 
 type Props = {
   status: StatusCode
-  application: ApplicationFrontDc
+  application: ApplicationFrontdc
   updateStatus: (statusCode: StatusCode) => void
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void

@@ -336,7 +336,7 @@ const mockClientDossier: ClientDossier[] = [
     productName: 'Драйв В',
     additionalOptions: [
       {
-        bankOptionType: OptionType.ADDITIONAL,
+        bankOptionType: OptionType.DEALER,
         productType: 'Название продукта',
         legalPerson: '',
         provider: 'РосГосСтрах',
@@ -460,7 +460,7 @@ const mockClientDossier: ClientDossier[] = [
     productName: 'Драйв E',
     additionalOptions: [
       {
-        bankOptionType: OptionType.ADDITIONAL,
+        bankOptionType: OptionType.DEALER,
         productType: 'Перекраска',
         legalPerson: '',
         provider: 'РосГосСтрах',
@@ -519,7 +519,7 @@ const mockClientDossier: ClientDossier[] = [
     productName: 'Драйв F',
     additionalOptions: [
       {
-        bankOptionType: OptionType.ADDITIONAL,
+        bankOptionType: OptionType.DEALER,
         productType: 'Перекраска',
         legalPerson: '',
         provider: 'РосГосСтрах',
@@ -633,7 +633,7 @@ const mockClientDossier: ClientDossier[] = [
     productName: 'Драйв J',
     additionalOptions: [
       {
-        bankOptionType: OptionType.ADDITIONAL,
+        bankOptionType: OptionType.DEALER,
         productType: 'Перекраска',
         legalPerson: '',
         provider: 'РосГосСтрах',
@@ -650,7 +650,7 @@ const mockClientDossier: ClientDossier[] = [
         isCredit: true,
       },
       {
-        bankOptionType: OptionType.ADDITIONAL,
+        bankOptionType: OptionType.DEALER,
         productType: 'Тонирование стекол',
         legalPerson: '',
         provider: 'Ингосстрах',

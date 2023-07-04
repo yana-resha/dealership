@@ -36,6 +36,9 @@ export const useGetCreditProductListQuery = ({ vendorCode, values, enabled = tru
     refetchOnWindowFocus: false,
     select: res => ({
       ...res,
+      // С Бэка значение приходит в диапазоне 0...1, а на фронте используются проценты (0...100)
+      fullDownpaymentMin: res.fullDownpaymentMin ? res.fullDownpaymentMin * 100 : undefined,
+      fullDownpaymentMax: res.fullDownpaymentMax ? res.fullDownpaymentMax * 100 : undefined,
       ...prepareCreditProduct(res.creditProducts),
     }),
     onError,

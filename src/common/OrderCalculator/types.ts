@@ -1,4 +1,5 @@
 import { OptionID } from '@sberauto/dictionarydc-proto/public'
+import { DocType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 
@@ -55,7 +56,10 @@ export interface OrderCalculatorAdditionalService {
   [FormFieldNameMap.productType]: OptionID | string
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
-  [FormFieldNameMap.documentType]: number | string
+}
+
+export interface OrderCalculatorAdditionalServiceDocInfo {
+  [FormFieldNameMap.documentType]: DocType | null
   [FormFieldNameMap.documentNumber]: string
   [FormFieldNameMap.documentDate]: Date | null
 }
@@ -71,6 +75,7 @@ export interface InitialBankDetailsValue {
 
 export interface FullInitialAdditionalEquipments
   extends OrderCalculatorAdditionalService,
+    OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
   [FormFieldNameMap.legalPerson]: string
   [FormFieldNameMap.taxValue]: number | null
@@ -79,6 +84,7 @@ export interface FullInitialAdditionalEquipments
 
 export interface FullInitialAdditionalService
   extends OrderCalculatorAdditionalService,
+    OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
   [FormFieldNameMap.provider]: string
   [FormFieldNameMap.agent]: string
@@ -153,3 +159,13 @@ export type FormMessages = {
   [FormFieldNameMap.isExceededDealerAdditionalServicesLimit]: string
   [FormFieldNameMap.isExceededBankAdditionalServicesLimit]: string
 }
+
+export type CreditProductParams = Partial<
+  Pick<
+    OrderCalculatorFields,
+    | FormFieldNameMap.carCondition
+    | FormFieldNameMap.carBrand
+    | FormFieldNameMap.carModel
+    | FormFieldNameMap.carYear
+  >
+>

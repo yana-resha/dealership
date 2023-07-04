@@ -34,7 +34,7 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
         <TableBody>
           {!!preparedData &&
             preparedData.map(row => (
-              <TableRow key={row.productCode} className={classes.bodyRow}>
+              <TableRow key={row.productId} className={classes.bodyRow}>
                 {getCellsChildrens(row).map(cell => (
                   <TableCell
                     key={cell.name}

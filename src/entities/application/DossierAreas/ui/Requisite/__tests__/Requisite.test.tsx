@@ -1,8 +1,9 @@
 import React, { PropsWithChildren } from 'react'
 
+import { AdditionalOptionsFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 
-import { AdditionalOptionFrontdc, fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 
 import { Requisite } from '../Requisite'
@@ -15,7 +16,8 @@ describe('RequisiteTest', () => {
       render(
         <Requisite
           additionalOption={{
-            ...(fullApplicationData.application?.loanData?.additionalOptions?.[1] as AdditionalOptionFrontdc),
+            ...(fullApplicationData.application?.loanData
+              ?.additionalOptions?.[1] as AdditionalOptionsFrontdc),
             // bankOptionType: 1,
           }}
         />,
@@ -55,12 +57,12 @@ describe('RequisiteTest', () => {
 
     it('Отображается "Номер счета банка"', () => {
       expect(screen.getByText('Номер счета банка')).toBeInTheDocument()
-      expect(screen.getByText('40702810038000054323')).toBeInTheDocument()
+      expect(screen.getByText('40702810038000017243')).toBeInTheDocument()
     })
 
     it('Отображается "Расчетный счет"', () => {
       expect(screen.getByText('Расчетный счет')).toBeInTheDocument()
-      expect(screen.getByText('40702810038000012344')).toBeInTheDocument()
+      expect(screen.getByText('40702810038000017243')).toBeInTheDocument()
     })
 
     it('Отображается "Налог"', () => {

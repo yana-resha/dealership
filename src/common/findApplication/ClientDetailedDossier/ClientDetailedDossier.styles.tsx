@@ -4,6 +4,7 @@ export const useStyles = makeStyles(theme => ({
   pageContainer: {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     gap: theme.spacing(4),
   },
 

@@ -1,6 +1,12 @@
 import { useCallback } from 'react'
 
-import { ArrayHelpers, useFormikContext } from 'formik'
+import { ArrayHelpers } from 'formik'
+
+import {
+  FullInitialAdditionalEquipments,
+  FullInitialAdditionalService,
+  OrderCalculatorAdditionalService,
+} from 'common/OrderCalculator/types'
 
 import { ChangingIdsOption } from '../../../../common/OrderCalculator/constants'
 
@@ -12,6 +18,10 @@ type Params = {
   arrayHelpers?: ArrayHelpers
   arrayLength?: number
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
+  initialValues:
+    | OrderCalculatorAdditionalService
+    | FullInitialAdditionalEquipments
+    | FullInitialAdditionalService
 }
 
 // Хук для работы с айтемами доп.оборудования или доп, услуг. Принимает:
@@ -32,28 +42,33 @@ type Params = {
 // Но в форме должен всегда отображаться хотя бы один айтем (с пустыми полями для ввода).
 // Потому если длина массива не превышает 1 (MIN_ITEMS_LENGTH), то айтем не удаляется,
 // а заменяется на айтем со значениями из initialValues
-export function useAdditionalServices({ parentName, index, arrayLength, arrayHelpers, changeIds }: Params) {
+export function useAdditionalServices({
+  parentName,
+  index,
+  arrayLength,
+  arrayHelpers,
+  changeIds,
+  initialValues,
+}: Params) {
   const namePrefix = `${parentName}[${index}].`
-  const { initialValues } = useFormikContext<any>()
-
   const removeItem = useCallback(() => {
     if (arrayLength && arrayHelpers && changeIds) {
       if (arrayLength > MIN_ITEMS_LENGTH) {
         arrayHelpers.remove(index)
         changeIds(index, ChangingIdsOption.remove)
       } else {
-        arrayHelpers.replace(index, initialValues[parentName][0])
+        arrayHelpers.replace(index, initialValues)
         changeIds(index, ChangingIdsOption.clear, MIN_ITEMS_LENGTH)
       }
     }
-  }, [arrayHelpers, arrayLength, changeIds, index, initialValues, parentName])
+  }, [arrayHelpers, arrayLength, changeIds, index, initialValues])
 
   const addItem = useCallback(() => {
     if (arrayHelpers && changeIds) {
-      arrayHelpers.insert(index + 1, initialValues[parentName][0])
+      arrayHelpers.insert(index + 1, initialValues)
       changeIds(index, ChangingIdsOption.add)
     }
-  }, [arrayHelpers, changeIds, index, initialValues, parentName])
+  }, [arrayHelpers, changeIds, index, initialValues])
 
   return { namePrefix, removeItem, addItem }
 }

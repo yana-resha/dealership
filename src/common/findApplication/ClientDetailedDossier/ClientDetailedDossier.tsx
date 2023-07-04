@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Box, CircularProgress } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import {
   ApplicantDocsType,
   ApplicationFrontdc,
@@ -22,6 +22,7 @@ import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
 import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
+import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { getFullName } from 'shared/utils/clientNameTransform'
 
 import { useStyles } from './ClientDetailedDossier.styles'
@@ -35,7 +36,7 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [fullApplicationId, setFullApplicationId] = useState(applicationId)
-  const { refetch } = useGetFullApplicationQuery(
+  const { isLoading, isError, refetch } = useGetFullApplicationQuery(
     { applicationId: fullApplicationId },
     { enabled: !!applicationId },
   )
@@ -138,57 +139,70 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
   }, [])
 
   return (
-    <Box className={classes.container}>
-      {!application ? (
-        <CircularProgress className={classes.circular} />
-      ) : isEditRequisitesMode ? (
-        <EditRequisitesArea applicationId={applicationId} changeRequisites={setIsEditRequisitesMode} />
-      ) : (
-        <Box className={classes.container}>
-          <DossierIdArea
-            dcAppId={application.dcAppId || ''}
-            clientName={clientName}
-            passport={passport}
-            onBackButton={onBackButton}
-            status={
-              application.status || application.status === StatusCode.INITIAL
-                ? application.status
-                : StatusCode.ERROR
-            }
-          />
-          <Box className={classes.dossierContainer}>
-            <InformationArea {...appInfo} />
-            <DocumentsArea
-              fileQuestionnaire={fileQuestionnaire}
-              setQuestionnaire={setFileQuestionnaire}
-              agreementDocs={agreementDocs}
-              setAgreementDocs={setAgreementDocs}
-              status={
-                application.status || application.status === StatusCode.INITIAL
-                  ? application.status
-                  : StatusCode.ERROR
-              }
-            />
-            <ActionArea
-              application={application}
-              moratoryEndDate={fullApplicationData?.moratoryEndDate}
-              targetDcAppId={fullApplicationData?.targetDcAppId}
-              applicationForScore={prepareApplicationForScore()}
-              returnToList={onBackButton}
-              goToNewApplication={goToNewApplication}
-              status={
-                application.status || application.status === StatusCode.INITIAL
-                  ? application.status
-                  : StatusCode.ERROR
-              }
-              updateStatus={updateStatus}
-              fileQuestionnaire={fileQuestionnaire}
-              agreementDocs={agreementDocs}
-              setAgreementDocs={setAgreementDocs}
-              setIsEditRequisitesMode={setIsEditRequisitesMode}
-            />
-          </Box>
-        </Box>
+    <Box className={classes.pageContainer}>
+      {isLoading && <CircularProgress className={classes.circular} />}
+      {isError && (
+        <>
+          <SberTypography sberautoVariant="body3" component="p">
+            Ошибка. Не удалось получить данные о заявке
+          </SberTypography>
+          <Button variant="text" onClick={onBackButton}>
+            Вернутся назад
+          </Button>
+        </>
+      )}
+      {!isLoading && !isError && application && (
+        <>
+          {isEditRequisitesMode ? (
+            <EditRequisitesArea applicationId={applicationId} changeRequisites={setIsEditRequisitesMode} />
+          ) : (
+            <Box className={classes.container}>
+              <DossierIdArea
+                dcAppId={application.dcAppId || ''}
+                clientName={clientName}
+                passport={passport}
+                onBackButton={onBackButton}
+                status={
+                  application.status || application.status === StatusCode.INITIAL
+                    ? application.status
+                    : StatusCode.ERROR
+                }
+              />
+              <Box className={classes.dossierContainer}>
+                <InformationArea {...appInfo} />
+                <DocumentsArea
+                  fileQuestionnaire={fileQuestionnaire}
+                  setQuestionnaire={setFileQuestionnaire}
+                  agreementDocs={agreementDocs}
+                  setAgreementDocs={setAgreementDocs}
+                  status={
+                    application.status || application.status === StatusCode.INITIAL
+                      ? application.status
+                      : StatusCode.ERROR
+                  }
+                />
+                <ActionArea
+                  application={application}
+                  moratoryEndDate={fullApplicationData?.moratoryEndDate}
+                  targetDcAppId={fullApplicationData?.targetDcAppId}
+                  applicationForScore={prepareApplicationForScore()}
+                  returnToList={onBackButton}
+                  goToNewApplication={goToNewApplication}
+                  status={
+                    application.status || application.status === StatusCode.INITIAL
+                      ? application.status
+                      : StatusCode.ERROR
+                  }
+                  updateStatus={updateStatus}
+                  fileQuestionnaire={fileQuestionnaire}
+                  agreementDocs={agreementDocs}
+                  setAgreementDocs={setAgreementDocs}
+                  setIsEditRequisitesMode={setIsEditRequisitesMode}
+                />
+              </Box>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   )

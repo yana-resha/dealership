@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 import {
+  ApplicationFrontdc,
   IsClientRequest,
   SendApplicationToScoringRequest,
   StatusCode,
@@ -13,7 +14,6 @@ import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
 import { NoMatchesModal } from 'pages/CreateOrderPage/OrderSearching/components/NoMatchesModal/NoMatchesModal'
 import { checkIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'
-import { ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import SberTypography from 'shared/ui/SberTypography'
@@ -25,7 +25,7 @@ import { useStyles } from './ActionArea.styles'
 
 type Props = {
   status: StatusCode
-  application: ApplicationFrontDc
+  application: ApplicationFrontdc
   moratoryEndDate?: string
   targetDcAppId?: string
   applicationForScore: SendApplicationToScoringRequest
