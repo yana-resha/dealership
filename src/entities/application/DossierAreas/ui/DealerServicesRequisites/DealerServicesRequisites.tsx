@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
 
+import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskBankAccountNumber,
@@ -72,6 +73,7 @@ export function DealerServicesRequisites(props: Props) {
     arrayLength,
     arrayHelpers,
     changeIds,
+    initialValues: FULL_INITIAL_ADDITIONAL_SERVICE,
   })
   const providers = requisites.map(requisite => ({ value: requisite.provider }))
 

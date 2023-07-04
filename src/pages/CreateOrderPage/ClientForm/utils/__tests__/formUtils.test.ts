@@ -33,9 +33,9 @@ describe('утилиты анкеты клиента', () => {
   it('transformDocsForRequest работает корректно для загранпаспорта', () => {
     const date = new Date('1999-01-31')
     expect(
-      transformDocsForRequest(ApplicantDocsType.INTERNATIONALPASSPORT, '111333333', date, '222'),
+      transformDocsForRequest(ApplicantDocsType.INTERNATIONALPASSPORTFORRFCITIZENS, '111333333', date, '222'),
     ).toMatchObject({
-      type: 2,
+      type: 11,
       series: '11',
       number: '1333333',
       issuedBy: '222',

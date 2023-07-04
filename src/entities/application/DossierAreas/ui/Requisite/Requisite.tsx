@@ -1,33 +1,37 @@
 import { Box } from '@mui/material'
-import { BankOptionType } from '@sberauto/loanapplifecycledc-proto/public'
+import { AdditionalOptionsFrontdc, OptionType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { AdditionalOptionFrontdc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { formatMoney } from 'shared/lib/utils'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 
 import { useStyles } from './Requisite.styles'
 
 type Props = {
-  additionalOption: AdditionalOptionFrontdc
+  additionalOption: AdditionalOptionsFrontdc
 }
 
 export function Requisite({ additionalOption }: Props) {
   const classes = useStyles()
-  const { bankOptionType, name, vendor, broker, price, term, docNumber, brokerAccount, vendorAccount } =
-    additionalOption
+  const { bankOptionType, name, vendor, broker, price, term, docNumber } = additionalOption
 
-  const label = bankOptionType === BankOptionType.EQUIPMENTS ? 'Тип доп. оборудования' : 'Тип продукта'
-  const beneficiaryBank = broker ? brokerAccount?.bank : vendorAccount?.bank
-  const correspondentAccount = broker ? brokerAccount?.accountCorrNumber : vendorAccount?.accountCorrNumber
-  const bankAccountNumber = broker ? brokerAccount?.accountNumber : vendorAccount?.accountNumber
-  const tax = broker ? brokerAccount?.tax : vendorAccount?.tax
+  const label = bankOptionType === OptionType.EQUIPMENT ? 'Тип доп. оборудования' : 'Тип продукта'
+  const beneficiaryBank = broker
+    ? broker.requisites?.accountRequisites?.bank
+    : vendor?.requisites?.accountRequisites?.bank
+  const correspondentAccount = broker
+    ? broker.requisites?.accountRequisites?.accountCorrNumber
+    : vendor?.requisites?.accountRequisites?.accountCorrNumber
+  const bankAccountNumber = broker
+    ? broker.requisites?.accountRequisites?.accountNumber
+    : vendor?.requisites?.accountRequisites?.accountNumber
+  const tax = broker ? broker.taxInfo?.amount : vendor?.taxInfo?.amount
 
   return (
     <Box className={classes.requisiteContainer}>
       <Box className={classes.requisiteInfo}>
         <InfoText label={label}>{name || ''}</InfoText>
-        {vendor && <InfoText label="Страховая компания">{vendor}</InfoText>}
-        {broker && <InfoText label="Агент получатель">{broker}</InfoText>}
+        {vendor && <InfoText label="Страховая компания">{vendor?.vendorName}</InfoText>}
+        {broker && <InfoText label="Агент получатель">{broker?.vendorName}</InfoText>}
         {price !== undefined && <InfoText label="Стоимость">{formatMoney(price)}</InfoText>}
         {term && <InfoText label="Срок">{term} мес.</InfoText>}
         {docNumber && <InfoText label="Номер полиса">{docNumber}</InfoText>}

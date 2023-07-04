@@ -46,7 +46,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
   const dealerAdditionalServices = useMemo(
     () =>
       vendorOptions?.additionalOptions
-        ?.filter(option => option.optionType === OptionType.ADDITIONAL)
+        ?.filter(option => option.optionType === OptionType.DEALER)
         .map(option => ({
           value: option.optionId,
           label: option.optionName,
@@ -67,12 +67,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
     handleInitialPaymentPercentFocus,
     handleInitialPaymentBlur,
     handleInitialPaymentPercentBlur,
-  } = useInitialPayment(
-    FormFieldNameMap.carCost,
-    FormFieldNameMap.initialPayment,
-    FormFieldNameMap.initialPaymentPercent,
-    disabled,
-  )
+  } = useInitialPayment(disabled)
 
   return (
     <CollapsibleFormAreaContainer

@@ -19,13 +19,7 @@ export function pointsOfSaleFilter(options: Vendor[], state: FilterOptionsState<
 }
 
 export function retrieveLabelForPointOfSale(option: Vendor) {
-  const entities = [
-    option?.vendorName,
-    option?.vendorCode,
-    option?.cityName,
-    option?.streetName,
-    option?.houseNumber,
-  ]
+  const entities = [option?.vendorName, option?.vendorCode, option?.address]
 
   return compact(entities).join(' ')
 }

@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { Form, useFormikContext } from 'formik'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
-import { useGetCreditProductListQuery } from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
+import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProducts'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
-import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { mockRequisites } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
 
-import { mockRequisites } from '../../../../../entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
 
@@ -18,106 +17,72 @@ type Props = {
 }
 
 export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProductsOnStart }: Props) {
-  const { values, setValues } = useFormikContext<FullOrderCalculatorFields>()
-  const { vendorCode } = getPointOfSaleFromCookies()
+  const { values } = useFormikContext<FullOrderCalculatorFields>()
   const requisites = mockRequisites()
-  const [sentParams, setSentParams] = useState({})
-  const [shouldShowOrderSettings, setShouldShowOrderSettings] = useState(false)
-  const [shouldFetchProducts, setShouldFetchProducts] = useState(shouldFetchProductsOnStart)
-  const changeShouldFetchProducts = useCallback(() => setShouldFetchProducts(true), [])
 
-  const isChangedBaseValues = useMemo(
-    () => Object.entries(sentParams).some(e => values[e[0] as keyof FullOrderCalculatorFields] !== e[1]),
-    [sentParams, values],
+  const formFields = useMemo(
+    () => ({
+      carCondition: values.carCondition,
+      carBrand: values.carBrand,
+      carModel: values.carModel,
+      carYear: values.carYear,
+      carCost: values.carCost,
+      carMileage: values.carMileage,
+      carPassportType: values.carPassportType,
+      carPassportId: values.carPassportId,
+      carPassportCreationDate: values.carPassportCreationDate,
+      carIdType: values.carIdType,
+      carId: values.carId,
+      salesContractId: values.salesContractId,
+      salesContractDate: values.salesContractDate,
+      legalPerson: values.legalPerson,
+      loanAmount: values.loanAmount,
+      bankIdentificationCode: values.bankIdentificationCode,
+      beneficiaryBank: values.beneficiaryBank,
+      bankAccountNumber: values.bankAccountNumber,
+      isCustomFields: values.isCustomFields,
+      correspondentAccount: values.correspondentAccount,
+      taxation: values.taxation,
+    }),
+    [
+      values.bankAccountNumber,
+      values.bankIdentificationCode,
+      values.beneficiaryBank,
+      values.carBrand,
+      values.carCondition,
+      values.carCost,
+      values.carId,
+      values.carIdType,
+      values.carMileage,
+      values.carModel,
+      values.carPassportCreationDate,
+      values.carPassportId,
+      values.carPassportType,
+      values.carYear,
+      values.correspondentAccount,
+      values.isCustomFields,
+      values.legalPerson,
+      values.loanAmount,
+      values.salesContractDate,
+      values.salesContractId,
+      values.taxation,
+    ],
   )
-  const { data, isError, isFetching, isFetched } = useGetCreditProductListQuery({
-    vendorCode,
-    values,
-    enabled: shouldFetchProducts,
-  })
-  useEffect(() => {
-    if (isFetching) {
-      const formFields = {
-        carCondition: values.carCondition,
-        carBrand: values.carBrand,
-        carModel: values.carModel,
-        carYear: values.carYear,
-        carCost: values.carCost,
-        carMileage: values.carMileage,
-        carPassportType: values.carPassportType,
-        carPassportId: values.carPassportId,
-        carPassportCreationDate: values.carPassportCreationDate,
-        carIdType: values.carIdType,
-        carId: values.carId,
-        salesContractId: values.salesContractId,
-        salesContractDate: values.salesContractDate,
-        legalPerson: values.legalPerson,
-        loanAmount: values.loanAmount,
-        bankIdentificationCode: values.bankIdentificationCode,
-        beneficiaryBank: values.beneficiaryBank,
-        bankAccountNumber: values.bankAccountNumber,
-        isCustomFields: values.isCustomFields,
-        correspondentAccount: values.correspondentAccount,
-        taxation: values.taxation,
-      }
-      setShouldFetchProducts(false)
-      setSentParams(formFields)
-      if (!shouldFetchProductsOnStart || isChangedBaseValues) {
-        setValues({
-          ...fullInitialValueMap,
-          ...formFields,
-          taxValue: values.taxValue,
-          taxPercent: values.taxPercent,
-        })
-      }
-    }
-  }, [
-    isFetched,
-    isFetching,
-    setValues,
+
+  const { isLoading, shouldShowOrderSettings, changeShouldFetchProducts } = useCreditProducts({
     shouldFetchProductsOnStart,
-    values.bankAccountNumber,
-    values.bankIdentificationCode,
-    values.beneficiaryBank,
-    values.carBrand,
-    values.carCondition,
-    values.carCost,
-    values.carId,
-    values.carIdType,
-    values.carMileage,
-    values.carModel,
-    values.carPassportCreationDate,
-    values.carPassportId,
-    values.carPassportType,
-    values.carYear,
-    values.correspondentAccount,
-    values.isCustomFields,
-    values.legalPerson,
-    values.loanAmount,
-    values.salesContractDate,
-    values.salesContractId,
-    values.taxation,
-  ])
-
-  useEffect(() => {
-    if (!isError && data && !isChangedBaseValues) {
-      setShouldShowOrderSettings(true)
-    }
-  }, [data, isChangedBaseValues, isError])
-
-  useEffect(() => {
-    if (isChangedBaseValues) {
-      setShouldShowOrderSettings(false)
-    }
-  }, [isChangedBaseValues])
-
-  useEffect(() => {
-    onChangeForm()
-  }, [values])
+    formFields,
+    initialValueMap: fullInitialValueMap,
+    onChangeForm,
+  })
 
   return (
     <Form>
-      <CarSettingsArea onFilled={changeShouldFetchProducts} requisites={requisites.dealerCenterRequisites} />
+      <CarSettingsArea
+        onFilled={changeShouldFetchProducts}
+        requisites={requisites.dealerCenterRequisites}
+        isLoading={isLoading}
+      />
       <OrderSettingsArea
         disabled={!shouldShowOrderSettings}
         isSubmitLoading={isSubmitLoading}

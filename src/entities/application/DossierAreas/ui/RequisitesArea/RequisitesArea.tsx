@@ -1,11 +1,13 @@
-import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box, Divider } from '@mui/material'
-import { OptionType } from '@sberauto/dictionarydc-proto/public'
-import { BankOptionType } from '@sberauto/loanapplifecycledc-proto/public'
+import {
+  AdditionalOptionsFrontdc,
+  ApplicationFrontdc,
+  OptionType,
+} from '@sberauto/loanapplifecycledc-proto/public'
 
 import { Requisite } from 'entities/application/DossierAreas/ui'
-import { AdditionalOptionFrontdc, ApplicationFrontDc } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { formatMoney } from 'shared/lib/utils'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
@@ -14,7 +16,7 @@ import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { useStyles } from './RequisitesArea.styles'
 
 type Props = {
-  application: ApplicationFrontDc
+  application: ApplicationFrontdc
   setFinancingEnabled: (value: boolean) => void
   changeRequisites: (value: boolean) => void
 }
@@ -27,13 +29,13 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
       (application.loanData?.additionalOptions || []).reduce(
         (acc, cur) => {
           switch (cur.bankOptionType) {
-            case BankOptionType.BANKSERVICES:
+            case OptionType.BANK:
               acc.bankServices.push(cur)
               break
-            case BankOptionType.EQUIPMENTS:
+            case OptionType.EQUIPMENT:
               acc.additionalEquipment.push(cur)
               break
-            case BankOptionType.DEALERSERVICES:
+            case OptionType.DEALER:
               acc.dealerServices.push(cur)
               break
           }
@@ -41,9 +43,9 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
           return acc
         },
         {
-          additionalEquipment: [] as AdditionalOptionFrontdc[],
-          dealerServices: [] as AdditionalOptionFrontdc[],
-          bankServices: [] as AdditionalOptionFrontdc[],
+          additionalEquipment: [] as AdditionalOptionsFrontdc[],
+          dealerServices: [] as AdditionalOptionsFrontdc[],
+          bankServices: [] as AdditionalOptionsFrontdc[],
           productSum: 0,
         },
       ),
@@ -69,7 +71,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
       case `${OptionType.EQUIPMENT}`:
         setAdditionalEquipmentConfirmation(checked)
         break
-      case `${OptionType.ADDITIONAL}`:
+      case `${OptionType.DEALER}`:
         setDealerServicesConfirmation(checked)
         break
       case `${OptionType.BANK}`:
@@ -104,9 +106,11 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
         <Box className={classes.requisiteInfo}>
           <InfoText label="Юридическое лицо">{application.vendor?.vendorName || ''}</InfoText>
           <InfoText label="Сумма кредита">{formatMoney(application?.loanData?.amount)}</InfoText>
-          <InfoText label="Банк получатель">{application.vendor?.vendorBankDetails?.bank || ''}</InfoText>
+          <InfoText label="Банк получатель">
+            {application.vendor?.vendorBankDetails?.accountRequisites?.bank || ''}
+          </InfoText>
           <InfoText label="Номер счета банка">
-            {application.vendor?.vendorBankDetails?.accountNumber || ''}
+            {application.vendor?.vendorBankDetails?.accountRequisites?.accountNumber || ''}
           </InfoText>
         </Box>
         <Divider />
@@ -135,7 +139,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SberTypography sberautoVariant="h6" component="p">
               Дополнительные услуги дилера
             </SberTypography>
-            <SwitchInput label="Проверено" id={`${OptionType.ADDITIONAL}`} afterChange={handleChange} />
+            <SwitchInput label="Проверено" id={`${OptionType.DEALER}`} afterChange={handleChange} />
           </Box>
           {dealerServices.map(option => (
             <Requisite key={option.name} additionalOption={option} />

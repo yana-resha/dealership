@@ -66,7 +66,7 @@ export function useLimits({ vendorCode }: Params) {
   const { data } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
 
   const creditProducts = useMemo(
-    () => data?.products.map(p => ({ value: p.productCode, label: p.productName })) || [],
+    () => data?.products.map(p => ({ value: p.productId, label: p.productName })) || [],
     [data?.products],
   )
   const currentProduct = useMemo(

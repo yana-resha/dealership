@@ -31,6 +31,17 @@ export const useGetDraftApplicationData = () => {
       loanCar: initialOrder?.orderData?.application?.loanCar,
       loanData: initialOrder?.orderData?.application?.loanData,
     }),
-    [user, vendorCode],
+    [
+      applicationId,
+      initialOrder?.orderData?.application?.applicant,
+      initialOrder?.orderData?.application?.loanCar,
+      initialOrder?.orderData?.application?.loanData,
+      initialOrder?.orderData?.application?.specialMark,
+      initialOrder?.orderData?.application?.vendor?.vendorBankDetails,
+      user?.employeeId,
+      user?.firstName,
+      user?.lastName,
+      vendorCode,
+    ],
   )
 }

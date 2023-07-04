@@ -33,14 +33,15 @@ import useStyles from './CarSettingsArea.styles'
 
 type Props = {
   onFilled: () => void
+  isLoading?: boolean
   requisites: RequisitesAdditionalOptions[]
 }
 
-export function CarSettingsArea({ onFilled, requisites }: Props) {
+export function CarSettingsArea({ onFilled, isLoading, requisites }: Props) {
   const classes = useStyles()
 
   const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
-  const { handleBtnClick } = useCarSettings(onFilled, () => {})
+  const { handleBtnClick } = useCarSettings(onFilled)
 
   const { setFieldValue } = useFormikContext()
   const [carPassportTypeField] = useField(FormFieldNameMap.carPassportType)
@@ -144,7 +145,7 @@ export function CarSettingsArea({ onFilled, requisites }: Props) {
           <DateInputFormik name={FormFieldNameMap.salesContractDate} label="Дата ДКП" gridColumn="span 1" />
         </Box>
         <DealerCenterRequisites requisites={requisites} isRequisiteEditable={true} />
-        <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} />
+        <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} isLoadingBtn={isLoading} />
       </Box>
     </CollapsibleFormAreaContainer>
   )

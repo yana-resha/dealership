@@ -1,5 +1,3 @@
-import { AdditionalOption, OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
-
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 
 import {
@@ -12,9 +10,10 @@ import {
   InitialBankDetailsValue,
   OrderCalculatorFields,
   ValidationParams,
+  OrderCalculatorAdditionalServiceDocInfo,
 } from './types'
 
-const CAR_YEARS_LENGTH = 30
+const CAR_YEARS_LENGTH = 20
 
 function getCarYears(yearsLength: number) {
   const currentYear = new Date().getFullYear()
@@ -56,11 +55,14 @@ export const INITIAL_CAR_ID_TYPE = [
   },
 ]
 
-const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
+export const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
   productType: '',
   productCost: '',
   isCredit: false,
-  [FormFieldNameMap.documentType]: '',
+}
+
+export const INITIAL_ADDITIONAL_SERVICE_DOC_INFO: OrderCalculatorAdditionalServiceDocInfo = {
+  [FormFieldNameMap.documentType]: null,
   [FormFieldNameMap.documentNumber]: '',
   [FormFieldNameMap.documentDate]: null,
 }
@@ -74,16 +76,18 @@ const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
   [FormFieldNameMap.taxation]: undefined,
 }
 
-const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments = {
+export const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments = {
   ...INITIAL_ADDITIONAL_SERVICE,
+  ...INITIAL_ADDITIONAL_SERVICE_DOC_INFO,
   [FormFieldNameMap.legalPerson]: '',
   [FormFieldNameMap.taxValue]: null,
   [FormFieldNameMap.taxPercent]: null,
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 
-const FULL_INITIAL_ADDITIONAL_SERVICE: FullInitialAdditionalService = {
+export const FULL_INITIAL_ADDITIONAL_SERVICE: FullInitialAdditionalService = {
   ...INITIAL_ADDITIONAL_SERVICE,
+  ...INITIAL_ADDITIONAL_SERVICE_DOC_INFO,
   [FormFieldNameMap.provider]: '',
   [FormFieldNameMap.agent]: '',
   [FormFieldNameMap.loanTerm]: undefined,
@@ -151,3 +155,10 @@ export const formMessages = {
   [FormFieldNameMap.isExceededBankAdditionalServicesLimit]:
     'Общая стоимость дополнительных услуг банка не должна превышать 30% от стоимости авто',
 }
+
+export const CREDIT_PRODUCT_PARAMS_FIELDS = [
+  FormFieldNameMap.carCondition,
+  FormFieldNameMap.carBrand,
+  FormFieldNameMap.carModel,
+  FormFieldNameMap.carYear,
+]

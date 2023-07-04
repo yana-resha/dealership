@@ -34,7 +34,5 @@ describe('PointOfSaleUtilsTest', () => {
 const pointOfSale: Vendor = {
   vendorCode: '2002852',
   vendorName: 'Сармат',
-  cityName: 'Ханты-Мансийск',
-  houseNumber: '4',
-  streetName: 'Зябликова',
+  address: 'Ханты-Мансийск Зябликова 4',
 }

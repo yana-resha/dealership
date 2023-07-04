@@ -16,24 +16,26 @@ export const carBrands: Car[] = [
 ]
 
 export const creditProductListRsData: GetCreditProductListResponse = {
-  fullDownpaymentMin: 20,
-  fullDownpaymentMax: 60,
+  fullDownpaymentMin: 0.2,
+  fullDownpaymentMax: 0.6,
   fullDurationMin: 12,
   fullDurationMax: 72,
   creditProducts: [
     {
       productCode: '3',
       productName: 'Лайт A',
-      downpaymentMin: 30,
-      downpaymentMax: 70,
+      productId: 'S',
+      downpaymentMin: 0.3,
+      downpaymentMax: 0.7,
       durationMin: 24,
       durationMax: 72,
     },
     {
       productCode: '2',
+      productId: 'M',
       productName: 'Лайт В',
-      downpaymentMin: 10,
-      downpaymentMax: 50,
+      downpaymentMin: 0.1,
+      downpaymentMax: 0.5,
       durationMin: 12,
       durationMax: 36,
     },
@@ -45,22 +47,22 @@ export const mockGetVendorOptionsResponse: GetVendorOptionsListResponse = {
   additionalOptions: [
     {
       optionId: OptionID.GAP,
-      optionType: OptionType.ADDITIONAL,
+      optionType: OptionType.DEALER,
       optionName: 'ОСАГО',
     },
     {
       optionId: OptionID.CASCO,
-      optionType: OptionType.ADDITIONAL,
+      optionType: OptionType.DEALER,
       optionName: 'КАСКО',
     },
     {
       optionId: OptionID.TONING_PAINTING,
-      optionType: OptionType.ADDITIONAL,
+      optionType: OptionType.DEALER,
       optionName: 'Перекрасить авто',
     },
     {
       optionId: OptionID.OTHER,
-      optionType: OptionType.ADDITIONAL,
+      optionType: OptionType.DEALER,
       optionName: 'Графика на кузове',
     },
     {
@@ -130,7 +132,7 @@ export const mockCalculateCreditResponse: CalculateCreditResponse = {
   products: [
     {
       productCodeName: 'DRVBF',
-      productCode: 'DRVB',
+      productId: 'DRVB',
       productName: 'Драйв В', //creditProduct
       downpayment: 200000, //initialPayment
       term: 24, //term
@@ -143,7 +145,7 @@ export const mockCalculateCreditResponse: CalculateCreditResponse = {
     },
     {
       productCodeName: 'DRVCF',
-      productCode: 'DRVC',
+      productId: 'DRVC',
       productName: 'Драйв C',
       downpayment: 300000,
       term: 36,

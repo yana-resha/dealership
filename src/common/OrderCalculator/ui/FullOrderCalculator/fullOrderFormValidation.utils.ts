@@ -62,10 +62,12 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
         is: (productType: string) => !!productType,
         then: schema => schema.required(FieldMessages.required),
       }),
-      [FormFieldNameMap.documentType]: Yup.string().when([FormFieldNameMap.productType], {
-        is: (productType: string) => !!productType,
-        then: schema => schema.required(FieldMessages.required),
-      }),
+      [FormFieldNameMap.documentType]: Yup.string()
+        .nullable()
+        .when([FormFieldNameMap.productType], {
+          is: (productType: string) => !!productType,
+          then: schema => schema.required(FieldMessages.required),
+        }),
       [FormFieldNameMap.documentNumber]: Yup.string().when([FormFieldNameMap.productType], {
         is: (productType: string) => !!productType,
         then: schema => schema.required(FieldMessages.required),
@@ -99,10 +101,12 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
           then: schema => schema.required(FieldMessages.required),
         },
       ),
-      [FormFieldNameMap.documentType]: Yup.string().when([FormFieldNameMap.productType], {
-        is: (productType: string) => !!productType,
-        then: schema => schema.required(FieldMessages.required),
-      }),
+      [FormFieldNameMap.documentType]: Yup.string()
+        .nullable()
+        .when([FormFieldNameMap.productType], {
+          is: (productType: string) => !!productType,
+          then: schema => schema.required(FieldMessages.required),
+        }),
       [FormFieldNameMap.documentNumber]: Yup.string().when([FormFieldNameMap.productType], {
         is: (productType: string) => !!productType,
         then: schema => schema.required(FieldMessages.required),

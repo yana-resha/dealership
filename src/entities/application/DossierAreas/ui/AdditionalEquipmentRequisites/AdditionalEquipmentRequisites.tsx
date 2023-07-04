@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
 
+import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskBankAccountNumber,
@@ -61,6 +62,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
     arrayLength,
     arrayHelpers,
     changeIds,
+    initialValues: FULL_INITIAL_ADDITIONAL_EQUIPMENTS,
   })
   const initialValues = useRef(values.additionalEquipments[index])
   const legalEntityOptions = requisites.map(requisite => ({ value: requisite.legalEntityName }))

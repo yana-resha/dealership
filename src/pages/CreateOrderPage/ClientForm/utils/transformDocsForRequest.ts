@@ -29,7 +29,7 @@ export const transformDocsForRequest = (
       number = docNumber
       break
     }
-    case ApplicantDocsType.INTERNATIONALPASSPORT: {
+    case ApplicantDocsType.INTERNATIONALPASSPORTFORRFCITIZENS: {
       series = docNumber.slice(0, 2)
       number = docNumber.slice(-7)
       break

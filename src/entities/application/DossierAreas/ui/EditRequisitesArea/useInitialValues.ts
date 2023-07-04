@@ -32,7 +32,7 @@ export function useInitialValues(applicationId: string) {
 
   const [dealerServices, additionalEquipment] = useMemo(
     () => [
-      additionalOptions.filter(option => option.bankOptionType === OptionType.ADDITIONAL),
+      additionalOptions.filter(option => option.bankOptionType === OptionType.DEALER),
       additionalOptions.filter(option => option.bankOptionType === OptionType.EQUIPMENT),
     ],
     [additionalOptions],

@@ -5,7 +5,7 @@ import { PreparedTableData } from './BankOffers.types'
 
 export const getCellsChildrens = (row: PreparedTableData) => [
   ...Object.entries(row).reduce((acc, [key, value]) => {
-    if (key === 'productFamilyCode' || key === 'productCode') {
+    if (key === 'productFamilyCode' || key === 'productId') {
       return acc
     }
     if (key === 'cascoFlag') {

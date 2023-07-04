@@ -1,22 +1,21 @@
-import { BankOption, CreditProduct } from '@sberauto/dictionarydc-proto/public'
+import { CreditProduct } from '@sberauto/dictionarydc-proto/public'
 
-export type RequiredProduct = Omit<CreditProduct, 'productCode' | 'productName' | 'downpaymentMin'> &
-  Required<Pick<CreditProduct, 'productCode' | 'productName'>> & {
-    downpaymentMin?: number
-  }
+export type RequiredProduct = Omit<CreditProduct, 'productId' | 'productName'> &
+  Required<Pick<CreditProduct, 'productId' | 'productName'>>
 
 export type ProductsMap = Record<string, RequiredProduct>
 
 export const prepareCreditProduct = (initialProducts: CreditProduct[] | null | undefined) =>
   initialProducts?.reduce<{ products: RequiredProduct[]; productsMap: ProductsMap }>(
     (acc, cur) => {
-      if (!cur.productCode || !cur.productName) {
+      if (!cur.productId || !cur.productName) {
         return acc
       }
       acc.products.push(cur as RequiredProduct)
-
-      const downpaymentMin = cur.downpaymentMin ? parseInt(`${cur.downpaymentMin}`, 10) : undefined
-      acc.productsMap[cur.productCode] = { ...cur, downpaymentMin } as RequiredProduct
+      // С Бэка значение приходит в диапазоне 0...1, а на фронте используются проценты (0...100)
+      const downpaymentMin = cur.downpaymentMin ? cur.downpaymentMin * 100 : undefined
+      const downpaymentMax = cur.downpaymentMax ? cur.downpaymentMax * 100 : undefined
+      acc.productsMap[cur.productId] = { ...cur, downpaymentMin, downpaymentMax } as RequiredProduct
 
       return acc
     },

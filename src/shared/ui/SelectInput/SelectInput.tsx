@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { Box, Button, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { Box, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 
 import useStyles from './SelectInput.styles'
 import { SelectInputProps } from './selectInput.types'
@@ -20,16 +20,14 @@ export function SelectInputWithoutMemo<T extends string | number>(props: SelectI
     emptyAvailable,
     disabled,
   } = props
-  const [fieldValue, setFieldValue] = useState(value || '')
+  const [fieldValue, setFieldValue] = useState(value ?? '')
 
   useEffect(() => {
     if (
-      value !== undefined &&
-      value !== null &&
-      (typeof value === 'string' || !isNaN(value)) &&
+      (typeof value === 'string' || (typeof value === 'number' && !isNaN(value)) || value === undefined) &&
       value !== fieldValue
     ) {
-      setFieldValue(value)
+      setFieldValue(value ?? '')
     }
   }, [value])
 

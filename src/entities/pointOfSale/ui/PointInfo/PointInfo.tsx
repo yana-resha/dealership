@@ -28,12 +28,7 @@ export const PointInfo = ({ onButtonClick }: Props) => {
   const pointOfSale: Vendor = JSON.parse(Cookies.get(COOKIE_POINT_OF_SALE) ?? '{}')
 
   const fullPointInfo = useMemo(() => {
-    const entities = [
-      pointOfSale?.vendorName,
-      pointOfSale?.cityName,
-      pointOfSale?.streetName,
-      pointOfSale?.houseNumber,
-    ]
+    const entities = [pointOfSale?.vendorName, pointOfSale?.address]
 
     return compact(entities).join(', ')
   }, [pointOfSale])

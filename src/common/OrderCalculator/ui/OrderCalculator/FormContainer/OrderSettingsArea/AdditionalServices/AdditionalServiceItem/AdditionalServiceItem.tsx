@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
 
+import { INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, OrderCalculatorFields } from 'common/OrderCalculator/types'
 import { useAdditionalServices } from 'entities/application/DossierAreas/hooks/useAdditionalServices'
 import {
@@ -44,6 +45,7 @@ export function AdditionalServiceItem({
     arrayLength,
     arrayHelpers,
     changeIds,
+    initialValues: INITIAL_ADDITIONAL_SERVICE,
   })
 
   const { values } = useFormikContext<OrderCalculatorFields>()
