@@ -35,6 +35,8 @@ const formFields = [
 ]
 
 const mockedAddressFieldsEmpty: Address = {
+  postalCode: '',
+  regCode: '',
   unit: '',
   city: '',
   cityType: '',
@@ -51,6 +53,8 @@ const mockedAddressFieldsEmpty: Address = {
 }
 
 const mockedAddressFieldsFilled: Address = {
+  postalCode: '123456',
+  regCode: '27',
   unit: 'Тест',
   city: 'Тест',
   cityType: '310',

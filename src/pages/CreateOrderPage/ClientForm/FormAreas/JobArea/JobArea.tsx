@@ -5,6 +5,7 @@ import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useFormikContext } from 'formik'
 
 import { maskDigitsOnly, maskNoRestrictions, maskPhoneNumber } from 'shared/masks/InputMasks'
+import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
@@ -20,7 +21,7 @@ export function JobArea() {
   const [jobDisabled, setJobDisabled] = useState(false)
   const { values, setFieldValue } = useFormikContext<ClientData>()
   const [isEmplAddressDialogVisible, setIsEmplAddressDialogVisible] = useState(false)
-  const { occupation, employerAddress, employerAddressString } = values
+  const { occupation, employerAddress, employerAddressString, emplNotKladr } = values
 
   useEffect(() => {
     if (occupation === OccupationType.UNEMPLOYED) {
@@ -52,10 +53,9 @@ export function JobArea() {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
         setIsEmplAddressDialogVisible(true)
-      } else {
-        setFieldValue('employerAddress', configAddressInitialValues)
-        setFieldValue('employerAddressString', '')
       }
+      setFieldValue('employerAddress', configAddressInitialValues)
+      setFieldValue('employerAddressString', '')
     },
     [setIsEmplAddressDialogVisible, setFieldValue],
   )
@@ -108,15 +108,26 @@ export function JobArea() {
         disabled={jobDisabled}
       />
 
-      <MaskedInputFormik
-        name="employerAddressString"
-        label="Адрес работодателя (КЛАДР)"
-        placeholder="-"
-        mask={maskNoRestrictions}
-        gridColumn="span 12"
-        disabled={jobDisabled}
-        InputProps={{ readOnly: true }}
-      />
+      {emplNotKladr ? (
+        <MaskedInputFormik
+          name="employerAddressString"
+          label="Адрес работодателя (КЛАДР)"
+          placeholder="-"
+          mask={maskNoRestrictions}
+          gridColumn="span 12"
+          disabled={jobDisabled}
+          InputProps={{ readOnly: true }}
+        />
+      ) : (
+        <AutocompleteDaDataAddressFormik
+          nameOfString="employerAddressString"
+          nameOfObject="employerAddress"
+          label="Адрес работодателя (КЛАДР)"
+          placeholder="-"
+          gridColumn="span 12"
+        />
+      )}
+
       <SwitchInputFormik
         name="emplNotKladr"
         label="Не КЛАДР"

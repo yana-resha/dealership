@@ -5,6 +5,8 @@ import { Address } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 
 export const addressTransformForRequest = (address: Address, addressType: AddressType): AddressFrontdc => {
   const {
+    postalCode,
+    regCode,
     region,
     areaType,
     area,
@@ -23,8 +25,8 @@ export const addressTransformForRequest = (address: Address, addressType: Addres
   const result = {
     type: addressType,
     country: 'Россия',
-    // postalCode: string, //дополнить из дадаты DCB-353
-    // regCode: string, //дополнить из дадаты DCB-353
+    postalCode,
+    regCode,
     region,
     areaType,
     area,
@@ -45,6 +47,8 @@ export const addressTransformForRequest = (address: Address, addressType: Addres
 }
 
 export const addressTransformForForm = (address: AddressFrontdc, initialValuesMap?: Address): Address => ({
+  postalCode: address.postalCode ?? initialValuesMap?.postalCode ?? '',
+  regCode: address.regCode ?? initialValuesMap?.regCode ?? '',
   region: address.region ?? initialValuesMap?.region ?? '',
   area: address.area ?? initialValuesMap?.area ?? '',
   areaType: address.areaType ?? initialValuesMap?.areaType ?? '',

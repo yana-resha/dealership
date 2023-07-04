@@ -1,11 +1,13 @@
 import React, { PropsWithChildren } from 'react'
 
 import { Button } from '@mui/material'
+import { SuggestionGetAddressSuggestions } from '@sberauto/dadata-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
 import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
+import * as daDataQueryModule from 'shared/api/requests/dadata.api'
 import { MockedDateInput } from 'shared/ui/DateInput/__mocks__/DateInput.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
@@ -29,6 +31,20 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
 jest.mock('shared/ui/DateInput/DateInput', () => ({
   DateInput: MockedDateInput,
 }))
+
+type Props = {
+  id: string
+  isError: boolean
+}
+jest.mock('shared/ui/AutocompleteInput/AutocompleteDaDataAddress', () => ({
+  AutocompleteDaDataAddress: ({ id, isError }: Props) => (
+    <div data-testid={id}>{isError && <div data-testid={id + 'ErrorMessage'} />}</div>
+  ),
+}))
+
+const mockedDaDataQueryModule = jest.spyOn(daDataQueryModule, 'useGetAddressSuggestions')
+
+const mockSuggestions: SuggestionGetAddressSuggestions[] = []
 
 const formFields = ['employmentDate', 'employerName', 'employerPhone', 'employerAddressString', 'employerInn']
 
@@ -63,6 +79,13 @@ disableConsole('error')
 describe('JobAreaTest', () => {
   describe('Все поля отображаются на форме', () => {
     beforeEach(() => {
+      mockedDaDataQueryModule.mockImplementation(
+        () =>
+          ({
+            data: mockSuggestions,
+            refetch: jest.fn(),
+          } as any),
+      )
       render(<JobArea />, {
         wrapper: createWrapper,
       })
