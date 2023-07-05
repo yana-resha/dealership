@@ -62,6 +62,14 @@ export function OrderSearching({ nextStep, onApplicationOpen }: Props) {
 
   const onCreateOrder = useCallback(
     (isClient: boolean, orderData?: OrderData) => {
+      // Моковый сценарий для тестировщиков: если в поле паспорта ввести нули,
+      // то всегда будет всплывать модалка
+      if (orderData?.passportSeries === '0000' && orderData?.passportNumber === '000000') {
+        openModal()
+
+        return
+      }
+      // ////
       if (isClient && orderData) {
         /** Проверяем изменились ли данные на форме после перехода на нее
          * Если на этом шаге не изменились, то не обновляем данные заявки.
