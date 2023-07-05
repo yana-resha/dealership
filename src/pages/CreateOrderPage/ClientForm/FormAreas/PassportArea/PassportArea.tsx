@@ -1,8 +1,11 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
+import { Timeout } from 'react-number-format/types/types'
 
+import { DADATA_OPTIONS_LIMIT, useGetFmsUnitSuggestions } from 'shared/api/requests/dadata.api'
+import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskDigitsOnly,
   maskDivisionCode,
@@ -12,6 +15,7 @@ import {
   maskCyrillicAndDigits,
 } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
+import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
@@ -36,12 +40,86 @@ export function PassportArea() {
     livingAddress,
     livingAddressString,
     hasNameChanged,
+    divisionCode,
     regAddrIsLivingAddr,
     regNotKladr,
     livingNotKladr,
   } = values
+  const previousDivisionCode = usePrevious(divisionCode)
   const [isRegAddressDialogVisible, setIsRegAddressDialogVisible] = useState(false)
   const [isLivingAddressDialogVisible, setIsLivingAddressDialogVisible] = useState(false)
+  const { mutate: getPassportSuggestions, data } = useGetFmsUnitSuggestions()
+  const [passportRequestTimeout, setPassportRequestTimeout] = useState(false)
+  const [issuedBySuggestions, setIssuedBySuggestions] = useState<string[]>([])
+  const [divisionCodeSuggestions, setDivisionCodeSuggestions] = useState<string[]>([])
+  const timerRef = useRef<Timeout | null>(null)
+
+  const updateListOfSuggestions = useCallback(
+    (value: string) => {
+      if ((!passportRequestTimeout && value.length > 1) || value.length === 6) {
+        getPassportSuggestions(value)
+        setPassportRequestTimeout(true)
+        if (timerRef.current) {
+          clearTimeout(timerRef.current)
+        }
+        timerRef.current = setTimeout(() => {
+          setPassportRequestTimeout(false)
+        }, 1000)
+      }
+    },
+    [getPassportSuggestions, passportRequestTimeout],
+  )
+
+  useEffect(
+    () => () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    },
+    [],
+  )
+
+  useEffect(() => {
+    if (
+      divisionCode === null ||
+      (divisionCode && divisionCode.length < 6) ||
+      (divisionCode !== previousDivisionCode && previousDivisionCode !== '')
+    ) {
+      setIssuedBySuggestions([])
+      setFieldValue('issuedBy', '')
+      if (divisionCode === null) {
+        return
+      }
+    }
+    updateListOfSuggestions(divisionCode)
+  }, [divisionCode])
+
+  useEffect(() => {
+    const suggestionsForDivisionCode =
+      data?.suggestions?.reduce((acc: string[], option) => {
+        if (option.data?.code && !acc.includes(option.data.code)) {
+          acc.push(option.data.code)
+        }
+
+        return acc.length > DADATA_OPTIONS_LIMIT ? acc.slice(0, DADATA_OPTIONS_LIMIT) : acc
+      }, []) ?? []
+    setDivisionCodeSuggestions(suggestionsForDivisionCode)
+
+    if (divisionCode.length === 6) {
+      const suggestionsForIssuedBy =
+        data?.suggestions?.reduce((acc: string[], option) => {
+          if (option.unrestrictedValue && !acc.includes(option.unrestrictedValue)) {
+            acc.push(option.unrestrictedValue)
+          }
+
+          return acc.length > DADATA_OPTIONS_LIMIT ? acc.slice(0, DADATA_OPTIONS_LIMIT) : acc
+        }, []) ?? []
+      setIssuedBySuggestions(suggestionsForIssuedBy)
+      if (suggestionsForIssuedBy.length === 1) {
+        setFieldValue('issuedBy', suggestionsForIssuedBy[0])
+      }
+    }
+  }, [data?.suggestions])
 
   const onCloseAddressDialog = useCallback(
     (name: string, addressString: string) => {
@@ -110,10 +188,12 @@ export function PassportArea() {
 
       <DateInputFormik name="passportDate" label="Дата выдачи" gridColumn="span 3" />
 
-      <MaskedInputFormik
+      <AutocompleteInputFormik
         name="divisionCode"
         label="Код подразделения"
         placeholder="-"
+        options={divisionCodeSuggestions}
+        isCustomValueAllowed
         mask={maskDivisionCode}
         gridColumn="span 3"
       />
@@ -134,10 +214,12 @@ export function PassportArea() {
 
       <Box gridColumn="span 4" />
 
-      <MaskedInputFormik
+      <AutocompleteInputFormik
         name="issuedBy"
         label="Кем выдан"
         placeholder="-"
+        options={issuedBySuggestions}
+        isCustomValueAllowed
         mask={maskCyrillicAndDigits}
         gridColumn="span 12"
       />

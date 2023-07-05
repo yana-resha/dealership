@@ -8,6 +8,7 @@ import { Form, Formik } from 'formik'
 
 import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 import * as daDataQueryModule from 'shared/api/requests/dadata.api'
+import { useGetFmsUnitSuggestions } from 'shared/api/requests/dadata.api'
 import { MockedDateInput } from 'shared/ui/DateInput/__mocks__/DateInput.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
@@ -41,8 +42,14 @@ jest.mock('shared/ui/AutocompleteInput/AutocompleteDaDataAddress', () => ({
     <div data-testid={id}>{isError && <div data-testid={id + 'ErrorMessage'} />}</div>
   ),
 }))
+jest.mock('shared/ui/AutocompleteInput/AutocompleteInput', () => ({
+  AutocompleteInput: ({ id, isError }: Props) => (
+    <div data-testid={id}>{isError && <div data-testid={id + 'ErrorMessage'} />}</div>
+  ),
+}))
 
-const mockedDaDataQueryModule = jest.spyOn(daDataQueryModule, 'useGetAddressSuggestions')
+const mockedDaDataQueryAddress = jest.spyOn(daDataQueryModule, 'useGetAddressSuggestions')
+const mockedUseGetFmsUnitSuggestions = jest.spyOn(daDataQueryModule, 'useGetFmsUnitSuggestions')
 
 const mockSuggestions: SuggestionGetAddressSuggestions[] = []
 
@@ -102,11 +109,18 @@ disableConsole('error')
 describe('PassportAreaTest', () => {
   describe('Все поля отображаются на форме', () => {
     beforeEach(() => {
-      mockedDaDataQueryModule.mockImplementation(
+      mockedDaDataQueryAddress.mockImplementation(
         () =>
           ({
             data: mockSuggestions,
             refetch: jest.fn(),
+          } as any),
+      )
+      mockedUseGetFmsUnitSuggestions.mockImplementation(
+        () =>
+          ({
+            data: mockSuggestions,
+            mutate: jest.fn(),
           } as any),
       )
       render(<PassportArea />, {
@@ -144,6 +158,13 @@ describe('PassportAreaTest', () => {
 
   describe('Все поля валидируются', () => {
     beforeEach(() => {
+      mockedUseGetFmsUnitSuggestions.mockImplementation(
+        () =>
+          ({
+            data: mockSuggestions,
+            mutate: jest.fn(),
+          } as any),
+      )
       render(<PassportArea />, {
         wrapper: createWrapper,
       })
