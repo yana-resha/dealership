@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 
 import { OptionType } from '@sberauto/dictionarydc-proto/public'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
 
@@ -423,15 +423,13 @@ describe('FullOrderCalculator', () => {
 
     it('Ограничения минимума ПВ % работает', async () => {
       const initialPaymentPercentInput = document.querySelector('#initialPaymentPercent')!
-      userEvent.type(initialPaymentPercentInput, '10')
-      userEvent.type(initialPaymentPercentInput, '10')
-      // Локально работает, на сервере нет. Проверить позже
-      // expect(await screen.findByText('Значение должно быть больше 20')).toBeInTheDocument()
+      fireEvent.change(initialPaymentPercentInput, { target: { value: '10' } })
+      expect(await screen.findByText('Значение должно быть больше 20')).toBeInTheDocument()
     })
 
     it('Ограничения максимума ПВ % работает', async () => {
       const initialPaymentPercentInput = document.querySelector('#initialPaymentPercent')!
-      userEvent.type(initialPaymentPercentInput, '70')
+      fireEvent.change(initialPaymentPercentInput, { target: { value: '70' } })
       expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
     })
 

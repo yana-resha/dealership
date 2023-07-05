@@ -6,6 +6,7 @@ import { Formik, FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import {
   useSaveDraftApplicationMutation,
   useSendApplicationToScore,
@@ -42,8 +43,7 @@ export function ClientForm({ formRef }: Props) {
   })
   const getDraftApplicationData = useGetDraftApplicationData()
   const disabledButtons = isDraftLoading
-  //TODO: Убрать мок после появления поля unit в Vendor
-  const unit = 'currentUnit'
+  const { unit } = getPointOfSaleFromCookies()
 
   const prepareApplicationForScoring = useCallback(() => {
     const draftApplication = getDraftApplicationData()
