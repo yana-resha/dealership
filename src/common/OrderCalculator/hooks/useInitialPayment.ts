@@ -86,6 +86,13 @@ export function useInitialPayment(isDisabledForm: boolean) {
   )
 
   useEffect(() => {
+    setFieldValue(
+      FormFieldNameMap.initialPaymentPercent,
+      getPercentFromValue(initPaymentField.value, baseValue),
+    )
+  }, [])
+
+  useEffect(() => {
     if (baseValue !== prevBaseValue) {
       handleInitialPaymentChange(initPaymentField.value)
     }
