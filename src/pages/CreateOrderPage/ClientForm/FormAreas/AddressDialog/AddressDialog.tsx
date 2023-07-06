@@ -4,13 +4,13 @@ import { Box, Button } from '@mui/material'
 import { Form, Formik, useFormikContext } from 'formik'
 
 import { maskCyrillicAndDigits } from 'shared/masks/InputMasks'
+import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
-import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
 import { Address } from '../../ClientForm.types'
 import { clientAddressValidationSchema } from '../../config/clientFormValidation'
-import { AREA_TYPES, CITY_TYPES, SETTLEMENT_TYPES, STREET_TYPES } from './AddressDialog.config'
+import { AREA_TYPES, CITY_TYPES, REGION_CODE, SETTLEMENT_TYPES, STREET_TYPES } from './AddressDialog.config'
 import { useStyles } from './AddressDialog.styles'
 
 type Props = {
@@ -26,28 +26,42 @@ export const AddressDialog = (props: Props) => {
   const classes = useStyles()
   const { addressName, address, label, isVisible, setIsVisible, onCloseDialog } = props
 
-  const { setFieldValue } = useFormikContext()
+  const { setFieldValue } = useFormikContext<Address>()
 
   const getStringIfPresent = useCallback((value: string) => (value ? value + ' ' : ''), [])
 
-  const buildAddressString = useCallback(
-    (values: Address) => {
-      function getLabel(
-        values: {
-          value: string
-          label: string
-        }[],
-        value?: string,
-      ): string {
-        if (!value) {
-          return ''
-        }
-
-        return values.find(item => item.value === value)?.label ?? value ?? ''
+  const getLabel = useCallback(
+    (
+      values: {
+        value: string
+        label: string
+      }[],
+      value: string | null,
+    ) => {
+      if (!value) {
+        return ''
       }
 
-      return (
-        getStringIfPresent(values.region) +
+      return values.find(item => item.value === value)?.label ?? value ?? ''
+    },
+    [],
+  )
+
+  const getOptions = useCallback(
+    (
+      values: {
+        value: string
+        label: string
+      }[],
+    ): string[] => values.map(type => type.value),
+    [],
+  )
+
+  const buildAddressString = useCallback(
+    (values: Address) =>
+      (
+        getStringIfPresent(values.regCode ?? '') +
+        getStringIfPresent(getLabel(REGION_CODE, values.regCode)) +
         getStringIfPresent(getLabel(AREA_TYPES, values.areaType)) +
         getStringIfPresent(values.area) +
         getStringIfPresent(getLabel(CITY_TYPES, values.cityType)) +
@@ -60,9 +74,8 @@ export const AddressDialog = (props: Props) => {
         getStringIfPresent(values.unit) +
         getStringIfPresent(values.houseExt) +
         getStringIfPresent(values.unitNum)
-      ).trim()
-    },
-    [getStringIfPresent],
+      ).trim(),
+    [getLabel, getStringIfPresent],
   )
 
   const onClose = useCallback(() => {
@@ -74,7 +87,7 @@ export const AddressDialog = (props: Props) => {
 
   const onSubmit = useCallback(
     (values: Address) => {
-      setFieldValue(addressName, values)
+      setFieldValue(addressName, { ...values, region: getLabel(REGION_CODE, values.regCode) })
       setFieldValue(`${addressName}String`, buildAddressString(values))
       setIsVisible(false)
     },
@@ -86,25 +99,38 @@ export const AddressDialog = (props: Props) => {
       <Box className={classes.content}>
         <Formik initialValues={address} validationSchema={clientAddressValidationSchema} onSubmit={onSubmit}>
           <Form className={classes.formContainer}>
-            <MaskedInputFormik name="region" label="Регион" placeholder="-" mask={maskCyrillicAndDigits} />
+            <AutocompleteInputFormik
+              name="regCode"
+              label="Регион"
+              placeholder="-"
+              options={getOptions(REGION_CODE)}
+              getOptionLabel={value => getLabel(REGION_CODE, value)}
+            />
 
-            <SelectInputFormik name="areaType" label="Тип района" placeholder="-" options={AREA_TYPES} />
+            <AutocompleteInputFormik
+              name="areaType"
+              label="Тип района"
+              placeholder="-"
+              options={getOptions(AREA_TYPES)}
+              getOptionLabel={value => getLabel(AREA_TYPES, value)}
+            />
             <MaskedInputFormik name="area" label="Район" placeholder="-" mask={maskCyrillicAndDigits} />
 
-            <SelectInputFormik
+            <AutocompleteInputFormik
               name="cityType"
               label="Тип города"
               placeholder="-"
-              options={CITY_TYPES}
-              emptyAvailable
+              options={getOptions(CITY_TYPES)}
+              getOptionLabel={value => getLabel(CITY_TYPES, value)}
             />
             <MaskedInputFormik name="city" label="Город" placeholder="-" mask={maskCyrillicAndDigits} />
 
-            <SelectInputFormik
+            <AutocompleteInputFormik
               name="settlementType"
               label="Тип населенного пункта"
               placeholder="-"
-              options={SETTLEMENT_TYPES}
+              options={getOptions(SETTLEMENT_TYPES)}
+              getOptionLabel={value => getLabel(SETTLEMENT_TYPES, value)}
             />
             <MaskedInputFormik
               name="settlement"
@@ -113,7 +139,13 @@ export const AddressDialog = (props: Props) => {
               mask={maskCyrillicAndDigits}
             />
 
-            <SelectInputFormik name="streetType" label="Тип улицы" placeholder="-" options={STREET_TYPES} />
+            <AutocompleteInputFormik
+              name="streetType"
+              label="Тип улицы"
+              placeholder="-"
+              options={getOptions(STREET_TYPES)}
+              getOptionLabel={value => getLabel(STREET_TYPES, value)}
+            />
             <MaskedInputFormik name="street" label="Улица" placeholder="-" mask={maskCyrillicAndDigits} />
 
             <MaskedInputFormik name="house" label="Дом" placeholder="-" mask={maskCyrillicAndDigits} />

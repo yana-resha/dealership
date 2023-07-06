@@ -12,6 +12,7 @@ type Props = {
   options: string[]
   value?: string
   onChange?: (value: string | string[] | null) => void
+  getOptionLabel?: (value: string) => string
   isError?: boolean
   errorMessage?: string
   id?: string
@@ -27,6 +28,7 @@ export const AutocompleteInput = React.memo(
     options,
     value,
     onChange,
+    getOptionLabel,
     isCustomValueAllowed,
     isError,
     errorMessage,
@@ -65,7 +67,7 @@ export const AutocompleteInput = React.memo(
       value,
       inputValue: isCustomValueAllowed ? getMaskedValue(value ?? '') : undefined,
       options,
-      id,
+      getOptionLabel,
       disabled,
       freeSolo: isCustomValueAllowed,
       autoHighlight: true,

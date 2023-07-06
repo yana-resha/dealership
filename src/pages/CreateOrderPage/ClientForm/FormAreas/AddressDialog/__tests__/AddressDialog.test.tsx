@@ -16,8 +16,14 @@ import { AddressDialog } from '../AddressDialog'
 jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({
   MaskedInput: MockedMaskedInput,
 }))
-jest.mock('shared/ui/SelectInput/SelectInput', () => ({
-  SelectInput: MockedSelectInput,
+type Props = {
+  id: string
+  isError: boolean
+}
+jest.mock('shared/ui/AutocompleteInput/AutocompleteInput', () => ({
+  AutocompleteInput: ({ id, isError }: Props) => (
+    <div data-testid={id}>{isError && <div data-testid={id + 'ErrorMessage'} />}</div>
+  ),
 }))
 
 const formFields = [
@@ -27,7 +33,7 @@ const formFields = [
   'area',
   'areaType',
   'house',
-  'region',
+  'regCode',
   'street',
   'streetType',
   'settlement',
@@ -131,8 +137,8 @@ describe('AddressDialogTest', () => {
       userEvent.click(screen.getByText('Сохранить'))
     })
 
-    it('Поле "region" валидируется', async () => {
-      expect(await screen.findByTestId('regionErrorMessage')).toBeInTheDocument()
+    it('Поле "regCode" валидируется', async () => {
+      expect(await screen.findByTestId('regCodeErrorMessage')).toBeInTheDocument()
     })
 
     it('Поле "city" валидируется', async () => {

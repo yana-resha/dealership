@@ -9,6 +9,7 @@ type Props = {
   label: string
   placeholder: string
   options: string[]
+  getOptionLabel?: (value: string) => string
   gridColumn?: string
   emptyAvailable?: boolean
   isCustomValueAllowed?: boolean
@@ -20,6 +21,7 @@ export const AutocompleteInputFormik = ({
   name,
   label,
   options,
+  getOptionLabel,
   placeholder,
   gridColumn,
   isCustomValueAllowed,
@@ -34,6 +36,7 @@ export const AutocompleteInputFormik = ({
         label={label}
         placeholder={placeholder}
         options={options}
+        getOptionLabel={getOptionLabel}
         disabled={disabled}
         id={name}
         value={value}
