@@ -66,7 +66,7 @@ export function FullOrderSettings({ nextStep }: Props) {
         </Box>
       )}
       {!isError && bankOffers.length > 0 && (
-        <BankOffers data={dataMock} onRowClick={nextStep} ref={bankOffersRef} />
+        <BankOffers data={bankOffers} onRowClick={nextStep} ref={bankOffersRef} />
       )}
     </div>
   )
