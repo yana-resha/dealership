@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Box, Button, Divider } from '@mui/material'
+import { Box, Button, CircularProgress, Divider } from '@mui/material'
 import { ApplicationFrontdc, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
+import { useSendToFinancingMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
@@ -51,6 +52,7 @@ export function AgreementArea({
   const [financingEnabled, setFinancingEnabled] = useState(true)
   const agreementAreaRef = useRef<HTMLDivElement | undefined>()
   const { vendorCode } = getPointOfSaleFromCookies()
+  const { mutate: sendToFinancing, isLoading: isSendLoading } = useSendToFinancingMutation()
 
   const getToSecondStage = useCallback(() => {
     const fetchAgreement = async () => {
@@ -67,6 +69,13 @@ export function AgreementArea({
     setRightsAssigned(false)
     fetchAgreement()
   }, [updateStatus, setAgreementDocs, status])
+
+  const onButtonClick = useCallback(() => {
+    sendToFinancing({
+      dcAppId: application.dcAppId,
+      assignmentOfClaim: rightsAssigned,
+    })
+  }, [application.dcAppId, sendToFinancing, rightsAssigned])
 
   useEffect(() => {
     if (preparedStatus == PreparedStatus.formation) {
@@ -223,7 +232,13 @@ export function AgreementArea({
             Вернуться на формирование договора
           </SberTypography>
           {preparedStatus == PreparedStatus.signed && (
-            <Button variant="contained" className={classes.button} disabled={!financingEnabled}>
+            <Button
+              variant="contained"
+              className={classes.button}
+              onClick={onButtonClick}
+              disabled={!financingEnabled || isSendLoading}
+            >
+              {isSendLoading && <CircularProgress color="inherit" size={25} />}
               Отправить на финансирование
             </Button>
           )}

@@ -18,6 +18,7 @@ import {
   SendApplicationToScoringRequest,
   Sex,
   StatusCode,
+  SendApplicationToFinancingRequest,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
@@ -184,3 +185,9 @@ export const useGetFullApplicationQuery = (
     ...options,
   })
 }
+
+export const sendApplicationToFinancing = (params: SendApplicationToFinancingRequest) =>
+  loanAppLifeCycleDcApi.sendApplicationToFinancing({ data: params })
+
+export const useSendToFinancingMutation = () =>
+  useMutation('sendApplicationToFinancing', sendApplicationToFinancing)

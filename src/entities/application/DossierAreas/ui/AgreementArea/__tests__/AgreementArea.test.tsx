@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react'
 import { ApplicationFrontdc, StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter } from 'react-router-dom'
 
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
@@ -43,10 +44,14 @@ window.HTMLElement.prototype.scrollIntoView = jest.fn()
 const mockUpdateStatus = jest.fn()
 const mockSetAgreementDocs = jest.fn()
 
+const queryClient = new QueryClient()
+
 const createWrapper = ({ children }: PropsWithChildren) => (
-  <ThemeProviderMock>
-    <BrowserRouter>{children}</BrowserRouter>
-  </ThemeProviderMock>
+  <QueryClientProvider client={queryClient}>
+    <ThemeProviderMock>
+      <BrowserRouter>{children}</BrowserRouter>
+    </ThemeProviderMock>
+  </QueryClientProvider>
 )
 
 describe('AgreementAreaTest', () => {
