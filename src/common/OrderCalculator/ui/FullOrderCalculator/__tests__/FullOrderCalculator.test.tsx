@@ -441,21 +441,31 @@ describe('FullOrderCalculator', () => {
       userEvent.type(initialPaymentInput, '10')
       expect(await screen.findByText('Значение должно быть больше 200')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      await fireEvent.click(await screen.findByText('Лайт A'))
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
       expect(await screen.findByText('Значение должно быть больше 300')).toBeInTheDocument()
     })
 
     it('Смена КП приводит к смене ограничения максимума ПВ', async () => {
       const orderCalculatorForm = document.querySelector('[data-testid="fullOrderCalculatorForm"]')!
       const carCostInput = orderCalculatorForm.querySelector('#carCost')!
-      userEvent.type(carCostInput, '100')
+      userEvent.type(carCostInput, '1000')
       const initialPaymentInput = orderCalculatorForm.querySelector('#initialPayment')!
-      userEvent.type(initialPaymentInput, '100')
+      userEvent.type(initialPaymentInput, '1000')
       expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      userEvent.click(await screen.findByText('Лайт A'))
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
       expect(await screen.findByText('Значение должно быть меньше 70')).toBeInTheDocument()
     })
 
@@ -464,17 +474,14 @@ describe('FullOrderCalculator', () => {
       userEvent.type(initialPaymentPercentInput, '10')
       expect(await screen.findByText('Значение должно быть больше 20')).toBeInTheDocument()
 
-      // userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      // await fireEvent.click(await screen.findByText('Лайт A'))
-
-      // await fireEvent.change(
-      //   screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
-      //   {
-      //     target: { value: 'S' },
-      //   },
-      // )
-
-      // expect(await screen.findByText('Значение должно быть больше 30')).toBeInTheDocument()
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
+      expect(await screen.findByText('Значение должно быть больше 30')).toBeInTheDocument()
     })
 
     it('Смена КП приводит к смене ограничения максимума ПВ %', async () => {
@@ -482,8 +489,13 @@ describe('FullOrderCalculator', () => {
       fireEvent.change(initialPaymentPercentInput, { target: { value: '100' } })
       expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      await fireEvent.click(await screen.findByText('Лайт A'))
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
       expect(await screen.findByText('Значение должно быть меньше 70')).toBeInTheDocument()
     })
   })

@@ -166,8 +166,13 @@ describe('OrderCalculator', () => {
       userEvent.type(initialPaymentPercentInput, '10')
       expect(await screen.findByText('Значение должно быть больше 20')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      userEvent.click(await screen.findByText('Лайт A'))
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
       expect(await screen.findByText('Значение должно быть больше 30')).toBeInTheDocument()
     })
 
@@ -176,9 +181,14 @@ describe('OrderCalculator', () => {
       userEvent.type(initialPaymentPercentInput, '100')
       expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      await fireEvent.click(await screen.findByText('Лайт A'))
-      // expect(await screen.findByText('Значение должно быть меньше 70')).toBeInTheDocument()
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
+      expect(await screen.findByText('Значение должно быть меньше 70')).toBeInTheDocument()
     })
   })
 
