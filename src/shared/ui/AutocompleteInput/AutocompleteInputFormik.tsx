@@ -15,6 +15,7 @@ type Props = {
   isCustomValueAllowed?: boolean
   mask?: Masked
   disabled?: boolean
+  onSelectOption?: (val: string | string[] | null) => void
 }
 
 export const AutocompleteInputFormik = ({
@@ -27,6 +28,7 @@ export const AutocompleteInputFormik = ({
   isCustomValueAllowed,
   mask,
   disabled,
+  onSelectOption,
 }: Props) => {
   const { value, isError, error, onChange } = useFormikWrapper(name)
 
@@ -45,6 +47,7 @@ export const AutocompleteInputFormik = ({
         mask={mask}
         errorMessage={error}
         isCustomValueAllowed={isCustomValueAllowed}
+        onSelectOption={onSelectOption}
       />
     </Box>
   )

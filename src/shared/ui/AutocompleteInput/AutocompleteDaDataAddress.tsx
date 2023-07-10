@@ -20,6 +20,7 @@ type Props = {
   isError?: boolean
   errorMessage?: string
   disabled?: boolean
+  forceValue?: SuggestionGetAddressSuggestions
 }
 
 export const AutocompleteDaDataAddress = ({
@@ -33,6 +34,7 @@ export const AutocompleteDaDataAddress = ({
   isError,
   errorMessage,
   disabled,
+  forceValue,
 }: Props) => {
   const classes = useStyles()
   const [fieldValue, setFieldValue] = useState<SuggestionGetAddressSuggestions | undefined>(value)
@@ -101,6 +103,14 @@ export const AutocompleteDaDataAddress = ({
     onChange: handleInputChange,
     onFocus: handleOnFocus,
   }
+
+  useEffect(() => {
+    if (forceValue) {
+      setFieldValue(forceValue as SuggestionGetAddressSuggestions)
+      onChange?.(forceValue as SuggestionGetAddressSuggestions)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [forceValue])
 
   return (
     <Box gridColumn={gridColumn} className={classes.inputContainer}>

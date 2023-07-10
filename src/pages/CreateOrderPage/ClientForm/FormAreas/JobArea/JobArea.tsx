@@ -1,11 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
+import {
+  AddressGetOrganizationSuggestions,
+  SuggestionGetAddressSuggestions,
+  SuggestionGetOrganizationSuggestions,
+} from '@sberauto/dadata-proto/public'
 import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useFormikContext } from 'formik'
+import throttle from 'lodash/throttle'
 
+import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
 import { maskDigitsOnly, maskNoRestrictions, maskPhoneNumber } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
+import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
@@ -16,12 +24,69 @@ import { OCCUPATION_VALUES, configAddressInitialValues } from '../../config/clie
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './JobArea.styles'
 
+export const DADATA_EMPLOYER_OPTIONS_LIMIT = 20
+
 export function JobArea() {
   const classes = useStyles()
   const [jobDisabled, setJobDisabled] = useState(false)
   const { values, setFieldValue } = useFormikContext<ClientData>()
+  const { employerName } = values
   const [isEmplAddressDialogVisible, setIsEmplAddressDialogVisible] = useState(false)
   const { occupation, employerAddress, employerAddressString, emplNotKladr } = values
+
+  const { mutate: fetchOrganizationSuggestions, data } = useGetOrganizationSuggestions()
+  const [addressSuggestion, setAddressSuggestion] = useState<AddressGetOrganizationSuggestions>()
+
+  const { options: employerNameSuggestions, optionsMap: employerNameSuggestionsMap } = useMemo(
+    () =>
+      [...(data?.suggestions ?? [])].reduce(
+        (acc, option, i, arr) => {
+          if (option.value && option.data?.inn) {
+            const val = `${option.value} ${option.data?.inn}`
+            acc.options.push(val)
+            acc.optionsMap[val] = option
+          }
+          if (acc.options.length === DADATA_EMPLOYER_OPTIONS_LIMIT) {
+            arr.splice(1)
+          }
+
+          return acc
+        },
+        { options: [] as string[], optionsMap: {} as Record<string, SuggestionGetOrganizationSuggestions> },
+      ),
+    [data?.suggestions],
+  )
+
+  const handleEmployerNameSelect = useCallback(
+    (value: string | string[] | null) => {
+      if (typeof value !== 'string') {
+        return
+      }
+      const currentEmployerNameSuggestion = employerNameSuggestionsMap[value || '']
+      if (currentEmployerNameSuggestion) {
+        setFieldValue('employerInn', currentEmployerNameSuggestion.data?.inn)
+        setFieldValue('employerPhone', currentEmployerNameSuggestion.data?.phones)
+        if (currentEmployerNameSuggestion.data?.address) {
+          setAddressSuggestion(currentEmployerNameSuggestion.data?.address)
+        }
+      }
+    },
+    [employerNameSuggestionsMap, setFieldValue],
+  )
+
+  const updateListOfSuggestions = useMemo(
+    () =>
+      throttle((value: string) => {
+        fetchOrganizationSuggestions(value)
+      }, 1000),
+    [fetchOrganizationSuggestions],
+  )
+
+  useEffect(() => {
+    if (employerName && employerName.length > 2) {
+      updateListOfSuggestions(employerName)
+    }
+  }, [employerName, updateListOfSuggestions])
 
   useEffect(() => {
     if (occupation === OccupationType.UNEMPLOYED) {
@@ -37,8 +102,6 @@ export function JobArea() {
       setJobDisabled(false)
     }
   }, [occupation, setFieldValue, setJobDisabled])
-
-  useEffect(() => {})
 
   const onCloseAddressDialog = useCallback(
     (addressString: string) => {
@@ -80,14 +143,16 @@ export function JobArea() {
         gridColumn="span 4"
         disabled={jobDisabled}
       />
-
-      <MaskedInputFormik
+      <AutocompleteInputFormik
         name="employerName"
         label="Наименование организации"
         placeholder="-"
+        options={employerNameSuggestions}
+        isCustomValueAllowed
         mask={maskNoRestrictions}
         gridColumn="span 12"
         disabled={jobDisabled}
+        onSelectOption={handleEmployerNameSelect}
       />
       <Box gridColumn="span 4" />
 
@@ -125,6 +190,7 @@ export function JobArea() {
           label="Адрес работодателя (КЛАДР)"
           placeholder="-"
           gridColumn="span 12"
+          forceValue={addressSuggestion as SuggestionGetAddressSuggestions}
         />
       )}
 

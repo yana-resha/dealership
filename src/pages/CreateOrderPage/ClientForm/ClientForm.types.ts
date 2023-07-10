@@ -69,7 +69,7 @@ export interface ClientData {
   secondDocumentIssuedBy: string
   occupation: number | null
   employmentDate: Date | null
-  employerName: string
+  employerName: string | null
   employerPhone: string
   employerAddress: Address
   employerAddressString: string

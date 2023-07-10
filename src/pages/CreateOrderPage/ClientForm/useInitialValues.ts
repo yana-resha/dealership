@@ -302,7 +302,7 @@ export function useInitialValues() {
                 10,
               )
             : undefined,
-          orgName: employerName,
+          orgName: employerName ?? undefined,
           inn: employerInn,
         },
       }

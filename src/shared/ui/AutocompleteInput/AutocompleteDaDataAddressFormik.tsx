@@ -16,6 +16,7 @@ type Props = {
   id?: string
   gridColumn?: string
   disabled?: boolean
+  forceValue?: SuggestionGetAddressSuggestions
 }
 
 export const AutocompleteDaDataAddressFormik = ({
@@ -25,6 +26,7 @@ export const AutocompleteDaDataAddressFormik = ({
   placeholder,
   gridColumn,
   disabled,
+  forceValue,
 }: Props) => {
   const { value: valueString, isError, error } = useFormikWrapper(nameOfString)
   const { value: valueObject } = useFormikWrapper(nameOfObject)
@@ -83,6 +85,7 @@ export const AutocompleteDaDataAddressFormik = ({
         onInputChange={onInputChange}
         isError={isError}
         errorMessage={error}
+        forceValue={forceValue}
       />
     </Box>
   )

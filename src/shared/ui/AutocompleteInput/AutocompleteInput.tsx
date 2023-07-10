@@ -1,7 +1,14 @@
 import React, { useCallback } from 'react'
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { Autocomplete, AutocompleteValue, Box, InputLabel, TextField } from '@mui/material'
+import {
+  Autocomplete,
+  AutocompleteChangeReason,
+  AutocompleteValue,
+  Box,
+  InputLabel,
+  TextField,
+} from '@mui/material'
 
 import { Masked, maskNoRestrictions } from '../../masks/InputMasks'
 import useStyles from './AutocompleteInput.styles'
@@ -19,6 +26,7 @@ type Props = {
   isCustomValueAllowed?: boolean
   mask?: Masked
   disabled?: boolean
+  onSelectOption?: (val: AutocompleteValue<string, any, any, any>) => void
 }
 
 export const AutocompleteInput = React.memo(
@@ -35,6 +43,7 @@ export const AutocompleteInput = React.memo(
     mask = maskNoRestrictions,
     id,
     disabled,
+    onSelectOption,
   }: Props) => {
     const classes = useStyles()
 
@@ -49,12 +58,19 @@ export const AutocompleteInput = React.memo(
       [mask],
     )
 
-    function handleChange(
-      event: React.SyntheticEvent<Element, Event>,
-      value: AutocompleteValue<string, any, any, any>,
-    ) {
-      onChange?.(typeof value === 'string' ? mask(value, true) : value)
-    }
+    const handleChange = useCallback(
+      (
+        event: React.SyntheticEvent<Element, Event>,
+        value: AutocompleteValue<string, any, any, any>,
+        reason?: AutocompleteChangeReason,
+      ) => {
+        onChange?.(typeof value === 'string' ? mask(value, true) : value)
+        if (reason === 'selectOption') {
+          onSelectOption?.(value)
+        }
+      },
+      [mask, onChange, onSelectOption],
+    )
 
     const updateValueOnInputChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +110,7 @@ export const AutocompleteInput = React.memo(
             popupIcon={<KeyboardArrowDownIcon />}
             className={classes.autocompleteField}
             renderInput={params => <TextField {...textFieldConfig} {...params} />}
+            blurOnSelect
           />
         </Box>
       </Box>
