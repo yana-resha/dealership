@@ -5,6 +5,8 @@ import { MaritalStatus } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { Address, ClientData, SubmitAction } from '../ClientForm.types'
 
 export const configAddressInitialValues: Address = {
+  postalCode: '',
+  regCode: '',
   region: '',
   areaType: '',
   area: '',

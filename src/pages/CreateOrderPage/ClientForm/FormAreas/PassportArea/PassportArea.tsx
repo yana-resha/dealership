@@ -11,6 +11,7 @@ import {
   maskPassport,
   maskCyrillicAndDigits,
 } from 'shared/masks/InputMasks'
+import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
@@ -29,8 +30,16 @@ export function PassportArea() {
   const classes = useStyles()
 
   const { values, setFieldValue } = useFormikContext<ClientData>()
-  const { hasNameChanged, regAddrIsLivingAddr } = values
-  const { registrationAddress, registrationAddressString, livingAddress, livingAddressString } = values
+  const {
+    registrationAddress,
+    registrationAddressString,
+    livingAddress,
+    livingAddressString,
+    hasNameChanged,
+    regAddrIsLivingAddr,
+    regNotKladr,
+    livingNotKladr,
+  } = values
   const [isRegAddressDialogVisible, setIsRegAddressDialogVisible] = useState(false)
   const [isLivingAddressDialogVisible, setIsLivingAddressDialogVisible] = useState(false)
 
@@ -48,18 +57,16 @@ export function PassportArea() {
       if (event.target.id === 'regNotKladr') {
         if (event.target.checked) {
           setIsRegAddressDialogVisible(true)
-        } else {
-          setFieldValue('registrationAddress', configAddressInitialValues)
-          setFieldValue('registrationAddressString', '')
         }
+        setFieldValue('registrationAddress', configAddressInitialValues)
+        setFieldValue('registrationAddressString', '')
       }
       if (event.target.id === 'livingNotKladr') {
         if (event.target.checked) {
           setIsLivingAddressDialogVisible(true)
-        } else {
-          setFieldValue('livingAddress', configAddressInitialValues)
-          setFieldValue('livingAddressString', '')
         }
+        setFieldValue('livingAddress', configAddressInitialValues)
+        setFieldValue('livingAddressString', '')
       }
     },
     [setIsRegAddressDialogVisible, setIsLivingAddressDialogVisible, setFieldValue],
@@ -80,6 +87,17 @@ export function PassportArea() {
         disabled
       />
       <SwitchInputFormik name="hasNameChanged" label="Менялось" gridColumn="span 4" centered />
+
+      {hasNameChanged && (
+        <MaskedInputFormik
+          name="clientFormerName"
+          label="ФИО до смены"
+          placeholder="-"
+          mask={maskFullName}
+          gridColumn="span 12"
+        />
+      )}
+      {hasNameChanged && <Box gridColumn="span 4" />}
 
       <MaskedInputFormik
         name="passport"
@@ -126,17 +144,6 @@ export function PassportArea() {
 
       <Box gridColumn="span 4" />
 
-      {hasNameChanged && (
-        <MaskedInputFormik
-          name="clientFormerName"
-          label="Предыдущее ФИО"
-          placeholder="-"
-          mask={maskFullName}
-          gridColumn="span 12"
-        />
-      )}
-      {hasNameChanged && <Box gridColumn="span 4" />}
-
       <MaskedInputFormik
         name="numOfChildren"
         label="Количество детей"
@@ -152,15 +159,25 @@ export function PassportArea() {
         gridColumn="span 6"
       />
       <Box gridColumn="span 7" />
+      {regNotKladr ? (
+        <MaskedInputFormik
+          name="registrationAddressString"
+          label="Адрес по регистрации (КЛАДР)"
+          placeholder="-"
+          mask={maskNoRestrictions}
+          gridColumn="span 12"
+          InputProps={{ readOnly: true }}
+        />
+      ) : (
+        <AutocompleteDaDataAddressFormik
+          nameOfString="registrationAddressString"
+          nameOfObject="registrationAddress"
+          label="Адрес по регистрации (КЛАДР)"
+          placeholder="-"
+          gridColumn="span 12"
+        />
+      )}
 
-      <MaskedInputFormik
-        name="registrationAddressString"
-        label="Адрес по регистрации (КЛАДР)"
-        placeholder="-"
-        mask={maskNoRestrictions}
-        gridColumn="span 12"
-        InputProps={{ readOnly: true }}
-      />
       <SwitchInputFormik
         name="regNotKladr"
         label="Не КЛАДР"
@@ -183,14 +200,26 @@ export function PassportArea() {
         gridColumn="span 16"
       />
       {!regAddrIsLivingAddr && (
-        <MaskedInputFormik
-          name="livingAddressString"
-          label="Адрес проживания"
-          placeholder="-"
-          mask={maskNoRestrictions}
-          gridColumn="span 12"
-          InputProps={{ readOnly: true }}
-        />
+        <>
+          {livingNotKladr ? (
+            <MaskedInputFormik
+              name="livingAddressString"
+              label="Адрес проживания"
+              placeholder="-"
+              mask={maskNoRestrictions}
+              gridColumn="span 12"
+              InputProps={{ readOnly: true }}
+            />
+          ) : (
+            <AutocompleteDaDataAddressFormik
+              nameOfString="livingAddressString"
+              nameOfObject="livingAddress"
+              label="Адрес проживания (КЛАДР)"
+              placeholder="-"
+              gridColumn="span 12"
+            />
+          )}
+        </>
       )}
       {!regAddrIsLivingAddr && (
         <SwitchInputFormik

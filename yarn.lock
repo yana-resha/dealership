@@ -2241,6 +2241,14 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
+"@sberauto/dadata-proto@0.0.2":
+  version "0.0.2"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dadata-proto/-/dadata-proto-0.0.2.tgz#f3bf18091e82b44d33aad1d4052cde06b9134d5c"
+  integrity sha512-VSkzxgWUN1agt1EoS1p1BOZlT5JLrIo64zS2QmxucP0R3Pxm/C0sjos7w/0JmP9xWtjX+JMq7PBHJuIrJY0Qjg==
+  dependencies:
+    camelcase-keys "^6.2.2"
+    snakecase-keys "^3.2.1"
+
 "@sberauto/dictionarydc-proto@0.17.0":
   version "0.17.0"
   resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dictionarydc-proto/-/dictionarydc-proto-0.17.0.tgz#0dcbfbb51e530e1899e06935b4af0243a4fe06b4"

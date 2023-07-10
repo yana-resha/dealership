@@ -1,7 +1,10 @@
 import { useCallback } from 'react'
 
 import { Box, CircularProgress } from '@mui/material'
-import { SendApplicationToScoringRequest } from '@sberauto/loanapplifecycledc-proto/public'
+import {
+  SendApplicationToScoringRequest,
+  GetFullApplicationResponse,
+} from '@sberauto/loanapplifecycledc-proto/public'
 import { Formik, FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -45,35 +48,40 @@ export function ClientForm({ formRef }: Props) {
   const disabledButtons = isDraftLoading
   const { unit } = getPointOfSaleFromCookies()
 
-  const prepareApplicationForScoring = useCallback(() => {
-    const draftApplication = getDraftApplicationData()
-    const applicationForScoring: SendApplicationToScoringRequest = {
-      application: {
-        ...draftApplication,
-        appType: 'CARLOANAPPLICATIONDC',
-        unit: unit,
-      },
-    }
+  const prepareApplicationForScoring = useCallback(
+    (application: GetFullApplicationResponse) => {
+      const draftApplication = getDraftApplicationData(application)
+      const applicationForScoring: SendApplicationToScoringRequest = {
+        application: {
+          ...draftApplication,
+          appType: 'CARLOANAPPLICATIONDC',
+          unit: unit,
+        },
+      }
 
-    return applicationForScoring
-  }, [getDraftApplicationData, unit])
+      return applicationForScoring
+    },
+    [getDraftApplicationData, unit],
+  )
 
-  const onSubmit = useCallback((values: ClientData) => {
-    console.log('ClientForm.onSubmit values:', values)
-    const application = prepareApplicationForScoring()
-    console.log('applicationForScoring', application)
-    sendToScore(application)
-  }, [])
+  const onSubmit = useCallback(
+    (application: GetFullApplicationResponse) => {
+      console.log('ClientForm.onSubmit values:', application)
+      const applicationForScoring = prepareApplicationForScoring(application)
+      sendToScore(applicationForScoring)
+    },
+    [prepareApplicationForScoring, sendToScore],
+  )
 
   const saveApplicationDraft = useCallback(
-    (values: ClientData) => {
-      console.log('ClientForm.saveApplicationDraft values:', values)
-      saveDraft(getDraftApplicationData()).then(() => {
+    (application: GetFullApplicationResponse) => {
+      console.log('ClientForm.saveApplicationDraft values:', application)
+      saveDraft(getDraftApplicationData(application)).then(() => {
         dispatch(clearOrder())
         navigate(appRoutePaths.orderList)
       })
     },
-    [saveDraft, getDraftApplicationData],
+    [saveDraft, getDraftApplicationData, dispatch, navigate],
   )
 
   const getSubmitAction = useCallback(
@@ -81,17 +89,20 @@ export function ClientForm({ formRef }: Props) {
       if (!formRef.current) {
         return
       }
-      remapApplicationValues(values)
+      const updatedApplication = remapApplicationValues(values)
+      if (!updatedApplication) {
+        return
+      }
       if (
         formRef.current.values.submitAction === SubmitAction.Draft ||
         (formRef.current.values.submitAction === SubmitAction.Save && !saveDraftDisabled)
       ) {
-        saveApplicationDraft(values)
+        saveApplicationDraft(updatedApplication)
       } else {
-        onSubmit(values)
+        onSubmit(updatedApplication)
       }
     },
-    [saveApplicationDraft, onSubmit, remapApplicationValues, formRef.current],
+    [formRef.current, remapApplicationValues, saveDraftDisabled, saveApplicationDraft, onSubmit],
   )
 
   return (

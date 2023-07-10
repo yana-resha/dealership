@@ -6,6 +6,7 @@ import {
   ApplicantFrontdc,
   ApplicationFrontdc,
   PhoneType,
+  GetFullApplicationResponse,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
 import { DateTime, Interval } from 'luxon'
@@ -84,6 +85,8 @@ export function useInitialValues() {
 
           const preparedAddress = addressTransformForForm(cur, configAddressInitialValues)
           const preparedAddressString =
+            getStringIfPresent(preparedAddress.postalCode) +
+            getStringIfPresent(preparedAddress.regCode) +
             getStringIfPresent(preparedAddress.region) +
             getStringIfPresent(getLabel(AREA_TYPES, preparedAddress.areaType)) +
             getStringIfPresent(preparedAddress.area) +
@@ -188,7 +191,7 @@ export function useInitialValues() {
   )
 
   const remapApplicationValues = useCallback(
-    (values: ClientData) => {
+    (values: ClientData): GetFullApplicationResponse | undefined => {
       const {
         clientName,
         clientFormerName,
@@ -227,7 +230,7 @@ export function useInitialValues() {
 
       const application = fullApplicationData?.application
       if (!application) {
-        return
+        return undefined
       }
       const {
         firstName: clientFirstName,
@@ -310,6 +313,8 @@ export function useInitialValues() {
       }
 
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
+
+      return { ...fullApplicationData, application: updatedApplication }
     },
     [fullApplicationData],
   )

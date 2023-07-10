@@ -1,4 +1,6 @@
 export interface Address {
+  postalCode: string
+  regCode: string
   region: string
   area: string
   areaType: string

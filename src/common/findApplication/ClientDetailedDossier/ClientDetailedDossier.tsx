@@ -84,16 +84,11 @@ export function ClientDetailedDossier({ applicationId, onBackButton }: Props) {
 
   const prepareApplicationForScore = useCallback(() => {
     const request: SendApplicationToScoringRequest = {
-      application: fullApplicationData
-        ? ({
-            fullApplicationData,
-            unit: unit,
-          } as ApplicationFrontdc)
-        : null,
+      application: application ? { ...application, unit: unit } : null,
     }
 
     return request
-  }, [fullApplicationData, unit])
+  }, [application, unit])
 
   const passport = useMemo(() => {
     const { series, number } =
