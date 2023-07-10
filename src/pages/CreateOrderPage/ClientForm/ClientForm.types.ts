@@ -1,15 +1,15 @@
 export interface Address {
   postalCode: string
-  regCode: string
+  regCode: string | null
   region: string
   area: string
-  areaType: string
+  areaType: string | null
   city: string
-  cityType: string
-  settlementType: string
+  cityType: string | null
+  settlementType: string | null
   /** Населенный пункт */
   settlement: string
-  streetType: string
+  streetType: string | null
   street: string
   house: string
   /** Строение */

@@ -77,7 +77,7 @@ function setRequiredIfSave<T extends Yup.BaseSchema<any, AnyObject, any>>(schema
 
 export const clientAddressValidationSchema = Yup.object().shape(
   {
-    region: Yup.string().required('Поле обязательно для заполнения'),
+    regCode: Yup.string().nullable().required('Поле обязательно для заполнения'),
     settlement: Yup.string().when('city', {
       is: undefined,
       then: schema => schema.required('Необходимо указать город или населенный пункт'),
@@ -87,20 +87,26 @@ export const clientAddressValidationSchema = Yup.object().shape(
       then: schema => schema.required('Необходимо указать город или населенный пункт'),
     }),
 
-    cityType: Yup.string().when('city', {
-      is: (city?: string) => city,
-      then: schema => schema.required('Необходимо указать тип города'),
-    }),
-    settlementType: Yup.string().when('settlement', {
-      is: (settlement?: string) => settlement,
-      then: schema => schema.required('Необходимо указать тип населенного пункта'),
-    }),
-    areaType: Yup.string().when('area', {
-      is: (area?: string) => area,
-      then: schema => schema.required('Необходимо указать тип района'),
-    }),
+    cityType: Yup.string()
+      .nullable()
+      .when('city', {
+        is: (city?: string) => city,
+        then: schema => schema.required('Необходимо указать тип города'),
+      }),
+    settlementType: Yup.string()
+      .nullable()
+      .when('settlement', {
+        is: (settlement?: string) => settlement,
+        then: schema => schema.required('Необходимо указать тип населенного пункта'),
+      }),
+    areaType: Yup.string()
+      .nullable()
+      .when('area', {
+        is: (area?: string) => area,
+        then: schema => schema.required('Необходимо указать тип района'),
+      }),
 
-    streetType: Yup.string().required('Поле обязательно для заполнения'),
+    streetType: Yup.string().nullable().required('Поле обязательно для заполнения'),
     house: Yup.string().required('Поле обязательно для заполнения'),
   },
   [['settlement', 'city']],

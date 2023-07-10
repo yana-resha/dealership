@@ -74,7 +74,7 @@ export function useInitialValues() {
               value: string
               label: string
             }[],
-            value?: string,
+            value?: string | null,
           ): string {
             if (!value) {
               return ''
@@ -86,7 +86,7 @@ export function useInitialValues() {
           const preparedAddress = addressTransformForForm(cur, configAddressInitialValues)
           const preparedAddressString =
             getStringIfPresent(preparedAddress.postalCode) +
-            getStringIfPresent(preparedAddress.regCode) +
+            getStringIfPresent(preparedAddress.regCode ?? '') +
             getStringIfPresent(preparedAddress.region) +
             getStringIfPresent(getLabel(AREA_TYPES, preparedAddress.areaType)) +
             getStringIfPresent(preparedAddress.area) +
@@ -226,8 +226,8 @@ export function useInitialValues() {
         occupation,
         divisionCode,
         specialMark,
+        sex,
       } = values
-
       const application = fullApplicationData?.application
       if (!application) {
         return undefined
@@ -255,6 +255,7 @@ export function useInitialValues() {
         children: numOfChildren ? parseInt(numOfChildren, 10) : undefined,
         marital: familyStatus ?? undefined,
         birthPlace: birthPlace,
+        sex: sex,
         email: email,
         publicPerson: relatedToPublic === 1,
         documents: compact([
