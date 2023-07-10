@@ -220,12 +220,13 @@ export function useInitialValues<D extends boolean | undefined>(
       const additionalOption = additionalOptionsFromCalculator[i]
       const additionalOptionForApplication = additionalOption.reduce(
         (acc: AdditionalOptionsFrontdc[], option) => {
-          const { productCost, productType, isCredit } = option
+          const { productCost, productType, isCredit, cascoLimit } = option
           const additionalOption: AdditionalOptionsFrontdc = {
             bankOptionType: i === 0 ? OptionType.EQUIPMENT : OptionType.DEALER,
             type: parseInt(productType.toString(), 10) ?? undefined,
             inCreditFlag: isCredit,
             price: parseInt(productCost, 10),
+            cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
           }
           if (additionalOption.type) {
             acc.push(additionalOption)
@@ -260,6 +261,7 @@ export function useInitialValues<D extends boolean | undefined>(
           documentNumber,
           documentDate,
           isCredit,
+          cascoLimit,
         } = option
 
         const additionalOption: AdditionalOptionsFrontdc = {
@@ -285,6 +287,7 @@ export function useInitialValues<D extends boolean | undefined>(
           docType: documentType,
           docNumber: documentNumber,
           docDate: convertedDateToString(documentDate),
+          cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
         }
         if (additionalOption.type) {
           acc.push(additionalOption)
@@ -315,6 +318,7 @@ export function useInitialValues<D extends boolean | undefined>(
           documentType,
           documentNumber,
           documentDate,
+          cascoLimit,
         } = option
         const additionalOption: AdditionalOptionsFrontdc = {
           bankOptionType: OptionType.DEALER,
@@ -347,6 +351,7 @@ export function useInitialValues<D extends boolean | undefined>(
           docType: documentType,
           docNumber: documentNumber,
           docDate: convertedDateToString(documentDate),
+          cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
         }
         if (additionalOption.type) {
           acc.push(additionalOption)
@@ -418,7 +423,7 @@ export function useInitialValues<D extends boolean | undefined>(
       }
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
-    [fullApplicationData, dispatch],
+    [fullApplicationData, remapAdditionalOptionsForSmallCalculator, dispatch],
   )
 
   const remapApplicationValuesForFullCalculator = useCallback(
@@ -498,7 +503,12 @@ export function useInitialValues<D extends boolean | undefined>(
 
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
-    [fullApplicationData, dispatch],
+    [
+      fullApplicationData,
+      getPriceOfAdditionalOptionsInCredit,
+      remapAdditionalOptionsForFullCalculator,
+      dispatch,
+    ],
   )
 
   const remapApplicationValues = useCallback(

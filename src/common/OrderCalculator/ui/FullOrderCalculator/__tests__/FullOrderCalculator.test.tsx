@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { OptionType } from '@sberauto/dictionarydc-proto/public'
+import { OptionType, OptionID } from '@sberauto/dictionarydc-proto/public'
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
@@ -417,7 +417,7 @@ describe('FullOrderCalculator', () => {
       const carCostInput = orderCalculatorForm.querySelector('#carCost')!
       userEvent.type(carCostInput, '100')
       const initialPaymentInput = orderCalculatorForm.querySelector('#initialPayment')!
-      userEvent.type(initialPaymentInput, '100')
+      fireEvent.change(initialPaymentInput, { target: { value: '100' } })
       expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
     })
 
@@ -436,27 +436,36 @@ describe('FullOrderCalculator', () => {
     it('Смена КП приводит к смене ограничения минимума ПВ', async () => {
       const orderCalculatorForm = document.querySelector('[data-testid="fullOrderCalculatorForm"]')!
       const carCostInput = orderCalculatorForm.querySelector('#carCost')!
-      userEvent.type(carCostInput, '100')
+      userEvent.type(carCostInput, '1000')
       const initialPaymentInput = orderCalculatorForm.querySelector('#initialPayment')!
       userEvent.type(initialPaymentInput, '10')
-      expect(await screen.findByText('Значение должно быть больше 20')).toBeInTheDocument()
+      expect(await screen.findByText('Значение должно быть больше 200')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      userEvent.click(await screen.findByText('Лайт A'))
-      // Локально работает, на сервере нет. Проверить позже
-      // expect(await screen.findByText('Значение должно быть больше 30')).toBeInTheDocument()
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
+      expect(await screen.findByText('Значение должно быть больше 300')).toBeInTheDocument()
     })
 
     it('Смена КП приводит к смене ограничения максимума ПВ', async () => {
       const orderCalculatorForm = document.querySelector('[data-testid="fullOrderCalculatorForm"]')!
       const carCostInput = orderCalculatorForm.querySelector('#carCost')!
-      userEvent.type(carCostInput, '100')
+      userEvent.type(carCostInput, '1000')
       const initialPaymentInput = orderCalculatorForm.querySelector('#initialPayment')!
-      userEvent.type(initialPaymentInput, '100')
+      userEvent.type(initialPaymentInput, '1000')
       expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      userEvent.click(await screen.findByText('Лайт A'))
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
       expect(await screen.findByText('Значение должно быть меньше 70')).toBeInTheDocument()
     })
 
@@ -465,21 +474,29 @@ describe('FullOrderCalculator', () => {
       userEvent.type(initialPaymentPercentInput, '10')
       expect(await screen.findByText('Значение должно быть больше 20')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      userEvent.click(await screen.findByText('Лайт A'))
-      // Локально работает, на сервере нет. Проверить позже
-      // expect(await screen.findByText('Значение должно быть больше 30')).toBeInTheDocument()
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
+      expect(await screen.findByText('Значение должно быть больше 30')).toBeInTheDocument()
     })
 
     it('Смена КП приводит к смене ограничения максимума ПВ %', async () => {
       const initialPaymentPercentInput = document.querySelector('#initialPaymentPercent')!
-      userEvent.type(initialPaymentPercentInput, '100')
+      fireEvent.change(initialPaymentPercentInput, { target: { value: '100' } })
       expect(await screen.findByText('Значение должно быть меньше 60')).toBeInTheDocument()
 
-      userEvent.click(screen.getByTestId('creditProduct').firstElementChild as Element)
-      userEvent.click(await screen.findByText('Лайт A'))
-      // Локально работает, на сервере нет. Проверить позже
-      // expect(await screen.findByText('Значение должно быть меньше 70')).toBeInTheDocument()
+      await fireEvent.change(
+        screen.getByTestId('creditProduct').firstElementChild?.nextElementSibling as Element,
+        {
+          target: { value: creditProductListRsData.creditProducts?.[0].productId },
+        },
+      )
+      await act(async () => await sleep(1100))
+      expect(await screen.findByText('Значение должно быть меньше 70')).toBeInTheDocument()
     })
   })
 
@@ -631,6 +648,58 @@ describe('FullOrderCalculator', () => {
       userEvent.click(screen.getAllByTestId('closeSquareBtn')[0])
       userEvent.click(screen.getAllByTestId('closeSquareBtn')[0])
       expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
+    })
+  })
+
+  describe('Валидация логики обязательного КАСКО', () => {
+    beforeEach(() => {
+      mockedUseInitialValues.mockImplementation(
+        () =>
+          ({
+            isShouldShowLoading: false,
+            initialValues: {
+              ...fullInitialValueMap,
+              // Выбран кредитный продукт с cascoFlag=true
+              creditProduct: creditProductListRsData.creditProducts?.[0].productId,
+            },
+          } as any),
+      )
+      render(<FullOrderCalculator isSubmitLoading={false} onSubmit={fn} onChangeForm={fn} />, {
+        wrapper: createWrapper,
+      })
+      userEvent.click(screen.getByText('Рассчитать'))
+    })
+
+    it('Если выбран продукт с cascoFlag=true, то появляется предупреждение', async () => {
+      expect(
+        await screen.findByText(
+          'Выбран кредитный продукт с обязательным КАСКО. Необходимо добавить дополнительную услугу КАСКО',
+        ),
+      ).toBeInTheDocument()
+    })
+
+    it('Если выбрана опция КАСКО, то предупреждение не появляется, появляется поле Сумма покрытия КАСКО', async () => {
+      expect(await screen.queryByText('Сумма покрытия КАСКО')).not.toBeInTheDocument()
+
+      userEvent.click(
+        screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
+      )
+      await act(async () =>
+        userEvent.click(
+          await screen.findByText(
+            mockGetVendorOptionsResponse?.additionalOptions?.find(o => o.optionId === OptionID.CASCO)
+              ?.optionName as string,
+          ),
+        ),
+      )
+
+      expect(
+        await screen.queryByText(
+          'Выбран кредитный продукт с обязательным КАСКО. Необходимо добавить дополнительную услугу КАСКО',
+        ),
+      ).not.toBeInTheDocument()
+
+      expect(await screen.queryByText('Сумма покрытия КАСКО')).toBeInTheDocument()
     })
   })
 })

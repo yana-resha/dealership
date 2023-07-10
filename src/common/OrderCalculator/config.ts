@@ -103,6 +103,7 @@ const INITIAL_COMMON_ERROR: CommonError = {
   isExceededAdditionalEquipmentsLimit: false,
   isExceededDealerAdditionalServicesLimit: false,
   isExceededBankAdditionalServicesLimit: false,
+  isHasNotCascoOption: false,
 }
 
 const INITIAL_VALIDATION_PARAMS: ValidationParams = {}
@@ -154,6 +155,8 @@ export const formMessages = {
     'Общая стоимость дополнительных услуг дилера не должна превышать 45% от стоимости авто',
   [FormFieldNameMap.isExceededBankAdditionalServicesLimit]:
     'Общая стоимость дополнительных услуг банка не должна превышать 30% от стоимости авто',
+  [FormFieldNameMap.isHasNotCascoOption]:
+    'Выбран кредитный продукт с обязательным КАСКО. Необходимо добавить дополнительную услугу КАСКО',
 }
 
 export const CREDIT_PRODUCT_PARAMS_FIELDS = [

@@ -34,6 +34,7 @@ const mapAdditionalOptions = (
       optionType: option.optionType,
       optionName: option.optionName,
       cascoType: option.cascoType,
+      cascoLimit: filterOption.cascoLimit ? parseInt(filterOption.cascoLimit, 10) : undefined,
       franchise: option.franchise,
       inServicePackageFlag: option.inServicePackageFlag,
       tariff: option.tariff,

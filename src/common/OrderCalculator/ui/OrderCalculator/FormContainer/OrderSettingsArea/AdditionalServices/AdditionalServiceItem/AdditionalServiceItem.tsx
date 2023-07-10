@@ -1,5 +1,6 @@
 import { Box } from '@mui/material'
-import { ArrayHelpers, useFormikContext } from 'formik'
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
+import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
 import { INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, OrderCalculatorFields } from 'common/OrderCalculator/types'
@@ -20,6 +21,7 @@ import useStyles from './AdditionalServiceItem.styles'
 interface Props {
   options: { value: string | number; label: string }[]
   parentName: ServicesGroupName
+  isNecessaryCasco: boolean
   index: number
   productLabel: string
   arrayHelpers: ArrayHelpers
@@ -31,6 +33,7 @@ interface Props {
 export function AdditionalServiceItem({
   options,
   parentName,
+  isNecessaryCasco,
   productLabel,
   index,
   arrayLength,
@@ -39,6 +42,7 @@ export function AdditionalServiceItem({
   isError,
 }: Props) {
   const classes = useStyles()
+
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
     parentName,
     index,
@@ -47,6 +51,12 @@ export function AdditionalServiceItem({
     changeIds,
     initialValues: INITIAL_ADDITIONAL_SERVICE,
   })
+  const [productTypeField] = useField<OptionID>(namePrefix + FormFieldNameMap.productType)
+
+  const isShouldShowCascoLimitField =
+    isNecessaryCasco &&
+    parentName === ServicesGroupName.dealerAdditionalServices &&
+    productTypeField.value === OptionID.CASCO
 
   const { values } = useFormikContext<OrderCalculatorFields>()
   const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
@@ -66,14 +76,24 @@ export function AdditionalServiceItem({
         gridColumn="span 2"
         disabled={isError}
       />
-      <MaskedInputFormik
-        name={namePrefix + FormFieldNameMap.productCost}
-        label="Стоимость"
-        placeholder="-"
-        mask={maskOnlyDigitsWithSeparator}
-        gridColumn="span 1"
-        disabled={isError}
-      />
+      <Box gridColumn="span 1" className={classes.costContainer}>
+        <MaskedInputFormik
+          name={namePrefix + FormFieldNameMap.productCost}
+          label="Стоимость"
+          placeholder="-"
+          mask={maskOnlyDigitsWithSeparator}
+          disabled={isError}
+        />
+        {isShouldShowCascoLimitField && (
+          <MaskedInputFormik
+            name={namePrefix + FormFieldNameMap.cascoLimit}
+            label="Сумма покрытия КАСКО"
+            placeholder="-"
+            mask={maskOnlyDigitsWithSeparator}
+            disabled={isError}
+          />
+        )}
+      </Box>
 
       <Box className={classes.switchContainer} gridColumn="span 1">
         <SwitchInputFormik
@@ -82,6 +102,7 @@ export function AdditionalServiceItem({
           disabled={isError}
         />
       </Box>
+
       {!isError && (
         <Box className={classes.btnContainer} gridColumn="span 1">
           <CloseSquareBtn onClick={removeItem} />

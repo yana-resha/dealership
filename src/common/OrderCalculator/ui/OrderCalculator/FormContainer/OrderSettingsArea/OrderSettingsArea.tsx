@@ -60,6 +60,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
     initialPaymentPercentHelperText,
     loanTerms,
     commonErrors,
+    isNecessaryCasco,
   } = useLimits({ vendorCode })
 
   const {
@@ -127,6 +128,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
           title="Дополнительные услуги дилера"
           options={dealerAdditionalServices}
           name={ServicesGroupName.dealerAdditionalServices}
+          isNecessaryCasco={isNecessaryCasco}
           productLabel="Тип продукта"
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"

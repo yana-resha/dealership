@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Box } from '@mui/material'
-import { ArrayHelpers, useFormikContext } from 'formik'
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
+import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
+import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
-  maskDigitsOnly,
   maskNoRestrictions,
   maskOnlyDigitsWithSeparator,
 } from 'shared/masks/InputMasks'
@@ -32,6 +33,7 @@ type Props = {
   requisites: RequisitesDealerServices[]
   index: number
   parentName: ServicesGroupName
+  isNecessaryCasco?: boolean
   isRequisiteEditable: boolean
   productOptions?: {
     value: string | number
@@ -51,20 +53,21 @@ const terms = [
   { value: '72' },
 ]
 
-export function DealerServicesRequisites(props: Props) {
+export function DealerServicesRequisites({
+  requisites,
+  index,
+  parentName,
+  isNecessaryCasco = false,
+  isRequisiteEditable,
+  arrayHelpers,
+  arrayLength,
+  changeIds,
+  productOptions,
+}: Props) {
   const classes = useStyles()
-  const {
-    requisites,
-    index,
-    parentName,
-    isRequisiteEditable,
-    arrayHelpers,
-    arrayLength,
-    changeIds,
-    productOptions,
-  } = props
+
   const { values, setFieldValue } = useFormikContext<DossierRequisites>()
-  const { provider, bankAccountNumber, agent, beneficiaryBank, taxPresence, isCredit, productCost } =
+  const { provider, bankAccountNumber, agent, beneficiaryBank, taxPresence, productCost } =
     values.dealerAdditionalServices[index]
   const initialValues = useRef(values.dealerAdditionalServices[index])
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
@@ -75,6 +78,8 @@ export function DealerServicesRequisites(props: Props) {
     changeIds,
     initialValues: FULL_INITIAL_ADDITIONAL_SERVICE,
   })
+  const [productTypeField] = useField<OptionID>(namePrefix + FormFieldNameMap.productType)
+
   const providers = requisites.map(requisite => ({ value: requisite.provider }))
 
   const [agentOptions, setAgentOptions] = useState<{ value: string }[]>([{ value: agent }])
@@ -236,6 +241,11 @@ export function DealerServicesRequisites(props: Props) {
     }
   }, [bankAccountNumber])
 
+  const isShouldShowCascoLimitField =
+    isNecessaryCasco &&
+    parentName === ServicesGroupName.dealerAdditionalServices &&
+    productTypeField.value === OptionID.CASCO
+
   return (
     <Box className={classes.editingAreaContainer}>
       {isRequisiteEditable && productOptions ? (
@@ -284,6 +294,13 @@ export function DealerServicesRequisites(props: Props) {
         gridColumn="span 6"
         disabled={!agentOptions.length}
       />
+      <SelectInputFormik
+        name={`${namePrefix}loanTerm`}
+        label="Срок"
+        placeholder="-"
+        options={terms}
+        gridColumn="span 3"
+      />
       <MaskedInputFormik
         name={`${namePrefix}productCost`}
         label="Стоимость"
@@ -292,13 +309,16 @@ export function DealerServicesRequisites(props: Props) {
         gridColumn="span 3"
         disabled={!isRequisiteEditable}
       />
-      <SelectInputFormik
-        name={`${namePrefix}loanTerm`}
-        label="Срок"
-        placeholder="-"
-        options={terms}
-        gridColumn="span 3"
-      />
+      {isShouldShowCascoLimitField && (
+        <MaskedInputFormik
+          name={`${namePrefix}cascoLimit`}
+          label="Сумма покрытия КАСКО"
+          placeholder="-"
+          mask={maskOnlyDigitsWithSeparator}
+          gridColumn="span 3"
+          disabled={!isRequisiteEditable}
+        />
+      )}
 
       <SelectInputFormik
         name={`${namePrefix}documentType`}

@@ -12,6 +12,7 @@ type Props = {
   title: string
   options: { value: string | number; label: string }[]
   name: ServicesGroupName
+  isNecessaryCasco?: boolean
   productLabel: string
   isError?: boolean
   errorMessage?: string
@@ -22,6 +23,7 @@ export function AdditionalServices({
   title,
   options,
   name,
+  isNecessaryCasco = false,
   productLabel,
   isError = false,
   errorMessage,
@@ -48,6 +50,7 @@ export function AdditionalServices({
                 key={ids[i]}
                 options={options}
                 parentName={name}
+                isNecessaryCasco={isNecessaryCasco}
                 index={i}
                 productLabel={productLabel}
                 arrayHelpers={arrayHelpers}

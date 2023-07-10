@@ -18,6 +18,7 @@ type Props = {
     loanTerms: { value: string | number }[]
   }
   name: ServicesGroupName
+  isNecessaryCasco?: boolean
   requisites: RequisitesDealerServices[]
   isError?: boolean
   errorMessage?: string
@@ -28,6 +29,7 @@ export function AdditionalServices({
   title,
   options,
   name,
+  isNecessaryCasco = false,
   requisites,
   isError = false,
   errorMessage,
@@ -56,6 +58,7 @@ export function AdditionalServices({
                   requisites={name === ServicesGroupName.dealerAdditionalServices ? requisites : []}
                   index={index}
                   parentName={name}
+                  isNecessaryCasco={isNecessaryCasco}
                   isRequisiteEditable={true}
                   productOptions={options.productType}
                   arrayHelpers={arrayHelpers}

@@ -23,7 +23,7 @@ export const MaskedInputFormik = (props: Props) => {
         id={name}
         value={value}
         onChange={onChange}
-        isError={isError}
+        isError={isError || !!error}
         errorMessage={error}
         InputProps={InputProps}
         helperMessage={helperMessage}
