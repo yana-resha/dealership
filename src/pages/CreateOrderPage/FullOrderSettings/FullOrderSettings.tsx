@@ -12,20 +12,15 @@ import { useStyles } from './FullOrderSettings.styles'
 
 type Props = {
   nextStep: () => void
+  onChangeForm: () => void
 }
 
-export function FullOrderSettings({ nextStep }: Props) {
+export function FullOrderSettings({ nextStep, onChangeForm }: Props) {
   const classes = useStyles()
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
   const [isOfferLoading, setIsOfferLoading] = useState(false)
 
   const { mutateAsync, isError } = useCalculateCreditMutation()
-  useEffect(() => {
-    if (isError) {
-      setIsOfferLoading(false)
-      setBankOffers([])
-    }
-  }, [isError])
 
   const clearBankOfferList = useCallback(() => {
     if (!bankOffers.length) {
@@ -33,6 +28,18 @@ export function FullOrderSettings({ nextStep }: Props) {
     }
     setBankOffers([])
   }, [bankOffers.length])
+
+  useEffect(() => {
+    if (isError) {
+      setIsOfferLoading(false)
+      clearBankOfferList()
+    }
+  }, [clearBankOfferList, isError])
+
+  const handleFormChange = useCallback(() => {
+    clearBankOfferList()
+    onChangeForm()
+  }, [clearBankOfferList, onChangeForm])
 
   const calculateCredit = useCallback(
     async (data: CalculateCreditRequest) => {
@@ -58,7 +65,7 @@ export function FullOrderSettings({ nextStep }: Props) {
       <FullOrderCalculator
         isSubmitLoading={isOfferLoading}
         onSubmit={calculateCredit}
-        onChangeForm={clearBankOfferList}
+        onChangeForm={handleFormChange}
       />
       {isError && (
         <Box className={classes.errorContainer}>

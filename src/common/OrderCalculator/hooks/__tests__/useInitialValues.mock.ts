@@ -13,6 +13,8 @@ export const EXPECTED_FULL_DATA = {
       legalPerson: '123',
       productCost: '20',
       productType: 2,
+      taxPercent: null,
+      taxValue: null,
       taxation: '13.5',
     },
   ],
@@ -65,6 +67,8 @@ export const EXPECTED_FULL_DATA = {
   dealerAdditionalServices: [
     {
       agent: '123234',
+      agentTaxPercent: null,
+      agentTaxValue: null,
       bankAccountNumber: '40702810038000017241',
       bankIdentificationCode: '646494334',
       beneficiaryBank: 'Сбербанк',
@@ -78,6 +82,8 @@ export const EXPECTED_FULL_DATA = {
       productCost: '21',
       productType: 1,
       provider: '123',
+      providerTaxPercent: null,
+      providerTaxValue: null,
       taxation: '13.5',
     },
   ],
@@ -89,6 +95,8 @@ export const EXPECTED_FULL_DATA = {
   loanTerm: 36,
   salesContractDate: new Date('2021-05-10T00:00:00.000Z'),
   salesContractId: 'DC32567',
+  taxPercent: null,
+  taxValue: null,
   taxation: '18',
   validationParams: {},
 }

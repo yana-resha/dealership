@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Box, Divider } from '@mui/material'
+import { Box, Button, Divider } from '@mui/material'
 import {
   AdditionalOptionsFrontdc,
   ApplicationFrontdc,
@@ -162,14 +162,9 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
           <Divider />
         </Box>
       )}
-      <SberTypography
-        sberautoVariant="body3"
-        component="p"
-        className={classes.textButton}
-        onClick={goToEditRequisitesMode}
-      >
+      <Button variant="text" className={classes.textButton} onClick={goToEditRequisitesMode} disabled>
         Изменить реквизиты
-      </SberTypography>
+      </Button>
     </Box>
   )
 }

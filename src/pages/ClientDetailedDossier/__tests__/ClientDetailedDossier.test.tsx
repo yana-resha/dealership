@@ -7,7 +7,7 @@ import { Order } from 'pages/CreateOrderPage/model/orderSlice'
 import * as useGetFullApplicationQueryModule from 'shared/api/requests/loanAppLifeCycleDc'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
-import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
+import { MockProviders, ThemeProviderMock } from 'tests/mocks'
 
 import { ClientDetailedDossier } from '../ClientDetailedDossier'
 
@@ -36,9 +36,9 @@ interface WrapperProps extends PropsWithChildren {
 }
 
 const createWrapper = ({ store, children }: WrapperProps) => (
-  <StoreProviderMock mockStore={store}>
+  <MockProviders mockStore={store}>
     <ThemeProviderMock>{children}</ThemeProviderMock>
-  </StoreProviderMock>
+  </MockProviders>
 )
 
 describe('ClientDetailedDossierTest', () => {
@@ -56,7 +56,7 @@ describe('ClientDetailedDossierTest', () => {
 
         return orderData
       })
-      render(<ClientDetailedDossier applicationId="1" onBackButton={jest.fn} />, { wrapper: createWrapper })
+      render(<ClientDetailedDossier />, { wrapper: createWrapper })
     })
     it('Отображается область DossierIdArea', () => {
       expect(screen.getByTestId('DossierIdArea')).toBeInTheDocument()

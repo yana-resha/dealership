@@ -56,7 +56,7 @@ describe('ActionAreaTest', () => {
       render(
         <ActionArea
           status={StatusCode.INITIAL}
-          goToNewApplication={jest.fn}
+          goToTargetApplication={jest.fn}
           application={fullApplicationData.application as ApplicationFrontdc}
           moratoryEndDate="1970-01-01"
           targetDcAppId={undefined}
@@ -80,7 +80,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.INITIAL}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={{ ...fullApplicationData.application, anketaType: 1 } as ApplicationFrontdc}
             moratoryEndDate="1970-01-01"
             targetDcAppId={undefined}
@@ -104,7 +104,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.INITIAL}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={{ ...fullApplicationData.application, anketaType: 1 } as ApplicationFrontdc}
             moratoryEndDate="1970-01-01"
             targetDcAppId={undefined}
@@ -131,7 +131,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.APPROVED}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
@@ -156,7 +156,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.FINALLY_APPROVED}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
@@ -180,7 +180,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.FORMATION}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
@@ -204,7 +204,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.CANCELED_DEAL}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
@@ -228,7 +228,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.CANCELED}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
@@ -252,7 +252,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.FINALLY_APPROVED}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
@@ -276,7 +276,7 @@ describe('ActionAreaTest', () => {
         render(
           <ActionArea
             status={StatusCode.ERROR}
-            goToNewApplication={jest.fn}
+            goToTargetApplication={jest.fn}
             application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}

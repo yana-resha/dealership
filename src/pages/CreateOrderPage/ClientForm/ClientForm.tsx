@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { Box, CircularProgress } from '@mui/material'
 import {
@@ -27,16 +27,17 @@ import { useInitialValues } from './useInitialValues'
 
 type Props = {
   formRef: React.RefObject<FormikProps<ClientData>>
+  onMount: () => void
 }
 
-export function ClientForm({ formRef }: Props) {
+export function ClientForm({ formRef, onMount }: Props) {
   const classes = useStyles()
   const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useDispatch()
   const state = location.state as CreateOrderPageState
   const saveDraftDisabled = state && state.saveDraftDisabled != undefined ? state.saveDraftDisabled : false
-  const { remapApplicationValues, isShouldShowLoading, initialValues } = useInitialValues()
+  const { remapApplicationValues, isShouldShowLoading, initialValues, dcAppId } = useInitialValues()
   const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation()
   const { mutate: sendToScore } = useSendApplicationToScore({
     onSuccess: () => {
@@ -84,6 +85,21 @@ export function ClientForm({ formRef }: Props) {
     [saveDraft, getDraftApplicationData, dispatch, navigate],
   )
 
+  const saveDraftAndPrint = useCallback(
+    (application: GetFullApplicationResponse) => {
+      // TODO Доделать когда появится ручка формирования печатной заявки
+      if (dcAppId) {
+        console.log('Print application')
+      } else {
+        saveDraft(getDraftApplicationData(application)).then(() => {
+          console.log('application saved')
+          console.log('Print application')
+        })
+      }
+    },
+    [dcAppId, getDraftApplicationData, saveDraft],
+  )
+
   const getSubmitAction = useCallback(
     (values: ClientData) => {
       if (!formRef.current) {
@@ -93,17 +109,29 @@ export function ClientForm({ formRef }: Props) {
       if (!updatedApplication) {
         return
       }
-      if (
-        formRef.current.values.submitAction === SubmitAction.Draft ||
-        (formRef.current.values.submitAction === SubmitAction.Save && !saveDraftDisabled)
-      ) {
-        saveApplicationDraft(updatedApplication)
-      } else {
-        onSubmit(updatedApplication)
+      switch (formRef.current.values.submitAction) {
+        case SubmitAction.Draft:
+          saveApplicationDraft(updatedApplication)
+          break
+        case SubmitAction.Save:
+          if (saveDraftDisabled) {
+            onSubmit(updatedApplication)
+          } else {
+            saveApplicationDraft(updatedApplication)
+          }
+          break
+        case SubmitAction.Print:
+          saveDraftAndPrint(updatedApplication)
+          break
       }
     },
-    [formRef.current, remapApplicationValues, saveDraftDisabled, saveApplicationDraft, onSubmit],
+    [formRef, onSubmit, remapApplicationValues, saveApplicationDraft, saveDraftAndPrint, saveDraftDisabled],
   )
+
+  useEffect(() => {
+    onMount()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Box className={classes.formContainer}>

@@ -8,16 +8,21 @@ import { OrderSettings } from 'pages/CreateOrderPage/OrderSettings'
 
 type Props = {
   nextStep: () => void
+  onChangeForm: () => void
 }
 
-export function Calculator({ nextStep }: Props) {
+export function Calculator({ nextStep, onChangeForm }: Props) {
   const location = useLocation()
   const state = location.state as CreateOrderPageState
   const isFullCalculator = state?.isFullCalculator ?? false
 
   return (
     <>
-      {isFullCalculator ? <FullOrderSettings nextStep={nextStep} /> : <OrderSettings nextStep={nextStep} />}
+      {isFullCalculator ? (
+        <FullOrderSettings nextStep={nextStep} onChangeForm={onChangeForm} />
+      ) : (
+        <OrderSettings nextStep={nextStep} onChangeForm={onChangeForm} />
+      )}
     </>
   )
 }

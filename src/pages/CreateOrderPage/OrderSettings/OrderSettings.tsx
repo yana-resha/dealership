@@ -18,9 +18,10 @@ const useStyles = makeStyles(theme => ({
 
 type Props = {
   nextStep: () => void
+  onChangeForm: () => void
 }
 
-export function OrderSettings({ nextStep }: Props) {
+export function OrderSettings({ nextStep, onChangeForm }: Props) {
   const classes = useStyles()
 
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
@@ -31,7 +32,6 @@ export function OrderSettings({ nextStep }: Props) {
     if (!bankOffers.length) {
       return
     }
-
     setBankOffers([])
   }, [bankOffers.length])
 
@@ -40,6 +40,11 @@ export function OrderSettings({ nextStep }: Props) {
       clearBankOfferList()
     }
   }, [isError, clearBankOfferList])
+
+  const handleFormChange = useCallback(() => {
+    clearBankOfferList()
+    onChangeForm()
+  }, [clearBankOfferList, onChangeForm])
 
   const calculateCredit = useCallback(
     async (data: CalculateCreditRequest) => {
@@ -63,7 +68,7 @@ export function OrderSettings({ nextStep }: Props) {
       <OrderCalculator
         isSubmitLoading={isOfferLoading}
         onSubmit={calculateCredit}
-        onChangeForm={clearBankOfferList}
+        onChangeForm={handleFormChange}
       />
 
       {isError && (
