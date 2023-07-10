@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 
-import { Box, CircularProgress } from '@mui/material'
+import { Box } from '@mui/material'
 import {
   SendApplicationToScoringRequest,
   GetFullApplicationResponse,
@@ -15,6 +15,7 @@ import {
   useSendApplicationToScore,
 } from 'shared/api/requests/loanAppLifeCycleDc'
 import { appRoutePaths } from 'shared/navigation/routerPath'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
 import { CreateOrderPageState } from '../CreateOrderPage'
 import { clearOrder } from '../model/orderSlice'
@@ -136,7 +137,9 @@ export function ClientForm({ formRef, onMount }: Props) {
   return (
     <Box className={classes.formContainer}>
       {isShouldShowLoading ? (
-        <CircularProgress className={classes.circular} />
+        <Box className={classes.circular}>
+          <CircularProgressWheel size="large" />
+        </Box>
       ) : (
         <Formik
           initialValues={initialValues}

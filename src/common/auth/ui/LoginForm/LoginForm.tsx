@@ -1,10 +1,11 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 
-import { Avatar, Box, Button, CircularProgress, Collapse, Typography } from '@mui/material'
+import { Avatar, Box, Button, Collapse, Typography } from '@mui/material'
 import { useSnackbar } from 'notistack'
 
 import { ReactComponent as AvatarLogo } from 'assets/icons/avatar.svg'
 import { appConfig } from 'config'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { useCheckAuthRedirect } from './hooks/useCheckAuthRedirect'
@@ -43,7 +44,7 @@ export function LoginForm() {
         disabled={isLoading || !!error}
         data-testid="loginButton"
       >
-        {!isLoading && !!authLink ? 'Войти' : <CircularProgress color="inherit" size={16} />}
+        {!isLoading && !!authLink ? 'Войти' : <CircularProgressWheel size="small" />}
       </Button>
 
       <Collapse in={!!error} timeout="auto" unmountOnExit>

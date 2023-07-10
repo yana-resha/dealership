@@ -3,8 +3,6 @@ import { ApplicantDocsType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
-import { SecondDocs } from '../config/clientForm.values'
-
 export const transformDocsForRequest = (
   type: number | null,
   docNumber: string,
@@ -25,7 +23,7 @@ export const transformDocsForRequest = (
       number = docNumber.slice(-6)
       break
     }
-    case SecondDocs.InsuranceCertificate: {
+    case ApplicantDocsType.PENSIONCERTIFICATE: {
       number = docNumber
       break
     }
