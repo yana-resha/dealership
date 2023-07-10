@@ -36,7 +36,7 @@ export const AutocompleteDaDataAddressFormik = ({
   const { setFieldValue } = useFormikContext()
 
   const mapAddressToModel = useCallback((addressObject: SuggestionGetAddressSuggestions): AddressFrontdc => {
-    const { data } = addressObject
+    const data = addressObject?.data
     const address: AddressFrontdc = {
       postalCode: data?.postalCode ?? '',
       regCode: data?.regionKladrId ? data.regionKladrId.slice(0, 2) : '',

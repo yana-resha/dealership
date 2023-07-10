@@ -1,5 +1,7 @@
 import IMask from 'imask'
 
+export type Masked = (value: string, unmasked?: boolean) => string
+
 export const maskNoRestrictions = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: /.*/,
