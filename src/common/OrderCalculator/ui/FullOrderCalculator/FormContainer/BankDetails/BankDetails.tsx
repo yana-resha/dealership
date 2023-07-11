@@ -59,7 +59,7 @@ export function BankDetails({ namePrefix = '' }: Props) {
           />
           <MaskedInputFormik
             name={namePrefix + FormFieldNameMap.bankAccountNumber}
-            label="Номер счета банка"
+            label="Расчетный счет"
             placeholder="-"
             mask={maskBankAccountNumber}
             gridColumn="span 1"
@@ -119,7 +119,7 @@ export function BankDetails({ namePrefix = '' }: Props) {
         />
         <SelectInputFormik
           name={namePrefix + FormFieldNameMap.bankAccountNumber}
-          label="Номер счета банка"
+          label="Расчетный счет"
           placeholder="-"
           options={bankAccountNumbers}
           gridColumn="span 1"

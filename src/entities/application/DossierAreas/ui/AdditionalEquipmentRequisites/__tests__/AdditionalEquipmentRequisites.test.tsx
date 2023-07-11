@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { PreparedAdditionalEquipmentForFinancingMap } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
@@ -26,32 +27,81 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
 
-const mockedRequisites: RequisitesAdditionalOptions[] = [
-  {
-    legalEntityName: '',
-    tax: 0.15,
-    banks: [],
+const mockedRequisites: PreparedAdditionalEquipmentForFinancingMap = {
+  optionId: 1,
+  optionType: 2,
+  vendorsWithoutBroker: [
+    {
+      vendorCode: '2002703288',
+      vendorName: 'Парини',
+      tax: 0.13,
+      requisites: [
+        {
+          bankName: 'Тинькофф',
+          bik: '044525974',
+          accountCorrNumber: '23298374562932784',
+          ogrn: '',
+          kpp: '24356243562',
+          inn: '34573457',
+          accounts: ['2387945697'],
+        },
+      ],
+    },
+  ],
+  vendorsWithoutBrokerMap: {
+    2002703288: {
+      vendorCode: '2002703288',
+      vendorName: 'Тест3',
+      tax: 0.13,
+      requisites: [
+        {
+          bankName: 'Тинькофф',
+          bik: '044525974',
+          accountCorrNumber: '23298374562932784',
+          ogrn: '',
+          kpp: '24356243562',
+          inn: '34573457',
+          accounts: ['2387945697'],
+        },
+      ],
+      requisitesMap: {
+        Тинькофф: {
+          bankName: 'Тинькофф',
+          bik: '044525974',
+          accountCorrNumber: '23298374562932784',
+          ogrn: '',
+          kpp: '24356243562',
+          inn: '34573457',
+          accounts: ['2387945697'],
+        },
+      },
+    },
   },
-]
+}
 
 const mockedAdditionalEquipmentFields = {
   additionalEquipments: [
     {
       optionType: 'additionalEquipment',
-      productType: '',
+      productType: null,
       legalPerson: '',
       provider: '',
       agent: '',
-      productCost: 0,
+      productCost: '0',
       loanTerm: 0,
       bankIdentificationCode: '',
-      documentId: '',
       beneficiaryBank: '',
       correspondentAccount: '',
       bankAccountNumber: '',
       taxPresence: false,
       taxation: '',
       isCredit: true,
+      taxPercent: null,
+      taxValue: null,
+      documentNumber: '32ук23к22',
+      documentType: 2,
+      documentDate: new Date('2023-04-23T00:00:00.000Z'),
+      isCustomFields: false,
     },
   ],
 }
@@ -77,10 +127,11 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     beforeEach(() => {
       render(
         <AdditionalEquipmentRequisites
-          requisites={mockedRequisites}
+          optionRequisite={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.additionalEquipments}
+          equipmentItem={mockedAdditionalEquipmentFields.additionalEquipments[0]}
         />,
         {
           wrapper: createWrapper,
@@ -108,7 +159,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
       expect(screen.getByTestId('additionalEquipments[0].beneficiaryBank')).toBeInTheDocument()
     })
 
-    it('Отображается поле "Номер счета банка"', () => {
+    it('Отображается поле "Расчетный счет"', () => {
       expect(screen.getByTestId('additionalEquipments[0].bankAccountNumber')).toBeInTheDocument()
     })
 
@@ -142,7 +193,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     //   expect(await screen.findByTestId('additionalEquipments[0].taxation')).toBeInTheDocument()
     // })
 
-    it('Поле "Номер счета банка" заблокировано, если банк не выбран', () => {
+    it('Поле "Расчетный счет" заблокировано, если банк не выбран', () => {
       expect(screen.getByTestId('additionalEquipments[0].bankAccountNumber')).not.toBeEnabled()
     })
   })
@@ -151,10 +202,11 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     beforeEach(() => {
       render(
         <AdditionalEquipmentRequisites
-          requisites={mockedRequisites}
+          optionRequisite={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.additionalEquipments}
+          equipmentItem={mockedAdditionalEquipmentFields.additionalEquipments[0]}
         />,
         {
           wrapper: createWrapper,
@@ -191,7 +243,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     //   ).toBeInTheDocument()
     // })
     //
-    // it('Валидируется поле "Номер счета банка"', async () => {
+    // it('Валидируется поле "Расчетный счет"', async () => {
     //   expect(
     //     await screen.findByTestId('additionalEquipments[0].bankAccountNumberErrorMessage'),
     //   ).toBeInTheDocument()

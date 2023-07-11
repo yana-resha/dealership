@@ -1,11 +1,14 @@
 import { useMemo } from 'react'
 
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { Form, useFormikContext } from 'formik'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProducts'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { mockRequisites } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
+import { useRequisitesForFinancingQuery } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
@@ -18,7 +21,23 @@ type Props = {
 
 export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProductsOnStart }: Props) {
   const { values } = useFormikContext<FullOrderCalculatorFields>()
-  const requisites = mockRequisites()
+  const { vendorCode } = getPointOfSaleFromCookies()
+  const additionalOptionsIds = useMemo(
+    () =>
+      [...values.bankAdditionalServices, ...values.dealerAdditionalServices]
+        .map(s => s.productType)
+        .filter(s => !!s) as OptionID[],
+    [values.bankAdditionalServices, values.dealerAdditionalServices],
+  )
+  const additionalEquipmentsIds = useMemo(
+    () => [...values.additionalEquipments].map(s => s.productType).filter(s => !!s) as OptionID[],
+    [values.additionalEquipments],
+  )
+  const { data: requisites } = useRequisitesForFinancingQuery({
+    vendorCode,
+    additionalOptions: additionalOptionsIds,
+    additionalEquipments: additionalEquipmentsIds,
+  })
 
   const formFields = useMemo(
     () => ({
@@ -81,7 +100,7 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
       <CarSettingsArea
         onFilled={changeShouldFetchProducts}
         visibleFooter={!shouldShowOrderSettings}
-        requisites={requisites.dealerCenterRequisites}
+        vendor={requisites?.vendorAccounts}
         isLoading={isLoading}
       />
       <OrderSettingsArea

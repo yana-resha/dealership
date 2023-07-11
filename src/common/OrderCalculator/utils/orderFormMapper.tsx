@@ -23,7 +23,7 @@ const mapAdditionalOptions = (
 ): AdditionalOptionCalculateCredit[] => {
   const filteredOptions = additionalOptions.filter(
     (option): option is Omit<typeof option, 'productType'> & { productType: OptionID } =>
-      option.productType !== '',
+      !!option.productType,
   )
 
   const additionalOptionsFormatted: AdditionalOptionCalculateCredit[] = filteredOptions.map(filterOption => {

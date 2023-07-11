@@ -60,7 +60,7 @@ export const INITIAL_CAR_ID_TYPE = [
 ]
 
 export const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
-  productType: '',
+  productType: null,
   productCost: '',
   isCredit: false,
 }
@@ -86,6 +86,7 @@ export const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments
   [FormFieldNameMap.legalPerson]: '',
   [FormFieldNameMap.taxValue]: null,
   [FormFieldNameMap.taxPercent]: null,
+  [FormFieldNameMap.taxPresence]: undefined,
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 
@@ -99,6 +100,7 @@ export const FULL_INITIAL_ADDITIONAL_SERVICE: FullInitialAdditionalService = {
   [FormFieldNameMap.providerTaxPercent]: null,
   [FormFieldNameMap.agentTaxValue]: null,
   [FormFieldNameMap.agentTaxPercent]: null,
+  [FormFieldNameMap.taxPresence]: undefined,
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 

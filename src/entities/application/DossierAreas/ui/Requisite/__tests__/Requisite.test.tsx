@@ -55,8 +55,8 @@ describe('RequisiteTest', () => {
       expect(screen.getByText('Почта Банк')).toBeInTheDocument()
     })
 
-    it('Отображается "Номер счета банка"', () => {
-      expect(screen.getByText('Номер счета банка')).toBeInTheDocument()
+    it('Отображается "Расчетный счет"', () => {
+      expect(screen.getByText('Расчетный счет')).toBeInTheDocument()
       expect(screen.getByText('40702810038000017243')).toBeInTheDocument()
     })
 

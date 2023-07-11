@@ -9,7 +9,7 @@ import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
 import { useCarYears } from 'common/OrderCalculator/hooks/useCarYears'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { RequisitesAdditionalOptions } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
+import { PreparedVendorWithoutBrokerMap } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { DealerCenterRequisites } from 'entities/application/DossierAreas/ui'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
@@ -31,10 +31,10 @@ type Props = {
   onFilled: () => void
   visibleFooter: boolean
   isLoading?: boolean
-  requisites: RequisitesAdditionalOptions[]
+  vendor: PreparedVendorWithoutBrokerMap | undefined
 }
 
-export function CarSettingsArea({ onFilled, visibleFooter, isLoading, requisites }: Props) {
+export function CarSettingsArea({ onFilled, visibleFooter, isLoading, vendor }: Props) {
   const classes = useStyles()
 
   const { setFieldValue } = useFormikContext()
@@ -142,7 +142,7 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading, requisites
           />
           <DateInputFormik name={FormFieldNameMap.salesContractDate} label="Дата ДКП" gridColumn="span 1" />
         </Box>
-        <DealerCenterRequisites requisites={requisites} isRequisiteEditable={true} />
+        <DealerCenterRequisites vendor={vendor} isRequisiteEditable={true} />
         {visibleFooter && (
           <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} isLoadingBtn={isLoading} />
         )}

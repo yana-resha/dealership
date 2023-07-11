@@ -17,7 +17,7 @@ export function checkBankAdditionalServicesLimit(commonError: CommonError) {
 }
 
 export const additionalServiceBaseValidation = (checkFn: (commonError: CommonError) => void) => ({
-  [FormFieldNameMap.productType]: Yup.string(),
+  [FormFieldNameMap.productType]: Yup.string().nullable(),
   [FormFieldNameMap.productCost]: Yup.string().when([FormFieldNameMap.productType], {
     is: (productType: string) => !!productType,
     then: schema =>

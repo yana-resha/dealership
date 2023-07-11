@@ -240,7 +240,7 @@ export function useInitialValues<D extends boolean | undefined>(
           const { productCost, productType, isCredit, cascoLimit } = option
           const additionalOption: AdditionalOptionsFrontdc = {
             bankOptionType: i === 0 ? OptionType.EQUIPMENT : OptionType.DEALER,
-            type: parseInt(productType.toString(), 10) ?? undefined,
+            type: parseInt((productType || '').toString(), 10) ?? undefined,
             inCreditFlag: isCredit,
             price: parseInt(productCost, 10),
             cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
@@ -283,7 +283,7 @@ export function useInitialValues<D extends boolean | undefined>(
 
         const additionalOption: AdditionalOptionsFrontdc = {
           bankOptionType: OptionType.EQUIPMENT,
-          type: parseInt(productType.toString(), 10) ?? undefined,
+          type: parseInt((productType || '').toString(), 10) ?? undefined,
           inCreditFlag: isCredit,
           price: parseInt(productCost, 10),
           vendor: {
@@ -361,7 +361,7 @@ export function useInitialValues<D extends boolean | undefined>(
               percent: agentTaxPercent ?? undefined,
             },
           },
-          type: parseInt(productType.toString(), 10) ?? undefined,
+          type: parseInt((productType || '').toString(), 10) ?? undefined,
           inCreditFlag: isCredit,
           price: parseInt(productCost, 10),
           term: loanTerm,

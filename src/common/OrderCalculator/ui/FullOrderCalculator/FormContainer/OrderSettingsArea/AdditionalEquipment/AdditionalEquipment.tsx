@@ -4,15 +4,16 @@ import { Box, Divider } from '@mui/material'
 import { FieldArray, useField } from 'formik'
 
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
+import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
-import { RequisitesAdditionalOptions } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { PreparedAdditionalEquipmentForFinancingMap } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { AdditionalEquipmentRequisites } from 'entities/application/DossierAreas/ui'
 
 import useStyles from './AdditionalEquipment.styles'
 
 type Props = {
-  requisites: RequisitesAdditionalOptions[]
+  optionsRequisitesMap: Record<string, PreparedAdditionalEquipmentForFinancingMap>
   disabled?: boolean
   isError?: boolean
   errorMessage?: string
@@ -22,9 +23,15 @@ type Props = {
   }
 }
 
-export function AdditionalEquipment({ requisites, disabled = false, options, isError, errorMessage }: Props) {
+export function AdditionalEquipment({
+  optionsRequisitesMap,
+  disabled = false,
+  options,
+  isError,
+  errorMessage,
+}: Props) {
   const classes = useStyles()
-  const [field] = useField(ServicesGroupName.additionalEquipments)
+  const [field] = useField<FullInitialAdditionalEquipments[]>(ServicesGroupName.additionalEquipments)
 
   const { ids, changeIds } = useAdditionalServiceIds()
   const isInitialExpanded = !!field.value.length && !!field.value[0].productType
@@ -40,16 +47,17 @@ export function AdditionalEquipment({ requisites, disabled = false, options, isE
       <FieldArray name={ServicesGroupName.additionalEquipments}>
         {arrayHelpers => (
           <Box minWidth="min-content" className={classes.itemsContainer}>
-            {field.value.map((v: any, index: number, arr: any[]) => (
+            {field.value.map((v, index: number, arr: any[]) => (
               <React.Fragment key={ids[index]}>
                 <AdditionalEquipmentRequisites
-                  requisites={requisites}
+                  optionRequisite={v.productType ? optionsRequisitesMap[v.productType] : undefined}
                   index={index}
                   parentName={ServicesGroupName.additionalEquipments}
                   isRequisiteEditable={true}
                   productOptions={options.productType}
                   arrayHelpers={arrayHelpers}
                   arrayLength={arr.length}
+                  equipmentItem={v}
                   changeIds={changeIds}
                 />
                 {index < arr.length - 1 && <Divider />}

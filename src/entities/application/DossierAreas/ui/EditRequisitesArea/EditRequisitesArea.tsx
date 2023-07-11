@@ -34,7 +34,7 @@ type Props = {
 
 export function EditRequisitesArea({ applicationId, changeRequisites }: Props) {
   const classes = useStyles()
-  const requisites = mockRequisites()
+  // const requisites = mockRequisites()
 
   const [isReturnDialogOpen, setIsReturnDialogOpen] = useState(false)
   const [isSendToDecisionDialogOpen, setIsSendToDecisionDialogOpen] = useState(false)
@@ -81,10 +81,10 @@ export function EditRequisitesArea({ applicationId, changeRequisites }: Props) {
           <SberTypography gridColumn="span 15" sberautoVariant="h5" component="p">
             Реквизиты дилерского центра
           </SberTypography>
-          <DealerCenterRequisites
+          {/* <DealerCenterRequisites
             requisites={requisites.dealerCenterRequisites}
             isRequisiteEditable={false}
-          />
+          /> */}
           <Divider className={classes.divider} />
 
           {!!initialValues.dealerAdditionalServices.length && (
@@ -94,12 +94,12 @@ export function EditRequisitesArea({ applicationId, changeRequisites }: Props) {
               </SberTypography>
               {initialValues.dealerAdditionalServices.map((dealerService, index, array) => (
                 <React.Fragment key={dealerService.productType + index}>
-                  <DealerServicesRequisites
+                  {/* <DealerServicesRequisites
                     requisites={requisites.dealerServicesRequisites}
                     index={index}
                     parentName={ServicesGroupName.dealerAdditionalServices}
                     isRequisiteEditable={false}
-                  />
+                  /> */}
                   {index < array.length - 1 && <Divider />}
                 </React.Fragment>
               ))}
@@ -114,12 +114,12 @@ export function EditRequisitesArea({ applicationId, changeRequisites }: Props) {
               </SberTypography>
               {initialValues.additionalEquipments.map((additionalEquipment, index, array) => (
                 <React.Fragment key={additionalEquipment.productType + index}>
-                  <AdditionalEquipmentRequisites
+                  {/* <AdditionalEquipmentRequisites
                     requisites={requisites.additionalEquipmentRequisites}
                     index={index}
                     parentName={ServicesGroupName.additionalEquipments}
                     isRequisiteEditable={false}
-                  />
+                  /> */}
                   {index < array.length - 1 && <Divider />}
                 </React.Fragment>
               ))}
