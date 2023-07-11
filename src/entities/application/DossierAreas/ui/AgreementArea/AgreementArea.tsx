@@ -4,6 +4,7 @@ import { Box, Button, Divider } from '@mui/material'
 import { ApplicationFrontdc, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
+import { DcConfirmationModal } from 'entities/application/DossierAreas/ui/EditConfirmationModal/DcConfirmationModal'
 import {
   useSendToFinancingMutation,
   useUpdateApplicationStatus,
@@ -30,6 +31,10 @@ type Props = {
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void
   setIsEditRequisitesMode: (value: boolean) => void
+  isConfirmationModalVisible: boolean
+  closeConfirmationModal: () => void
+  confirmedAction?: () => void
+  editApplication: (editFunction: () => void) => void
 }
 
 enum ProgressBarSteps {
@@ -47,6 +52,10 @@ export function AgreementArea({
   updateApplicationStatusLocally,
   setAgreementDocs,
   setIsEditRequisitesMode,
+  isConfirmationModalVisible,
+  closeConfirmationModal,
+  editApplication,
+  confirmedAction,
 }: Props) {
   const classes = useStyles()
   const preparedStatus = getStatus(status)
@@ -173,7 +182,7 @@ export function AgreementArea({
           <Button
             variant="contained"
             className={classes.button}
-            onClick={editApplicationWithFinallyApprovedStatus}
+            onClick={() => editApplication(editApplicationWithFinallyApprovedStatus)}
           >
             Редактировать
           </Button>
@@ -270,6 +279,12 @@ export function AgreementArea({
           )}
         </Box>
       )}
+      <DcConfirmationModal
+        actionText="Заявка будет заведена под:"
+        isVisible={isConfirmationModalVisible}
+        onClose={closeConfirmationModal}
+        confirmedAction={confirmedAction}
+      />
     </Box>
   )
 }

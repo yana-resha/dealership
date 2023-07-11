@@ -417,6 +417,7 @@ export function useInitialValues() {
   return {
     remapApplicationValues,
     isShouldShowLoading: false,
+    applicationVendorCode: fullApplicationData?.application?.vendor?.vendorCode,
     initialValues: initialValuesClientData,
     dcAppId,
   }

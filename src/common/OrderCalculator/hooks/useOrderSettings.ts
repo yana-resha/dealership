@@ -64,7 +64,7 @@ export function useOrderSettings(nextStep: () => void, onChangeForm: () => void)
         productName: bankOffer?.productName,
         monthlyPayment: bankOffer?.monthlyPayment,
         dateStart: creditProduct?.activeDateFrom,
-        dateEnd: creditProduct?.activeDateFrom,
+        dateEnd: creditProduct?.activeDateTo,
         crMinValue: creditProduct?.crMinValue,
         crMaxValue: creditProduct?.crMaxValue,
         crMinDuration: creditProduct?.durationMin,
