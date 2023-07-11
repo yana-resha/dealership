@@ -1,10 +1,9 @@
 import React from 'react'
 
-import { configureStore } from '@reduxjs/toolkit'
 import { renderHook } from '@testing-library/react'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
-import orderSlice, { Order, updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import { Order } from 'pages/CreateOrderPage/model/orderSlice'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { disableConsole } from 'tests/utils'

@@ -34,13 +34,10 @@ export const useStyles = makeStyles(theme => ({
   },
 
   textButton: {
-    color: theme.palette.primary.main,
-    cursor: 'pointer',
     width: 'max-content',
     '&:hover': {
-      '&.MuiTypography-root': {
-        textDecoration: 'underline',
-      },
+      textDecoration: 'underline!important',
+      backgroundColor: 'initial!important',
     },
   },
 }))

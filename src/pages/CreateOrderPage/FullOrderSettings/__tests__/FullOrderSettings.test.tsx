@@ -13,7 +13,7 @@ disableConsole('error')
 
 describe('FullOrderSettings', () => {
   beforeEach(() => {
-    render(<FullOrderSettings nextStep={jest.fn} />, {
+    render(<FullOrderSettings nextStep={jest.fn} onChangeForm={jest.fn} />, {
       wrapper: createWrapper,
     })
   })

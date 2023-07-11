@@ -57,10 +57,7 @@ export const saveLoanApplicationDraft = (params: SaveLoanApplicationDraftRequest
   loanAppLifeCycleDcApi.saveLoanApplicationDraft({ data: params }).then(response => response.data ?? {})
 
 export const sendApplicationToScore = (params: SendApplicationToScoringRequest) =>
-  loanAppLifeCycleDcApi
-    .sendApplicationToScoring({ data: params })
-    .then(response => response.data ?? {})
-    .catch(response => response.errors ?? {})
+  loanAppLifeCycleDcApi.sendApplicationToScoring({ data: params }).then(response => response.data ?? {})
 
 export const useSendApplicationToScore = ({ onSuccess }: { onSuccess: () => void }) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -82,10 +79,21 @@ export const useSendApplicationToScore = ({ onSuccess }: { onSuccess: () => void
 export const useCheckIfSberClient = (params: IsClientRequest) =>
   useMutation(['checkIfSberClient'], () => checkIfSberClient(params))
 
-export const useSaveDraftApplicationMutation = () =>
-  useMutation(['saveLoanApplicationDraft'], (params: ApplicationFrontdc) =>
-    saveLoanApplicationDraft({ application: params }),
+export const useSaveDraftApplicationMutation = () => {
+  const { enqueueSnackbar } = useSnackbar()
+
+  return useMutation(
+    ['saveLoanApplicationDraft'],
+    (params: ApplicationFrontdc) => saveLoanApplicationDraft({ application: params }),
+    {
+      onError: () => {
+        enqueueSnackbar('Ошибка. Не удалось сохранить черновик заявки', {
+          variant: 'error',
+        })
+      },
+    },
   )
+}
 
 /** TODO DCB-198 : когда перестанет возвращаться 401ая, то убрать +mock
  * Импортировать loanapplifecycledcApi из shared/api */

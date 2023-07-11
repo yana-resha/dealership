@@ -35,6 +35,11 @@ export function FormContainer({ isDraftLoading, disabledButtons, saveDraftDisabl
     setShouldSubmit(true)
   }, [setFieldValue])
 
+  const handlePrintClick = useCallback(() => {
+    setFieldValue('submitAction', SubmitAction.Print)
+    setShouldSubmit(true)
+  }, [setFieldValue])
+
   useEffect(() => {
     if (isShouldSubmit) {
       setShouldSubmit(false)
@@ -65,7 +70,12 @@ export function FormContainer({ isDraftLoading, disabledButtons, saveDraftDisabl
               {isDraftLoading && <CircularProgress color="inherit" size={25} />}
             </Button>
           )}
-          <Button className={classes.button} variant="outlined" disabled={disabledButtons}>
+          <Button
+            className={classes.button}
+            variant="outlined"
+            disabled={disabledButtons}
+            onClick={handlePrintClick}
+          >
             Распечатать
           </Button>
           <Button

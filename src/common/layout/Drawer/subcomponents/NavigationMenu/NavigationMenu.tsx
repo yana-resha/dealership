@@ -76,7 +76,7 @@ export function NavigationMenu(props: Props) {
   )
 
   const value = Math.max(
-    menuItems.findIndex(item => matchPath(item.path, location.pathname)),
+    menuItems.findIndex(item => matchPath(`${item.path}/*`, location.pathname)),
     0,
   )
 

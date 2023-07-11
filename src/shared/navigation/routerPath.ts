@@ -4,6 +4,7 @@ export const appRoutes = {
   vendorList: () => '/vendorlist',
   createOrder: () => '/create_order',
   orderList: () => '/order_list',
+  order: (applicationId = '') => `/order_list/${applicationId}`,
   fullOrderSettings: () => '/full_order_settings',
 }
 
@@ -14,6 +15,7 @@ export const appRoutePaths = {
   createOrder: appRoutes.createOrder(),
   orderList: appRoutes.orderList(),
   fullOrderSettings: appRoutes.fullOrderSettings(),
+  order: appRoutes.order(':applicationId'),
 }
 
 export const defaultRoute = appRoutePaths.orderList

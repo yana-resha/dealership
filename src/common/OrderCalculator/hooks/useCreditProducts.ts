@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useFormikContext } from 'formik'
+import isEqual from 'lodash/isEqual'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { usePrevious } from 'shared/hooks/usePrevious'
 
 import { CREDIT_PRODUCT_PARAMS_FIELDS } from '../config'
 import { CreditProductParams, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
@@ -67,10 +69,13 @@ export function useCreditProducts<T extends FullOrderCalculatorFields | OrderCal
     }
   }, [isChangedBaseValues])
 
+  const prevValues = usePrevious({ ...values, validationParams: {}, commonError: {} })
   useEffect(() => {
-    onChangeForm()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values])
+    const newValues = { ...values, validationParams: {}, commonError: {} }
+    if (!isEqual(newValues, prevValues)) {
+      onChangeForm()
+    }
+  }, [onChangeForm, prevValues, values])
 
   return {
     isLoading,

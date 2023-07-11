@@ -179,16 +179,17 @@ export function useInitialValues() {
       initialValues.mobileNumber,
     ],
   )
-
-  const employmentDate = useMemo(
-    () =>
-      applicant?.employment?.currentWorkExperience !== undefined && !!createdDate
+  const employmentDate = useMemo(() => {
+    try {
+      return applicant?.employment?.currentWorkExperience !== undefined && !!createdDate
         ? DateTime.fromJSDate(new Date(createdDate))
             .minus({ months: applicant?.employment?.currentWorkExperience })
             .toJSDate()
-        : initialValues.employmentDate,
-    [applicant?.employment?.currentWorkExperience, createdDate, initialValues.employmentDate],
-  )
+        : initialValues.employmentDate
+    } catch (e) {
+      return initialValues.employmentDate
+    }
+  }, [applicant?.employment?.currentWorkExperience, createdDate, initialValues.employmentDate])
 
   const remapApplicationValues = useCallback(
     (values: ClientData): GetFullApplicationResponse | undefined => {
@@ -255,7 +256,7 @@ export function useInitialValues() {
         children: numOfChildren ? parseInt(numOfChildren, 10) : undefined,
         marital: familyStatus ?? undefined,
         birthPlace: birthPlace,
-        sex: sex,
+        sex,
         email: email,
         publicPerson: relatedToPublic === 1,
         documents: compact([
@@ -374,5 +375,6 @@ export function useInitialValues() {
           }
         : {}),
     },
+    dcAppId: fullApplicationData?.application?.dcAppId,
   }
 }

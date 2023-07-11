@@ -1,5 +1,5 @@
 /* eslint-disable no-constant-condition */
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Skeleton } from '@mui/material'
 
@@ -17,9 +17,10 @@ import { slIsOrderExist, slStorageOrder } from './OrderSearching.selectors'
 type Props = {
   nextStep: () => void
   onApplicationOpen: (applicationId: string) => void
+  onMount: () => void
 }
 
-export function OrderSearching({ nextStep, onApplicationOpen }: Props) {
+export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) {
   const dispatch = useAppDispatch()
   const storageOrder = useAppSelector(slStorageOrder)
   const isOrderExist = useAppSelector(slIsOrderExist)
@@ -103,6 +104,10 @@ export function OrderSearching({ nextStep, onApplicationOpen }: Props) {
     // скрываем форму создания заявки если в форме поиска были изменены данные
     setIsVisibleNewOrderForm(false)
   }, [])
+
+  useEffect(() => {
+    onMount()
+  }, [onMount])
 
   const isShowNewForm =
     isSuccessFindApplicationsQuery &&

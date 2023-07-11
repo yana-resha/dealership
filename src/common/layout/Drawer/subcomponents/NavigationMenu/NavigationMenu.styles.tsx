@@ -84,6 +84,9 @@ export default makeStyles(theme => ({
     '& .MuiTab-root': {
       fontSize: 16,
     },
+    '& > .MuiTabScrollButton-vertical': {
+      display: 'none',
+    },
   },
   tab: {
     minWidth: '100%!important',

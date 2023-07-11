@@ -62,6 +62,14 @@ export function useInitialValues<D extends boolean | undefined>(
                   : (initialData as FullOrderCalculatorFields).additionalEquipments[0].documentDate,
               }
             : {}
+          const additionalEquipmentsData = isFullCalculator
+            ? {
+                [FormFieldNameMap.taxPercent]: (initialData as FullOrderCalculatorFields)
+                  .additionalEquipments[0].taxPercent,
+                [FormFieldNameMap.taxValue]: (initialData as FullOrderCalculatorFields)
+                  .additionalEquipments[0].taxValue,
+              }
+            : {}
           const additionalServiceRequisitesData = isFullCalculator
             ? {
                 [FormFieldNameMap.bankIdentificationCode]:
@@ -108,6 +116,14 @@ export function useInitialValues<D extends boolean | undefined>(
                   (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].agent,
                 [FormFieldNameMap.loanTerm]:
                   cur.term ?? (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].loanTerm,
+                [FormFieldNameMap.providerTaxValue]: (initialData as FullOrderCalculatorFields)
+                  .dealerAdditionalServices[0].providerTaxValue,
+                [FormFieldNameMap.providerTaxPercent]: (initialData as FullOrderCalculatorFields)
+                  .dealerAdditionalServices[0].providerTaxPercent,
+                [FormFieldNameMap.agentTaxValue]: (initialData as FullOrderCalculatorFields)
+                  .dealerAdditionalServices[0].agentTaxValue,
+                [FormFieldNameMap.agentTaxPercent]: (initialData as FullOrderCalculatorFields)
+                  .dealerAdditionalServices[0].agentTaxPercent,
               }
             : {}
 
@@ -123,6 +139,7 @@ export function useInitialValues<D extends boolean | undefined>(
                   cur.vendor?.vendorCode ??
                   (initialData as FullOrderCalculatorFields).additionalEquipments[0].legalPerson,
                 ...additionalServiceRequisitesData,
+                ...additionalEquipmentsData,
               })
               break
             }
@@ -207,6 +224,8 @@ export function useInitialValues<D extends boolean | undefined>(
         [FormFieldNameMap.taxation]:
           `${vendor?.taxInfo?.amount ?? ((initialData as FullOrderCalculatorFields).taxation || '')}` ||
           undefined,
+        [FormFieldNameMap.taxPercent]: (initialData as FullOrderCalculatorFields).taxPercent,
+        [FormFieldNameMap.taxValue]: (initialData as FullOrderCalculatorFields).taxValue,
       }
     : {
         [FormFieldNameMap.specialMark]: specialMark ?? (initialData as OrderCalculatorFields).specialMark,
@@ -524,7 +543,7 @@ export function useInitialValues<D extends boolean | undefined>(
 
   return {
     remapApplicationValues,
-    hasCustomInitialValues: !!fullApplicationData?.application,
+    hasCustomInitialValues: !!fullApplicationData?.application?.loanCar,
     initialValues: fullApplicationData?.application
       ? ({
           [FormFieldNameMap.carCondition]: loanCar?.isCarNew ?? initialData.carCondition ? 1 : 0,

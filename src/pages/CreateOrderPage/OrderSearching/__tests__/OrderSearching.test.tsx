@@ -47,7 +47,7 @@ describe('OrderSearching', () => {
   const nextStep = jest.fn()
   const onApplicationOpen = jest.fn()
   const mockRefetch = jest.fn()
-
+  const onMount = jest.fn()
   const mockStoreCreator = configureMockStore()
 
   describe('Элементы формы отображаются', () => {
@@ -60,7 +60,7 @@ describe('OrderSearching', () => {
         remove: jest.fn(),
       }))
 
-      render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
+      render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
         wrapper: createWrapper,
       })
 
@@ -79,7 +79,7 @@ describe('OrderSearching', () => {
         remove: jest.fn(),
       }))
 
-      render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
+      render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
         wrapper: createWrapper,
       })
 
@@ -120,7 +120,7 @@ describe('OrderSearching', () => {
         remove: jest.fn(),
       }))
 
-      render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
+      render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
         wrapper: createWrapper,
       })
 
@@ -141,7 +141,7 @@ describe('OrderSearching', () => {
 
       jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(false))
 
-      render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
+      render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
         wrapper: createWrapper,
       })
 
@@ -191,7 +191,7 @@ describe('OrderSearching', () => {
 
     const mockClearOrder = jest.spyOn(orderSlice, 'clearOrder')
 
-    render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
+    render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
       wrapper: createWrapper,
     })
 
@@ -246,7 +246,7 @@ describe('OrderSearching', () => {
     jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(true))
     const mockSetOrder = jest.spyOn(orderSlice, 'setOrder')
 
-    render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
+    render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
       wrapper: ({ children }: PropsWithChildren) => (
         <MockProviders mockStore={mockStoreCreator(mockStateWithData)}>{children}</MockProviders>
       ),
@@ -283,7 +283,7 @@ describe('OrderSearching', () => {
     jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(true))
     const mockSetOrder = jest.spyOn(orderSlice, 'setOrder')
 
-    render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} />, {
+    render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
       wrapper: ({ children }: PropsWithChildren) => (
         <MockProviders mockStore={mockStoreCreator(mockStateWithoutData)}>{children}</MockProviders>
       ),

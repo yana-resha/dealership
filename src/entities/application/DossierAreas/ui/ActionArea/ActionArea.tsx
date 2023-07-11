@@ -30,7 +30,7 @@ type Props = {
   targetDcAppId?: string
   applicationForScore: SendApplicationToScoringRequest
   returnToList: () => void
-  goToNewApplication: (value: string) => void
+  goToTargetApplication: (targetAppId: string) => void
   updateStatus: (statusCode: StatusCode) => void
   fileQuestionnaire: File | undefined
   agreementDocs: (File | undefined)[]
@@ -48,9 +48,8 @@ export function ActionArea(props: Props) {
     targetDcAppId,
     applicationForScore,
     returnToList,
-    goToNewApplication,
+    goToTargetApplication,
     updateStatus,
-    fileQuestionnaire,
     agreementDocs,
     setAgreementDocs,
     setIsEditRequisitesMode,
@@ -83,7 +82,7 @@ export function ActionArea(props: Props) {
         },
       }),
     )
-  }, [application, dispatch, updateOrder])
+  }, [application, dispatch])
 
   const openModal = useCallback(() => {
     setVisibleModal(true)
@@ -93,15 +92,15 @@ export function ActionArea(props: Props) {
 
   const getToNewApplication = useCallback(() => {
     if (targetDcAppId) {
-      goToNewApplication(targetDcAppId)
+      goToTargetApplication(targetDcAppId)
     }
-  }, [targetDcAppId, goToNewApplication])
+  }, [targetDcAppId, goToTargetApplication])
 
   const editApplicationWithInitialStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
       state: { isFullCalculator: false },
     })
-  }, [application.anketaType, navigate])
+  }, [navigate])
 
   const editApplicationWithErrorStatus = useCallback(() => {
     const isFullCalculator =
@@ -148,11 +147,11 @@ export function ActionArea(props: Props) {
     } else {
       openModal()
     }
-  }, [clientData, navigate, dispatch, checkIfSberClient, deleteLoanDataFromApplication])
+  }, [clientData, deleteLoanDataFromApplication, navigate, openModal])
 
   const sendApplicationToScore = useCallback(() => {
     sendToScore(applicationForScore)
-  }, [])
+  }, [applicationForScore, sendToScore])
 
   const shownBlock = useMemo(() => {
     if (preparedStatus == PreparedStatus.initial) {
@@ -211,9 +210,15 @@ export function ActionArea(props: Props) {
     if (preparedStatus == PreparedStatus.financed) {
       return (
         <Box className={classes.actionButtons}>
-          <Button variant="contained" onClick={recreateApplication}>
-            Создать ноую заявку
-          </Button>
+          {targetDcAppId ? (
+            <Button variant="contained" onClick={getToNewApplication}>
+              Перейти на новую заявку
+            </Button>
+          ) : (
+            <Button variant="contained" onClick={recreateApplication}>
+              Создать новую заявку
+            </Button>
+          )}
         </Box>
       )
     }
@@ -243,17 +248,24 @@ export function ActionArea(props: Props) {
       )
     }
   }, [
-    preparedStatus,
-    classes.actionButtons,
-    fileQuestionnaire,
-    status,
-    application,
-    moratoryEndDate,
-    targetDcAppId,
-    updateStatus,
     agreementDocs,
+    application,
+    classes.actionButtons,
+    editApplicationWithApprovedStatus,
+    editApplicationWithErrorStatus,
+    editApplicationWithInitialStatus,
+    extendApplicationWithApprovedStatus,
+    getToNewApplication,
+    moratoryEndDate,
+    preparedStatus,
+    recreateApplication,
+    sendApplicationToScore,
     setAgreementDocs,
     setIsEditRequisitesMode,
+    status,
+    targetDcAppId,
+    updateStatus,
+    vendorCode,
   ])
 
   return (
