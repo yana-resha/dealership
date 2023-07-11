@@ -1,7 +1,10 @@
 import React, { PropsWithChildren } from 'react'
 
 import { Button } from '@mui/material'
-import { SuggestionGetAddressSuggestions } from '@sberauto/dadata-proto/public'
+import {
+  SuggestionGetAddressSuggestions,
+  SuggestionGetOrganizationSuggestions,
+} from '@sberauto/dadata-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
@@ -41,10 +44,17 @@ jest.mock('shared/ui/AutocompleteInput/AutocompleteDaDataAddress', () => ({
     <div data-testid={id}>{isError && <div data-testid={id + 'ErrorMessage'} />}</div>
   ),
 }))
+jest.mock('shared/ui/AutocompleteInput/AutocompleteInput', () => ({
+  AutocompleteInput: ({ id, isError }: Props) => (
+    <div data-testid={id}>{isError && <div data-testid={id + 'ErrorMessage'} />}</div>
+  ),
+}))
 
 const mockedDaDataQueryModule = jest.spyOn(daDataQueryModule, 'useGetAddressSuggestions')
+const mockedDaDataQueryOrganization = jest.spyOn(daDataQueryModule, 'useGetOrganizationSuggestions')
 
 const mockSuggestions: SuggestionGetAddressSuggestions[] = []
+const mockOrganizationSuggestions: SuggestionGetOrganizationSuggestions[] = []
 
 const formFields = ['employmentDate', 'employerName', 'employerPhone', 'employerAddressString', 'employerInn']
 
@@ -86,6 +96,13 @@ describe('JobAreaTest', () => {
             refetch: jest.fn(),
           } as any),
       )
+      mockedDaDataQueryOrganization.mockImplementation(
+        () =>
+          ({
+            data: mockOrganizationSuggestions,
+            mutate: jest.fn(),
+          } as any),
+      )
       render(<JobArea />, {
         wrapper: createWrapper,
       })
@@ -104,6 +121,20 @@ describe('JobAreaTest', () => {
 
   describe('Все поля валидируются', () => {
     beforeEach(() => {
+      mockedDaDataQueryModule.mockImplementation(
+        () =>
+          ({
+            data: mockSuggestions,
+            refetch: jest.fn(),
+          } as any),
+      )
+      mockedDaDataQueryOrganization.mockImplementation(
+        () =>
+          ({
+            data: mockOrganizationSuggestions,
+            mutate: jest.fn(),
+          } as any),
+      )
       render(<JobArea />, {
         wrapper: createWrapper,
       })

@@ -178,10 +178,12 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: OccupationType.UNEMPLOYED,
       otherwise: schema => setRequiredIfSave(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
     }),
-  employerName: Yup.string().when('occupation', {
-    is: OccupationType.UNEMPLOYED,
-    otherwise: schema => setRequiredIfSave(schema),
-  }),
+  employerName: Yup.string()
+    .nullable()
+    .when('occupation', {
+      is: OccupationType.UNEMPLOYED,
+      otherwise: schema => setRequiredIfSave(schema),
+    }),
   employerPhone: Yup.string().when('occupation', {
     is: OccupationType.UNEMPLOYED,
     otherwise: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
