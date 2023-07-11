@@ -5,9 +5,10 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter } from 'react-router-dom'
+import { MockStore } from 'redux-mock-store'
 
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
-import { ThemeProviderMock } from 'tests/mocks'
+import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
 
 import { AgreementArea } from '../AgreementArea'
 
@@ -42,15 +43,30 @@ jest.mock('../../../../../pointOfSale', () => ({
 window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
 const mockUpdateStatus = jest.fn()
+const mockUpdateStatusLocally = jest.fn()
+jest.mock('shared/api/requests/loanAppLifeCycleDc', () => ({
+  ...jest.requireActual('shared/api/requests/loanAppLifeCycleDc'),
+  useUpdateApplicationStatus: () => ({
+    mutate: mockUpdateStatus,
+    isLoading: false,
+  }),
+}))
+
 const mockSetAgreementDocs = jest.fn()
 
 const queryClient = new QueryClient()
 
-const createWrapper = ({ children }: PropsWithChildren) => (
+interface WrapperProps extends PropsWithChildren {
+  store?: MockStore
+}
+
+const createWrapper = ({ store, children }: WrapperProps) => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProviderMock>
-      <BrowserRouter>{children}</BrowserRouter>
-    </ThemeProviderMock>
+    <StoreProviderMock mockStore={store}>
+      <ThemeProviderMock>
+        <BrowserRouter>{children}</BrowserRouter>
+      </ThemeProviderMock>
+    </StoreProviderMock>
   </QueryClientProvider>
 )
 
@@ -61,7 +77,7 @@ describe('AgreementAreaTest', () => {
         <AgreementArea
           status={StatusCode.INITIAL}
           application={fullApplicationData.application as ApplicationFrontdc}
-          updateStatus={mockUpdateStatus}
+          updateApplicationStatusLocally={mockUpdateStatusLocally}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
           setIsEditRequisitesMode={jest.fn}
@@ -79,7 +95,7 @@ describe('AgreementAreaTest', () => {
           <AgreementArea
             status={StatusCode.FINALLY_APPROVED}
             application={fullApplicationData.application as ApplicationFrontdc}
-            updateStatus={mockUpdateStatus}
+            updateApplicationStatusLocally={mockUpdateStatusLocally}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
@@ -100,7 +116,8 @@ describe('AgreementAreaTest', () => {
 
       it('После нажатия на "Сформировать договор" заявке присваивается статус "Формирование КД"', () => {
         userEvent.click(screen.getByText('Сформировать договор'))
-        expect(mockUpdateStatus).toBeCalledTimes(1)
+        expect(mockUpdateStatus).toBeCalledTimes(0)
+        expect(mockUpdateStatusLocally).toBeCalledTimes(1)
       })
     })
 
@@ -110,7 +127,7 @@ describe('AgreementAreaTest', () => {
           <AgreementArea
             status={StatusCode.FORMATION}
             application={fullApplicationData.application as ApplicationFrontdc}
-            updateStatus={mockUpdateStatus}
+            updateApplicationStatusLocally={mockUpdateStatusLocally}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
@@ -127,7 +144,7 @@ describe('AgreementAreaTest', () => {
           <AgreementArea
             status={StatusCode.FORMATION}
             application={fullApplicationData.application as ApplicationFrontdc}
-            updateStatus={mockUpdateStatus}
+            updateApplicationStatusLocally={mockUpdateStatusLocally}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
@@ -145,7 +162,7 @@ describe('AgreementAreaTest', () => {
         <AgreementArea
           status={StatusCode.FORMATION}
           application={fullApplicationData.application as ApplicationFrontdc}
-          updateStatus={mockUpdateStatus}
+          updateApplicationStatusLocally={mockUpdateStatusLocally}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
           setIsEditRequisitesMode={jest.fn}
@@ -162,7 +179,7 @@ describe('AgreementAreaTest', () => {
         <AgreementArea
           status={StatusCode.FORMATION}
           application={fullApplicationData.application as ApplicationFrontdc}
-          updateStatus={mockUpdateStatus}
+          updateApplicationStatusLocally={mockUpdateStatusLocally}
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
           setIsEditRequisitesMode={jest.fn}
@@ -182,7 +199,7 @@ describe('AgreementAreaTest', () => {
           <AgreementArea
             status={StatusCode.FORMATION}
             application={fullApplicationData.application as ApplicationFrontdc}
-            updateStatus={mockUpdateStatus}
+            updateApplicationStatusLocally={mockUpdateStatusLocally}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
@@ -204,7 +221,7 @@ describe('AgreementAreaTest', () => {
           <AgreementArea
             status={StatusCode.FORMATION}
             application={fullApplicationData.application as ApplicationFrontdc}
-            updateStatus={mockUpdateStatus}
+            updateApplicationStatusLocally={mockUpdateStatusLocally}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
@@ -232,7 +249,7 @@ describe('AgreementAreaTest', () => {
           <AgreementArea
             status={StatusCode.SIGNED}
             application={fullApplicationData.application as ApplicationFrontdc}
-            updateStatus={mockUpdateStatus}
+            updateApplicationStatusLocally={mockUpdateStatusLocally}
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}

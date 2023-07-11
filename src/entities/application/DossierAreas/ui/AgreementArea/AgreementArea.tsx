@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box, Button, Divider } from '@mui/material'
 import { ApplicationFrontdc, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
-import { useSendToFinancingMutation } from 'shared/api/requests/loanAppLifeCycleDc'
+import {
+  useSendToFinancingMutation,
+  useUpdateApplicationStatus,
+} from 'shared/api/requests/loanAppLifeCycleDc'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
@@ -23,22 +26,25 @@ import { useStyles } from './AgreementArea.styles'
 type Props = {
   status: StatusCode
   application: ApplicationFrontdc
-  updateStatus: (statusCode: StatusCode) => void
+  updateApplicationStatusLocally: (statusCode: StatusCode) => void
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void
   setIsEditRequisitesMode: (value: boolean) => void
 }
 
-const CREATE_AGREEMENT_STEP = 0
-const DOWNLOAD_AGREEMENT_STEP = 1
-const SIGN_AGREEMENT_STEP = 2
-const CHECK_REQUISITES = 3
+enum ProgressBarSteps {
+  CREATE_AGREEMENT_STEP = 0,
+  DOWNLOAD_AGREEMENT_STEP = 1,
+  SIGN_AGREEMENT_STEP = 2,
+  CHECK_REQUISITES = 3,
+  ERROR_STEP = -1,
+}
 
 export function AgreementArea({
   status,
   application,
-  updateStatus,
   agreementDocs,
+  updateApplicationStatusLocally,
   setAgreementDocs,
   setIsEditRequisitesMode,
 }: Props) {
@@ -46,7 +52,6 @@ export function AgreementArea({
   const preparedStatus = getStatus(status)
 
   const navigate = useNavigate()
-  const [currentStep, setCurrentStep] = useState(CREATE_AGREEMENT_STEP)
   const [isDocsLoading, setIsDocsLoading] = useState(false)
   const [docsStatus, setDocsStatus] = useState<string[]>([])
   const [rightsAssigned, setRightsAssigned] = useState(false)
@@ -54,6 +59,29 @@ export function AgreementArea({
   const agreementAreaRef = useRef<HTMLDivElement | undefined>()
   const { vendorCode } = getPointOfSaleFromCookies()
   const { mutate: sendToFinancing, isLoading: isSendLoading } = useSendToFinancingMutation()
+  const { mutate: updateApplicationStatus, isLoading: isStatusLoading } = useUpdateApplicationStatus(
+    application?.dcAppId ?? '',
+    updateApplicationStatusLocally,
+  )
+
+  const currentStep = useMemo(() => {
+    switch (status) {
+      case StatusCode.FINALLY_APPROVED: {
+        return ProgressBarSteps.CREATE_AGREEMENT_STEP
+      }
+      case StatusCode.FORMATION: {
+        return ['downloaded', 'signed'].some(value => docsStatus.includes(value))
+          ? ProgressBarSteps.SIGN_AGREEMENT_STEP
+          : ProgressBarSteps.DOWNLOAD_AGREEMENT_STEP
+      }
+      case StatusCode.SIGNED: {
+        return ProgressBarSteps.CHECK_REQUISITES
+      }
+      default: {
+        return ProgressBarSteps.ERROR_STEP
+      }
+    }
+  }, [docsStatus, status])
 
   const getToSecondStage = useCallback(() => {
     const fetchAgreement = async () => {
@@ -63,13 +91,12 @@ export function AgreementArea({
       setDocsStatus(Array(documents.length).fill('received'))
     }
     if (preparedStatus != PreparedStatus.formation) {
-      updateStatus(StatusCode.FORMATION)
+      updateApplicationStatusLocally(StatusCode.FORMATION)
     }
     setIsDocsLoading(true)
-    setCurrentStep(DOWNLOAD_AGREEMENT_STEP)
     setRightsAssigned(false)
     fetchAgreement()
-  }, [updateStatus, setAgreementDocs, status])
+  }, [updateApplicationStatus, setAgreementDocs, preparedStatus])
 
   const onButtonClick = useCallback(() => {
     sendToFinancing({
@@ -79,28 +106,28 @@ export function AgreementArea({
   }, [application.dcAppId, sendToFinancing, rightsAssigned])
 
   useEffect(() => {
-    if (preparedStatus == PreparedStatus.formation) {
+    if (preparedStatus === PreparedStatus.formation) {
       getToSecondStage()
-    } else if (preparedStatus == PreparedStatus.signed) {
-      setCurrentStep(CHECK_REQUISITES)
+    } else if (preparedStatus === PreparedStatus.signed) {
       agreementAreaRef.current?.scrollIntoView()
     }
+    // Если присутствует getToSecondState, то происходит зацикливание
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preparedStatus, agreementAreaRef.current])
 
   const returnToFirstStage = useCallback(() => {
     setAgreementDocs([])
-    updateStatus(StatusCode.FINALLY_APPROVED)
-    setCurrentStep(CREATE_AGREEMENT_STEP)
-  }, [setAgreementDocs, getToSecondStage])
+    setDocsStatus([])
+    updateApplicationStatus(StatusCode.FINALLY_APPROVED)
+  }, [setAgreementDocs, updateApplicationStatus])
 
   const setDocumentToDownloaded = useCallback(
     (index: number) => {
       const docStatus = [...docsStatus]
       docStatus[index] = 'downloaded'
       setDocsStatus(docStatus)
-      setCurrentStep(SIGN_AGREEMENT_STEP)
     },
-    [docsStatus, setDocsStatus, setCurrentStep],
+    [docsStatus, setDocsStatus],
   )
 
   const updateDocumentStatus = useCallback(
@@ -110,16 +137,15 @@ export function AgreementArea({
       setDocsStatus(docStatus)
       let signCounter = 0
       for (const doc of docStatus) {
-        if (doc == 'signed') {
+        if (doc === 'signed') {
           signCounter++
         }
       }
-      if (signCounter == docStatus.length) {
-        updateStatus(StatusCode.SIGNED)
-        setCurrentStep(CHECK_REQUISITES)
+      if (signCounter === docStatus.length) {
+        updateApplicationStatus(StatusCode.SIGNED)
       }
     },
-    [docsStatus, setDocsStatus, updateStatus],
+    [docsStatus, setDocsStatus, updateApplicationStatus],
   )
 
   const changeRightsAssigned = useCallback(
@@ -133,7 +159,7 @@ export function AgreementArea({
   )
 
   const editApplicationWithFinallyApprovedStatus = useCallback(() => {
-    const isFullCalculator = application.vendor?.vendorCode === vendorCode ? true : false
+    const isFullCalculator = application.vendor?.vendorCode === vendorCode
     navigate(appRoutePaths.createOrder, {
       state: { isFullCalculator, saveDraftDisabled: true },
     })
@@ -142,7 +168,7 @@ export function AgreementArea({
   return (
     <Box className={classes.blockContainer} ref={agreementAreaRef}>
       <ProgressBar {...progressBarConfig} currentStep={currentStep} />
-      {preparedStatus == PreparedStatus.finallyApproved && (
+      {preparedStatus === PreparedStatus.finallyApproved && (
         <Box className={classes.actionButtons}>
           <Button
             variant="contained"
@@ -152,14 +178,14 @@ export function AgreementArea({
             Редактировать
           </Button>
           {application.vendor?.vendorCode === vendorCode && (
-            <Button variant="contained" className={classes.button} onClick={getToSecondStage}>
-              Сформировать договор
+            <Button variant="contained" className={classes.docFormButton} onClick={getToSecondStage}>
+              {isStatusLoading ? <CircularProgressWheel size="small" /> : <>Сформировать договор</>}
             </Button>
           )}
         </Box>
       )}
 
-      {preparedStatus == PreparedStatus.formation && (
+      {preparedStatus === PreparedStatus.formation && (
         <Box>
           {isDocsLoading ? (
             <UploadFile
@@ -182,15 +208,15 @@ export function AgreementArea({
                       <SwitchInput
                         label="Подписан"
                         id={'document_' + index}
-                        value={docsStatus[index] == 'signed'}
-                        disabled={index == 0 && !rightsAssigned}
+                        value={docsStatus[index] === 'signed'}
+                        disabled={index === 0 && !rightsAssigned}
                         afterChange={event => updateDocumentStatus(event.target.checked, index)}
                       />
                     ) : (
                       <Box width="137px"> </Box>
                     )}
                   </Box>
-                  {index == 0 && docsStatus[index] != 'received' && (
+                  {index === 0 && docsStatus[index] != 'received' && (
                     <Box className={classes.radioGroup}>
                       <SberTypography sberautoVariant="body2" component="p">
                         Согласие на уступку прав
@@ -213,7 +239,7 @@ export function AgreementArea({
         </Box>
       )}
 
-      {preparedStatus == PreparedStatus.signed && (
+      {preparedStatus === PreparedStatus.signed && (
         <Box className={classes.documentContainer}>
           <RequisitesArea
             application={application}
@@ -232,7 +258,7 @@ export function AgreementArea({
           >
             Вернуться на формирование договора
           </SberTypography>
-          {preparedStatus == PreparedStatus.signed && (
+          {preparedStatus === PreparedStatus.signed && (
             <Button
               variant="contained"
               className={classes.financingButton}
