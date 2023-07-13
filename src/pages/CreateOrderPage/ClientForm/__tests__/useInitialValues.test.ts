@@ -2,11 +2,11 @@ import React from 'react'
 
 import { renderHook } from '@testing-library/react'
 
+import { Order } from 'entities/reduxStore/orderSlice'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { disableConsole } from 'tests/utils'
 
-import { Order } from '../../model/orderSlice'
 import { useInitialValues } from '../useInitialValues'
 import { EXPECTED_DATA } from './useInitialValues.mock'
 

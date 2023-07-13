@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Calculator } from 'common/OrderCalculator/ui/Calculator/Calculator'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { appRoutes } from 'shared/navigation/routerPath'
 
 import { useAppSelector } from '../../shared/hooks/store/useAppSelector'
@@ -13,7 +14,6 @@ import { ClientForm } from './ClientForm'
 import { ClientData } from './ClientForm/ClientForm.types'
 import { useInitialValues } from './ClientForm/useInitialValues'
 import { useStyles } from './CreateOrderPage.styles'
-import { updateOrder } from './model/orderSlice'
 import { OrderSearching } from './OrderSearching'
 
 enum StepKey {

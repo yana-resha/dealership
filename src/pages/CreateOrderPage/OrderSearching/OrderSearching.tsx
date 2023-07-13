@@ -5,11 +5,11 @@ import { Skeleton } from '@mui/material'
 
 import { useFindApplicationsQuery } from 'common/findApplication/findApplications'
 import { ApplicationTable } from 'entities/application/ApplicationTable/ApplicationTable'
+import { clearOrder, setOrder } from 'entities/reduxStore/orderSlice'
 import { OrderData, OrderForm } from 'pages/CreateOrderPage/OrderSearching/components/OrderForm'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
-import { clearOrder, setOrder } from '../model/orderSlice'
 import { NoMatchesModal } from './components/NoMatchesModal/NoMatchesModal'
 import { useCheckIfSberClient } from './OrderSearching.hooks'
 import { slIsOrderExist, slStorageOrder } from './OrderSearching.selectors'

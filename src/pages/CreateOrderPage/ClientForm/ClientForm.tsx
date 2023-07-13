@@ -10,15 +10,15 @@ import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { clearOrder } from 'entities/reduxStore/orderSlice'
 import {
   useSaveDraftApplicationMutation,
   useSendApplicationToScore,
 } from 'shared/api/requests/loanAppLifeCycleDc'
-import { appRoutePaths } from 'shared/navigation/routerPath'
+import { appRoutePaths, appRoutes } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
 import { CreateOrderPageState } from '../CreateOrderPage'
-import { clearOrder } from '../model/orderSlice'
 import { useStyles } from './ClientForm.styles'
 import { ClientData, SubmitAction } from './ClientForm.types'
 import { clientFormValidationSchema } from './config/clientFormValidation'
@@ -39,7 +39,16 @@ export function ClientForm({ formRef, onMount }: Props) {
   const state = location.state as CreateOrderPageState
   const saveDraftDisabled = state && state.saveDraftDisabled != undefined ? state.saveDraftDisabled : false
   const { remapApplicationValues, isShouldShowLoading, initialValues, dcAppId } = useInitialValues()
-  const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation()
+  const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation(
+    (dcAppId: string) => {
+      if (dcAppId) {
+        navigate(appRoutes.order(dcAppId))
+      } else {
+        dispatch(clearOrder())
+        navigate(appRoutes.orderList())
+      }
+    },
+  )
   const { mutate: sendToScore } = useSendApplicationToScore({
     onSuccess: () => {
       dispatch(clearOrder())
@@ -78,10 +87,7 @@ export function ClientForm({ formRef, onMount }: Props) {
   const saveApplicationDraft = useCallback(
     (application: GetFullApplicationResponse) => {
       console.log('ClientForm.saveApplicationDraft values:', application)
-      saveDraft(getDraftApplicationData(application)).then(() => {
-        dispatch(clearOrder())
-        navigate(appRoutePaths.orderList)
-      })
+      saveDraft(getDraftApplicationData(application))
     },
     [saveDraft, getDraftApplicationData, dispatch, navigate],
   )

@@ -107,10 +107,10 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
           <InfoText label="Юридическое лицо">{application.vendor?.vendorName || ''}</InfoText>
           <InfoText label="Сумма кредита">{formatMoney(application?.loanData?.amount)}</InfoText>
           <InfoText label="Банк получатель">
-            {application.vendor?.vendorBankDetails?.accountRequisites?.bank || ''}
+            {application.vendor?.vendorBankDetails?.accountRequisite?.bank || ''}
           </InfoText>
           <InfoText label="Номер счета банка">
-            {application.vendor?.vendorBankDetails?.accountRequisites?.accountNumber || ''}
+            {application.vendor?.vendorBankDetails?.accountRequisite?.accountNumber || ''}
           </InfoText>
         </Box>
         <Divider />

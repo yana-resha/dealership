@@ -10,7 +10,7 @@ import {
 import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
-import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { NoMatchesModal } from 'pages/CreateOrderPage/OrderSearching/components/NoMatchesModal/NoMatchesModal'
 import { checkIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'

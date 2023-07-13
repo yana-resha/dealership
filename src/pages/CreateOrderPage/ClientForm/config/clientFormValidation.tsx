@@ -139,7 +139,7 @@ export const clientFormValidationSchema = Yup.object().shape({
   passportDate: setRequiredIfSave(Yup.date().nullable()).min(getMinPassportDate(), 'Дата слишком ранняя'),
   divisionCode: setRequiredIfSave(Yup.string().nullable()).min(6, 'Введите данные полностью'),
   sex: Yup.number().nullable().required('Поле обязательно для заполнения'),
-  issuedBy: setRequiredIfSave(Yup.number().nullable()),
+  issuedBy: setRequiredIfSave(Yup.string().nullable()),
   registrationAddressString: setRequiredIfSave(Yup.string()),
   livingAddressString: Yup.string().when('regAddrIsLivingAddr', {
     is: false,

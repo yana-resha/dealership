@@ -207,7 +207,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
             vendorName: 'Arex',
             address: 'Г Москва ул. Собаки баскервилей д7',
             requisites: {
-              accountRequisites: {
+              accountRequisite: {
                 accountNumber: '40702810038000017241',
                 accountCorrNumber: '40702810038000017243',
                 inn: '12345678901',
@@ -228,7 +228,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
             vendorName: 'Arex2',
             address: 'Г Москва ул. Собаки баскервилей д7',
             requisites: {
-              accountRequisites: {
+              accountRequisite: {
                 accountNumber: '40702810038000017241',
                 accountCorrNumber: '40702810038000017243',
                 inn: '12345678901',
@@ -270,7 +270,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
             vendorName: 'РосГосСтрах',
             address: 'Г Москва ул. Собаки баскервилей д7',
             requisites: {
-              accountRequisites: {
+              accountRequisite: {
                 accountNumber: '40702810038000017241',
                 accountCorrNumber: '40702810038000017243',
                 inn: '12345678901',
@@ -291,7 +291,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
             vendorName: 'Почта Банк',
             address: 'Г Москва ул. Собаки баскервилей д7',
             requisites: {
-              accountRequisites: {
+              accountRequisite: {
                 accountNumber: '40702810038000017241',
                 accountCorrNumber: '40702810038000017243',
                 inn: '12345678901',
@@ -338,7 +338,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       address: 'Г Счастья ул радости дом 7',
       unit: 'unit',
       vendorBankDetails: {
-        accountRequisites: {
+        accountRequisite: {
           accountNumber: '40702810038000017240',
           accountCorrNumber: '40702810038000017249',
           inn: '12345678901',

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate, useLocation, matchPath } from 'react-router-dom'
 
 import { AuthType } from 'common/auth'
-import { clearOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import { clearOrder } from 'entities/reduxStore/orderSlice'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { MenuItem } from './hooks/types'
