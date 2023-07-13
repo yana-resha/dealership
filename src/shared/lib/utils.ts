@@ -18,10 +18,21 @@ export function transformResponseData(responseData: any) {
   return responseData
 }
 
-export function formatNumber(number: number, postfix?: string) {
+export function formatNumber(num: number | string, options?: { postfix?: string; digits?: number }) {
+  const { postfix, digits } = options || {}
   const postfixStr = postfix ? `${postfix}` : ''
 
-  return new Intl.NumberFormat('ru-RU').format(number) + postfixStr
+  if (typeof num === 'string' && !num.trim()) {
+    return num.trim()
+  }
+  const params = digits
+    ? {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      }
+    : undefined
+
+  return new Intl.NumberFormat('ru-RU', params).format(+num) + postfixStr
 }
 
 export function formatMoney(number?: number) {
@@ -29,7 +40,7 @@ export function formatMoney(number?: number) {
     return ''
   }
 
-  return formatNumber(number, ' ₽')
+  return formatNumber(number, { postfix: ' ₽' })
 }
 
 export function formatTerm(term: number) {
