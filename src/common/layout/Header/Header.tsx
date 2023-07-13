@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
+import { ClickAwayListener } from '@mui/material'
 import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import Cookies from 'js-cookie'
 
@@ -19,18 +20,22 @@ export function Header() {
   }, [])
 
   const removeEditing = useCallback(() => {
-    setIsEdit(false)
-  }, [])
+    if (isEdit) {
+      setIsEdit(false)
+    }
+  }, [isEdit])
 
   return (
-    <div className={classes.headerContainer}>
-      {!isEdit ? (
-        <PointInfo onButtonClick={setEditing} />
-      ) : (
-        <ChoosePoint value={pointOfSale} isHeader onSuccessEditing={removeEditing} />
-      )}
+    <ClickAwayListener onClickAway={removeEditing}>
+      <div className={classes.headerContainer}>
+        {!isEdit ? (
+          <PointInfo onButtonClick={setEditing} />
+        ) : (
+          <ChoosePoint value={pointOfSale} isHeader onSuccessEditing={removeEditing} />
+        )}
 
-      <UserInfo />
-    </div>
+        <UserInfo />
+      </div>
+    </ClickAwayListener>
   )
 }
