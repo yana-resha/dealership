@@ -1,6 +1,9 @@
-import { ApplicantDocsType, OccupationType, Sex } from '@sberauto/loanapplifecycledc-proto/public'
-
-import { MaritalStatus } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import {
+  ApplicantDocsType,
+  MaritalStatus,
+  OccupationType,
+  Sex,
+} from '@sberauto/loanapplifecycledc-proto/public'
 
 import { Address, ClientData, SubmitAction } from '../ClientForm.types'
 
@@ -73,11 +76,11 @@ export const configInitialValues: ClientData = {
 }
 
 export const FAMILY_STATUS_VALUES = [
-  { label: 'Женат/Замужем', value: MaritalStatus.Married },
-  { label: 'Холост/Не замужем', value: MaritalStatus.Single },
-  { label: 'Разведен/Разведена', value: MaritalStatus.Divorced },
-  { label: 'Вдовец/Вдова', value: MaritalStatus.Widower },
-  { label: 'Гражданский брак', value: MaritalStatus.CivilMarriage },
+  { label: 'Женат/Замужем', value: MaritalStatus.MARRIED },
+  { label: 'Холост/Не замужем', value: MaritalStatus.SINGLE },
+  { label: 'Разведен/Разведена', value: MaritalStatus.DIVORCED },
+  { label: 'Вдовец/Вдова', value: MaritalStatus.WIDOWER },
+  { label: 'Гражданский брак', value: MaritalStatus.CIVILMARRIAGE },
 ]
 
 export const SEX_VALUES = [

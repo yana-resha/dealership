@@ -133,7 +133,6 @@ export function JobArea() {
         name="occupation"
         label="Должность/Вид занятости"
         placeholder="-"
-        //TODO нужен enum в контракте DCB-390
         options={OCCUPATION_VALUES}
         gridColumn="span 8"
       />
