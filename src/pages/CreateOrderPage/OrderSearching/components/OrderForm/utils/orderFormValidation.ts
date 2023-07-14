@@ -37,7 +37,7 @@ export const searchingOrderFormValidationSchema = Yup.object().shape(
       })
       .nullable(),
     phoneNumber: Yup.string()
-      .min(9, 'Введите номер полностью')
+      .min(11, 'Введите номер полностью')
       .when(['passport', 'clientName', 'birthDate'], {
         is: (passport: string | undefined, clientName: string | undefined, birthDate: Date | undefined) =>
           passport || (clientName?.trim?.() && birthDate),
@@ -64,5 +64,5 @@ export const orderFormValidationSchema = Yup.object().shape({
     .required(FieldMessages.required)
     .min(getMinBirthDate(), 'Превышен максимальный возраст')
     .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`),
-  phoneNumber: Yup.string().required(FieldMessages.required).min(9, 'Введите номер полностью'),
+  phoneNumber: Yup.string().required(FieldMessages.required).min(11, 'Введите номер полностью'),
 })
