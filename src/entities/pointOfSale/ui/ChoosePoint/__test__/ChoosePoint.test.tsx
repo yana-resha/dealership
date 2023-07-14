@@ -207,7 +207,9 @@ describe('ChoosePoint', () => {
       expect(screen.getByText('Вы выбрали точку:')).toBeVisible()
       expect(screen.getByText('Сармат 2002852 Ханты-Мансийск Зябликова 4')).toBeVisible()
       expect(screen.getByText('Все верно?')).toBeVisible()
-      screen.getAllByRole('button').map((el, i) => expect(el).toHaveTextContent(i === 0 ? 'Да' : 'Нет'))
+      screen.getAllByRole('button').map((el, i) => {
+        expect(el).toHaveTextContent(i === 0 ? 'close.svg' : i === 1 ? 'Да' : 'Нет')
+      })
     })
   })
 

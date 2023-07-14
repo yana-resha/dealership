@@ -1,17 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
-import {
-  AutocompleteRenderInputParams,
-  Collapse,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  useTheme,
-} from '@mui/material'
+import { AutocompleteRenderInputParams, Collapse, DialogContentText, useTheme } from '@mui/material'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { InputAdornment } from '@mui/material'
 import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import cx from 'classnames'
 import { useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 
@@ -19,6 +12,7 @@ import { ReactComponent as DoneIcon } from 'assets/icons/done.svg'
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
 import { defaultRoute } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
+import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { useGetVendorsListQuery } from './ChoosePoint.api'
@@ -177,28 +171,30 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
         </Button>
       )}
 
-      <Dialog open={isDialogOpen} maxWidth="xs" fullWidth>
+      <ModalDialog isVisible={isDialogOpen} onClose={onDisagree} testId="choosePointModal">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-          <DialogContent>
+          <Box>
             <DialogContentText className={classes.dialogText}>Вы выбрали точку:</DialogContentText>
             {chosenOption && (
               <DialogContentText className={classes.dialogText}>
                 {retrieveLabelForPointOfSale(chosenOption)}
               </DialogContentText>
             )}
-            <DialogContentText className={classes.dialogText}>Все верно?</DialogContentText>
-          </DialogContent>
+            <DialogContentText className={cx(classes.dialogText, classes.lastDialogText)}>
+              Все верно?
+            </DialogContentText>
+          </Box>
 
-          <DialogActions>
+          <Box>
             <Button variant="contained" autoFocus onClick={onAgree} className={classes.dialogBtn}>
               Да
             </Button>
             <Button variant="outlined" onClick={onDisagree} className={classes.dialogBtn}>
               Нет
             </Button>
-          </DialogActions>
+          </Box>
         </Box>
-      </Dialog>
+      </ModalDialog>
     </>
   )
 }

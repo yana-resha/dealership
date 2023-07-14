@@ -46,9 +46,9 @@ export default makeStyles(theme => ({
   dialogBtn: {
     '&.MuiButton-root': {
       minWidth: 160,
+      minHeight: 48,
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
-      marginBottom: theme.spacing(1),
       borderRadius: 12 * theme.shape.borderRadius,
     },
   },
@@ -56,6 +56,20 @@ export default makeStyles(theme => ({
   dialogText: {
     '&&.MuiDialogContentText-root': {
       color: theme.palette.text.primary,
+      marginBottom: theme.spacing(1),
+    },
+  },
+
+  lastDialogText: {
+    '&&.MuiDialogContentText-root': {
+      marginBottom: theme.spacing(3),
+    },
+  },
+
+  dialogContrastText: {
+    '&&.MuiDialogContentText-root': {
+      color: theme.palette.text.primary,
+      fontWeight: '600',
       marginBottom: theme.spacing(1),
     },
   },
