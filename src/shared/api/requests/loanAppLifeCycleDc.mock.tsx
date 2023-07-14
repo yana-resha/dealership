@@ -7,15 +7,6 @@ import {
   DocType,
 } from '@sberauto/loanapplifecycledc-proto/public'
 
-//TODO перенести эти справочники в контракты DCB-390
-export enum MaritalStatus {
-  Married = 1,
-  Single = 2,
-  Divorced = 3,
-  Widower = 4,
-  CivilMarriage = 5,
-}
-
 export const fullApplicationData: GetFullApplicationResponse = {
   moratoryEndDate: '2023-06-21',
   targetDcAppId: '2023062280224',

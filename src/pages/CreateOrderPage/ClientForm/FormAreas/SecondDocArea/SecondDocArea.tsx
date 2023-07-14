@@ -23,7 +23,6 @@ export function SecondDocArea() {
         name="secondDocumentType"
         label="Тип второго документа"
         placeholder="-"
-        //TODO зафиксировать в контрактах DCB-390
         options={DOCUMENT_TYPE_VALUES}
         gridColumn="span 8"
       />
