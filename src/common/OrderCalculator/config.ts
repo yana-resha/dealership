@@ -14,10 +14,14 @@ import {
 } from './types'
 
 const CAR_YEARS_LENGTH = 20
+const CAR_YEARS_LENGTH_FOR_NEW_CAR = 2
 
-function getCarYears(yearsLength: number) {
+export function getCarYears(isNewCar = false) {
   const currentYear = new Date().getFullYear()
-  const years = Array.from(new Array(yearsLength), (_, index) => ({ value: currentYear - index }))
+  const years = Array.from(
+    new Array(isNewCar ? CAR_YEARS_LENGTH_FOR_NEW_CAR : CAR_YEARS_LENGTH),
+    (_, index) => ({ value: currentYear - index }),
+  )
 
   return years
 }
@@ -32,7 +36,7 @@ export const CAR_CONDITIONS = [
     label: 'Б/У',
   },
 ]
-export const carYears = getCarYears(CAR_YEARS_LENGTH)
+
 export const CAR_PASSPORT_TYPE = [
   {
     value: 1,
@@ -108,11 +112,13 @@ const INITIAL_COMMON_ERROR: CommonError = {
 
 const INITIAL_VALIDATION_PARAMS: ValidationParams = {}
 
+const initialCarCondition = CAR_CONDITIONS[0].value
+
 export const initialValueMap: OrderCalculatorFields = {
-  [FormFieldNameMap.carCondition]: CAR_CONDITIONS[0].value,
+  [FormFieldNameMap.carCondition]: initialCarCondition,
   [FormFieldNameMap.carBrand]: null,
   [FormFieldNameMap.carModel]: null,
-  [FormFieldNameMap.carYear]: carYears[0].value,
+  [FormFieldNameMap.carYear]: getCarYears(!!initialCarCondition)[0].value,
   [FormFieldNameMap.carCost]: '',
   [FormFieldNameMap.carMileage]: '',
   [FormFieldNameMap.creditProduct]: '',

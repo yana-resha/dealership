@@ -1,8 +1,10 @@
 import { Box } from '@mui/material'
+import { useField } from 'formik'
 
-import { CAR_CONDITIONS, carYears } from 'common/OrderCalculator/config'
+import { CAR_CONDITIONS } from 'common/OrderCalculator/config'
 import { useCarBrands } from 'common/OrderCalculator/hooks/useCarBrands'
 import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
+import { useCarYears } from 'common/OrderCalculator/hooks/useCarYears'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
@@ -23,6 +25,7 @@ export function CarSettingsArea({ onFilled, isLoading }: Props) {
   const classes = useStyles()
 
   const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
+  const { carYears } = useCarYears()
   const { handleBtnClick } = useCarSettings(onFilled)
 
   return (
