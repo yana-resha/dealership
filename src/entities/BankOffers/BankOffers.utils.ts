@@ -3,13 +3,26 @@ import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 import { formatNumber } from 'shared/lib/utils'
 
 import { BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
-import { PreparedTableData } from './BankOffers.types'
 
-export const getCellsChildrens = (
-  row: PreparedTableData,
+export const prepareRow = (row: CalculatedProduct) => {
+  const downpayment = formatNumber(row.downpayment != undefined ? row.downpayment.toString() : '')
+  const term = `${row.term} мес`
+  const monthlyPayment = formatNumber(row.monthlyPayment != undefined ? row.monthlyPayment.toString() : '')
+  const lastPayment = formatNumber(row.lastPayment != undefined ? row.lastPayment.toString() : '')
+  const overpayment = formatNumber(row.overpayment != undefined ? row.overpayment.toString() : '')
+  const totalSum = formatNumber(row.totalSum != undefined ? row.totalSum.toString() : '')
+  const currentRate = formatNumber(row.currentRate != undefined ? (row.currentRate * 100).toString() : '', {
+    digits: 2,
+  })
+
+  return { ...row, downpayment, term, monthlyPayment, lastPayment, currentRate, overpayment, totalSum }
+}
+
+export const getCellsChildren = (
+  row: CalculatedProduct,
 ): { name: string; value: string | boolean | number; type?: string }[] =>
   BANK_OFFERS_TABLE_HEADERS.map(header => {
-    let value: string | boolean | number | undefined = row[header.key as keyof PreparedTableData]
+    let value: string | boolean | number | undefined = prepareRow(row)[header.key as keyof CalculatedProduct]
     let { type } = header
 
     if (header.key === 'incomeFlag') {
@@ -27,19 +40,4 @@ export const getCellsChildrens = (
       value: value,
       type: type,
     }
-  })
-
-export const prepareData = (data: CalculatedProduct[]) =>
-  data.map(d => {
-    const downpayment = formatNumber(d.downpayment !== undefined ? d.downpayment.toString() : '')
-    const term = `${d.term} мес`
-    const monthlyPayment = formatNumber(d.monthlyPayment !== undefined ? d.monthlyPayment.toString() : '')
-    const lastPayment = formatNumber(d.lastPayment !== undefined ? d.lastPayment.toString() : '')
-    const overpayment = formatNumber(d.overpayment !== undefined ? d.overpayment.toString() : '')
-    const totalSum = formatNumber(d.totalSum !== undefined ? d.totalSum.toString() : '')
-    const currentRate = formatNumber(d.currentRate !== undefined ? (d.currentRate * 100).toString() : '', {
-      digits: 2,
-    })
-
-    return { ...d, downpayment, term, monthlyPayment, lastPayment, currentRate, overpayment, totalSum }
   })
