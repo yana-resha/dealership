@@ -6,7 +6,6 @@ import {
   SuggestionGetAddressSuggestions,
   SuggestionGetOrganizationSuggestions,
 } from '@sberauto/dadata-proto/public'
-import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
 
@@ -20,7 +19,8 @@ import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { ClientData } from '../../ClientForm.types'
-import { OCCUPATION_VALUES, configAddressInitialValues } from '../../config/clientFormInitialValues'
+import { configAddressInitialValues, OCCUPATION_VALUES } from '../../config/clientFormInitialValues'
+import { JOB_DISABLED_OCCUPATIONS } from '../../config/clientFormValidation'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './JobArea.styles'
 
@@ -89,12 +89,13 @@ export function JobArea() {
   }, [employerName, updateListOfSuggestions])
 
   useEffect(() => {
-    if (occupation === OccupationType.UNEMPLOYED) {
+    if (occupation !== null && JOB_DISABLED_OCCUPATIONS.includes(occupation)) {
       setJobDisabled(true)
       setFieldValue('employmentDate', '')
       setFieldValue('employerName', '')
       setFieldValue('employerPhone', '')
       setFieldValue('employerAddress', configAddressInitialValues)
+      setAddressSuggestion({})
       setFieldValue('employerAddressString', '')
       setFieldValue('emplNotKladr', false)
       setFieldValue('employerInn', '')
@@ -189,6 +190,7 @@ export function JobArea() {
           label="Адрес работодателя (КЛАДР)"
           placeholder="-"
           gridColumn="span 12"
+          disabled={jobDisabled}
           forceValue={addressSuggestion as SuggestionGetAddressSuggestions}
         />
       )}
