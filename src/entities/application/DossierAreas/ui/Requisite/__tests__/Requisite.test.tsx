@@ -65,8 +65,8 @@ describe('RequisiteTest', () => {
       expect(screen.getByText('40702810038000017243')).toBeInTheDocument()
     })
 
-    it('Отображается "Налог"', () => {
-      expect(screen.getByText('Налог')).toBeInTheDocument()
+    it('Отображается "НДС"', () => {
+      expect(screen.getByText('НДС')).toBeInTheDocument()
       expect(screen.getByText('13.5')).toBeInTheDocument()
     })
   })
