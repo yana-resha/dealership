@@ -1,3 +1,4 @@
+import { appConfig } from 'config'
 import { getUserSessionId } from 'shared/lib/getUserSessionId'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
@@ -58,6 +59,9 @@ const genericRequest = async <RequestType, ResponseType>(
   }
   if (userSessionId) {
     // headers.append('X-Session-Id', userSessionId)
+  }
+  if (appConfig.dochubApiHeader) {
+    headers.append('X-App', appConfig.dochubApiHeader)
   }
 
   return fetch(url, {

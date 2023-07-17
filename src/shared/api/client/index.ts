@@ -1,5 +1,6 @@
 import throttle from 'lodash/throttle'
 
+import { appConfig } from 'config'
 import { getUserSessionId } from 'shared/lib/getUserSessionId'
 
 import { Options } from '../helpers/baseFetch'
@@ -136,6 +137,9 @@ class Rest {
     const userSessionId = getUserSessionId()
     if (userSessionId) {
       // headers.append('X-Session-Id', userSessionId)
+    }
+    if (appConfig.dochubApiHeader) {
+      headers.append('X-App', appConfig.dochubApiHeader)
     }
     if (withCredentials) {
       headers.append('Authorization', `Bearer ${authToken.jwt.get()}`)

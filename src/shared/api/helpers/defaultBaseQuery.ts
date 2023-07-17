@@ -1,5 +1,6 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 
+import { appConfig } from 'config'
 import { getUserSessionId } from 'shared/lib/getUserSessionId'
 import { transformRequestData, transformResponseData } from 'shared/lib/utils'
 import { appRoutePaths } from 'shared/navigation/routerPath'
@@ -68,6 +69,9 @@ export const defaultBaseQuery =
     }
     if (userSessionId) {
       // headers['X-Session-Id'] = userSessionId
+    }
+    if (appConfig.dochubApiHeader) {
+      headers['X-App'] = appConfig.dochubApiHeader
     }
 
     const formattedBody = body ? JSON.stringify(transformRequestData(body)) : null
