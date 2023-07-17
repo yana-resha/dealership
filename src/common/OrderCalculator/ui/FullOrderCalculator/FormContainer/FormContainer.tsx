@@ -80,6 +80,7 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
     <Form>
       <CarSettingsArea
         onFilled={changeShouldFetchProducts}
+        visibleFooter={!shouldShowOrderSettings}
         requisites={requisites.dealerCenterRequisites}
         isLoading={isLoading}
       />

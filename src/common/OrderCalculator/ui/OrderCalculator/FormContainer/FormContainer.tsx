@@ -46,7 +46,11 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
 
   return (
     <Form>
-      <CarSettingsArea onFilled={changeShouldFetchProducts} isLoading={isLoading} />
+      <CarSettingsArea
+        onFilled={changeShouldFetchProducts}
+        visibleFooter={!shouldShowOrderSettings}
+        isLoading={isLoading}
+      />
       <OrderSettingsArea disabled={!shouldShowOrderSettings} isSubmitLoading={isSubmitLoading} />
     </Form>
   )
