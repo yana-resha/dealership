@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react'
 
-import { Avatar, CircularProgress, IconButton, Link } from '@mui/material'
+import { Avatar, IconButton, Link } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Box } from '@mui/system'
 
 import { ReactComponent as Close } from 'assets/icons/close.svg'
 import documentIcon from 'assets/icons/document.svg'
 
+import { CircularProgressWheel } from '../CircularProgressWheel/CircularProgressWheel'
 import SberTypography from '../SberTypography'
 
 const useStyles = makeStyles(theme => ({
@@ -67,7 +68,7 @@ export const UploadFile = ({ file, index, onClick, loadingMessage, onClickDelete
             />
           </Avatar>
         ) : (
-          <CircularProgress data-testid="uploadFileCircularProgress" size={32} />
+          <CircularProgressWheel size="medium" />
         )}
 
         <SberTypography className={styles.text} sberautoVariant="body3" component="p">

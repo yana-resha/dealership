@@ -1,6 +1,5 @@
 import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { SecondDocs } from '../../config/clientForm.values'
 import { transformDocsForRequest } from '../transformDocsForRequest'
 import { transformPhoneForRequest } from '../transformPhoneForRequest'
 
@@ -20,14 +19,14 @@ describe('утилиты анкеты клиента', () => {
 
   it('transformDocsForRequest работает корректно для снилс', () => {
     const date = new Date('1999-01-31')
-    expect(transformDocsForRequest(SecondDocs.InsuranceCertificate, '1111333333', date, '222')).toMatchObject(
-      {
-        type: 18,
-        number: '1111333333',
-        issuedBy: '222',
-        issuedDate: '1999-01-31',
-      },
-    )
+    expect(
+      transformDocsForRequest(ApplicantDocsType.PENSIONCERTIFICATE, '1111333333', date, '222'),
+    ).toMatchObject({
+      type: 18,
+      number: '1111333333',
+      issuedBy: '222',
+      issuedDate: '1999-01-31',
+    })
   })
 
   it('transformDocsForRequest работает корректно для загранпаспорта', () => {

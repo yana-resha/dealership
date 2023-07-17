@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import {
   ApplicantDocsType,
   SendApplicationToScoringRequest,
@@ -24,6 +24,7 @@ import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycle
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { appRoutes } from 'shared/navigation/routerPath'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { getFullName } from 'shared/utils/clientNameTransform'
 
@@ -135,7 +136,11 @@ export function ClientDetailedDossier() {
   return (
     <div className={classes.page} data-testid="clientDetailedDossier">
       <Box className={classes.container}>
-        {isLoading && <CircularProgress className={classes.circular} />}
+        {isLoading && (
+          <Box className={classes.circular}>
+            <CircularProgressWheel size="large" />
+          </Box>
+        )}
         {isError && (
           <>
             <SberTypography sberautoVariant="body3" component="p">

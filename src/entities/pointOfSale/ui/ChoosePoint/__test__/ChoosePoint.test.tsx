@@ -115,7 +115,7 @@ describe('ChoosePoint', () => {
     })
 
     it('Отображается индиктор загрузки', () => {
-      expect(screen.getByTestId('loadingImg')).toBeInTheDocument()
+      expect(screen.getByTestId('circularProgressWheel')).toBeInTheDocument()
     })
   })
 

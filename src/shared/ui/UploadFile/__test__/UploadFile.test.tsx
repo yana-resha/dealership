@@ -49,6 +49,6 @@ describe('UploadFile', () => {
       </MockProviders>,
     )
 
-    expect(screen.getByTestId('uploadFileCircularProgress')).toHaveClass('MuiCircularProgress-root')
+    expect(screen.getByTestId('circularProgressWheel')).toBeInTheDocument()
   })
 })

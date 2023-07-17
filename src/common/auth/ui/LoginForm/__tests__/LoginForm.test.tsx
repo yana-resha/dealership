@@ -70,7 +70,7 @@ describe('LoginForm', () => {
       </MockProviders>,
     )
 
-    const circularProgress = screen.getByRole('progressbar')
+    const circularProgress = screen.getByTestId('circularProgressWheel')
     expect(circularProgress).toBeInTheDocument()
   })
 
@@ -83,7 +83,7 @@ describe('LoginForm', () => {
       </MockProviders>,
     )
 
-    const circularProgress = screen.getByRole('progressbar')
+    const circularProgress = screen.getByTestId('circularProgressWheel')
     expect(circularProgress).toBeInTheDocument()
   })
 

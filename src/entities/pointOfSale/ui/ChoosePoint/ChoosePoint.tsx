@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react'
 
 import {
   AutocompleteRenderInputParams,
-  CircularProgress,
   Collapse,
   Dialog,
   DialogActions,
@@ -19,6 +18,7 @@ import { useNavigate } from 'react-router-dom'
 import { ReactComponent as DoneIcon } from 'assets/icons/done.svg'
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
 import { defaultRoute } from 'shared/navigation/routerPath'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { useGetVendorsListQuery } from './ChoosePoint.api'
@@ -90,8 +90,8 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
           endAdornment: (
             <InputAdornment position="end">
               {isLoading ? (
-                <Box position="absolute" top="calc(50% - 10px)" right={9}>
-                  <CircularProgress color="inherit" size={20} data-testid="loadingImg" />
+                <Box position="absolute" top="calc(40% - 10px)" right={9}>
+                  <CircularProgressWheel size="small" />
                 </Box>
               ) : (
                 params.InputProps.endAdornment

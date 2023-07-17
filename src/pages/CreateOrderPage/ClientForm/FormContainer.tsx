@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { Form, useFormikContext } from 'formik'
 
 import { FraudDialog } from 'entities/SpecialMark'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
 import { useStyles } from './ClientForm.styles'
 import { SubmitAction } from './ClientForm.types'
@@ -67,7 +68,7 @@ export function FormContainer({ isDraftLoading, disabledButtons, saveDraftDisabl
               onClick={handleDraftClick}
             >
               Сохранить черновик
-              {isDraftLoading && <CircularProgress color="inherit" size={25} />}
+              {isDraftLoading && <CircularProgressWheel size="small" />}
             </Button>
           )}
           <Button

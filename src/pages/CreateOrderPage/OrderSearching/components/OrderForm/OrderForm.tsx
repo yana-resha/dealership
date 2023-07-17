@@ -1,11 +1,12 @@
 import { memo, useCallback, useMemo } from 'react'
 
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import cx from 'classnames'
 import { Form, Formik } from 'formik'
 
 import { ReactComponent as OrderListLargeIcon } from 'assets/icons/orderListLarge.svg'
 import { maskFullName, maskPassport, maskPhoneNumber } from 'shared/masks/InputMasks'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 
@@ -100,7 +101,7 @@ function OrderForm({ isNewOrder = false, isLoading, onSubmit, onChange, initialD
 
           <Box className={classes.buttonsContainer} gridColumn="1 / -1">
             <Button type="submit" className={classes.button} variant="contained" disabled={isLoading}>
-              {!isLoading ? btnTitle : <CircularProgress color="inherit" size={16} />}
+              {!isLoading ? btnTitle : <CircularProgressWheel size="small" />}
             </Button>
           </Box>
         </Form>

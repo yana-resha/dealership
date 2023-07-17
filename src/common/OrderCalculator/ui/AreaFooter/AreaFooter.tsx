@@ -1,6 +1,8 @@
 import { PropsWithChildren } from 'react'
 
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, Button } from '@mui/material'
+
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
 import useStyles from './AreaFooter.styles'
 
@@ -31,9 +33,9 @@ export function AreaFooter({
         className={classes.submitBtn}
         variant="contained"
         onClick={onClickBtn}
-        disabled={disabled}
+        disabled={disabled || isLoadingBtn}
       >
-        {isLoadingBtn ? <CircularProgress color="inherit" size={25} /> : btnTitle}
+        {isLoadingBtn ? <CircularProgressWheel size="small" /> : btnTitle}
       </Button>
     </Box>
   )
