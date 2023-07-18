@@ -59,12 +59,4 @@ export default makeStyles(theme => ({
       marginBottom: theme.spacing(1),
     },
   },
-
-  dialogContrastText: {
-    '&&.MuiDialogContentText-root': {
-      color: theme.palette.text.primary,
-      fontWeight: '600',
-      marginBottom: theme.spacing(1),
-    },
-  },
 }))
