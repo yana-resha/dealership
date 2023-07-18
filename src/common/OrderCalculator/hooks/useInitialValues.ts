@@ -31,7 +31,7 @@ export function useInitialValues<D extends boolean | undefined>(
   const { vendorCode } = getPointOfSaleFromCookies()
   const fullApplicationData = initialOrder?.orderData
 
-  const { loanCar, loanData, vendor, specialMark } = useMemo(
+  const { loanCar, loanData, vendor } = useMemo(
     () => fullApplicationData?.application || ({} as ApplicationFrontdc),
     [fullApplicationData?.application],
   )
@@ -227,9 +227,7 @@ export function useInitialValues<D extends boolean | undefined>(
         [FormFieldNameMap.taxPercent]: (initialData as FullOrderCalculatorFields).taxPercent,
         [FormFieldNameMap.taxValue]: (initialData as FullOrderCalculatorFields).taxValue,
       }
-    : {
-        [FormFieldNameMap.specialMark]: specialMark ?? (initialData as OrderCalculatorFields).specialMark,
-      }
+    : {}
 
   const remapAdditionalOptionsForSmallCalculator = useCallback((values: OrderCalculatorFields) => {
     const { additionalEquipments, dealerAdditionalServices } = values
@@ -406,7 +404,6 @@ export function useInitialValues<D extends boolean | undefined>(
   const remapApplicationValuesForSmallCalculator = useCallback(
     (values: OrderCalculatorFields) => {
       const {
-        specialMark,
         carCost,
         carModel,
         carBrand,
@@ -438,7 +435,6 @@ export function useInitialValues<D extends boolean | undefined>(
         ...application,
         loanCar: newLoanCar,
         loanData: newLoanData,
-        specialMark: specialMark ?? undefined,
       }
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
@@ -517,7 +513,6 @@ export function useInitialValues<D extends boolean | undefined>(
         loanCar: newLoanCar,
         loanData: newLoanData,
         vendor: newVendor,
-        specialMark: application.specialMark,
       }
 
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))

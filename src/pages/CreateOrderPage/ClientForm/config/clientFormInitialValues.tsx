@@ -70,7 +70,6 @@ export const configInitialValues: ClientData = {
   employerAddressString: '',
   emplNotKladr: false,
   employerInn: '',
-  specialMark: '',
   questionnaireFile: null,
   submitAction: SubmitAction.Save,
 }

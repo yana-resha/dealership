@@ -17,7 +17,6 @@ export enum FormFieldNameMap {
   productType = 'productType', //Вип оборудования / Тип продукта доп. услуги
   productCost = 'productCost', //Стоимость доп. услуги
   isCredit = 'isCredit', //В кредит
-  specialMark = 'specialMark', //Специальная отметка
   carPassportType = 'carPassportType', //Тип ПТС
   carPassportId = 'carPassportId', //Серия и номер ПТС
   carPassportCreationDate = 'carPassportCreationDate', //Дата выдачи ПТС
@@ -128,7 +127,6 @@ export interface OrderCalculatorFields {
   [ServicesGroupName.additionalEquipments]: OrderCalculatorAdditionalService[]
   [ServicesGroupName.dealerAdditionalServices]: OrderCalculatorAdditionalService[]
   [ServicesGroupName.bankAdditionalServices]: OrderCalculatorAdditionalService[]
-  [FormFieldNameMap.specialMark]: string | null
   [FormFieldNameMap.commonError]: CommonError
   [FormFieldNameMap.validationParams]: ValidationParams
 }
@@ -137,7 +135,6 @@ export interface FullOrderCalculatorFields
   extends InitialBankDetailsValue,
     Omit<
       OrderCalculatorFields,
-      | FormFieldNameMap.specialMark
       | ServicesGroupName.additionalEquipments
       | ServicesGroupName.dealerAdditionalServices
       | ServicesGroupName.bankAdditionalServices

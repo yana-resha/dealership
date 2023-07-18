@@ -1,24 +1,34 @@
 import { useCallback, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
+import classNames from 'classnames'
 import { useFormikContext } from 'formik'
+import { useDispatch } from 'react-redux'
 
+import { ReactComponent as Close } from 'assets/icons/cancel.svg'
 import { ReactComponent as WarningIcon } from 'assets/icons/warning.svg'
-import { FormFieldNameMap } from 'common/OrderCalculator/types'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { SPECIAL_MARK_OPTIONS } from 'entities/SpecialMark'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
 
-import { useAppSelector } from '../../shared/hooks/store/useAppSelector'
 import { useStyles } from './FraudDialog.styles'
 
 export const FraudDialog = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const { setFieldValue } = useFormikContext()
   const [isVisible, setIsVisible] = useState(false)
   const savedApplication = useAppSelector(state => state.order.order)
-  const [fraudReason, setFraudReason] = useState(savedApplication?.orderData?.application?.specialMark || '')
+  const application = savedApplication?.orderData?.application
+  const specialMark = application?.specialMark
+  const [fraudReason, setFraudReason] = useState(specialMark || '')
+  const specialMarkClasses = classNames({
+    [classes.root]: !specialMark,
+    [classes.rootActive]: specialMark,
+  })
   const handleChange = useCallback(
     (fieldValue: string) => {
       setFraudReason(fieldValue)
@@ -26,9 +36,17 @@ export const FraudDialog = () => {
     [setFraudReason],
   )
 
+  const deleteSpecialMark = useCallback(() => {
+    dispatch(
+      updateOrder({ orderData: { ...savedApplication, application: { ...application, specialMark: '' } } }),
+    )
+    setFraudReason('')
+  }, [application, dispatch, savedApplication])
+
   const openFraudDialog = useCallback(() => {
+    setFraudReason(specialMark || '')
     setIsVisible(true)
-  }, [setIsVisible])
+  }, [specialMark])
 
   const onClose = useCallback(() => {
     setIsVisible(false)
@@ -36,36 +54,47 @@ export const FraudDialog = () => {
 
   const onSubmit = useCallback(() => {
     setIsVisible(false)
-    setFieldValue(FormFieldNameMap.specialMark, fraudReason)
+    dispatch(
+      updateOrder({
+        orderData: { ...savedApplication, application: { ...application, specialMark: fraudReason } },
+      }),
+    )
   }, [fraudReason, setFieldValue])
 
   return (
     <Box className={classes.fraudButtonContainer}>
       <Button
-        classes={{ root: classes.root, startIcon: classes.startIcon }}
+        classes={{ root: specialMarkClasses, startIcon: classes.startIcon }}
         startIcon={<WarningIcon />}
         component="label"
         onClick={openFraudDialog}
       >
-        Специальная отметка
+        <Box minWidth="max-content">Специальная отметка</Box>
       </Button>
-      <ModalDialog isVisible={isVisible} label="Специальная отметка" onClose={onClose}>
-        <SberTypography sberautoVariant="body3" component="p">
-          Если у вас есть подозрение на мошенничество, то выберите один из пунктов меню, банк примет эти
-          данные к сведению при рассмотрении кредитной заявки.
-        </SberTypography>
-        <SelectInput
-          value={fraudReason}
-          id="fraudReason"
-          onChange={handleChange}
-          label="Варианты"
-          placeholder="-"
-          options={SPECIAL_MARK_OPTIONS}
-          emptyAvailable
-        />
-        <Button onClick={onSubmit} variant="contained" className={classes.submitBtn}>
-          Сохранить
+      {specialMark && (
+        <Button className={classes.cancelButton} component="label" onClick={deleteSpecialMark}>
+          <Close />
         </Button>
+      )}
+      <ModalDialog isVisible={isVisible} label="Специальная отметка" onClose={onClose}>
+        <Box className={classes.dialogContent}>
+          <SberTypography sberautoVariant="body3" component="p">
+            Если у вас есть подозрение на мошенничество, то выберите один из пунктов меню, банк примет эти
+            данные к сведению при рассмотрении кредитной заявки.
+          </SberTypography>
+          <SelectInput
+            value={fraudReason}
+            id="fraudReason"
+            onChange={handleChange}
+            label="Варианты"
+            placeholder="-"
+            options={SPECIAL_MARK_OPTIONS}
+            emptyAvailable
+          />
+          <Button onClick={onSubmit} variant="contained" className={classes.submitBtn}>
+            Сохранить
+          </Button>
+        </Box>
       </ModalDialog>
     </Box>
   )

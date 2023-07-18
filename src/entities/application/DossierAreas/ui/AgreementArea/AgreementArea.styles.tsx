@@ -16,6 +16,10 @@ export const useStyles = makeStyles(theme => ({
     width: 'max-content',
   },
 
+  financingButton: {
+    width: '267px',
+  },
+
   documentsBlock: {
     display: 'flex',
     flexDirection: 'column',
