@@ -182,7 +182,7 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
           <DialogContent>
             <DialogContentText className={classes.dialogText}>Вы выбрали точку:</DialogContentText>
             {chosenOption && (
-              <DialogContentText className={classes.dialogContrastText}>
+              <DialogContentText className={classes.dialogText}>
                 {retrieveLabelForPointOfSale(chosenOption)}
               </DialogContentText>
             )}
