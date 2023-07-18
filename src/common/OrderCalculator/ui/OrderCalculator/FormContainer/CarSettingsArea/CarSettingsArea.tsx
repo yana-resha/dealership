@@ -18,10 +18,11 @@ import useStyles from './CarSettingsArea.styles'
 type Props = {
   /** Срабатывает когда форма заполнена */
   onFilled: () => void
+  visibleFooter: boolean
   isLoading?: boolean
 }
 
-export function CarSettingsArea({ onFilled, isLoading }: Props) {
+export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
   const classes = useStyles()
 
   const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
@@ -76,7 +77,9 @@ export function CarSettingsArea({ onFilled, isLoading }: Props) {
           gridColumn="span 1"
         />
 
-        <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} isLoadingBtn={isLoading} />
+        {visibleFooter && (
+          <AreaFooter btnTitle="Показать" onClickBtn={handleBtnClick} isLoadingBtn={isLoading} />
+        )}
       </Box>
     </CollapsibleFormAreaContainer>
   )

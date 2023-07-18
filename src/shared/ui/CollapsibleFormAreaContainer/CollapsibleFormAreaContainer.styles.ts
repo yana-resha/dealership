@@ -16,10 +16,6 @@ export default makeStyles(theme => ({
       },
     },
 
-    '&:first-child > .MuiAccordionSummary-root': {
-      paddingTop: 0,
-    },
-
     '& > .MuiCollapse-root .MuiAccordionDetails-root': {
       padding: 0,
     },
