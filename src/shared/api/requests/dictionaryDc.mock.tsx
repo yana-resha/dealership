@@ -22,7 +22,7 @@ export const creditProductListRsData: GetCreditProductListResponse = {
   fullDurationMax: 72,
   creditProducts: [
     {
-      productCode: '3',
+      productCode: 3,
       productName: 'Лайт A',
       productId: 'S',
       cascoFlag: true,
@@ -32,7 +32,7 @@ export const creditProductListRsData: GetCreditProductListResponse = {
       durationMax: 72,
     },
     {
-      productCode: '2',
+      productCode: 2,
       productId: 'M',
       productName: 'Лайт В',
       downpaymentMin: 0.1,

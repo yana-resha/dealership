@@ -1,6 +1,6 @@
 export type PreparedTableData = {
   productFamilyCode?: string
-  productCode?: string
+  productCode?: number
   productId?: string
   productName?: string
   downpayment?: string

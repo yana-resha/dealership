@@ -7,9 +7,9 @@ import { PreparedTableData } from './BankOffers.types'
 
 export const getCellsChildrens = (
   row: PreparedTableData,
-): { name: string; value: string | boolean; type?: string }[] =>
+): { name: string; value: string | boolean | number; type?: string }[] =>
   BANK_OFFERS_TABLE_HEADERS.map(header => {
-    let value: string | boolean | undefined = row[header.key as keyof PreparedTableData]
+    let value: string | boolean | number | undefined = row[header.key as keyof PreparedTableData]
     let { type } = header
 
     if (header.key === 'incomeFlag') {
