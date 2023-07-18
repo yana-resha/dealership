@@ -58,9 +58,15 @@ export function CreateOrderPage() {
 
   const [currentStepIdx, setCurrentStepIdx] = useState(initialOrder?.currentStep ?? 0)
   const [isEnabledLastStep, setEnabledLastStep] = useState(false)
-  const [isEnabledSearchOrder, setEnabledSearchOrder] = useState(!!locationState)
+  const [isEnabledSearchOrder, setEnabledSearchOrder] = useState(!locationState)
 
-  const changeEnabledSearchOrder = useCallback(() => setEnabledSearchOrder(true), [])
+  const changeEnabledSearchOrder = useCallback(() => {
+    setEnabledSearchOrder(false)
+    navigate(location.pathname, {
+      state: { ...locationState, currentStep: currentStepIdx },
+      replace: true,
+    })
+  }, [currentStepIdx, location.pathname, locationState, navigate])
 
   const formRef = useRef<FormikProps<ClientData>>(null)
 
@@ -68,15 +74,14 @@ export function CreateOrderPage() {
 
   const handleStepChange = useCallback(
     (stepIdx: number) => () => {
-      if (formRef.current) {
-        remapApplicationValues(formRef.current.values)
+      if ((isEnabledLastStep && stepIdx === steps.length - 1) || currentStepIdx > stepIdx) {
+        if (formRef.current) {
+          remapApplicationValues(formRef.current.values)
+        }
+        setCurrentStepIdx(stepIdx)
       }
-
-      setCurrentStepIdx(prevIdx =>
-        (isEnabledLastStep && stepIdx === steps.length - 1) || prevIdx > stepIdx ? stepIdx : prevIdx,
-      )
     },
-    [isEnabledLastStep, remapApplicationValues],
+    [currentStepIdx, isEnabledLastStep, remapApplicationValues],
   )
   const nextStep = useCallback(() => {
     setCurrentStepIdx(prevIdx => (currentStepIdx < steps.length - 1 ? prevIdx + 1 : prevIdx))
@@ -101,6 +106,12 @@ export function CreateOrderPage() {
         <Typography className={classes.pageTitle}>{currentStep.pageTitle}</Typography>
 
         {isEnabledSearchOrder ? (
+          <OrderSearching
+            nextStep={changeEnabledSearchOrder}
+            onApplicationOpen={handleApplicationOpen}
+            onMount={disableLastStep}
+          />
+        ) : (
           <>
             <Stepper activeStep={currentStepIdx} className={classes.stepContainer}>
               {steps.map((step, idx) => (
@@ -126,12 +137,6 @@ export function CreateOrderPage() {
               <ClientForm formRef={formRef} onMount={enableLastStep} />
             )}
           </>
-        ) : (
-          <OrderSearching
-            nextStep={changeEnabledSearchOrder}
-            onApplicationOpen={handleApplicationOpen}
-            onMount={disableLastStep}
-          />
         )}
       </Box>
     </div>

@@ -69,9 +69,17 @@ export function useCreditProducts<T extends FullOrderCalculatorFields | OrderCal
     }
   }, [isChangedBaseValues])
 
-  const prevValues = usePrevious({ ...values, validationParams: {}, commonError: {} })
+  const prevValues = usePrevious({
+    ...values,
+    initialPaymentPercent: undefined,
+    validationParams: {},
+    commonError: {},
+  })
   useEffect(() => {
-    const newValues = { ...values, validationParams: {}, commonError: {} }
+    // initialPaymentPercent присвоено значение undefined, чтобы игнорировать это поле при сравнении,
+    // т.к. в common/OrderCalculator/hooks/useLimits.ts при монтировании этому полю присваивается значение,
+    // что приводит к изменению формы, хотя по факту ее значение никто не менял.
+    const newValues = { ...values, initialPaymentPercent: undefined, validationParams: {}, commonError: {} }
     if (!isEqual(newValues, prevValues)) {
       onChangeForm()
     }
