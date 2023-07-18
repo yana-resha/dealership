@@ -6,8 +6,8 @@ import { CalculateCreditRequest, CalculatedProduct } from '@sberauto/dictionaryd
 import { FullOrderCalculator } from 'common/OrderCalculator'
 import { BankOffers } from 'entities/BankOffers'
 import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
+import SberTypography from 'shared/ui/SberTypography'
 
-import { dataMock } from './__tests__/FullOrderSettings.test.mock'
 import { useStyles } from './FullOrderSettings.styles'
 
 type Props = {
@@ -17,17 +17,17 @@ type Props = {
 
 export function FullOrderSettings({ nextStep, onChangeForm }: Props) {
   const classes = useStyles()
-  const [bankOffers, setBankOffers] = useState<CalculatedProduct[]>([])
+  const [bankOffers, setBankOffers] = useState<CalculatedProduct[] | null>(null)
   const [isOfferLoading, setIsOfferLoading] = useState(false)
 
   const { mutateAsync, isError } = useCalculateCreditMutation()
 
   const clearBankOfferList = useCallback(() => {
-    if (!bankOffers.length) {
+    if (!bankOffers?.length) {
       return
     }
-    setBankOffers([])
-  }, [bankOffers.length])
+    setBankOffers(null)
+  }, [bankOffers?.length])
 
   useEffect(() => {
     if (isError) {
@@ -58,7 +58,7 @@ export function FullOrderSettings({ nextStep, onChangeForm }: Props) {
     if (bankOffersRef.current) {
       bankOffersRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [bankOffers.length])
+  }, [bankOffers?.length])
 
   return (
     <div className={classes.page} data-testid="fullOrderSettingsPage">
@@ -72,8 +72,15 @@ export function FullOrderSettings({ nextStep, onChangeForm }: Props) {
           <Typography>Произошла ошибка при загрузке данных. Попробуйте снова</Typography>
         </Box>
       )}
-      {!isError && bankOffers.length > 0 && (
+      {!isError && bankOffers !== null && bankOffers.length > 0 && (
         <BankOffers data={bankOffers} onRowClick={nextStep} ref={bankOffersRef} />
+      )}
+      {!isError && bankOffers !== null && bankOffers.length === 0 && (
+        <Box m={2}>
+          <SberTypography sberautoVariant="body5" component="p">
+            Кредитные продукты не найдены
+          </SberTypography>
+        </Box>
       )}
     </div>
   )

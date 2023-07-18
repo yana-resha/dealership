@@ -1,35 +1,45 @@
 import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 
-import { ADDITIONAL_CELL_NAME } from './BankOffers.config'
+import { formatNumber } from 'shared/lib/utils'
+
+import { BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
 import { PreparedTableData } from './BankOffers.types'
 
-export const getCellsChildrens = (row: PreparedTableData) => [
-  ...Object.entries(row).reduce((acc, [key, value]) => {
-    if (key === 'productFamilyCode' || key === 'productId') {
-      return acc
+export const getCellsChildrens = (
+  row: PreparedTableData,
+): { name: string; value: string | boolean; type?: string }[] =>
+  BANK_OFFERS_TABLE_HEADERS.map(header => {
+    let value: string | boolean | undefined = row[header.key as keyof PreparedTableData]
+    let { type } = header
+
+    if (header.key === 'incomeFlag') {
+      type = value ? type : undefined
+      value = ''
     }
-    if (key === 'cascoFlag') {
+    if (value === undefined) {
+      value = '-'
+    } else if (typeof value === 'boolean') {
       value = value ? 'Да' : 'Нет'
     }
 
-    acc.push({ name: key, value })
-
-    return acc
-  }, [] as { name: string; value: string | boolean }[]),
-  { name: ADDITIONAL_CELL_NAME, value: '' },
-]
-
-const prettifyString = (str: string) => str.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, '$1' + ' ')
+    return {
+      name: header.key,
+      value: value,
+      type: type,
+    }
+  })
 
 export const prepareData = (data: CalculatedProduct[]) =>
   data.map(d => {
-    const downpayment = prettifyString(d.downpayment != undefined ? d.downpayment.toString() : '')
+    const downpayment = formatNumber(d.downpayment !== undefined ? d.downpayment.toString() : '')
     const term = `${d.term} мес`
-    const monthlyPayment = prettifyString(d.monthlyPayment != undefined ? d.monthlyPayment.toString() : '')
-    const lastPayment = prettifyString(d.lastPayment != undefined ? d.lastPayment.toString() : '')
-    const overpayment = prettifyString(d.overpayment != undefined ? d.overpayment.toString() : '')
-    const totalSum = prettifyString(d.totalSum != undefined ? d.totalSum.toString() : '')
-    const currentRate = d.currentRate != undefined ? d.currentRate.toString() : ''
+    const monthlyPayment = formatNumber(d.monthlyPayment !== undefined ? d.monthlyPayment.toString() : '')
+    const lastPayment = formatNumber(d.lastPayment !== undefined ? d.lastPayment.toString() : '')
+    const overpayment = formatNumber(d.overpayment !== undefined ? d.overpayment.toString() : '')
+    const totalSum = formatNumber(d.totalSum !== undefined ? d.totalSum.toString() : '')
+    const currentRate = formatNumber(d.currentRate !== undefined ? (d.currentRate * 100).toString() : '', {
+      digits: 2,
+    })
 
     return { ...d, downpayment, term, monthlyPayment, lastPayment, currentRate, overpayment, totalSum }
   })

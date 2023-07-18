@@ -3,9 +3,9 @@ import { forwardRef } from 'react'
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 
-import { ADDITIONAL_CELL_NAME, BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
+import { BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
 import useStyles from './BankOffers.styles'
-import { getCellsChildrens, prepareData } from './BankOffers.utils'
+import { getCellsChildrens as getCellsChildren, prepareData } from './BankOffers.utils'
 import { ButtonsCell } from './ButtonsCell/ButtonsCell'
 
 type Props = {
@@ -24,8 +24,8 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
         <TableHead>
           <TableRow className={classes.headerRow}>
             {BANK_OFFERS_TABLE_HEADERS.map(header => (
-              <TableCell align="left" key={header} className={classes.headerCell}>
-                {header.toUpperCase()}
+              <TableCell align="left" key={header.key} className={classes.headerCell}>
+                {header.label?.toUpperCase()}
               </TableCell>
             ))}
           </TableRow>
@@ -35,14 +35,14 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
           {!!preparedData &&
             preparedData.map(row => (
               <TableRow key={row.productId} className={classes.bodyRow}>
-                {getCellsChildrens(row).map(cell => (
+                {getCellsChildren(row).map(cell => (
                   <TableCell
                     key={cell.name}
                     align="left"
                     className={classes.bodyCell}
-                    onClick={cell.name === ADDITIONAL_CELL_NAME ? () => null : onRowClick}
+                    onClick={cell.type === 'icon' ? () => null : onRowClick}
                   >
-                    {cell.name === ADDITIONAL_CELL_NAME ? <ButtonsCell /> : <>{cell.value}</>}
+                    {cell.type === 'icon' ? <ButtonsCell type={cell.name} /> : <>{cell.value}</>}
                   </TableCell>
                 ))}
               </TableRow>

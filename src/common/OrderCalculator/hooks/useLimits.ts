@@ -117,13 +117,15 @@ export function useLimits({ vendorCode }: Params) {
   */
   const initialPaymentPercentHelperText = useMemo(() => {
     if (minInitialPaymentPercent && maxInitialPaymentPercent) {
-      return `от ${formatNumber(minInitialPaymentPercent)} до ${formatNumber(maxInitialPaymentPercent, '%')}`
+      return `от ${formatNumber(minInitialPaymentPercent)} до ${formatNumber(maxInitialPaymentPercent, {
+        postfix: '%',
+      })}`
     }
     if (minInitialPaymentPercent && !maxInitialPaymentPercent) {
-      return `от ${formatNumber(minInitialPaymentPercent, '%')}`
+      return `от ${formatNumber(minInitialPaymentPercent, { postfix: '%' })}`
     }
     if (!minInitialPaymentPercent && maxInitialPaymentPercent) {
-      return `до ${formatNumber(maxInitialPaymentPercent, '%')}`
+      return `до ${formatNumber(maxInitialPaymentPercent, { postfix: '%' })}`
     }
 
     return ''
