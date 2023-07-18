@@ -90,7 +90,7 @@ export const ApplicationFilters = ({ onSubmitClick }: Props) => {
               />
             </Box>
             <Box flex={2}>
-              <DateInputFormik name="applicationUpdateDate" label="Дата создания заявки" />
+              <DateInputFormik name="applicationUpdateDate" label="Дата обновления заявки" />
             </Box>
             <SwitchInputFormik name="isMyApplication" label="Мои заявки" centered />
           </Box>
