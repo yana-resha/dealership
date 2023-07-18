@@ -26,6 +26,9 @@ import { formFields } from './FullOrderCalculator.mock'
 jest.mock('entities/pointOfSale')
 
 const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
+const currentDate = new Date()
+const previousYear = currentDate.getFullYear() - 1
+const currentDateString = `3112${currentDate.getFullYear()}`
 
 disableConsole('error')
 
@@ -247,7 +250,7 @@ describe('FullOrderCalculator', () => {
 
     it('Дата выдачи ПТС не превышает дату выпуска автомобиля', async () => {
       userEvent.click(screen.getByTestId('carYear').firstElementChild as Element)
-      userEvent.click(await screen.findByText('2020'))
+      userEvent.click(await screen.findByText(previousYear))
 
       const carPassportCreationDateField = document.getElementById('carPassportCreationDate')!
 
@@ -259,7 +262,7 @@ describe('FullOrderCalculator', () => {
       ).toBeInTheDocument()
 
       userEvent.clear(carPassportCreationDateField)
-      userEvent.type(carPassportCreationDateField, '10102020')
+      userEvent.type(carPassportCreationDateField, currentDateString)
       await act(() => {})
       expect(
         screen.queryByText('Дата выдачи ПТС не может превышать дату выпуска автомобиля'),
@@ -268,7 +271,7 @@ describe('FullOrderCalculator', () => {
 
     it('Дата ДКП не превышает дату выпуска автомобиля', async () => {
       userEvent.click(screen.getByTestId('carYear').firstElementChild as Element)
-      userEvent.click(await screen.findByText('2020'))
+      userEvent.click(await screen.findByText(previousYear))
 
       const salesContractDateField = document.getElementById('salesContractDate')!
 
@@ -278,7 +281,7 @@ describe('FullOrderCalculator', () => {
       expect(screen.queryByText('Дата ДКП не может превышать дату выпуска автомобиля')).toBeInTheDocument()
 
       userEvent.clear(salesContractDateField)
-      userEvent.type(salesContractDateField, '10102020')
+      userEvent.type(salesContractDateField, currentDateString)
       await act(() => {})
       expect(
         screen.queryByText('Дата ДКП не может превышать дату выпуска автомобиля'),

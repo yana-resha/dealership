@@ -3,14 +3,10 @@ import { useEffect } from 'react'
 import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
-import {
-  CAR_CONDITIONS,
-  CAR_PASSPORT_TYPE,
-  INITIAL_CAR_ID_TYPE,
-  carYears,
-} from 'common/OrderCalculator/config'
+import { CAR_CONDITIONS, CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from 'common/OrderCalculator/config'
 import { useCarBrands } from 'common/OrderCalculator/hooks/useCarBrands'
 import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
+import { useCarYears } from 'common/OrderCalculator/hooks/useCarYears'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { RequisitesAdditionalOptions } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
@@ -40,12 +36,13 @@ type Props = {
 export function CarSettingsArea({ onFilled, isLoading, requisites }: Props) {
   const classes = useStyles()
 
-  const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
-  const { handleBtnClick } = useCarSettings(onFilled)
-
   const { setFieldValue } = useFormikContext()
   const [carPassportTypeField] = useField(FormFieldNameMap.carPassportType)
   const prevCarPassportType = usePrevious(carPassportTypeField.value)
+
+  const { carBrands, carModels, isDisabledCarModel } = useCarBrands()
+  const { carYears } = useCarYears()
+  const { handleBtnClick } = useCarSettings(onFilled)
 
   useEffect(() => {
     if (carPassportTypeField.value !== prevCarPassportType) {
