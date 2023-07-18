@@ -28,7 +28,7 @@ export const ModalDialog = (props: PropsWithChildren<Props>) => {
     >
       <Box display="flex" overflow="visible" data-testid={testId}>
         {!!label && (
-          <SberTypography sberautoVariant="h5" component="p">
+          <SberTypography sberautoVariant="h5" component="p" className={classes.label}>
             {label}
           </SberTypography>
         )}

@@ -6,7 +6,6 @@ export const useStyles = makeStyles(theme => ({
       position: 'relative',
       display: 'flex',
       flexDisplay: 'column',
-      gap: theme.spacing(2),
       padding: theme.spacing(3),
       boxSizing: 'border-box',
       backgroundColor: theme.palette.background.default,
@@ -18,6 +17,10 @@ export const useStyles = makeStyles(theme => ({
         boxSizing: 'border-box',
       },
     },
+  },
+
+  label: {
+    marginBottom: theme.spacing(2),
   },
 
   closeButton: {
