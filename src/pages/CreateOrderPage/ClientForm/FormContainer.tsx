@@ -85,7 +85,7 @@ export function FormContainer({ isDraftLoading, disabledButtons, saveDraftDisabl
             disabled={disabledButtons}
             onClick={handleSaveClick}
           >
-            Отправить
+            {saveDraftDisabled ? 'Отправить на решение' : 'Далее'}
           </Button>
         </Box>
       </Box>

@@ -86,8 +86,8 @@ describe('ClientFormTest', () => {
       expect(screen.getByText('Распечатать')).toBeInTheDocument()
     })
 
-    it('Отображается кнопка "Отправить"', () => {
-      expect(screen.getByText('Отправить')).toBeInTheDocument()
+    it('Отображается кнопка "Далее"', () => {
+      expect(screen.getByText('Далее')).toBeInTheDocument()
     })
   })
 })
