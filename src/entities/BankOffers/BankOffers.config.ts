@@ -8,8 +8,7 @@ export const BANK_OFFERS_TABLE_HEADERS = [
   { key: 'currentRate', label: '% ставка' },
   { key: 'cascoFlag', label: 'КАСКО' },
   { key: 'totalSum', label: 'Сумма кредита' },
-  { key: 'attachment', label: '', type: 'icon' }, //пустой столбец для отображения иконоки графика платежей
   //убрали тк не будет функционала в пилоте
-  // { key: 'incomeFlag', label: '', type: 'icon' },
-  //пустой столбец для отображения иконки обязательности подтверждения дохода
+  // { key: 'attachment', label: '', type: 'icon' }, //пустой столбец для отображения иконоки графика платежей
+  { key: 'incomeFlag', label: '', type: 'icon' }, //пустой столбец для отображения иконки обязательности подтверждения дохода
 ]
