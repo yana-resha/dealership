@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
+import throttle from 'lodash/throttle'
 import { Timeout } from 'react-number-format/types/types'
 
 import { DADATA_OPTIONS_LIMIT, useGetFmsUnitSuggestions } from 'shared/api/requests/dadata.api'
@@ -49,25 +50,16 @@ export function PassportArea() {
   const [isRegAddressDialogVisible, setIsRegAddressDialogVisible] = useState(false)
   const [isLivingAddressDialogVisible, setIsLivingAddressDialogVisible] = useState(false)
   const { mutate: getPassportSuggestions, data } = useGetFmsUnitSuggestions()
-  const [passportRequestTimeout, setPassportRequestTimeout] = useState(false)
   const [issuedBySuggestions, setIssuedBySuggestions] = useState<string[]>([])
   const [divisionCodeSuggestions, setDivisionCodeSuggestions] = useState<string[]>([])
   const timerRef = useRef<Timeout | null>(null)
 
-  const updateListOfSuggestions = useCallback(
-    (value: string) => {
-      if ((!passportRequestTimeout && value.length > 1) || value.length === 6) {
+  const updateListOfSuggestions = useMemo(
+    () =>
+      throttle((value: string) => {
         getPassportSuggestions(value)
-        setPassportRequestTimeout(true)
-        if (timerRef.current) {
-          clearTimeout(timerRef.current)
-        }
-        timerRef.current = setTimeout(() => {
-          setPassportRequestTimeout(false)
-        }, 1000)
-      }
-    },
-    [getPassportSuggestions, passportRequestTimeout],
+      }, 1000),
+    [getPassportSuggestions],
   )
 
   useEffect(

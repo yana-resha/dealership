@@ -7,6 +7,8 @@ import { SubmitAction } from '../ClientForm.types'
 const minAge = 21
 const maxAge = 65
 
+export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
+
 function clientNameIsCorrect(value: string | undefined) {
   if (value == undefined) {
     return false
@@ -66,6 +68,10 @@ function isIncomeProofUploaded(
   }
 
   return true
+}
+
+function isJobDisabled(occupation: number | null) {
+  return occupation !== null && JOB_DISABLED_OCCUPATIONS.includes(occupation)
 }
 
 function setRequiredIfSave<T extends Yup.BaseSchema<any, AnyObject, any>>(schema: T, message?: string) {
@@ -141,7 +147,7 @@ export const clientFormValidationSchema = Yup.object().shape({
   }),
   mobileNumber: Yup.string().required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
   additionalNumber: Yup.string().when('occupation', {
-    is: OccupationType.UNEMPLOYED,
+    is: (occupation: number | null) => isJobDisabled(occupation),
     then: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
     otherwise: schema =>
       schema.test(
@@ -175,25 +181,25 @@ export const clientFormValidationSchema = Yup.object().shape({
   employmentDate: Yup.date()
     .nullable()
     .when('occupation', {
-      is: OccupationType.UNEMPLOYED,
+      is: (occupation: number | null) => isJobDisabled(occupation),
       otherwise: schema => setRequiredIfSave(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
     }),
   employerName: Yup.string()
     .nullable()
     .when('occupation', {
-      is: OccupationType.UNEMPLOYED,
+      is: (occupation: number | null) => isJobDisabled(occupation),
       otherwise: schema => setRequiredIfSave(schema),
     }),
   employerPhone: Yup.string().when('occupation', {
-    is: OccupationType.UNEMPLOYED,
+    is: (occupation: number | null) => isJobDisabled(occupation),
     otherwise: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
   }),
   employerAddressString: Yup.string().when('occupation', {
-    is: OccupationType.UNEMPLOYED,
+    is: (occupation: number | null) => isJobDisabled(occupation),
     otherwise: schema => setRequiredIfSave(schema),
   }),
   employerInn: Yup.string().when('occupation', {
-    is: OccupationType.UNEMPLOYED,
+    is: (occupation: number | null) => isJobDisabled(occupation),
     otherwise: schema => setRequiredIfSave(schema),
   }),
   questionnaireFile: setRequiredIfSave(Yup.string().nullable(), 'Необходимо загрузить анкету'),

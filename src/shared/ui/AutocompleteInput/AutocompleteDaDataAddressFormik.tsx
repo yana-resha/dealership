@@ -63,7 +63,7 @@ export const AutocompleteDaDataAddressFormik = ({
   const onChange = useCallback(
     (values: SuggestionGetAddressSuggestions) => {
       setFieldValue(nameOfObject, mapAddressToModel(values))
-      setFieldValue(nameOfString, values ? values.unrestrictedValue : '')
+      setFieldValue(nameOfString, values?.unrestrictedValue ?? '')
     },
     [mapAddressToModel, nameOfObject, nameOfString, setFieldValue],
   )

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Autocomplete, AutocompleteValue, Box, InputLabel, TextField } from '@mui/material'
 import { SuggestionGetAddressSuggestions } from '@sberauto/dadata-proto/public'
+import throttle from 'lodash/throttle'
 import { Timeout } from 'react-number-format/types/types'
 
 import { ReactComponent as KeyboardArrowDownIcon } from 'assets/icons/keyboardArrowDown.svg'
@@ -38,8 +39,7 @@ export const AutocompleteDaDataAddress = ({
 }: Props) => {
   const classes = useStyles()
   const [fieldValue, setFieldValue] = useState<SuggestionGetAddressSuggestions | undefined>(value)
-  const { mutate: getAddressSuggestion, data } = useGetAddressSuggestions()
-  const [requestTimeout, setRequestTimeout] = useState(false)
+  const { mutate: getAddressSuggestions, data } = useGetAddressSuggestions()
   const timerRef = useRef<Timeout | null>(null)
 
   useEffect(
@@ -64,20 +64,12 @@ export const AutocompleteDaDataAddress = ({
     [],
   )
 
-  const updateListOfSuggestions = useCallback(
-    (value: string) => {
-      if (!requestTimeout && value.length > 0) {
-        getAddressSuggestion(value)
-        setRequestTimeout(true)
-        if (timerRef.current) {
-          clearTimeout(timerRef.current)
-        }
-        timerRef.current = setTimeout(() => {
-          setRequestTimeout(false)
-        }, 1000)
-      }
-    },
-    [getAddressSuggestion, requestTimeout],
+  const updateListOfSuggestions = useMemo(
+    () =>
+      throttle((value: string) => {
+        getAddressSuggestions(value)
+      }, 1000),
+    [getAddressSuggestions],
   )
 
   const handleInputChange = useCallback(
