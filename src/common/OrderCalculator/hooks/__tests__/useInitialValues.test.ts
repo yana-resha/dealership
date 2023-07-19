@@ -3,7 +3,9 @@ import React from 'react'
 import { renderHook } from '@testing-library/react'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
+import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { Order } from 'entities/reduxStore/orderSlice'
+import { mockGetVendorOptionsResponse } from 'shared/api/requests/dictionaryDc.mock'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { disableConsole } from 'tests/utils'
@@ -21,9 +23,18 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }))
 
+const mockedUseGetVendorOptions = jest.spyOn(useGetVendorOptionsQueryModule, 'useGetVendorOptionsQuery')
+
 describe('useInitialValues', () => {
   beforeEach(() => {
     mockedUseMemo.mockImplementation(fn => fn())
+    mockedUseGetVendorOptions.mockImplementation(
+      () =>
+        ({
+          data: mockGetVendorOptionsResponse,
+          isError: false,
+        } as any),
+    )
   })
 
   describe('Преобразование данных работает корректно', () => {

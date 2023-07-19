@@ -19,6 +19,7 @@ import { convertedDateToString } from 'shared/utils/dateTransform'
 
 import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
 import { FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
+import { useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
 type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : OrderCalculatorFields
 
@@ -29,6 +30,7 @@ export function useInitialValues<D extends boolean | undefined>(
   const initialOrder = useAppSelector(state => state.order.order)
   const dispatch = useDispatch()
   const { vendorCode } = getPointOfSaleFromCookies()
+  const { data: vendorOptions } = useGetVendorOptionsQuery({ vendorCode: vendorCode }, { enabled: false })
   const fullApplicationData = initialOrder?.orderData
 
   const { loanCar, loanData, vendor } = useMemo(
@@ -229,36 +231,42 @@ export function useInitialValues<D extends boolean | undefined>(
       }
     : {}
 
-  const remapAdditionalOptionsForSmallCalculator = useCallback((values: OrderCalculatorFields) => {
-    const { additionalEquipments, dealerAdditionalServices } = values
-    const additionalOptionsFromCalculator = [additionalEquipments, dealerAdditionalServices]
-    const additionalOptionsForApplication: AdditionalOptionsFrontdc[] = []
-    for (let i = 0; i < additionalOptionsFromCalculator.length; i++) {
-      const additionalOption = additionalOptionsFromCalculator[i]
-      const additionalOptionForApplication = additionalOption.reduce(
-        (acc: AdditionalOptionsFrontdc[], option) => {
-          const { productCost, productType, isCredit, cascoLimit } = option
-          const additionalOption: AdditionalOptionsFrontdc = {
-            bankOptionType: i === 0 ? OptionType.EQUIPMENT : OptionType.DEALER,
-            type: parseInt((productType || '').toString(), 10) ?? undefined,
-            inCreditFlag: isCredit,
-            price: parseInt(productCost, 10),
-            cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
-          }
-          if (additionalOption.type) {
-            acc.push(additionalOption)
-          }
+  const remapAdditionalOptionsForSmallCalculator = useCallback(
+    (values: OrderCalculatorFields) => {
+      const { additionalEquipments, dealerAdditionalServices } = values
+      const additionalOptionsFromCalculator = [additionalEquipments, dealerAdditionalServices]
+      const additionalOptionsForApplication: AdditionalOptionsFrontdc[] = []
+      for (let i = 0; i < additionalOptionsFromCalculator.length; i++) {
+        const additionalOption = additionalOptionsFromCalculator[i]
+        const additionalOptionForApplication = additionalOption.reduce(
+          (acc: AdditionalOptionsFrontdc[], option) => {
+            const { productCost, productType, isCredit, cascoLimit } = option
+            const additionalOption: AdditionalOptionsFrontdc = {
+              bankOptionType: i === 0 ? OptionType.EQUIPMENT : OptionType.DEALER,
+              type: parseInt((productType || '').toString(), 10) ?? undefined,
+              name: productType
+                ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
+                : undefined,
+              inCreditFlag: isCredit,
+              price: parseInt(productCost, 10),
+              cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
+            }
+            if (additionalOption.type) {
+              acc.push(additionalOption)
+            }
 
-          return acc
-        },
-        [],
-      )
+            return acc
+          },
+          [],
+        )
 
-      additionalOptionsForApplication.push(...additionalOptionForApplication)
-    }
+        additionalOptionsForApplication.push(...additionalOptionForApplication)
+      }
 
-    return additionalOptionsForApplication
-  }, [])
+      return additionalOptionsForApplication
+    },
+    [vendorOptions?.additionalOptionsMap],
+  )
 
   const remapAdditionalOptionsForFullCalculator = useCallback((values: FullOrderCalculatorFields) => {
     const { additionalEquipments, dealerAdditionalServices } = values
@@ -284,6 +292,9 @@ export function useInitialValues<D extends boolean | undefined>(
         const additionalOption: AdditionalOptionsFrontdc = {
           bankOptionType: OptionType.EQUIPMENT,
           type: parseInt((productType || '').toString(), 10) ?? undefined,
+          name: productType
+            ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
+            : undefined,
           inCreditFlag: isCredit,
           price: parseInt(productCost, 10),
           vendor: {
@@ -339,6 +350,13 @@ export function useInitialValues<D extends boolean | undefined>(
         } = option
         const additionalOption: AdditionalOptionsFrontdc = {
           bankOptionType: OptionType.DEALER,
+          type: productType ? parseInt(productType.toString(), 10) : undefined,
+          name: productType
+            ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
+            : undefined,
+          inCreditFlag: isCredit,
+          price: parseInt(productCost, 10),
+          term: loanTerm,
           vendor: {
             vendorCode: provider,
             taxInfo: {
@@ -361,10 +379,6 @@ export function useInitialValues<D extends boolean | undefined>(
               percent: agentTaxPercent ?? undefined,
             },
           },
-          type: parseInt((productType || '').toString(), 10) ?? undefined,
-          inCreditFlag: isCredit,
-          price: parseInt(productCost, 10),
-          term: loanTerm,
           docType: documentType,
           docNumber: documentNumber,
           docDate: convertedDateToString(documentDate),

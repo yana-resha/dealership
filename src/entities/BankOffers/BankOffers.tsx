@@ -5,17 +5,16 @@ import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 
 import { BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
 import useStyles from './BankOffers.styles'
-import { getCellsChildrens as getCellsChildren, prepareData } from './BankOffers.utils'
+import { getCellsChildren } from './BankOffers.utils'
 import { ButtonsCell } from './ButtonsCell/ButtonsCell'
 
 type Props = {
   data: CalculatedProduct[]
-  onRowClick: () => void
+  onRowClick: (creditProduct: CalculatedProduct) => void
 }
 
 export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
   const classes = useStyles()
-  const preparedData = prepareData(data)
 
   return (
     <Box className={classes.container} ref={ref}>
@@ -32,15 +31,15 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
         </TableHead>
 
         <TableBody>
-          {!!preparedData &&
-            preparedData.map(row => (
+          {!!data &&
+            data.map(row => (
               <TableRow key={row.productId} className={classes.bodyRow}>
                 {getCellsChildren(row).map(cell => (
                   <TableCell
                     key={cell.name}
                     align="left"
                     className={classes.bodyCell}
-                    onClick={cell.type === 'icon' ? () => null : onRowClick}
+                    onClick={cell.type === 'icon' ? () => null : () => onRowClick(row)}
                   >
                     {cell.type === 'icon' ? <ButtonsCell type={cell.name} /> : <>{cell.value}</>}
                   </TableCell>
