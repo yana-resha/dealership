@@ -128,13 +128,12 @@ export const initialValueMap: OrderCalculatorFields = {
   [ServicesGroupName.additionalEquipments]: [INITIAL_ADDITIONAL_SERVICE],
   [ServicesGroupName.dealerAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
   [ServicesGroupName.bankAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
-  [FormFieldNameMap.specialMark]: null,
   [FormFieldNameMap.commonError]: INITIAL_COMMON_ERROR,
   [FormFieldNameMap.validationParams]: INITIAL_VALIDATION_PARAMS,
 }
 
 export const fullInitialValueMap: FullOrderCalculatorFields = {
-  ...{ ...initialValueMap, [FormFieldNameMap.specialMark]: undefined },
+  ...initialValueMap,
   [FormFieldNameMap.carPassportType]: CAR_PASSPORT_TYPE[0].value,
   [FormFieldNameMap.carPassportId]: '',
   [FormFieldNameMap.carPassportCreationDate]: null,

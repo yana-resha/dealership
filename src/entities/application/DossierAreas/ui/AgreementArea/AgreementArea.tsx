@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Box, Button, CircularProgress, Divider } from '@mui/material'
+import { Box, Button, Divider } from '@mui/material'
 import { ApplicationFrontdc, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
 import { useSendToFinancingMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 import { appRoutePaths } from 'shared/navigation/routerPath'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
@@ -234,12 +235,11 @@ export function AgreementArea({
           {preparedStatus == PreparedStatus.signed && (
             <Button
               variant="contained"
-              className={classes.button}
+              className={classes.financingButton}
               onClick={onButtonClick}
               disabled={!financingEnabled || isSendLoading}
             >
-              {isSendLoading && <CircularProgress color="inherit" size={25} />}
-              Отправить на финансирование
+              {isSendLoading ? <CircularProgressWheel size="small" /> : <>Отправить на финансирование</>}
             </Button>
           )}
         </Box>

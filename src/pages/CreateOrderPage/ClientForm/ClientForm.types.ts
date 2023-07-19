@@ -75,7 +75,6 @@ export interface ClientData {
   employerAddressString: string
   emplNotKladr: boolean
   employerInn: string
-  specialMark: string
   questionnaireFile: File | null
   submitAction: SubmitAction
 }

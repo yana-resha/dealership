@@ -415,5 +415,4 @@ export const EXPECTED_DATA = {
   secondDocumentNumber: '1234123456',
   secondDocumentType: 15,
   sex: 0,
-  specialMark: 'Находится в нетрезвом состоянии',
 }

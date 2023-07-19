@@ -38,7 +38,7 @@ export function useInitialValues() {
   const dispatch = useDispatch()
   const fullApplicationData = initialOrder?.orderData
 
-  const { applicant, specialMark, createdDate } = useMemo(
+  const { applicant, createdDate } = useMemo(
     () => fullApplicationData?.application || ({} as ApplicationFrontdc),
     [fullApplicationData?.application],
   )
@@ -226,7 +226,6 @@ export function useInitialValues() {
         familyStatus,
         occupation,
         divisionCode,
-        specialMark,
         sex,
       } = values
       const application = fullApplicationData?.application
@@ -310,7 +309,6 @@ export function useInitialValues() {
       const updatedApplication = {
         ...application,
         applicant: newApplicant,
-        specialMark: specialMark,
         createdDate: convertedDateToString(new Date()),
       }
 
@@ -371,7 +369,6 @@ export function useInitialValues() {
             employerAddress,
             employerAddressString,
             employerInn: applicant?.employment?.inn ?? initialValues.employerInn,
-            specialMark: specialMark ?? initialValues.specialMark,
           }
         : {}),
     },

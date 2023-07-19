@@ -49,7 +49,7 @@ export const CircularProgressWheel = ({ size = 'small', color = theme.palette.te
       <LoadingWheel
         className={`${classes.rotateImage} ${classes.imageColor}`}
         height={WheelSize[size as keyof typeof WheelSize]}
-        width={size}
+        width={WheelSize[size as keyof typeof WheelSize]}
       />
     </Box>
   )
