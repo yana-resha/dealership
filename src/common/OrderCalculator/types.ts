@@ -33,7 +33,7 @@ export enum FormFieldNameMap {
   agentTaxValue = 'agentTaxValue', //НДС агента доп. услуги дилера
   agentTaxPercent = 'agentTaxPercent', //НДС агента доп. услуги дилера в %
   beneficiaryBank = 'beneficiaryBank', //Банк получатель денежных средств
-  bankAccountNumber = 'bankAccountNumber', //Номер счета банка
+  bankAccountNumber = 'bankAccountNumber', //Расчетный счет
   documentType = 'documentType', //Тип документа
   documentNumber = 'documentNumber', //Номер документа
   documentDate = 'documentDate', //Дата документа
@@ -51,10 +51,11 @@ export enum FormFieldNameMap {
   validationParams = 'validationParams',
   cascoLimit = 'cascoLimit',
   isHasNotCascoOption = 'isHasNotCascoOption',
+  taxPresence = 'taxPresence',
 }
 
 export interface OrderCalculatorAdditionalService {
-  [FormFieldNameMap.productType]: OptionID | string
+  [FormFieldNameMap.productType]: OptionID | null
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
   [FormFieldNameMap.cascoLimit]?: string
@@ -82,6 +83,7 @@ export interface FullInitialAdditionalEquipments
   [FormFieldNameMap.legalPerson]: string
   [FormFieldNameMap.taxValue]: number | null
   [FormFieldNameMap.taxPercent]: number | null
+  [FormFieldNameMap.taxPresence]: boolean | undefined
 }
 
 export interface FullInitialAdditionalService
@@ -95,6 +97,7 @@ export interface FullInitialAdditionalService
   [FormFieldNameMap.providerTaxPercent]: number | null
   [FormFieldNameMap.agentTaxValue]: number | null
   [FormFieldNameMap.agentTaxPercent]: number | null
+  [FormFieldNameMap.taxPresence]: boolean | undefined
 }
 
 export interface CommonError {

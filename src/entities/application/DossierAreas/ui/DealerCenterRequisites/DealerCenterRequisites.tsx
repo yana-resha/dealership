@@ -4,7 +4,6 @@ import { Box } from '@mui/material'
 import { useFormikContext } from 'formik'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -14,72 +13,41 @@ import {
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
+import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
-import { RequisitesAdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
-import { useBanksOptions } from '../../hooks/useBanksOptions'
+import { PreparedVendorWithoutBrokerMap } from '../../hooks/useRequisitesForFinancingQuery'
 import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './DealerCenterRequisites.styles'
 
 type Props = {
-  requisites: RequisitesAdditionalOptions[]
+  vendor: PreparedVendorWithoutBrokerMap | undefined
   isRequisiteEditable: boolean
   namePrefix?: string
 }
 
-export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePrefix = '' }: Props) {
+export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix = '' }: Props) {
   const classes = useStyles()
   const { vendorName, vendorCode } = getPointOfSaleFromCookies()
   const { values, setFieldValue } = useFormikContext<DossierRequisites>()
-  const { legalPerson, beneficiaryBank, bankAccountNumber, taxPresence, isCustomFields, loanAmount } = values
+  const { beneficiaryBank, taxPresence, isCustomFields, loanAmount } = values
   const initialValues = useRef(values)
 
   const legalPersonOptions = useMemo(
     () => [{ value: vendorCode || '', label: vendorName }],
     [vendorCode, vendorName],
   )
-  const previousLegalPerson = usePrevious(legalPerson)
-  const previousReceiverBank = usePrevious(beneficiaryBank)
-
-  const {
-    banksOptions,
-    setBanksOptions,
-    accountNumberOptions,
-    setAccountNumberOptions,
-    previousAccountNumber,
-  } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
-
-  const calculateTaxForLegalPerson = useCallback(() => {
-    const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
-    if (requisiteForLegalName) {
-      setFieldValue(namePrefix + 'taxPercent', requisiteForLegalName.tax)
-      setFieldValue(namePrefix + 'taxValue', requisiteForLegalName.tax * parseFloat(loanAmount))
-    } else {
-      setFieldValue(namePrefix + 'taxPercent', null)
-      setFieldValue(namePrefix + 'taxValue', null)
-    }
-  }, [legalPerson, loanAmount, namePrefix, requisites, setFieldValue])
-
-  const updateRequisites = useCallback(() => {
-    const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
-    if (requisiteForLegalName) {
-      setBanksOptions(requisiteForLegalName.banks.map(bank => ({ value: bank.bankName })))
-      const chosenBank = requisiteForLegalName.banks.find(bank => bank.bankName === beneficiaryBank)
-      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers.map(a => ({ value: a })) : [])
-      if (!isCustomFields) {
-        setFieldValue(namePrefix + 'bankIdentificationCode', chosenBank ? chosenBank.bankBik : '')
-        setFieldValue(namePrefix + 'correspondentAccount', chosenBank ? chosenBank.bankCorrAccount : '')
-      }
-    }
-  }, [
-    requisites,
-    legalPerson,
-    setBanksOptions,
-    setAccountNumberOptions,
-    isCustomFields,
-    beneficiaryBank,
-    setFieldValue,
-    namePrefix,
-  ])
+  const banksOptions = useMemo(
+    () => (vendor?.requisites || []).map(r => ({ value: r.bankName })),
+    [vendor?.requisites],
+  )
+  const currentBank = useMemo(
+    () => vendor?.requisitesMap[beneficiaryBank],
+    [beneficiaryBank, vendor?.requisitesMap],
+  )
+  const accountNumberOptions = useMemo(
+    () => (currentBank?.accounts || []).map(a => ({ value: a })),
+    [currentBank?.accounts],
+  )
 
   const toggleTaxInPercentField = useCallback(
     (value: boolean) => {
@@ -90,7 +58,6 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
   )
 
   const resetInitialValues = useCallback(() => {
-    setFieldValue(namePrefix + 'bankAccountNumber', '')
     setFieldValue(namePrefix + 'beneficiaryBank', '')
     setFieldValue(namePrefix + 'taxPresence', initialValues.current.taxPresence)
     setFieldValue(namePrefix + 'taxation', initialValues.current.taxation)
@@ -99,13 +66,12 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
   const clearFieldsForManualEntry = useCallback(() => {
     setFieldValue(namePrefix + 'beneficiaryBank', '')
     setFieldValue(namePrefix + 'bankAccountNumber', '')
-    setFieldValue(namePrefix + 'correspondentAccount', '')
     setFieldValue(namePrefix + 'taxPresence', false)
     setFieldValue(namePrefix + 'taxation', '0')
+    setFieldValue(namePrefix + 'correspondentAccount', '')
     setFieldValue(namePrefix + 'bankIdentificationCode', '')
   }, [namePrefix, setFieldValue])
 
-  //Метод активирует поля для ручного ввода реквизитов. Не используется, пока отключен ручной ввод
   const handleManualEntryChange = useCallback(
     (manual: boolean) => {
       if (manual) {
@@ -120,32 +86,25 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
   )
 
   useEffect(() => {
-    calculateTaxForLegalPerson()
-  }, [loanAmount, legalPerson])
-
-  useEffect(() => {
-    if (previousLegalPerson === legalPerson || beneficiaryBank === '' || isCustomFields) {
-      updateRequisites()
+    if (vendor?.tax) {
+      setFieldValue(namePrefix + 'taxPercent', vendor.tax)
+      setFieldValue(namePrefix + 'taxValue', vendor.tax * parseFloat(loanAmount))
     } else {
-      setFieldValue(namePrefix + 'beneficiaryBank', '')
+      setFieldValue(namePrefix + 'taxPercent', null)
+      setFieldValue(namePrefix + 'taxValue', null)
     }
-  }, [legalPerson])
+  }, [loanAmount, namePrefix, setFieldValue, vendor?.tax])
 
   useEffect(() => {
-    if (previousReceiverBank !== beneficiaryBank && !isCustomFields) {
-      if (bankAccountNumber === '') {
-        updateRequisites()
-      } else {
-        setFieldValue(namePrefix + 'bankAccountNumber', '')
-      }
+    if (!isCustomFields) {
+      setFieldValue(namePrefix + 'bankIdentificationCode', currentBank?.bik || '')
+      setFieldValue(namePrefix + 'correspondentAccount', currentBank?.accountCorrNumber || '')
+      setFieldValue(
+        namePrefix + 'bankAccountNumber',
+        currentBank?.accounts?.length === 1 ? currentBank.accounts[0] : '',
+      )
     }
-  }, [beneficiaryBank])
-
-  useEffect(() => {
-    if (previousAccountNumber !== bankAccountNumber && bankAccountNumber === '' && !isCustomFields) {
-      updateRequisites()
-    }
-  }, [bankAccountNumber])
+  }, [currentBank, isCustomFields, namePrefix, setFieldValue])
 
   return (
     <Box className={classes.editingAreaContainer}>
@@ -185,7 +144,7 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
           />
           <MaskedInputFormik
             name={namePrefix + 'bankAccountNumber'}
-            label="Номер Счета банка"
+            label="Расчетный счет"
             placeholder="-"
             mask={maskBankAccountNumber}
             gridColumn="span 4"
@@ -202,7 +161,7 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
           />
           <SelectInputFormik
             name={namePrefix + 'bankAccountNumber'}
-            label="Номер Счета банка"
+            label="Расчетный счет"
             placeholder="-"
             options={accountNumberOptions}
             gridColumn="span 6"
@@ -210,6 +169,17 @@ export function DealerCenterRequisites({ requisites, isRequisiteEditable, namePr
           />
         </>
       )}
+
+      <Box gridColumn="span 3" width="auto" minWidth="min-content">
+        <SwitchInput
+          id="manualInput"
+          value={isCustomFields}
+          label="Ввести вручную"
+          onChange={handleManualEntryChange}
+          centered
+          // disabled
+        />
+      </Box>
 
       {isCustomFields && (
         <>

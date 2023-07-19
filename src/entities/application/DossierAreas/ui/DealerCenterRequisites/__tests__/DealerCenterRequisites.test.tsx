@@ -5,13 +5,13 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { PreparedVendorWithoutBrokerMap } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
-import { RequisitesAdditionalOptions } from '../../../__tests__/mocks/clientDetailedDossier.mock'
 import { editRequisitesValidationSchema } from '../../../configs/editRequisitesValidation'
 import { DealerCenterRequisites } from '../DealerCenterRequisites'
 
@@ -25,13 +25,33 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
 
-const mockedRequisites: RequisitesAdditionalOptions[] = [
-  {
-    legalEntityName: '',
-    tax: 0.15,
-    banks: [],
+const mockedRequisites: PreparedVendorWithoutBrokerMap = {
+  vendorCode: '2002703288',
+  vendorName: 'Парини',
+  tax: 0.13,
+  requisites: [
+    {
+      bankName: 'Тинькофф',
+      bik: '044525974',
+      accountCorrNumber: '23298374562932784',
+      ogrn: '',
+      kpp: '24356243562',
+      inn: '34573457',
+      accounts: ['2387945697'],
+    },
+  ],
+  requisitesMap: {
+    Тинькофф: {
+      bankName: 'Тинькофф',
+      bik: '044525974',
+      accountCorrNumber: '23298374562932784',
+      ogrn: '',
+      kpp: '24356243562',
+      inn: '34573457',
+      accounts: ['2387945697'],
+    },
   },
-]
+}
 
 const mockedDealerCenterFields = {
   legalPerson: '',
@@ -63,7 +83,7 @@ disableConsole('error')
 describe('DealerCenterRequisitesTest', () => {
   describe('Все поля отображаются на форме', () => {
     beforeEach(() => {
-      render(<DealerCenterRequisites requisites={mockedRequisites} isRequisiteEditable={false} />, {
+      render(<DealerCenterRequisites vendor={mockedRequisites} isRequisiteEditable={false} />, {
         wrapper: createWrapper,
       })
     })
@@ -80,7 +100,7 @@ describe('DealerCenterRequisitesTest', () => {
       expect(screen.getByTestId('beneficiaryBank')).toBeInTheDocument()
     })
 
-    it('Отображается поле "Номер счета банка"', () => {
+    it('Отображается поле "Расчетный счет"', () => {
       expect(screen.getByTestId('bankAccountNumber')).toBeInTheDocument()
     })
 
@@ -110,14 +130,14 @@ describe('DealerCenterRequisitesTest', () => {
     //   expect(await screen.findByTestId('taxation')).toBeInTheDocument()
     // })
 
-    it('Поле "Номер счета банка" заблокировано, если банк не выбран', () => {
+    it('Поле "Расчетный счет" заблокировано, если банк не выбран', () => {
       expect(screen.getByTestId('bankAccountNumber')).not.toBeEnabled()
     })
   })
 
   describe('Все поля валидируются', () => {
     beforeEach(() => {
-      render(<DealerCenterRequisites requisites={mockedRequisites} isRequisiteEditable={false} />, {
+      render(<DealerCenterRequisites vendor={mockedRequisites} isRequisiteEditable={false} />, {
         wrapper: createWrapper,
       })
       // userEvent.click(screen.getByText('Ввести вручную'))
@@ -136,7 +156,7 @@ describe('DealerCenterRequisitesTest', () => {
       expect(await screen.findByTestId('beneficiaryBankErrorMessage')).toBeInTheDocument()
     })
 
-    it('Валидируется поле "Номер счета банка"', async () => {
+    it('Валидируется поле "Расчетный счет"', async () => {
       expect(await screen.findByTestId('bankAccountNumberErrorMessage')).toBeInTheDocument()
     })
 

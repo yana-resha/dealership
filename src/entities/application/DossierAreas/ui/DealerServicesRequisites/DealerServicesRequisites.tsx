@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { OptionID } from '@sberauto/dictionarydc-proto/public'
-import { ArrayHelpers, useField, useFormikContext } from 'formik'
+import { ArrayHelpers, useFormikContext } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
-import { FormFieldNameMap } from 'common/OrderCalculator/types'
-import { usePrevious } from 'shared/hooks/usePrevious'
+import { FullInitialAdditionalService, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -19,18 +18,17 @@ import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { AddingSquareBtn } from 'shared/ui/SquareBtn/AddingSquareBtn'
 import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
+import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
-import { RequisitesDealerServices } from '../../__tests__/mocks/clientDetailedDossier.mock'
-import { DOCUMENT_TYPES } from '../../configs/editRequisitesValidation'
+import { DOCUMENT_TYPES } from '../../configs/clientDetailedDossier.config'
 import { useAdditionalServices } from '../../hooks/useAdditionalServices'
 import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
-import { useBanksOptions } from '../../hooks/useBanksOptions'
-import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
+import { PreparedAdditionalOptionForFinancingMap } from '../../hooks/useRequisitesForFinancingQuery'
 import { useStyles } from './DealerServicesRequisites.styles'
 
 type Props = {
-  requisites: RequisitesDealerServices[]
+  optionRequisite: PreparedAdditionalOptionForFinancingMap | undefined
   index: number
   parentName: ServicesGroupName
   isNecessaryCasco?: boolean
@@ -41,6 +39,7 @@ type Props = {
   }[]
   arrayHelpers?: ArrayHelpers
   arrayLength?: number
+  servicesItem: FullInitialAdditionalService
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
 }
 
@@ -54,22 +53,22 @@ const terms = [
 ]
 
 export function DealerServicesRequisites({
-  requisites,
+  optionRequisite,
   index,
   parentName,
   isNecessaryCasco = false,
   isRequisiteEditable,
   arrayHelpers,
   arrayLength,
+  servicesItem,
   changeIds,
   productOptions,
 }: Props) {
   const classes = useStyles()
-
-  const { values, setFieldValue } = useFormikContext<DossierRequisites>()
-  const { provider, bankAccountNumber, agent, beneficiaryBank, taxPresence, productCost } =
-    values.dealerAdditionalServices[index]
-  const initialValues = useRef(values.dealerAdditionalServices[index])
+  const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
+  const { provider, agent, beneficiaryBank, taxPresence, productCost, productType } = servicesItem
+  const [isManualEntry, setManualEntry] = useState(false)
+  const initialValues = useRef(servicesItem)
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
     parentName,
     index,
@@ -78,24 +77,6 @@ export function DealerServicesRequisites({
     changeIds,
     initialValues: FULL_INITIAL_ADDITIONAL_SERVICE,
   })
-  const [productTypeField] = useField<OptionID>(namePrefix + FormFieldNameMap.productType)
-
-  const providers = requisites.map(requisite => ({ value: requisite.provider }))
-
-  const [agentOptions, setAgentOptions] = useState<{ value: string }[]>([{ value: agent }])
-  const previousInsuranceCompany = usePrevious(provider)
-  const previousAgent = usePrevious(agent)
-  const previousBeneficiaryBank = usePrevious(beneficiaryBank)
-
-  const {
-    banksOptions,
-    setBanksOptions,
-    accountNumberOptions,
-    setAccountNumberOptions,
-    manualEntry,
-    setManualEntry,
-    previousAccountNumber,
-  } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
 
   const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
     values,
@@ -104,84 +85,61 @@ export function DealerServicesRequisites({
     options: productOptions,
   })
 
-  const calculateTaxForProviderAndAgent = useCallback(() => {
-    const requisiteForProviders = requisites.find(requisite => requisite.provider === provider)
-    if (requisiteForProviders) {
-      setFieldValue(namePrefix + 'providerTaxPercent', requisiteForProviders.tax)
-      setFieldValue(namePrefix + 'providerTaxValue', requisiteForProviders.tax * productCost)
-      const chosenAgent = requisiteForProviders.agents.find(receiver => receiver.agentName === agent)
-      if (chosenAgent) {
-        setFieldValue(namePrefix + 'agentTaxPercent', chosenAgent.tax)
-        setFieldValue(namePrefix + 'agentTaxValue', chosenAgent.tax * productCost)
-      } else {
-        setFieldValue(namePrefix + 'agentTaxPercent', null)
-        setFieldValue(namePrefix + 'agentTaxValue', null)
-      }
-    } else {
-      setFieldValue(namePrefix + 'providerTaxPercent', null)
-      setFieldValue(namePrefix + 'providerTaxValue', null)
-      setFieldValue(namePrefix + 'agentTaxPercent', null)
-      setFieldValue(namePrefix + 'agentTaxValue', null)
-    }
-  }, [requisites, provider, setFieldValue, namePrefix, productCost, agent])
+  const vendorOptions = useMemo(
+    () =>
+      (optionRequisite?.vendorsWithBroker || []).map(v => ({
+        value: v.vendorCode,
+        label: v.vendorName,
+      })),
+    [optionRequisite?.vendorsWithBroker],
+  )
+  const currentVendor = useMemo(
+    () => optionRequisite?.vendorsWithBrokerMap[provider],
+    [provider, optionRequisite?.vendorsWithBrokerMap],
+  )
 
-  const updateRequisites = useCallback(() => {
-    const requisiteForProviders = requisites.find(requisite => requisite.provider === provider)
-    if (requisiteForProviders) {
-      setAgentOptions(requisiteForProviders.agents.map(receiver => ({ value: receiver.agentName })))
-      const chosenAgent = requisiteForProviders.agents.find(receiver => receiver.agentName === agent)
-      setBanksOptions(chosenAgent ? chosenAgent.banks.map(bank => ({ value: bank.bankName })) : [])
-      const chosenBank = chosenAgent
-        ? chosenAgent.banks.find(bank => bank.bankName === beneficiaryBank)
-        : undefined
-      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers.map(a => ({ value: a })) : [])
-      if (!manualEntry) {
-        setFieldValue(`${namePrefix}bankIdentificationCode`, chosenBank ? chosenBank.bankBik : '')
-        setFieldValue(`${namePrefix}correspondentAccount`, chosenBank ? chosenBank.bankCorrAccount : '')
-      }
-    } else {
-      setAgentOptions([])
-      setBanksOptions([])
-      setAccountNumberOptions([])
-    }
-  }, [
-    requisites,
-    provider,
-    setBanksOptions,
-    setAccountNumberOptions,
-    manualEntry,
-    agent,
-    beneficiaryBank,
-    setFieldValue,
-    namePrefix,
-  ])
+  const brokerOptions = useMemo(
+    () =>
+      (currentVendor?.brokers || []).map(v => ({
+        value: v.brokerCode,
+        label: v.brokerName,
+      })),
+    [currentVendor?.brokers],
+  )
+  const currentBroker = useMemo(() => currentVendor?.brokersMap[agent], [agent, currentVendor?.brokersMap])
+
+  const banksOptions = useMemo(
+    () =>
+      (currentBroker?.requisites || []).map(r => ({
+        value: r.bankName,
+      })),
+    [currentBroker?.requisites],
+  )
+  const currentBank = useMemo(
+    () => currentBroker?.requisitesMap[beneficiaryBank],
+    [beneficiaryBank, currentBroker?.requisitesMap],
+  )
+
+  const accountNumberOptions = useMemo(
+    () => (currentBank?.accounts || []).map(a => ({ value: a })),
+    [currentBank?.accounts],
+  )
 
   const resetInitialValues = useCallback(() => {
-    if (!isRequisiteEditable) {
-      setFieldValue(`${namePrefix}documentId`, initialValues.current.documentId)
-    }
+    setFieldValue(`${namePrefix}beneficiaryBank`, '')
     setFieldValue(`${namePrefix}taxPresence`, initialValues.current.taxPresence)
     setFieldValue(`${namePrefix}taxation`, initialValues.current.taxation)
-    setFieldValue(`${namePrefix}correspondentAccount`, '')
-    setFieldValue(`${namePrefix}bankIdentificationCode`, '')
-    setFieldValue(`${namePrefix}beneficiaryBank`, '')
-    setFieldValue(`${namePrefix}bankAccountNumber`, '')
-    setAccountNumberOptions([])
-  }, [isRequisiteEditable, namePrefix, setAccountNumberOptions, setFieldValue])
+  }, [namePrefix, setFieldValue])
 
   const clearFieldsForManualEntry = useCallback(() => {
-    if (!isRequisiteEditable) {
-      setFieldValue(`${namePrefix}documentId`, '')
-    }
     setFieldValue(`${namePrefix}beneficiaryBank`, '')
     setFieldValue(`${namePrefix}bankAccountNumber`, '')
     setFieldValue(`${namePrefix}bankIdentificationCode`, '')
+    setFieldValue(`${namePrefix}correspondentAccount`, '')
     setFieldValue(`${namePrefix}taxPresence`, false)
     setFieldValue(`${namePrefix}taxation`, '0')
-    setFieldValue(`${namePrefix}correspondentAccount`, '')
-  }, [isRequisiteEditable, namePrefix, setFieldValue])
+  }, [namePrefix, setFieldValue])
 
-  //Метод активирует поля для ручного ввода реквизитов. Не используется, пока отключен ручной ввод
   const handleManualEntryChange = useCallback(
     (manual: boolean) => {
       if (manual) {
@@ -204,47 +162,60 @@ export function DealerServicesRequisites({
   )
 
   useEffect(() => {
-    calculateTaxForProviderAndAgent()
-  }, [productCost, agent])
+    if (!isManualEntry) {
+      setFieldValue(namePrefix + 'provider', currentVendor?.vendorCode ? currentVendor?.vendorCode : '')
+    }
+  }, [currentVendor?.vendorCode, isManualEntry, namePrefix, setFieldValue])
 
   useEffect(() => {
-    if (previousInsuranceCompany === provider || agent === '') {
-      updateRequisites()
+    if (!isManualEntry) {
+      setFieldValue(
+        namePrefix + 'beneficiaryBank',
+        currentBroker?.requisites.length === 1 ? currentBroker.requisites[0].bankName : '',
+      )
+    }
+  }, [currentBroker?.requisites, isManualEntry, namePrefix, setFieldValue])
+
+  useEffect(() => {
+    if (!isManualEntry) {
+      setFieldValue(namePrefix + 'bankIdentificationCode', currentBank?.bik || '')
+      setFieldValue(namePrefix + 'correspondentAccount', currentBank?.accountCorrNumber || '')
+      setFieldValue(
+        namePrefix + 'bankAccountNumber',
+        currentBank?.accounts?.length === 1 ? currentBank.accounts[0] : '',
+      )
+    }
+  }, [
+    currentBank?.accountCorrNumber,
+    currentBank?.accounts,
+    currentBank?.bik,
+    isManualEntry,
+    namePrefix,
+    setFieldValue,
+  ])
+
+  useEffect(() => {
+    if (currentVendor?.tax) {
+      setFieldValue(namePrefix + 'providerTaxPercent', currentVendor.tax)
+      setFieldValue(namePrefix + 'providerTaxValue', currentVendor.tax * parseInt(productCost || '0', 10))
     } else {
-      setFieldValue(`${namePrefix}agent`, '')
+      setFieldValue(namePrefix + 'providerTaxPercent', null)
+      setFieldValue(namePrefix + 'providerTaxValue', null)
     }
-  }, [provider])
 
-  useEffect(() => {
-    if (previousAgent !== agent) {
-      if (beneficiaryBank === '' || manualEntry) {
-        updateRequisites()
-      } else {
-        setFieldValue(`${namePrefix}beneficiaryBank`, '')
-      }
+    if (currentBroker?.tax) {
+      setFieldValue(namePrefix + 'agentTaxPercent', currentBroker.tax)
+      setFieldValue(namePrefix + 'agentTaxValue', currentBroker.tax * parseInt(productCost || '0', 10))
+    } else {
+      setFieldValue(namePrefix + 'agentTaxPercent', null)
+      setFieldValue(namePrefix + 'agentTaxValue', null)
     }
-  }, [agent])
-
-  useEffect(() => {
-    if (previousBeneficiaryBank !== beneficiaryBank && !manualEntry) {
-      if (bankAccountNumber === '') {
-        updateRequisites()
-      } else {
-        setFieldValue(`${namePrefix}bankAccountNumber`, '')
-      }
-    }
-  }, [beneficiaryBank])
-
-  useEffect(() => {
-    if (previousAccountNumber !== bankAccountNumber && bankAccountNumber === '' && !manualEntry) {
-      updateRequisites()
-    }
-  }, [bankAccountNumber])
+  }, [currentBroker?.tax, currentVendor?.tax, namePrefix, productCost, setFieldValue])
 
   const isShouldShowCascoLimitField =
     isNecessaryCasco &&
     parentName === ServicesGroupName.dealerAdditionalServices &&
-    productTypeField.value === OptionID.CASCO
+    productType === OptionID.CASCO
 
   return (
     <Box className={classes.editingAreaContainer}>
@@ -270,7 +241,7 @@ export function DealerServicesRequisites({
         name={`${namePrefix}provider`}
         label="Страховая компания или поставщик"
         placeholder="-"
-        options={providers}
+        options={vendorOptions}
         gridColumn="span 6"
       />
       <SwitchInputFormik
@@ -290,9 +261,9 @@ export function DealerServicesRequisites({
         name={`${namePrefix}agent`}
         label="Агент получатель"
         placeholder="-"
-        options={agentOptions}
+        options={brokerOptions}
         gridColumn="span 6"
-        disabled={!agentOptions.length}
+        disabled={!brokerOptions.length}
       />
       <SelectInputFormik
         name={`${namePrefix}loanTerm`}
@@ -335,7 +306,7 @@ export function DealerServicesRequisites({
         gridColumn="span 4"
       />
       <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
-      {manualEntry ? (
+      {isManualEntry ? (
         <>
           <MaskedInputFormik
             name={`${namePrefix}bankIdentificationCode`}
@@ -353,7 +324,7 @@ export function DealerServicesRequisites({
           />
           <MaskedInputFormik
             name={`${namePrefix}bankAccountNumber`}
-            label="Номер счета банка"
+            label="Расчетный счет"
             placeholder="-"
             mask={maskBankAccountNumber}
             gridColumn="span 4"
@@ -371,7 +342,7 @@ export function DealerServicesRequisites({
           />
           <SelectInputFormik
             name={`${namePrefix}bankAccountNumber`}
-            label="Номер Счета банка"
+            label="Расчетный счет"
             placeholder="-"
             options={accountNumberOptions}
             gridColumn="span 6"
@@ -379,7 +350,16 @@ export function DealerServicesRequisites({
           />
         </>
       )}
-      {manualEntry && (
+      <Box gridColumn="span 3" width="auto" minWidth="min-content">
+        <SwitchInput
+          value={isManualEntry}
+          label="Ввести вручную"
+          onChange={handleManualEntryChange}
+          centered
+          disabled
+        />
+      </Box>
+      {isManualEntry && (
         <>
           <MaskedInputFormik
             name={`${namePrefix}correspondentAccount`}

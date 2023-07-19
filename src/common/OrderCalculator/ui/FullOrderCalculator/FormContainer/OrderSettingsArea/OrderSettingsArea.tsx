@@ -9,6 +9,7 @@ import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { RequisitesForFinancing } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { maskOnlyDigitsWithSeparator, maskPercent } from 'shared/masks/InputMasks'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
@@ -16,7 +17,6 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
-import { Requisites } from '../../../../../../entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
 import { AdditionalEquipment } from './AdditionalEquipment/AdditionalEquipment'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
 import useStyles from './OrderSettingsArea.styles'
@@ -24,7 +24,7 @@ import useStyles from './OrderSettingsArea.styles'
 type Props = {
   disabled: boolean
   isSubmitLoading: boolean
-  requisites: Requisites
+  requisites: RequisitesForFinancing | undefined
 }
 
 export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Props) {
@@ -32,9 +32,8 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
 
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data: vendorOptions, isError: vendorOptionsIsError } = useGetVendorOptionsQuery({
-    vendorCode: vendorCode,
+    vendorCode,
   })
-
   const additionalEquipments = useMemo(
     () =>
       vendorOptions?.additionalOptions
@@ -120,7 +119,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
 
         <AdditionalEquipment
           options={{ productType: additionalEquipments, loanTerms }}
-          requisites={requisites.additionalEquipmentRequisites}
+          optionsRequisitesMap={requisites?.additionalEquipmentsMap || {}}
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
         />
@@ -129,7 +128,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
           options={{ productType: dealerAdditionalServices, loanTerms }}
           name={ServicesGroupName.dealerAdditionalServices}
           isNecessaryCasco={isNecessaryCasco}
-          requisites={requisites.dealerServicesRequisites}
+          optionsRequisitesMap={requisites?.dealerOptionsMap || {}}
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
         />
@@ -137,7 +136,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
           title="Дополнительные услуги банка"
           options={{ productType: [], loanTerms }}
           name={ServicesGroupName.bankAdditionalServices}
-          requisites={requisites.dealerServicesRequisites}
+          optionsRequisitesMap={requisites?.bankOptionsMap || {}}
           disabled
         />
         {!!commonErrors.length && (

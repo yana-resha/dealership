@@ -6,13 +6,13 @@ import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { PreparedAdditionalOptionForFinancingMap } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
-import { RequisitesDealerServices } from '../../../__tests__/mocks/clientDetailedDossier.mock'
 import { editRequisitesValidationSchema } from '../../../configs/editRequisitesValidation'
 import { DealerServicesRequisites } from '../DealerServicesRequisites'
 
@@ -26,32 +26,171 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
 
-const mockedRequisites: RequisitesDealerServices[] = [
-  {
-    provider: '',
-    tax: 0.15,
-    agents: [],
+const mockedRequisites: PreparedAdditionalOptionForFinancingMap = {
+  optionType: 1,
+  optionId: 25,
+  vendorsWithBroker: [
+    {
+      vendorCode: '2002703288',
+      vendorName: 'Парини',
+      tax: 0.13,
+      brokers: [
+        {
+          brokerCode: '111',
+          brokerName: 'Тест1',
+          tax: 0.13,
+          requisites: [
+            {
+              bankName: 'Тинькофф',
+              bik: '044525974',
+              accountCorrNumber: '23298374562932784',
+              ogrn: '',
+              kpp: '24356243562',
+              inn: '34573457',
+              accounts: ['2387945697'],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  vendorsWithBrokerMap: {
+    2002703288: {
+      vendorCode: '2002703288',
+      vendorName: 'Тест3',
+      tax: 0.13,
+      brokers: [
+        {
+          brokerCode: '111',
+          brokerName: 'Тест1',
+          tax: 0.13,
+          requisites: [
+            {
+              bankName: 'Тинькофф',
+              bik: '044525974',
+              accountCorrNumber: '23298374562932784',
+              ogrn: '',
+              kpp: '24356243562',
+              inn: '34573457',
+              accounts: ['2387945697'],
+            },
+            {
+              bankName: 'Сбер',
+              bik: '044525225',
+              accountCorrNumber: '92384765203475602',
+              ogrn: '',
+              kpp: '23462346',
+              inn: '34573457',
+              accounts: ['1793845697', '2374569834', '2374659837', '2378456987'],
+            },
+            {
+              bankName: 'Альфа',
+              bik: '044525593',
+              accountCorrNumber: '23984765892374569',
+              ogrn: '',
+              kpp: '23462346',
+              inn: '3457345',
+              accounts: ['1378456987', '2783465972'],
+            },
+          ],
+        },
+      ],
+      brokersMap: {
+        111: {
+          brokerCode: '111',
+          brokerName: 'Тест1',
+          tax: 0.13,
+          requisites: [
+            {
+              bankName: 'Тинькофф',
+              bik: '044525974',
+              accountCorrNumber: '23298374562932784',
+              ogrn: '',
+              kpp: '24356243562',
+              inn: '34573457',
+              accounts: ['2387945697'],
+            },
+            {
+              bankName: 'Сбер',
+              bik: '044525225',
+              accountCorrNumber: '92384765203475602',
+              ogrn: '',
+              kpp: '23462346',
+              inn: '34573457',
+              accounts: ['1793845697', '2374569834', '2374659837', '2378456987'],
+            },
+            {
+              bankName: 'Альфа',
+              bik: '044525593',
+              accountCorrNumber: '23984765892374569',
+              ogrn: '',
+              kpp: '23462346',
+              inn: '3457345',
+              accounts: ['1378456987', '2783465972'],
+            },
+          ],
+          requisitesMap: {
+            Тинькофф: {
+              bankName: 'Тинькофф',
+              bik: '044525974',
+              accountCorrNumber: '23298374562932784',
+              ogrn: '',
+              kpp: '24356243562',
+              inn: '34573457',
+              accounts: ['2387945697'],
+            },
+            Сбер: {
+              bankName: 'Сбер',
+              bik: '044525225',
+              accountCorrNumber: '92384765203475602',
+              ogrn: '',
+              kpp: '23462346',
+              inn: '34573457',
+              accounts: ['1793845697', '2374569834', '2374659837', '2378456987'],
+            },
+            Альфа: {
+              bankName: 'Альфа',
+              bik: '044525593',
+              accountCorrNumber: '23984765892374569',
+              ogrn: '',
+              kpp: '23462346',
+              inn: '3457345',
+              accounts: ['1378456987', '2783465972'],
+            },
+          },
+        },
+      },
+    },
   },
-]
+}
 
 const mockedDealerServicesFields = {
   dealerAdditionalServices: [
     {
       optionType: 'dealerServices',
-      productType: '',
+      productType: null,
       legalPerson: '',
       provider: '',
       agent: '',
-      productCost: 0,
+      productCost: '0',
       loanTerm: 0,
       bankIdentificationCode: '',
-      documentId: '',
       beneficiaryBank: '',
       correspondentAccount: '',
       bankAccountNumber: '',
       taxPresence: false,
-      taxation: '',
+      taxation: undefined,
       isCredit: true,
+      taxPercent: null,
+      taxValue: null,
+      documentNumber: '32ук23к22',
+      documentType: 2,
+      documentDate: new Date('2023-04-23T00:00:00.000Z'),
+      isCustomFields: false,
+      agentTaxPercent: null,
+      agentTaxValue: null,
+      providerTaxPercent: null,
+      providerTaxValue: null,
     },
   ],
 }
@@ -77,10 +216,11 @@ describe('DealerServicesRequisitesTest', () => {
     beforeEach(() => {
       render(
         <DealerServicesRequisites
-          requisites={mockedRequisites}
+          optionRequisite={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.dealerAdditionalServices}
+          servicesItem={mockedDealerServicesFields.dealerAdditionalServices[0]}
         />,
         {
           wrapper: createWrapper,
@@ -116,7 +256,7 @@ describe('DealerServicesRequisitesTest', () => {
       expect(screen.getByTestId('dealerAdditionalServices[0].beneficiaryBank')).toBeInTheDocument()
     })
 
-    it('Отображается поле "Номер счета банка"', () => {
+    it('Отображается поле "Расчетный счет"', () => {
       expect(screen.getByTestId('dealerAdditionalServices[0].bankAccountNumber')).toBeInTheDocument()
     })
 
@@ -157,7 +297,7 @@ describe('DealerServicesRequisitesTest', () => {
       expect(screen.getByTestId('dealerAdditionalServices[0].beneficiaryBank')).not.toBeEnabled()
     })
 
-    it('Поле "Номер счета банка" заблокировано, если банк не выбран', () => {
+    it('Поле "Расчетный счет" заблокировано, если банк не выбран', () => {
       expect(screen.getByTestId('dealerAdditionalServices[0].bankAccountNumber')).not.toBeEnabled()
     })
   })
@@ -166,10 +306,11 @@ describe('DealerServicesRequisitesTest', () => {
     beforeEach(() => {
       render(
         <DealerServicesRequisites
-          requisites={mockedRequisites}
+          optionRequisite={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.dealerAdditionalServices}
+          servicesItem={mockedDealerServicesFields.dealerAdditionalServices[0]}
         />,
         {
           wrapper: createWrapper,
@@ -225,7 +366,7 @@ describe('DealerServicesRequisitesTest', () => {
     //   ).toBeInTheDocument()
     // })
     //
-    // it('Валидируется поле "Номер счета банка"', async () => {
+    // it('Валидируется поле "Расчетный счет"', async () => {
     //   expect(
     //     await screen.findByTestId('dealerAdditionalServices[0].bankAccountNumberErrorMessage'),
     //   ).toBeInTheDocument()

@@ -59,6 +59,7 @@ export function AdditionalServiceItem({
     productTypeField.value === OptionID.CASCO
 
   const { values } = useFormikContext<OrderCalculatorFields>()
+
   const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
     values,
     index,

@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
-import { usePrevious } from 'shared/hooks/usePrevious'
+import { FullInitialAdditionalEquipments, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -17,18 +17,18 @@ import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { AddingSquareBtn } from 'shared/ui/SquareBtn/AddingSquareBtn'
 import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
+import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
-import { RequisitesAdditionalOptions } from '../../__tests__/mocks/clientDetailedDossier.mock'
-import { DOCUMENT_TYPES } from '../../configs/editRequisitesValidation'
+import { DOCUMENT_TYPES } from '../../configs/clientDetailedDossier.config'
 import { useAdditionalServices } from '../../hooks/useAdditionalServices'
 import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
-import { useBanksOptions } from '../../hooks/useBanksOptions'
+import { PreparedAdditionalEquipmentForFinancingMap } from '../../hooks/useRequisitesForFinancingQuery'
 import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './AdditionalEquipmentRequisites.styles'
 
 type Props = {
-  requisites: RequisitesAdditionalOptions[]
+  optionRequisite: PreparedAdditionalEquipmentForFinancingMap | undefined
   index: number
   parentName: ServicesGroupName
   isRequisiteEditable: boolean
@@ -38,24 +38,27 @@ type Props = {
   }[]
   arrayHelpers?: ArrayHelpers
   arrayLength?: number
+  equipmentItem: FullInitialAdditionalEquipments
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
 }
 
-export function AdditionalEquipmentRequisites(props: Props) {
+export function AdditionalEquipmentRequisites({
+  optionRequisite,
+  index,
+  parentName,
+  isRequisiteEditable,
+  arrayHelpers,
+  arrayLength,
+  equipmentItem,
+  changeIds,
+  productOptions,
+}: Props) {
   const classes = useStyles()
-  const {
-    requisites,
-    index,
-    parentName,
-    isRequisiteEditable,
-    arrayHelpers,
-    arrayLength,
-    changeIds,
-    productOptions,
-  } = props
-  const { values, setFieldValue } = useFormikContext<DossierRequisites>()
-  const { legalPerson, beneficiaryBank, bankAccountNumber, taxPresence, productCost } =
-    values.additionalEquipments[index]
+  const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
+  const { legalPerson, beneficiaryBank, taxPresence, productCost } = equipmentItem
+  const initialValues = useRef(equipmentItem)
+  const [isManualEntry, setManualEntry] = useState(false)
+
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
     parentName,
     index,
@@ -64,20 +67,6 @@ export function AdditionalEquipmentRequisites(props: Props) {
     changeIds,
     initialValues: FULL_INITIAL_ADDITIONAL_EQUIPMENTS,
   })
-  const initialValues = useRef(values.additionalEquipments[index])
-  const legalEntityOptions = requisites.map(requisite => ({ value: requisite.legalEntityName }))
-  const previousLegalPerson = usePrevious(legalPerson)
-  const previousReceiverBank = usePrevious(beneficiaryBank)
-
-  const {
-    banksOptions,
-    setBanksOptions,
-    accountNumberOptions,
-    setAccountNumberOptions,
-    manualEntry,
-    setManualEntry,
-    previousAccountNumber,
-  } = useBanksOptions({ beneficiaryBank, bankAccountNumber })
 
   const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
     values,
@@ -86,41 +75,35 @@ export function AdditionalEquipmentRequisites(props: Props) {
     options: productOptions,
   })
 
-  const calculateTaxForLegalPerson = useCallback(() => {
-    const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
-    if (requisiteForLegalName) {
-      setFieldValue(namePrefix + 'taxPercent', requisiteForLegalName.tax)
-      setFieldValue(namePrefix + 'taxValue', requisiteForLegalName.tax * productCost)
-    } else {
-      setFieldValue(namePrefix + 'taxPercent', null)
-      setFieldValue(namePrefix + 'taxValue', null)
-    }
-  }, [legalPerson, namePrefix, productCost, requisites, setFieldValue])
+  const vendorOptions = useMemo(
+    () =>
+      (optionRequisite?.vendorsWithoutBroker || []).map(v => ({
+        value: v.vendorCode,
+        label: v.vendorName,
+      })),
+    [optionRequisite?.vendorsWithoutBroker],
+  )
+  const currentVendor = useMemo(
+    () => optionRequisite?.vendorsWithoutBrokerMap[legalPerson],
+    [legalPerson, optionRequisite?.vendorsWithoutBrokerMap],
+  )
 
-  const updateRequisites = useCallback(() => {
-    const requisiteForLegalName = requisites.find(requisite => requisite.legalEntityName === legalPerson)
-    if (requisiteForLegalName) {
-      setBanksOptions(requisiteForLegalName.banks.map(bank => ({ value: bank.bankName })))
-      const chosenBank = requisiteForLegalName.banks.find(bank => bank.bankName === beneficiaryBank)
-      setAccountNumberOptions(chosenBank ? chosenBank.accountNumbers.map(a => ({ value: a })) : [])
-      if (!manualEntry) {
-        setFieldValue(`${namePrefix}bankIdentificationCode`, chosenBank ? chosenBank.bankBik : '')
-        setFieldValue(`${namePrefix}correspondentAccount`, chosenBank ? chosenBank.bankCorrAccount : '')
-      }
-    } else {
-      setBanksOptions([])
-      setAccountNumberOptions([])
-    }
-  }, [
-    requisites,
-    legalPerson,
-    setBanksOptions,
-    setAccountNumberOptions,
-    manualEntry,
-    beneficiaryBank,
-    setFieldValue,
-    namePrefix,
-  ])
+  const banksOptions = useMemo(
+    () =>
+      (currentVendor?.requisites || []).map(r => ({
+        value: r.bankName,
+      })),
+    [currentVendor?.requisites],
+  )
+  const currentBank = useMemo(
+    () => currentVendor?.requisitesMap[beneficiaryBank],
+    [beneficiaryBank, currentVendor?.requisitesMap],
+  )
+
+  const accountNumberOptions = useMemo(
+    () => (currentBank?.accounts || []).map(a => ({ value: a })),
+    [currentBank?.accounts],
+  )
 
   const toggleTaxInPercentField = useCallback(
     (value: boolean) => {
@@ -131,25 +114,20 @@ export function AdditionalEquipmentRequisites(props: Props) {
   )
 
   const resetInitialValues = useCallback(() => {
+    setFieldValue(`${namePrefix}beneficiaryBank`, '')
     setFieldValue(`${namePrefix}taxPresence`, initialValues.current.taxPresence)
     setFieldValue(`${namePrefix}taxation`, initialValues.current.taxation)
-    setFieldValue(`${namePrefix}correspondentAccount`, '')
-    setFieldValue(`${namePrefix}bankIdentificationCode`, '')
-    setFieldValue(`${namePrefix}beneficiaryBank`, '')
-    setFieldValue(`${namePrefix}bankAccountNumber`, '')
-    setAccountNumberOptions([])
-  }, [namePrefix, setAccountNumberOptions, setFieldValue])
+  }, [namePrefix, setFieldValue])
 
   const clearFieldsForManualEntry = useCallback(() => {
     setFieldValue(`${namePrefix}beneficiaryBank`, '')
     setFieldValue(`${namePrefix}bankAccountNumber`, '')
     setFieldValue(`${namePrefix}bankIdentificationCode`, '')
+    setFieldValue(`${namePrefix}correspondentAccount`, '')
     setFieldValue(`${namePrefix}taxPresence`, false)
     setFieldValue(`${namePrefix}taxation`, '0')
-    setFieldValue(`${namePrefix}correspondentAccount`, '')
   }, [namePrefix, setFieldValue])
 
-  //Метод активирует поля для ручного ввода реквизитов. Не используется, пока отключен ручной ввод
   const handleManualEntryChange = useCallback(
     (manual: boolean) => {
       if (manual) {
@@ -164,32 +142,47 @@ export function AdditionalEquipmentRequisites(props: Props) {
   )
 
   useEffect(() => {
-    calculateTaxForLegalPerson()
-  }, [productCost, legalPerson])
-
-  useEffect(() => {
-    if (previousLegalPerson === legalPerson || beneficiaryBank === '' || manualEntry) {
-      updateRequisites()
+    if (currentVendor?.tax) {
+      setFieldValue(namePrefix + 'taxPercent', currentVendor.tax)
+      setFieldValue(namePrefix + 'taxValue', currentVendor.tax * parseInt(productCost || '0', 10))
     } else {
-      setFieldValue(`${namePrefix}beneficiaryBank`, '')
+      setFieldValue(namePrefix + 'taxPercent', null)
+      setFieldValue(namePrefix + 'taxValue', null)
     }
-  }, [legalPerson])
+  }, [currentVendor?.tax, namePrefix, productCost, setFieldValue])
 
   useEffect(() => {
-    if (previousReceiverBank !== beneficiaryBank && !manualEntry) {
-      if (bankAccountNumber === '') {
-        updateRequisites()
-      } else {
-        setFieldValue(`${namePrefix}bankAccountNumber`, '')
-      }
+    if (!isManualEntry) {
+      setFieldValue(namePrefix + 'legalPerson', currentVendor?.vendorCode ? currentVendor?.vendorCode : '')
     }
-  }, [beneficiaryBank])
+  }, [currentVendor?.vendorCode, isManualEntry, namePrefix, setFieldValue])
 
   useEffect(() => {
-    if (previousAccountNumber !== bankAccountNumber && bankAccountNumber === '' && !manualEntry) {
-      updateRequisites()
+    if (!isManualEntry) {
+      setFieldValue(
+        namePrefix + 'beneficiaryBank',
+        currentVendor?.requisites.length === 1 ? currentVendor.requisites[0].bankName : '',
+      )
     }
-  }, [bankAccountNumber])
+  }, [currentVendor?.requisites, isManualEntry, namePrefix, setFieldValue])
+
+  useEffect(() => {
+    if (!isManualEntry) {
+      setFieldValue(namePrefix + 'bankIdentificationCode', currentBank?.bik || '')
+      setFieldValue(namePrefix + 'correspondentAccount', currentBank?.accountCorrNumber || '')
+      setFieldValue(
+        namePrefix + 'bankAccountNumber',
+        currentBank?.accounts?.length === 1 ? currentBank.accounts[0] : '',
+      )
+    }
+  }, [
+    currentBank?.accountCorrNumber,
+    currentBank?.accounts,
+    currentBank?.bik,
+    isManualEntry,
+    namePrefix,
+    setFieldValue,
+  ])
 
   return (
     <Box className={classes.editingAreaContainer}>
@@ -237,7 +230,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
         name={`${namePrefix}legalPerson`}
         label="Юридическое лицо"
         placeholder="-"
-        options={legalEntityOptions}
+        options={vendorOptions}
         gridColumn="span 6"
       />
       <Box gridColumn="span 9" />
@@ -258,7 +251,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
       />
       <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
 
-      {manualEntry ? (
+      {isManualEntry ? (
         <>
           <MaskedInputFormik
             name={`${namePrefix}bankIdentificationCode`}
@@ -276,7 +269,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
           />
           <MaskedInputFormik
             name={`${namePrefix}bankAccountNumber`}
-            label="Номер счета банка"
+            label="Расчетный счет"
             placeholder="-"
             mask={maskBankAccountNumber}
             gridColumn="span 4"
@@ -294,7 +287,7 @@ export function AdditionalEquipmentRequisites(props: Props) {
           />
           <SelectInputFormik
             name={`${namePrefix}bankAccountNumber`}
-            label="Номер Счета банка"
+            label="Расчетный счет"
             placeholder="-"
             options={accountNumberOptions}
             gridColumn="span 6"
@@ -303,7 +296,17 @@ export function AdditionalEquipmentRequisites(props: Props) {
         </>
       )}
 
-      {manualEntry && (
+      <Box gridColumn="span 3" width="auto" minWidth="min-content">
+        <SwitchInput
+          value={isManualEntry}
+          label="Ввести вручную"
+          onChange={handleManualEntryChange}
+          centered
+          disabled
+        />
+      </Box>
+
+      {isManualEntry && (
         <>
           <MaskedInputFormik
             name={`${namePrefix}correspondentAccount`}

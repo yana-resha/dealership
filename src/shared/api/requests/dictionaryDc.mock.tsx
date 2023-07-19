@@ -128,34 +128,3 @@ export const mockGetVendorOptionsResponse: GetVendorOptionsListResponse = {
     },
   ],
 }
-
-export const mockCalculateCreditResponse: CalculateCreditResponse = {
-  products: [
-    {
-      productCodeName: 'DRVBF',
-      productId: 'DRVB',
-      productName: 'Драйв В', //creditProduct
-      downpayment: 200000, //initialPayment
-      term: 24, //term
-      monthlyPayment: 9400, //monthlyPayment
-      lastPayment: 9400, //lastPayment
-      overpayment: 0, //overpayment
-      currentRate: 18, //interestRate
-      cascoFlag: true, //insurance
-      totalSum: 1821466, //loanAmount
-    },
-    {
-      productCodeName: 'DRVCF',
-      productId: 'DRVC',
-      productName: 'Драйв C',
-      downpayment: 300000,
-      term: 36,
-      monthlyPayment: 10400,
-      lastPayment: 10400,
-      overpayment: 10000,
-      currentRate: 17.5,
-      cascoFlag: false,
-      totalSum: 2100000,
-    },
-  ],
-}

@@ -35,7 +35,7 @@ export const EXPECTED_FULL_DATA = {
       isCustomFields: false,
       loanTerm: undefined,
       productCost: '',
-      productType: '',
+      productType: null,
       provider: '',
       providerTaxPercent: null,
       providerTaxValue: null,

@@ -36,7 +36,7 @@ export function Requisite({ additionalOption }: Props) {
         {term && <InfoText label="Срок">{term} мес.</InfoText>}
         {docNumber && <InfoText label="Номер полиса">{docNumber}</InfoText>}
         {beneficiaryBank && <InfoText label="Получатель">{beneficiaryBank}</InfoText>}
-        {correspondentAccount && <InfoText label="Номер счета банка">{correspondentAccount}</InfoText>}
+        {correspondentAccount && <InfoText label="Корреспондентский счёт">{correspondentAccount}</InfoText>}
         {bankAccountNumber && <InfoText label="Расчетный счет">{bankAccountNumber}</InfoText>}
         <InfoText label="НДС">{tax || 'Без НДС'}</InfoText>
       </Box>

@@ -1,3 +1,5 @@
+import { OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
+
 export const exhaustiveCheck = (value: never) => value
 
 export const filterDigitsFromString = (str: string) => str.replace(/[^0-9]/g, '')
@@ -34,4 +36,16 @@ export function downloadBlob(blob: Blob, fileName: string) {
   document.body.appendChild(link)
   link.click()
   link.remove()
+}
+
+/** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,
+ * поэтому приводим к изначальному виду */
+export function prepareOptionType(type: keyof typeof OptionType): OptionType | undefined {
+  return OptionType[type] ?? undefined
+}
+
+/** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,
+ * поэтому приводим к изначальному виду */
+export function prepareOptionId(type: keyof typeof OptionID): OptionID | undefined {
+  return OptionID[type] ?? undefined
 }

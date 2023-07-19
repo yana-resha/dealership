@@ -321,13 +321,10 @@ export function useLimits({ vendorCode }: Params) {
         setFieldTouched(`${ServicesGroupName.bankAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
-  }, [
-    commonErrorsField.value,
-    setFieldTouched,
-    values.additionalEquipments,
-    values.bankAdditionalServices,
-    values.dealerAdditionalServices,
-  ])
+    // Исключили values.additionalEquipments, values.bankAdditionalServices, values.dealerAdditionalServices
+    // что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commonErrorsField.value, setFieldTouched])
 
   // Сформирован на основе поля commonErrors массив ошибок стоимостей допов. Просто возвращается компоненту.
   const commonErrors = useMemo(

@@ -5,8 +5,8 @@ import { FieldArray, useField } from 'formik'
 
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
-import { RequisitesDealerServices } from 'entities/application/DossierAreas/__tests__/mocks/clientDetailedDossier.mock'
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { PreparedAdditionalOptionForFinancingMap } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { DealerServicesRequisites } from 'entities/application/DossierAreas/ui'
 
 import useStyles from './AdditionalServices.styles'
@@ -19,7 +19,7 @@ type Props = {
   }
   name: ServicesGroupName
   isNecessaryCasco?: boolean
-  requisites: RequisitesDealerServices[]
+  optionsRequisitesMap: Record<string, PreparedAdditionalOptionForFinancingMap>
   isError?: boolean
   errorMessage?: string
   disabled?: boolean
@@ -30,7 +30,7 @@ export function AdditionalServices({
   options,
   name,
   isNecessaryCasco = false,
-  requisites,
+  optionsRequisitesMap,
   isError = false,
   errorMessage,
   disabled = false,
@@ -55,7 +55,7 @@ export function AdditionalServices({
             {field.value.map((v: any, index: number, arr: any[]) => (
               <React.Fragment key={ids[index]}>
                 <DealerServicesRequisites
-                  requisites={name === ServicesGroupName.dealerAdditionalServices ? requisites : []}
+                  optionRequisite={v.productType ? optionsRequisitesMap[v.productType] : undefined}
                   index={index}
                   parentName={name}
                   isNecessaryCasco={isNecessaryCasco}
@@ -63,6 +63,7 @@ export function AdditionalServices({
                   productOptions={options.productType}
                   arrayHelpers={arrayHelpers}
                   arrayLength={arr.length}
+                  servicesItem={v}
                   changeIds={changeIds}
                 />
                 {index < arr.length - 1 && <Divider />}

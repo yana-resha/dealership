@@ -109,7 +109,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
           <InfoText label="Банк получатель">
             {application.vendor?.vendorBankDetails?.accountRequisite?.bank || ''}
           </InfoText>
-          <InfoText label="Номер счета банка">
+          <InfoText label="Расчетный счет">
             {application.vendor?.vendorBankDetails?.accountRequisite?.accountNumber || ''}
           </InfoText>
         </Box>

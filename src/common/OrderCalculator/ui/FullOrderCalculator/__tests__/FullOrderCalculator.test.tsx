@@ -104,7 +104,7 @@ describe('FullOrderCalculator', () => {
           case 'Банк получатель денежных средств':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(3)
             break
-          case 'Номер Счета банка':
+          case 'Расчетный счет':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(4)
             break
           case 'Страховая компания или поставщик':
@@ -372,7 +372,7 @@ describe('FullOrderCalculator', () => {
     //   expect(screen.queryByText('Введите данные полностью')).not.toBeInTheDocument()
     // })
     //
-    // it('Поле Номер счета банка - принимает только числа', async () => {
+    // it('Поле Расчетный счет - принимает только числа', async () => {
     //   await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
     //   expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(16)
     //   const bankAccountNumberField = document.getElementById('bankAccountNumber')!
@@ -380,7 +380,7 @@ describe('FullOrderCalculator', () => {
     //   expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(16)
     // })
     //
-    // it('Поле Номер счета банка - ожидает ввода 20 цифр', async () => {
+    // it('Поле Расчетный счет - ожидает ввода 20 цифр', async () => {
     //   await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
     //   const bankAccountNumberField = document.getElementById('bankAccountNumber')!
     //   await act(() => userEvent.type(bankAccountNumberField, '1234123412341234123'))
