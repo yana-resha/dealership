@@ -180,6 +180,9 @@ export function DealerServicesRequisites({
     if (!isManualEntry) {
       setFieldValue(namePrefix + 'bankIdentificationCode', currentBank?.bik || '')
       setFieldValue(namePrefix + 'correspondentAccount', currentBank?.accountCorrNumber || '')
+      setFieldValue(namePrefix + 'inn', currentBank?.inn || '', false)
+      setFieldValue(namePrefix + 'ogrn', currentBank?.ogrn || '', false)
+      setFieldValue(namePrefix + 'kpp', currentBank?.kpp || '', false)
       setFieldValue(
         namePrefix + 'bankAccountNumber',
         currentBank?.accounts?.length === 1 ? currentBank.accounts[0] : '',
@@ -189,6 +192,9 @@ export function DealerServicesRequisites({
     currentBank?.accountCorrNumber,
     currentBank?.accounts,
     currentBank?.bik,
+    currentBank?.inn,
+    currentBank?.ogrn,
+    currentBank?.kpp,
     isManualEntry,
     namePrefix,
     setFieldValue,

@@ -52,6 +52,9 @@ export enum FormFieldNameMap {
   cascoLimit = 'cascoLimit',
   isHasNotCascoOption = 'isHasNotCascoOption',
   taxPresence = 'taxPresence',
+  inn = 'inn',
+  ogrn = 'ogrn',
+  kpp = 'kpp',
 }
 
 export interface OrderCalculatorAdditionalService {
@@ -73,6 +76,9 @@ export interface InitialBankDetailsValue {
   [FormFieldNameMap.bankAccountNumber]: string
   [FormFieldNameMap.isCustomFields]: boolean
   [FormFieldNameMap.correspondentAccount]?: string
+  [FormFieldNameMap.inn]?: string
+  [FormFieldNameMap.ogrn]?: string
+  [FormFieldNameMap.kpp]?: string
   [FormFieldNameMap.taxation]?: string
 }
 

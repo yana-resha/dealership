@@ -281,6 +281,9 @@ export function useInitialValues<D extends boolean | undefined>(
           legalPerson,
           bankIdentificationCode,
           beneficiaryBank,
+          inn,
+          ogrn,
+          kpp,
           productType,
           documentType,
           documentNumber,
@@ -305,6 +308,9 @@ export function useInitialValues<D extends boolean | undefined>(
                 accountCorrNumber: correspondentAccount,
                 bank: beneficiaryBank,
                 bic: bankIdentificationCode,
+                inn: inn,
+                ogrn: ogrn,
+                kpp: kpp,
               },
             },
             taxInfo: {
@@ -341,6 +347,9 @@ export function useInitialValues<D extends boolean | undefined>(
           agentTaxValue,
           bankIdentificationCode,
           beneficiaryBank,
+          inn,
+          ogrn,
+          kpp,
           loanTerm,
           agent,
           documentType,
@@ -372,6 +381,9 @@ export function useInitialValues<D extends boolean | undefined>(
                 accountCorrNumber: correspondentAccount,
                 bank: beneficiaryBank,
                 bic: bankIdentificationCode,
+                inn: inn,
+                ogrn: ogrn,
+                kpp: kpp,
               },
             },
             taxInfo: {
@@ -425,6 +437,7 @@ export function useInitialValues<D extends boolean | undefined>(
         carMileage,
         carYear,
         initialPayment,
+        initialPaymentPercent,
         loanTerm,
         creditProduct,
       } = values
@@ -441,7 +454,8 @@ export function useInitialValues<D extends boolean | undefined>(
       }
       const newLoanData: LoanDataFrontdc = {
         productId: creditProduct,
-        downPayment: parseInt(initialPayment, 10),
+        downpayment: parseInt(initialPayment, 10),
+        downpaymentInPercent: parseFloat(initialPaymentPercent),
         term: parseInt(loanTerm.toString(), 10),
         additionalOptions: remapAdditionalOptionsForSmallCalculator(values),
       }
@@ -465,6 +479,7 @@ export function useInitialValues<D extends boolean | undefined>(
         carMileage,
         carYear,
         initialPayment,
+        initialPaymentPercent,
         loanTerm,
         creditProduct,
         carId,
@@ -474,11 +489,13 @@ export function useInitialValues<D extends boolean | undefined>(
         carIdType,
         bankIdentificationCode,
         beneficiaryBank,
+        inn,
+        ogrn,
+        kpp,
         carPassportId,
         carPassportCreationDate,
         correspondentAccount,
         legalPerson,
-        loanAmount,
         salesContractDate,
         salesContractId,
       } = values
@@ -506,6 +523,9 @@ export function useInitialValues<D extends boolean | undefined>(
             bic: bankIdentificationCode,
             accountNumber: bankAccountNumber,
             accountCorrNumber: correspondentAccount,
+            inn: inn,
+            ogrn: ogrn,
+            kpp: kpp,
           },
         },
         taxInfo: {
@@ -515,10 +535,12 @@ export function useInitialValues<D extends boolean | undefined>(
       }
       const newLoanData: LoanDataFrontdc = {
         productId: creditProduct,
-        downPayment: parseInt(initialPayment, 10),
+        downpayment: parseInt(initialPayment, 10),
+        downpaymentInPercent: parseFloat(initialPaymentPercent),
         term: parseInt(loanTerm.toString(), 10),
-        amountWithoutOptions: parseInt(loanAmount, 10),
-        amount: getPriceOfAdditionalOptionsInCredit(values) + parseInt(loanAmount, 10),
+        amountWithoutOptions: parseInt(carCost, 10) - parseInt(initialPayment, 10),
+        amount:
+          getPriceOfAdditionalOptionsInCredit(values) + parseInt(carCost, 10) - parseInt(initialPayment, 10),
         additionalOptions: remapAdditionalOptionsForFullCalculator(values),
       }
 
@@ -562,7 +584,7 @@ export function useInitialValues<D extends boolean | undefined>(
           [FormFieldNameMap.carCost]: `${loanCar?.autoPrice ?? initialData.carCost}`,
           [FormFieldNameMap.carMileage]: loanCar?.mileage ?? initialData.carMileage,
           [FormFieldNameMap.creditProduct]: loanData?.productId ?? initialData.creditProduct,
-          [FormFieldNameMap.initialPayment]: `${loanData?.downPayment ?? initialData.initialPayment}`,
+          [FormFieldNameMap.initialPayment]: `${loanData?.downpayment ?? initialData.initialPayment}`,
           [FormFieldNameMap.initialPaymentPercent]: initialData.initialPaymentPercent,
           [FormFieldNameMap.loanTerm]: loanData?.term ?? initialData.loanTerm,
 

@@ -174,11 +174,17 @@ export function AdditionalEquipmentRequisites({
         namePrefix + 'bankAccountNumber',
         currentBank?.accounts?.length === 1 ? currentBank.accounts[0] : '',
       )
+      setFieldValue(namePrefix + 'inn', currentBank?.inn || '', false)
+      setFieldValue(namePrefix + 'ogrn', currentBank?.ogrn || '', false)
+      setFieldValue(namePrefix + 'kpp', currentBank?.kpp || '', false)
     }
   }, [
     currentBank?.accountCorrNumber,
     currentBank?.accounts,
     currentBank?.bik,
+    currentBank?.inn,
+    currentBank?.ogrn,
+    currentBank?.kpp,
     isManualEntry,
     namePrefix,
     setFieldValue,

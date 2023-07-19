@@ -10,7 +10,9 @@ import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
 export function useOrderSettings(nextStep: () => void, onChangeForm: () => void) {
   const dispatch = useAppDispatch()
-  const orderData = useAppSelector(state => state.order.order)?.orderData
+  const initialOrder = useAppSelector(state => state.order.order)
+  const orderData = initialOrder?.orderData
+  const creditProductsList = initialOrder?.creditProductsList
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[] | null>(null)
 
   const { mutateAsync, isError: isOfferError, isLoading: isOfferLoading } = useCalculateCreditMutation()
@@ -38,24 +40,39 @@ export function useOrderSettings(nextStep: () => void, onChangeForm: () => void)
   )
 
   const handleCreditProductClick = useCallback(
-    (creditProduct: CalculatedProduct) => {
+    (bankOffer: CalculatedProduct) => {
+      const creditProduct = creditProductsList?.find(product => product.productId === bankOffer.productId)
       const loanData: LoanDataFrontdc = {
         ...orderData?.application?.loanData,
-        productFamilyCode: creditProduct.productCodeName,
-        productId: creditProduct.productId ?? orderData?.application?.loanData?.productId,
-        // TODO раскомментировать после обновления контрактов
-        productCode: /* creditProduct.productCode ?? */ orderData?.application?.loanData?.productCode,
-        productName: creditProduct.productName ?? orderData?.application?.loanData?.productName,
-        downPayment: creditProduct.downpayment ?? orderData?.application?.loanData?.downPayment,
-        term: creditProduct.term ?? orderData?.application?.loanData?.term,
-        monthlyPayment: creditProduct.monthlyPayment ?? orderData?.application?.loanData?.monthlyPayment,
-        cascoFlag: creditProduct.cascoFlag ?? orderData?.application?.loanData?.cascoFlag,
+        productId: bankOffer.productId ?? orderData?.application?.loanData?.productId,
+        productCode: creditProduct?.productCode,
+        productCodeName: bankOffer?.productCodeName,
+        productName: bankOffer?.productName,
+        monthlyPayment: bankOffer?.monthlyPayment,
+        dateStart: creditProduct?.activeDateFrom,
+        dateEnd: creditProduct?.activeDateFrom,
+        crMinValue: creditProduct?.crMinValue,
+        crMaxValue: creditProduct?.crMaxValue,
+        crMinDuration: creditProduct?.durationMin,
+        crMaxDuration: creditProduct?.durationMax,
+        npllzp: creditProduct?.npllzp,
+        npllzak: creditProduct?.npllzak,
+        approvalValidity: creditProduct?.approvalValidity,
+        termsLoanCode: creditProduct?.termsLoanCode,
+        downpayment: bankOffer?.downpayment,
+        term: bankOffer?.term,
+        amount: bankOffer?.totalSum,
+        cascoInProduct: bankOffer?.cascoFlag,
+        incomeProduct: bankOffer?.incomeFlag,
         productRates: {
-          ...orderData?.application?.loanData?.productRates,
-          baseRate: creditProduct.currentRate ?? orderData?.application?.loanData?.productRates?.baseRate,
+          baseRate: creditProduct?.baseRate,
+          baseRateNew: creditProduct?.baseRateNew,
+          baseRateOld: creditProduct?.baseRateOld,
+          rateNewGrnty: creditProduct?.rateNewGrnty,
+          rateNonGrnty: creditProduct?.rateNonGrnty,
+          rateDiscountCpi: creditProduct?.rateDiscountCpi,
+          ratePenaltyCasco: creditProduct?.ratePenaltyCasco,
         },
-        incomeFlag: creditProduct.incomeFlag ?? orderData?.application?.loanData?.incomeFlag,
-        amount: creditProduct.totalSum ?? orderData?.application?.loanData?.amount,
       }
       dispatch(
         updateOrder({ orderData: { ...orderData, application: { ...orderData?.application, loanData } } }),

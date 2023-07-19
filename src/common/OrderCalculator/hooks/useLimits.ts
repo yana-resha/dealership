@@ -2,8 +2,10 @@ import { useEffect, useMemo } from 'react'
 
 import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { useField, useFormikContext } from 'formik'
+import { useDispatch } from 'react-redux'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { formatMoney, formatNumber } from 'shared/lib/utils'
 
 import { formMessages } from '../config'
@@ -54,6 +56,7 @@ function checkIfExceededServicesLimit(carCost: number, criterion: boolean) {
 Первоначальный взнос в % и срок кредита, для стоимости доп. оборудования и  услуг.
 */
 export function useLimits({ vendorCode }: Params) {
+  const dispatch = useDispatch()
   const [creditProductField] = useField<string>(FormFieldNameMap.creditProduct)
   const [carCostField] = useField<string>(FormFieldNameMap.carCost)
   const [commonErrorsField, , { setValue: setCommonErrors }] = useField<CommonError>(
@@ -65,6 +68,11 @@ export function useLimits({ vendorCode }: Params) {
 
   const { values, setFieldTouched } = useFormikContext<OrderCalculatorFields>()
   const { data } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
+
+  useEffect(() => {
+    console.log('dispatch products')
+    dispatch(updateOrder({ creditProductsList: data?.products }))
+  }, [data])
 
   const creditProducts = useMemo(
     () => data?.products.map(p => ({ value: p.productId, label: p.productName })) || [],
