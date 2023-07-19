@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
@@ -74,29 +74,29 @@ export function useInitialValues<D extends boolean | undefined>(
             ? {
                 [FormFieldNameMap.bankIdentificationCode]:
                   cur.bankOptionType === OptionType.DEALER
-                    ? cur.broker?.requisites?.accountRequisites?.bic
-                    : cur.vendor?.requisites?.accountRequisites?.bic ??
+                    ? cur.broker?.requisites?.accountRequisite?.bic
+                    : cur.vendor?.requisites?.accountRequisite?.bic ??
                       (initialData as FullOrderCalculatorFields).additionalEquipments[0]
                         .bankIdentificationCode,
                 [FormFieldNameMap.beneficiaryBank]:
                   cur.bankOptionType === OptionType.DEALER
-                    ? cur.broker?.requisites?.accountRequisites?.bank
-                    : cur.vendor?.requisites?.accountRequisites?.bank ??
+                    ? cur.broker?.requisites?.accountRequisite?.bank
+                    : cur.vendor?.requisites?.accountRequisite?.bank ??
                       (initialData as FullOrderCalculatorFields).additionalEquipments[0].beneficiaryBank,
                 [FormFieldNameMap.bankAccountNumber]:
                   cur.bankOptionType === OptionType.DEALER
-                    ? cur.broker?.requisites?.accountRequisites?.accountNumber
-                    : cur.vendor?.requisites?.accountRequisites?.accountNumber ??
+                    ? cur.broker?.requisites?.accountRequisite?.accountNumber
+                    : cur.vendor?.requisites?.accountRequisite?.accountNumber ??
                       (initialData as FullOrderCalculatorFields).additionalEquipments[0].bankAccountNumber,
                 [FormFieldNameMap.isCustomFields]:
                   cur.bankOptionType === OptionType.DEALER
-                    ? cur.broker?.requisites?.accountRequisites?.accManualEnter
-                    : cur.vendor?.requisites?.accountRequisites?.accManualEnter ??
+                    ? cur.broker?.requisites?.accountRequisite?.accManualEnter
+                    : cur.vendor?.requisites?.accountRequisite?.accManualEnter ??
                       (initialData as FullOrderCalculatorFields).additionalEquipments[0].isCustomFields,
                 [FormFieldNameMap.correspondentAccount]:
                   cur.bankOptionType === OptionType.DEALER
-                    ? cur.broker?.requisites?.accountRequisites?.accountCorrNumber
-                    : cur.vendor?.requisites?.accountRequisites?.accountCorrNumber ??
+                    ? cur.broker?.requisites?.accountRequisite?.accountCorrNumber
+                    : cur.vendor?.requisites?.accountRequisite?.accountCorrNumber ??
                       (initialData as FullOrderCalculatorFields).additionalEquipments[0].correspondentAccount,
                 [FormFieldNameMap.taxation]: `${
                   cur.bankOptionType === OptionType.DEALER
@@ -207,19 +207,19 @@ export function useInitialValues<D extends boolean | undefined>(
           loanData?.amountWithoutOptions ?? (initialData as FullOrderCalculatorFields).loanAmount
         }`,
         [FormFieldNameMap.bankIdentificationCode]:
-          vendor?.vendorBankDetails?.accountRequisites?.bic ??
+          vendor?.vendorBankDetails?.accountRequisite?.bic ??
           (initialData as FullOrderCalculatorFields).bankIdentificationCode,
         [FormFieldNameMap.beneficiaryBank]:
-          vendor?.vendorBankDetails?.accountRequisites?.bank ??
+          vendor?.vendorBankDetails?.accountRequisite?.bank ??
           (initialData as FullOrderCalculatorFields).beneficiaryBank,
         [FormFieldNameMap.bankAccountNumber]:
-          vendor?.vendorBankDetails?.accountRequisites?.accountNumber ??
+          vendor?.vendorBankDetails?.accountRequisite?.accountNumber ??
           (initialData as FullOrderCalculatorFields).bankAccountNumber,
         [FormFieldNameMap.isCustomFields]:
-          vendor?.vendorBankDetails?.accountRequisites?.accManualEnter ??
+          vendor?.vendorBankDetails?.accountRequisite?.accManualEnter ??
           (initialData as FullOrderCalculatorFields).isCustomFields,
         [FormFieldNameMap.correspondentAccount]:
-          vendor?.vendorBankDetails?.accountRequisites?.accountCorrNumber ??
+          vendor?.vendorBankDetails?.accountRequisite?.accountCorrNumber ??
           (initialData as FullOrderCalculatorFields).correspondentAccount,
         [FormFieldNameMap.taxation]:
           `${vendor?.taxInfo?.amount ?? ((initialData as FullOrderCalculatorFields).taxation || '')}` ||
@@ -291,7 +291,7 @@ export function useInitialValues<D extends boolean | undefined>(
           vendor: {
             vendorCode: legalPerson,
             requisites: {
-              accountRequisites: {
+              accountRequisite: {
                 accountNumber: bankAccountNumber,
                 accountCorrNumber: correspondentAccount,
                 bank: beneficiaryBank,
@@ -351,7 +351,7 @@ export function useInitialValues<D extends boolean | undefined>(
           broker: {
             vendorCode: agent,
             requisites: {
-              accountRequisites: {
+              accountRequisite: {
                 accountNumber: bankAccountNumber,
                 accountCorrNumber: correspondentAccount,
                 bank: beneficiaryBank,
@@ -491,7 +491,7 @@ export function useInitialValues<D extends boolean | undefined>(
       const newVendor: VendorFrontdc = {
         vendorCode: legalPerson,
         vendorBankDetails: {
-          accountRequisites: {
+          accountRequisite: {
             bank: beneficiaryBank,
             bic: bankIdentificationCode,
             accountNumber: bankAccountNumber,

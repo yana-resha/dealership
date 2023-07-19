@@ -19,7 +19,7 @@ import {
   InformationArea,
 } from 'entities/application/DossierAreas/ui'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'

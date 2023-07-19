@@ -25,7 +25,7 @@ import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { useDispatch } from 'react-redux'
 
 import { appConfig } from 'config'
-import { setOrder } from 'pages/CreateOrderPage/model/orderSlice'
+import { setOrder } from 'entities/reduxStore/orderSlice'
 
 import { Rest } from '../client'
 
@@ -79,13 +79,16 @@ export const useSendApplicationToScore = ({ onSuccess }: { onSuccess: () => void
 export const useCheckIfSberClient = (params: IsClientRequest) =>
   useMutation(['checkIfSberClient'], () => checkIfSberClient(params))
 
-export const useSaveDraftApplicationMutation = () => {
+export const useSaveDraftApplicationMutation = (onSuccess: (value: string) => void) => {
   const { enqueueSnackbar } = useSnackbar()
 
   return useMutation(
     ['saveLoanApplicationDraft'],
     (params: ApplicationFrontdc) => saveLoanApplicationDraft({ application: params }),
     {
+      onSuccess: response => {
+        onSuccess(response.dcAppId ?? '')
+      },
       onError: () => {
         enqueueSnackbar('Ошибка. Не удалось сохранить черновик заявки', {
           variant: 'error',

@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import { MockStore } from 'redux-mock-store'
 
-import { Order } from 'pages/CreateOrderPage/model/orderSlice'
+import { Order } from 'entities/reduxStore/orderSlice'
 import * as useGetFullApplicationQueryModule from 'shared/api/requests/loanAppLifeCycleDc'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'

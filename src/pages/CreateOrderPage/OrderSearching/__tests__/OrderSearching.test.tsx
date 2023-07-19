@@ -6,10 +6,10 @@ import userEvent from '@testing-library/user-event'
 import configureMockStore from 'redux-mock-store'
 
 import * as ApiHooks from 'common/findApplication/findApplications/hooks/useFindApplicationsQuery'
+import * as orderSlice from 'entities/reduxStore/orderSlice'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
-import * as orderSlice from '../../model/orderSlice'
 import { OrderSearching } from '../OrderSearching'
 import * as Hooks from '../OrderSearching.hooks'
 import { applicationTabledataMock } from './OrderSearching.test.mock'

@@ -5,8 +5,8 @@ import { useSnackbar, VariantType } from 'notistack'
 import { useQueryClient } from 'react-query'
 
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
+import { clearOrder } from 'entities/reduxStore/orderSlice'
 import { removeUserInfo } from 'entities/user/model/userSlice'
-import { clearOrder } from 'pages/CreateOrderPage/model/orderSlice'
 import { authToken } from 'shared/api/token'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 

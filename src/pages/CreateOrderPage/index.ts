@@ -1,4 +1,4 @@
-import orderSlice from './model/orderSlice'
+import orderSlice from 'entities/reduxStore/orderSlice'
 
 export { CreateOrderPage } from './CreateOrderPage'
 

@@ -204,7 +204,7 @@ export const EXPECTED_DATA = {
               vendorName: 'Arex',
               address: 'Г Москва ул. Собаки баскервилей д7',
               requisites: {
-                accountRequisites: {
+                accountRequisite: {
                   accountNumber: '40702810038000017241',
                   accountCorrNumber: '40702810038000017243',
                   inn: '12345678901',
@@ -225,7 +225,7 @@ export const EXPECTED_DATA = {
               vendorName: 'Arex2',
               address: 'Г Москва ул. Собаки баскервилей д7',
               requisites: {
-                accountRequisites: {
+                accountRequisite: {
                   accountNumber: '40702810038000017241',
                   accountCorrNumber: '40702810038000017243',
                   inn: '12345678901',
@@ -268,7 +268,7 @@ export const EXPECTED_DATA = {
               vendorName: 'РосГосСтрах',
               address: 'Г Москва ул. Собаки баскервилей д7',
               requisites: {
-                accountRequisites: {
+                accountRequisite: {
                   accountNumber: '40702810038000017241',
                   accountCorrNumber: '40702810038000017243',
                   inn: '12345678901',
@@ -289,7 +289,7 @@ export const EXPECTED_DATA = {
               vendorName: 'Почта Банк',
               address: 'Г Москва ул. Собаки баскервилей д7',
               requisites: {
-                accountRequisites: {
+                accountRequisite: {
                   accountNumber: '40702810038000017241',
                   accountCorrNumber: '40702810038000017243',
                   inn: '12345678901',
@@ -368,7 +368,7 @@ export const EXPECTED_DATA = {
         },
         unit: 'unit',
         vendorBankDetails: {
-          accountRequisites: {
+          accountRequisite: {
             accountCorrNumber: '40702810038000017249',
             accountNumber: '40702810038000017240',
             bank: 'Сбербанк',

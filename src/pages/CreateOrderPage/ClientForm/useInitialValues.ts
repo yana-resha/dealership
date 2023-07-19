@@ -12,13 +12,13 @@ import compact from 'lodash/compact'
 import { DateTime, Interval } from 'luxon'
 import { useDispatch } from 'react-redux'
 
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
-import { updateOrder } from '../model/orderSlice'
 import { ClientData } from './ClientForm.types'
 import { configAddressInitialValues } from './config/clientFormInitialValues'
 import {

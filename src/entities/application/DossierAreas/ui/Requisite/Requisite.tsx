@@ -16,14 +16,14 @@ export function Requisite({ additionalOption }: Props) {
 
   const label = bankOptionType === OptionType.EQUIPMENT ? 'Тип доп. оборудования' : 'Тип продукта'
   const beneficiaryBank = broker
-    ? broker.requisites?.accountRequisites?.bank
-    : vendor?.requisites?.accountRequisites?.bank
+    ? broker.requisites?.accountRequisite?.bank
+    : vendor?.requisites?.accountRequisite?.bank
   const correspondentAccount = broker
-    ? broker.requisites?.accountRequisites?.accountCorrNumber
-    : vendor?.requisites?.accountRequisites?.accountCorrNumber
+    ? broker.requisites?.accountRequisite?.accountCorrNumber
+    : vendor?.requisites?.accountRequisite?.accountCorrNumber
   const bankAccountNumber = broker
-    ? broker.requisites?.accountRequisites?.accountNumber
-    : vendor?.requisites?.accountRequisites?.accountNumber
+    ? broker.requisites?.accountRequisite?.accountNumber
+    : vendor?.requisites?.accountRequisite?.accountNumber
   const tax = broker ? broker.taxInfo?.amount : vendor?.taxInfo?.amount
 
   return (
