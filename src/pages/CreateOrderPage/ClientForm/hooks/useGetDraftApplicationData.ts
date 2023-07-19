@@ -17,8 +17,8 @@ export const useGetDraftApplicationData = () => {
       unit,
       anketaType: ApplicationTypes.initial,
       vendor: {
+        ...fullApplication?.application?.vendor,
         vendorCode,
-        vendorBankDetails: fullApplication?.application?.vendor?.vendorBankDetails,
       },
       employees: {
         tabNumActual: user?.employeeId,
