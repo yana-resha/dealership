@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { GetFullApplicationResponse } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { RequiredProduct } from '../../common/OrderCalculator/utils/prepareCreditProductListData'
+
 export type Order = {
   currentStep?: number
   passportSeries?: string
@@ -10,6 +12,7 @@ export type Order = {
   middleName?: string
   birthDate?: string
   phoneNumber?: string
+  creditProductsList?: RequiredProduct[]
   orderData?: GetFullApplicationResponse | null | undefined
 }
 

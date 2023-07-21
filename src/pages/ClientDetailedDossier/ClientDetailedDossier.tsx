@@ -99,7 +99,7 @@ export function ClientDetailedDossier() {
       carModel: application?.loanCar?.model || '',
       creditAmount: application?.loanData?.amount,
       monthlyPayment: application?.loanData?.monthlyPayment,
-      downPayment: application?.loanData?.downPayment,
+      downPayment: application?.loanData?.downpayment, //TODO: рассинхрон с бэком
       rate: application?.loanData?.productRates?.baseRate,
       productName: application?.loanData?.productName || '',
       term: application?.loanData?.term,
@@ -114,7 +114,7 @@ export function ClientDetailedDossier() {
       application?.loanCar?.model,
       application?.loanData?.amount,
       application?.loanData?.monthlyPayment,
-      application?.loanData?.downPayment,
+      application?.loanData?.downpayment,
       application?.loanData?.productRates?.baseRate,
       application?.loanData?.productName,
       application?.loanData?.term,

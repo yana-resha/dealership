@@ -103,6 +103,9 @@ export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix
         namePrefix + 'bankAccountNumber',
         currentBank?.accounts?.length === 1 ? currentBank.accounts[0] : '',
       )
+      setFieldValue(namePrefix + 'inn', currentBank?.inn || '', false)
+      setFieldValue(namePrefix + 'ogrn', currentBank?.ogrn || '', false)
+      setFieldValue(namePrefix + 'kpp', currentBank?.kpp || '', false)
     }
   }, [currentBank, isCustomFields, namePrefix, setFieldValue])
 

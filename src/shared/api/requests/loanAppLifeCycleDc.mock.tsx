@@ -166,11 +166,10 @@ export const fullApplicationData: GetFullApplicationResponse = {
       dkpDate: '2021-05-10',
     },
     loanData: {
-      productFamilyCode: '012',
       productId: '3',
       productCode: 3,
       productName: 'Купи сейчас плати потом',
-      downPayment: 410000,
+      downpayment: 410000,
       term: 36,
       monthlyPayment: 32000,
       dateStart: '2000-01-01',
@@ -182,7 +181,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       npllzp: 3223.2,
       npllzak: 10000.99,
       approvalValidity: 45,
-      cascoFlag: false,
+      cascoInProduct: false,
       termsLoanCode: 2,
       productRates: {
         baseRate: 7.55,
@@ -195,7 +194,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
         rateDiscountCpi: 1.35,
         // rateChangeCasco?: number,
       },
-      incomeFlag: true,
+      incomeProduct: true,
       amount: 12121.33,
       amountWithoutOptions: 3242.2342,
       additionalOptions: [
