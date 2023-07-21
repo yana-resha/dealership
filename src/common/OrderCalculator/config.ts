@@ -77,6 +77,7 @@ const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
   [FormFieldNameMap.bankAccountNumber]: '',
   [FormFieldNameMap.isCustomFields]: false,
   [FormFieldNameMap.correspondentAccount]: undefined,
+  [FormFieldNameMap.taxPresence]: undefined,
   [FormFieldNameMap.taxation]: undefined,
   [FormFieldNameMap.taxPresence]: undefined,
 }

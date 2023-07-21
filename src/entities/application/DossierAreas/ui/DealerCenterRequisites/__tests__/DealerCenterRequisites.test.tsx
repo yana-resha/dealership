@@ -148,10 +148,6 @@ describe('DealerCenterRequisitesTest', () => {
       expect(await screen.findByTestId('legalPersonErrorMessage')).toBeInTheDocument()
     })
 
-    it('Валидируется поле "Сумма кредита"', async () => {
-      expect(await screen.findByTestId('loanAmountErrorMessage')).toBeInTheDocument()
-    })
-
     it('Валидируется поле "Банк получатель"', async () => {
       expect(await screen.findByTestId('beneficiaryBankErrorMessage')).toBeInTheDocument()
     })

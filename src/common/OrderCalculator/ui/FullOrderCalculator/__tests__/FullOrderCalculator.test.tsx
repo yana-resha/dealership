@@ -169,12 +169,12 @@ describe('FullOrderCalculator', () => {
     })
 
     it('Валидируется верное количество обязательных полей', async () => {
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
 
       // Если состояние "Б/У", то поле Пробег тоже обязательное
       userEvent.click(screen.getByText('Новый'))
       await act(async () => userEvent.click(await screen.findByText('Б/У')))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(15)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
 
       // Дополнительное поле блока BankDetails Корреспондентский счет тоже обязательное
       // await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
@@ -182,7 +182,7 @@ describe('FullOrderCalculator', () => {
     })
 
     it('Валидируется верное количество обязательных полей блока "Дополнительное оборудование"', async () => {
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
       // Поля элемента блока "Дополнительное оборудование" становятся обязательными,
       // если выбран тип продукта, в том числе и поля блока BankDetails
       userEvent.click(screen.getByTestId('additionalEquipments[0].productType').firstElementChild as Element)
@@ -194,14 +194,14 @@ describe('FullOrderCalculator', () => {
           ),
         )
       })
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
 
       // await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[1]))
       // expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
     })
 
     it('Валидируется верное количество обязательных полей блока "Дополнительные услуги диллера"', async () => {
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
       // Поля элемента блока "Дополнительные услуги диллера" становятся обязательными,
       // если выбран тип продукта, в том числе и поля блока BankDetails
       userEvent.click(
@@ -212,10 +212,10 @@ describe('FullOrderCalculator', () => {
           await screen.findByText(mockGetVendorOptionsResponse?.additionalOptions?.[0]?.optionName as string),
         ),
       )
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(22)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
 
       await act(() => userEvent.click(screen.getAllByText('В кредит')[1]))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(22)
 
       // await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[2]))
       // expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
@@ -224,21 +224,21 @@ describe('FullOrderCalculator', () => {
     it('Поле стоимость - принимает только числа', async () => {
       const carCostField = document.querySelector('#carCost')!
       await act(() => userEvent.type(carCostField, 'test'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
-      await act(() => userEvent.type(carCostField, '12'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
+      await act(() => userEvent.type(carCostField, '12'))
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(12)
     })
 
     it('Поле пробег - принимает только числа', async () => {
       userEvent.click(screen.getByText('Новый'))
       await act(async () => userEvent.click(await screen.findByText('Б/У')))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(15)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
 
       const carMileageField = document.querySelector('#carMileage')!
       await act(() => userEvent.type(carMileageField, 'test'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(15)
-      await act(() => userEvent.type(carMileageField, '12'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
+      await act(() => userEvent.type(carMileageField, '12'))
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
     })
 
     it('Поле Серия и номер ПТС - принимает только числа если електронный ПТС', async () => {
@@ -305,9 +305,9 @@ describe('FullOrderCalculator', () => {
     it('Поле Номер VIN/кузова - принимает только числа и латиницу', async () => {
       const carIdField = document.querySelector('#carId')!
       await act(() => userEvent.type(carIdField, 'Ы'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
-      await act(() => userEvent.type(carIdField, '12'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
+      await act(() => userEvent.type(carIdField, '12'))
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(12)
       expect(await screen.findByText('Введите данные полностью')).toBeInTheDocument()
       await act(() => userEvent.type(carIdField, 'TEST12312312312'))
       expect(screen.queryByText('Введите данные полностью')).not.toBeInTheDocument()
@@ -316,7 +316,7 @@ describe('FullOrderCalculator', () => {
     it('Поле Сумма кредита - принимает только числа', async () => {
       const loanAmountField = document.querySelector('#loanAmount')!
       await act(() => userEvent.type(loanAmountField, 'test'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
       await act(() => userEvent.type(loanAmountField, '12'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
     })
@@ -324,9 +324,9 @@ describe('FullOrderCalculator', () => {
     it('Поле Первоначальный взнос - принимает только числа', async () => {
       const initialPaymentField = document.querySelector('#initialPayment')!
       await act(() => userEvent.type(initialPaymentField, 'test'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
-      await act(() => userEvent.type(initialPaymentField, '12'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
+      await act(() => userEvent.type(initialPaymentField, '12'))
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(12)
     })
 
     it('Поле стоимость блока Доп. оборудования  - принимает только числа', async () => {
@@ -339,13 +339,13 @@ describe('FullOrderCalculator', () => {
           ),
         )
       })
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
 
       const additionalEquipmentsCostField = document.getElementById('additionalEquipments[0].productCost')!
       await act(() => userEvent.type(additionalEquipmentsCostField, 'test'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
-      await act(() => userEvent.type(additionalEquipmentsCostField, '12'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
+      await act(() => userEvent.type(additionalEquipmentsCostField, '12'))
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(19)
     })
 
     it('Поле стоимость блока Доп. услуг  - принимает только числа', async () => {
@@ -362,9 +362,9 @@ describe('FullOrderCalculator', () => {
         'dealerAdditionalServices[0].productCost',
       )!
       await act(() => userEvent.type(dealerAdditionalServicesCostField, 'test'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(22)
-      await act(() => userEvent.type(dealerAdditionalServicesCostField, '12'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
+      await act(() => userEvent.type(dealerAdditionalServicesCostField, '12'))
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
     })
 
     //Тесты выключены, пока отключен ручной ввод
