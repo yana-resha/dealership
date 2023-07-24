@@ -70,9 +70,8 @@ export function useLimits({ vendorCode }: Params) {
   const { data } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
 
   useEffect(() => {
-    console.log('dispatch products')
     dispatch(updateOrder({ creditProductsList: data?.products }))
-  }, [data])
+  }, [data, dispatch])
 
   const creditProducts = useMemo(
     () => data?.products.map(p => ({ value: p.productId, label: p.productName })) || [],

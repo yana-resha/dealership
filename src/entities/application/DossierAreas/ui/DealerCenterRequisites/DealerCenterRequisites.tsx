@@ -180,7 +180,7 @@ export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix
           label="Ввести вручную"
           onChange={handleManualEntryChange}
           centered
-          // disabled
+          disabled
         />
       </Box>
 
