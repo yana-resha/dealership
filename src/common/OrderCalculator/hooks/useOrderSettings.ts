@@ -8,14 +8,17 @@ import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
+import { useOrderContext } from '../ui/OrderContext'
+
 export function useOrderSettings(nextStep: () => void, onChangeForm: () => void) {
   const dispatch = useAppDispatch()
   const initialOrder = useAppSelector(state => state.order.order)
   const orderData = initialOrder?.orderData
   const creditProductsList = initialOrder?.creditProductsList
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[] | null>(null)
-
   const { mutateAsync, isError: isOfferError, isLoading: isOfferLoading } = useCalculateCreditMutation()
+
+  const { scrolContainer } = useOrderContext()
 
   const clearBankOfferList = useCallback(() => {
     if (!bankOffers) {
@@ -98,9 +101,10 @@ export function useOrderSettings(nextStep: () => void, onChangeForm: () => void)
         updateOrder({ orderData: { ...orderData, application: { ...orderData?.application, loanData } } }),
       )
 
+      scrolContainer?.scroll({ top: 0 })
       nextStep()
     },
-    [calculateAmountWithoutOptions, creditProductsList, dispatch, nextStep, orderData],
+    [calculateAmountWithoutOptions, creditProductsList, dispatch, nextStep, orderData, scrolContainer],
   )
 
   useEffect(() => {

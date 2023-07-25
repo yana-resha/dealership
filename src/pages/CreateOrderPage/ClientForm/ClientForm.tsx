@@ -90,7 +90,6 @@ export function ClientForm({ formRef, onMount }: Props) {
 
   const onSubmit = useCallback(
     (application: GetFullApplicationResponse) => {
-      console.log('ClientForm.onSubmit values:', application)
       const applicationForScoring = prepareApplicationForScoring(application)
       if (vendorCode !== applicationVendorCode) {
         showConfirmationModalDialog(

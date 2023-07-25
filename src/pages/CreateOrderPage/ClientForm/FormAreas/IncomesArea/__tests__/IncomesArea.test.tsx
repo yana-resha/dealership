@@ -4,12 +4,13 @@ import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
+import { MockStore } from 'redux-mock-store'
 
 import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
-import { ThemeProviderMock } from 'tests/mocks'
+import { StoreProviderMock, ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { clientFormValidationSchema } from '../../../config/clientFormValidation'
@@ -28,6 +29,10 @@ jest.mock('../../IncomeProofUploadArea/IncomeProofUploadArea', () => ({
   IncomeProofUploadArea: () => <div data-testid="incomeProofUploadArea" />,
 }))
 
+interface WrapperProps extends PropsWithChildren {
+  store?: MockStore
+}
+
 const formFields = ['averageIncome', 'additionalIncome', 'familyIncome', 'expenses', 'relatedToPublic']
 
 const mockedIncomeAreaFields = {
@@ -40,33 +45,37 @@ const mockedIncomeAreaFields = {
   submitAction: SubmitAction.Save,
 }
 
-const createWrapper = ({ children }: PropsWithChildren) => (
-  <ThemeProviderMock>
-    <Formik
-      initialValues={mockedIncomeAreaFields}
-      validationSchema={clientFormValidationSchema}
-      onSubmit={() => {}}
-    >
-      <Form>
-        {children}
-        <Button type="submit" data-testid="submit" />
-      </Form>
-    </Formik>
-  </ThemeProviderMock>
+const createWrapper = ({ children, store }: WrapperProps) => (
+  <StoreProviderMock mockStore={store}>
+    <ThemeProviderMock>
+      <Formik
+        initialValues={mockedIncomeAreaFields}
+        validationSchema={clientFormValidationSchema}
+        onSubmit={() => {}}
+      >
+        <Form>
+          {children}
+          <Button type="submit" data-testid="submit" />
+        </Form>
+      </Formik>
+    </ThemeProviderMock>
+  </StoreProviderMock>
 )
-const createWrapperWithData = ({ children }: PropsWithChildren) => (
-  <ThemeProviderMock>
-    <Formik
-      initialValues={{ ...mockedIncomeAreaFields, occupation: 1 }}
-      validationSchema={clientFormValidationSchema}
-      onSubmit={() => {}}
-    >
-      <Form>
-        {children}
-        <Button type="submit" data-testid="submit" />
-      </Form>
-    </Formik>
-  </ThemeProviderMock>
+const createWrapperWithData = ({ children, store }: WrapperProps) => (
+  <StoreProviderMock mockStore={store}>
+    <ThemeProviderMock>
+      <Formik
+        initialValues={{ ...mockedIncomeAreaFields, occupation: 1 }}
+        validationSchema={clientFormValidationSchema}
+        onSubmit={() => {}}
+      >
+        <Form>
+          {children}
+          <Button type="submit" data-testid="submit" />
+        </Form>
+      </Formik>
+    </ThemeProviderMock>
+  </StoreProviderMock>
 )
 disableConsole('error')
 
