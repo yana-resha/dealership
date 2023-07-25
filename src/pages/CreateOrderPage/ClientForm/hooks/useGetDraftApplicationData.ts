@@ -12,10 +12,10 @@ export const useGetDraftApplicationData = () => {
   const { vendorCode, unit } = getPointOfSaleFromCookies()
 
   return useCallback(
-    (fullApplication: GetFullApplicationResponse): ApplicationFrontdc => ({
+    (fullApplication: GetFullApplicationResponse, isFormValid: boolean): ApplicationFrontdc => ({
       dcAppId: fullApplication?.application?.dcAppId,
       unit,
-      anketaType: ApplicationTypes.initial,
+      anketaType: isFormValid ? ApplicationTypes.complete : ApplicationTypes.incomplete,
       vendor: {
         ...fullApplication?.application?.vendor,
         vendorCode,

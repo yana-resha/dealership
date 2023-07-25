@@ -79,4 +79,5 @@ export interface ClientData {
   employerInn: string
   questionnaireFile: File | null
   submitAction: SubmitAction
+  isFormComplete: boolean
 }

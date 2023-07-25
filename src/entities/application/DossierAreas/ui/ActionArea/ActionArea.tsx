@@ -160,7 +160,7 @@ export function ActionArea(props: Props) {
           <Button variant="contained" onClick={editApplicationWithInitialStatus}>
             Редактировать
           </Button>
-          {application.anketaType == ApplicationTypes.initial && (
+          {application.anketaType == ApplicationTypes.complete && (
             <Button variant="contained" onClick={sendApplicationToScore}>
               Отправить на решение
             </Button>
