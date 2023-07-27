@@ -9,6 +9,7 @@ import {
   VendorFrontdc,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { ApplicationFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
+import { DateTime } from 'luxon'
 import { useDispatch } from 'react-redux'
 
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
@@ -268,145 +269,158 @@ export function useInitialValues<D extends boolean | undefined>(
     [vendorOptions?.additionalOptionsMap],
   )
 
-  const remapAdditionalOptionsForFullCalculator = useCallback((values: FullOrderCalculatorFields) => {
-    const { additionalEquipments, dealerAdditionalServices } = values
-    const additionalEquipmentForApplication = additionalEquipments.reduce(
-      (acc: AdditionalOptionsFrontdc[], option) => {
-        const {
-          productCost,
-          taxValue,
-          taxPercent,
-          bankAccountNumber,
-          correspondentAccount,
-          legalPerson,
-          bankIdentificationCode,
-          beneficiaryBank,
-          inn,
-          ogrn,
-          kpp,
-          productType,
-          documentType,
-          documentNumber,
-          documentDate,
-          isCredit,
-          cascoLimit,
-        } = option
+  const remapAdditionalOptionsForFullCalculator = useCallback(
+    (values: FullOrderCalculatorFields) => {
+      const { additionalEquipments, dealerAdditionalServices } = values
+      const additionalEquipmentForApplication = additionalEquipments.reduce(
+        (acc: AdditionalOptionsFrontdc[], option) => {
+          const {
+            productCost,
+            taxValue,
+            taxPercent,
+            bankAccountNumber,
+            correspondentAccount,
+            legalPerson,
+            bankIdentificationCode,
+            beneficiaryBank,
+            inn,
+            ogrn,
+            kpp,
+            productType,
+            documentType,
+            documentNumber,
+            documentDate,
+            isCredit,
+            cascoLimit,
+          } = option
 
-        const additionalOption: AdditionalOptionsFrontdc = {
-          bankOptionType: OptionType.EQUIPMENT,
-          type: parseInt((productType || '').toString(), 10) ?? undefined,
-          name: productType
-            ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
-            : undefined,
-          inCreditFlag: isCredit,
-          price: parseInt(productCost, 10),
-          vendor: {
-            vendorCode: legalPerson,
-            requisites: {
-              accountRequisite: {
-                accountNumber: bankAccountNumber,
-                accountCorrNumber: correspondentAccount,
-                bank: beneficiaryBank,
-                bic: bankIdentificationCode,
-                inn: inn,
-                ogrn: ogrn,
-                kpp: kpp,
+          const additionalOption: AdditionalOptionsFrontdc = {
+            bankOptionType: OptionType.EQUIPMENT,
+            type: parseInt((productType || '').toString(), 10) ?? undefined,
+            name: productType
+              ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
+              : undefined,
+            inCreditFlag: isCredit,
+            price: parseInt(productCost, 10),
+            vendor: {
+              vendorCode: legalPerson,
+              requisites: {
+                accountRequisite: {
+                  accountNumber: bankAccountNumber,
+                  accountCorrNumber: correspondentAccount,
+                  bank: beneficiaryBank,
+                  bic: bankIdentificationCode,
+                  inn: inn,
+                  ogrn: ogrn,
+                  kpp: kpp,
+                },
+              },
+              taxInfo: {
+                amount: taxValue ?? undefined,
+                percent: taxPercent ?? undefined,
               },
             },
-            taxInfo: {
-              amount: taxValue ?? undefined,
-              percent: taxPercent ?? undefined,
-            },
-          },
-          docType: documentType,
-          docNumber: documentNumber,
-          docDate: convertedDateToString(documentDate),
-          cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
-        }
-        if (additionalOption.type) {
-          acc.push(additionalOption)
-        }
+            docType: documentType,
+            docNumber: documentNumber,
+            docDate: convertedDateToString(documentDate),
+            cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
+          }
+          if (additionalOption.type) {
+            acc.push(additionalOption)
+          }
 
-        return acc
-      },
-      [],
-    )
+          return acc
+        },
+        [],
+      )
 
-    const additionalDealerServicesForApplication = dealerAdditionalServices.reduce(
-      (acc: AdditionalOptionsFrontdc[], option) => {
-        const {
-          provider,
-          productCost,
-          productType,
-          isCredit,
-          bankAccountNumber,
-          correspondentAccount,
-          providerTaxPercent,
-          providerTaxValue,
-          agentTaxPercent,
-          agentTaxValue,
-          bankIdentificationCode,
-          beneficiaryBank,
-          inn,
-          ogrn,
-          kpp,
-          loanTerm,
-          agent,
-          documentType,
-          documentNumber,
-          documentDate,
-          cascoLimit,
-        } = option
-        const additionalOption: AdditionalOptionsFrontdc = {
-          bankOptionType: OptionType.DEALER,
-          type: productType ? parseInt(productType.toString(), 10) : undefined,
-          name: productType
-            ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
-            : undefined,
-          inCreditFlag: isCredit,
-          price: parseInt(productCost, 10),
-          term: loanTerm,
-          vendor: {
-            vendorCode: provider,
-            taxInfo: {
-              amount: providerTaxValue ?? undefined,
-              percent: providerTaxPercent ?? undefined,
-            },
-          },
-          broker: {
-            vendorCode: agent,
-            requisites: {
-              accountRequisite: {
-                accountNumber: bankAccountNumber,
-                accountCorrNumber: correspondentAccount,
-                bank: beneficiaryBank,
-                bic: bankIdentificationCode,
-                inn: inn,
-                ogrn: ogrn,
-                kpp: kpp,
+      const additionalDealerServicesForApplication = dealerAdditionalServices.reduce(
+        (acc: AdditionalOptionsFrontdc[], option) => {
+          const {
+            provider,
+            productCost,
+            productType,
+            isCredit,
+            bankAccountNumber,
+            correspondentAccount,
+            providerTaxPercent,
+            providerTaxValue,
+            agentTaxPercent,
+            agentTaxValue,
+            bankIdentificationCode,
+            beneficiaryBank,
+            inn,
+            ogrn,
+            kpp,
+            loanTerm,
+            agent,
+            documentType,
+            documentNumber,
+            documentDate,
+            cascoLimit,
+          } = option
+
+          const docDate = convertedDateToString(documentDate) || undefined
+          const dateEnd = documentDate
+            ? loanTerm
+              ? DateTime.fromJSDate(documentDate).plus({ months: loanTerm }).toFormat('yyyy-LL-dd')
+              : docDate
+            : undefined
+
+          const additionalOption: AdditionalOptionsFrontdc = {
+            bankOptionType: OptionType.DEALER,
+            type: productType ? parseInt(productType.toString(), 10) : undefined,
+            name: productType
+              ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
+              : undefined,
+            inCreditFlag: isCredit,
+            price: parseInt(productCost, 10),
+            vendor: {
+              vendorCode: provider,
+              taxInfo: {
+                amount: providerTaxValue ?? undefined,
+                percent: providerTaxPercent ?? undefined,
               },
             },
-            taxInfo: {
-              amount: agentTaxValue ?? undefined,
-              percent: agentTaxPercent ?? undefined,
+            broker: {
+              vendorCode: agent,
+              requisites: {
+                accountRequisite: {
+                  accountNumber: bankAccountNumber,
+                  accountCorrNumber: correspondentAccount,
+                  bank: beneficiaryBank,
+                  bic: bankIdentificationCode,
+                  inn: inn,
+                  ogrn: ogrn,
+                  kpp: kpp,
+                },
+              },
+              taxInfo: {
+                amount: agentTaxValue ?? undefined,
+                percent: agentTaxPercent ?? undefined,
+              },
             },
-          },
-          docType: documentType,
-          docNumber: documentNumber,
-          docDate: convertedDateToString(documentDate),
-          cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
-        }
-        if (additionalOption.type) {
-          acc.push(additionalOption)
-        }
+            term: loanTerm,
+            docType: documentType,
+            docNumber: documentNumber,
+            docDate,
+            dateStart: docDate,
+            dateEnd,
+            cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
+          }
+          if (additionalOption.type) {
+            acc.push(additionalOption)
+          }
 
-        return acc
-      },
-      [],
-    )
+          return acc
+        },
+        [],
+      )
 
-    return [...additionalEquipmentForApplication, ...additionalDealerServicesForApplication]
-  }, [])
+      return [...additionalEquipmentForApplication, ...additionalDealerServicesForApplication]
+    },
+    [vendorOptions?.additionalOptionsMap],
+  )
 
   const getPriceOfAdditionalOptionsInCredit = useCallback((values: FullOrderCalculatorFields) => {
     const equipmentCost = values.additionalEquipments.reduce((acc, option) => {
