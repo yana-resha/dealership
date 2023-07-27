@@ -10,7 +10,7 @@ import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
 
 import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
-import { maskDigitsOnly, maskNoRestrictions, maskPhoneNumber } from 'shared/masks/InputMasks'
+import { maskInn, maskNoRestrictions, maskPhoneNumber } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
@@ -160,7 +160,7 @@ export function JobArea() {
         name="employerInn"
         label="ИНН организации"
         placeholder="-"
-        mask={maskDigitsOnly}
+        mask={maskInn}
         gridColumn="span 5"
         disabled={jobDisabled}
       />

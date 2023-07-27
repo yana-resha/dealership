@@ -167,6 +167,15 @@ export const maskBankIdentificationCode = (value: string, unmasked?: boolean) =>
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
+export const maskInn = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '0000000000',
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
 export const maskBankAccountNumber = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: '00000000000000000000',
