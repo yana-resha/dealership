@@ -89,6 +89,7 @@ export function useInitialPayment(isDisabledForm: boolean) {
     setFieldValue(
       FormFieldNameMap.initialPaymentPercent,
       getPercentFromValue(initPaymentField.value, baseValue),
+      false,
     )
   }, [])
 

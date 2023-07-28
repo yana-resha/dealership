@@ -11,6 +11,7 @@ import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hook
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
 import { prepareCreditProduct } from 'common/OrderCalculator/utils/prepareCreditProductListData'
+import * as useRequisitesForFinancingQueryModule from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import {
   carBrands,
   creditProductListRsData,
@@ -39,6 +40,10 @@ const mockedUseGetCreditProductListQuery = jest.spyOn(
   'useGetCreditProductListQuery',
 )
 const mockedUseInitialValues = jest.spyOn(useInitialValuesModule, 'useInitialValues')
+const mockedUseRequisitesForFinancingQuery = jest.spyOn(
+  useRequisitesForFinancingQueryModule,
+  'useRequisitesForFinancingQuery',
+)
 
 const getCreditProductListData = {
   ...creditProductListRsData,
@@ -81,6 +86,15 @@ describe('FullOrderCalculator', () => {
         ({
           isShouldShowLoading: false,
           initialValues: fullInitialValueMap,
+        } as any),
+    )
+    mockedUseRequisitesForFinancingQuery.mockImplementation(
+      () =>
+        ({
+          data: undefined,
+          isError: false,
+          isLoading: false,
+          isSuccess: true,
         } as any),
     )
   })

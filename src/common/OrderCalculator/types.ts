@@ -80,6 +80,7 @@ export interface InitialBankDetailsValue {
   [FormFieldNameMap.ogrn]?: string
   [FormFieldNameMap.kpp]?: string
   [FormFieldNameMap.taxation]?: string
+  [FormFieldNameMap.taxPresence]: boolean | undefined
 }
 
 export interface FullInitialAdditionalEquipments
@@ -89,7 +90,6 @@ export interface FullInitialAdditionalEquipments
   [FormFieldNameMap.legalPerson]: string
   [FormFieldNameMap.taxValue]: number | null
   [FormFieldNameMap.taxPercent]: number | null
-  [FormFieldNameMap.taxPresence]: boolean | undefined
 }
 
 export interface FullInitialAdditionalService
@@ -103,7 +103,6 @@ export interface FullInitialAdditionalService
   [FormFieldNameMap.providerTaxPercent]: number | null
   [FormFieldNameMap.agentTaxValue]: number | null
   [FormFieldNameMap.agentTaxPercent]: number | null
-  [FormFieldNameMap.taxPresence]: boolean | undefined
 }
 
 export interface CommonError {

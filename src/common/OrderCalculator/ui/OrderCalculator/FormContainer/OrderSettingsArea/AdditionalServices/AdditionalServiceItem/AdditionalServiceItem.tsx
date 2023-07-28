@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Box } from '@mui/material'
 import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { ArrayHelpers, useField, useFormikContext } from 'formik'
@@ -52,13 +54,7 @@ export function AdditionalServiceItem({
     initialValues: INITIAL_ADDITIONAL_SERVICE,
   })
   const [productTypeField] = useField<OptionID>(namePrefix + FormFieldNameMap.productType)
-
-  const isShouldShowCascoLimitField =
-    isNecessaryCasco &&
-    parentName === ServicesGroupName.dealerAdditionalServices &&
-    productTypeField.value === OptionID.CASCO
-
-  const { values } = useFormikContext<OrderCalculatorFields>()
+  const { values, submitCount } = useFormikContext<OrderCalculatorFields>()
 
   const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
     values,
@@ -66,6 +62,22 @@ export function AdditionalServiceItem({
     parentName,
     options,
   })
+
+  const isShouldShowCascoLimitField =
+    isNecessaryCasco &&
+    parentName === ServicesGroupName.dealerAdditionalServices &&
+    productTypeField.value === OptionID.CASCO
+
+  const [, cascoLimitMeta, { setTouched: setCascoLimitTouched }] = useField<string>(
+    namePrefix + FormFieldNameMap.cascoLimit,
+  )
+  useEffect(() => {
+    if (isShouldShowCascoLimitField && !cascoLimitMeta.touched && !!submitCount) {
+      setCascoLimitTouched(true)
+    }
+    // Исключили setCascoLimitTouched что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cascoLimitMeta.touched, isShouldShowCascoLimitField, submitCount])
 
   return (
     <Box className={classes.gridContainer}>

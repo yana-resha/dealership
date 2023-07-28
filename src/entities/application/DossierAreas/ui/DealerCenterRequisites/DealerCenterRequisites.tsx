@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { Box } from '@mui/material'
 import { useFormikContext } from 'formik'
 
+import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import {
   maskBankAccountNumber,
@@ -15,8 +16,8 @@ import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
+import { useRequisites } from '../../hooks/useRequisites'
 import { PreparedVendorWithoutBrokerMap } from '../../hooks/useRequisitesForFinancingQuery'
-import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './DealerCenterRequisites.styles'
 
 type Props = {
@@ -28,9 +29,8 @@ type Props = {
 export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix = '' }: Props) {
   const classes = useStyles()
   const { vendorName, vendorCode } = getPointOfSaleFromCookies()
-  const { values, setFieldValue } = useFormikContext<DossierRequisites>()
+  const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
   const { beneficiaryBank, taxPresence, isCustomFields, loanAmount } = values
-  const initialValues = useRef(values)
 
   const legalPersonOptions = useMemo(
     () => [{ value: vendorCode || '', label: vendorName }],
@@ -49,28 +49,12 @@ export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix
     [currentBank?.accounts],
   )
 
-  const toggleTaxInPercentField = useCallback(
-    (value: boolean) => {
-      setFieldValue(namePrefix + 'taxPresence', value)
-      setFieldValue(namePrefix + 'taxation', value ? '' : '0')
-    },
-    [namePrefix, setFieldValue],
-  )
-
-  const resetInitialValues = useCallback(() => {
-    setFieldValue(namePrefix + 'beneficiaryBank', '')
-    setFieldValue(namePrefix + 'taxPresence', initialValues.current.taxPresence)
-    setFieldValue(namePrefix + 'taxation', initialValues.current.taxation)
-  }, [namePrefix, setFieldValue])
-
-  const clearFieldsForManualEntry = useCallback(() => {
-    setFieldValue(namePrefix + 'beneficiaryBank', '')
-    setFieldValue(namePrefix + 'bankAccountNumber', '')
-    setFieldValue(namePrefix + 'taxPresence', false)
-    setFieldValue(namePrefix + 'taxation', '0')
-    setFieldValue(namePrefix + 'correspondentAccount', '')
-    setFieldValue(namePrefix + 'bankIdentificationCode', '')
-  }, [namePrefix, setFieldValue])
+  const { toggleTaxInPercentField, resetInitialValues, clearFieldsForManualEntry } = useRequisites({
+    namePrefix,
+    values,
+    currentBank,
+    isCustomFields,
+  })
 
   const handleManualEntryChange = useCallback(
     (manual: boolean) => {
@@ -94,20 +78,6 @@ export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix
       setFieldValue(namePrefix + 'taxValue', null)
     }
   }, [loanAmount, namePrefix, setFieldValue, vendor?.tax])
-
-  useEffect(() => {
-    if (!isCustomFields) {
-      setFieldValue(namePrefix + 'bankIdentificationCode', currentBank?.bik || '')
-      setFieldValue(namePrefix + 'correspondentAccount', currentBank?.accountCorrNumber || '')
-      setFieldValue(
-        namePrefix + 'bankAccountNumber',
-        currentBank?.accounts?.length === 1 ? currentBank.accounts[0] : '',
-      )
-      setFieldValue(namePrefix + 'inn', currentBank?.inn || '', false)
-      setFieldValue(namePrefix + 'ogrn', currentBank?.ogrn || '', false)
-      setFieldValue(namePrefix + 'kpp', currentBank?.kpp || '', false)
-    }
-  }, [currentBank, isCustomFields, namePrefix, setFieldValue])
 
   return (
     <Box className={classes.editingAreaContainer}>

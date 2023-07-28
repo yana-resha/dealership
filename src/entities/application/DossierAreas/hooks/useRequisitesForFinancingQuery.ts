@@ -18,7 +18,7 @@ import { UseQueryOptions, useQuery } from 'react-query'
 import { getRequisitesForFinancing } from 'shared/api/requests/dictionaryDc.api'
 import { prepareOptionId, prepareOptionType } from 'shared/lib/helpers'
 
-interface RequiredRequisite extends Requisite {
+export interface RequiredRequisite extends Requisite {
   bankName: string
 }
 
@@ -63,7 +63,7 @@ export interface PreparedAdditionalOptionForFinancingMap extends PreparedAdditio
 }
 
 export interface RequisitesForFinancing extends GetRequisitesForFinancingResponse {
-  vendorAccounts: PreparedVendorWithoutBroker
+  vendorAccounts: PreparedVendorWithoutBrokerMap
   additionalEquipments: PreparedAdditionalEquipmentForFinancing[]
   additionalEquipmentsMap: Record<string, PreparedAdditionalEquipmentForFinancingMap>
   dealerOptions: PreparedAdditionalOptionForFinancing[]
