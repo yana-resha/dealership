@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import {
@@ -42,6 +42,10 @@ export const ApplicationTable = (props: Props) => {
   const rowsPerPage = rowsPerPageProp ? rowsPerPageProp : ROWS_PER_PAGE
   const emptyRows =
     page === Math.ceil(data.length / rowsPerPage) ? Math.max(0, rowsPerPage - (data.length % rowsPerPage)) : 0
+
+  useEffect(() => {
+    setPage(1)
+  }, [data])
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage)
