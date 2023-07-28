@@ -119,6 +119,7 @@ export const DOCUMENT_TYPE_VALUES = [
   },
   { label: 'Водительское удостоверение', value: ApplicantDocsType.DRIVERLICENSE },
   { label: 'Страховое свидетельство пенсионного страхования', value: ApplicantDocsType.PENSIONCERTIFICATE },
+  { label: 'Инн', value: ApplicantDocsType.INN },
   // { label: 'Международный паспорт (для не граждан РФ)', value: ApplicantDocsType.InternationalPassport },
   // { label: 'Военный билет', value: ApplicantDocsType.MilitaryID },
   // { label: 'Удостоверение офицера', value: ApplicantDocsType.OfficerID },

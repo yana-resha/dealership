@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Box, Typography } from '@mui/material'
+import { ApplicantDocsType } from '@sberauto/loanapplifecycledc-proto/public'
+import { useField, useFormikContext } from 'formik'
 
 import { maskCyrillicAndDigits, maskDigitsOnly } from 'shared/masks/InputMasks'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
@@ -12,6 +14,19 @@ import useStyles from './SecondDocArea.styles'
 
 export function SecondDocArea() {
   const classes = useStyles()
+  const [secondDocumentTypeField] = useField('secondDocumentType')
+  const { setFieldValue } = useFormikContext()
+
+  const isHiddenNoInnFields = secondDocumentTypeField.value === ApplicantDocsType.INN
+
+  useEffect(() => {
+    setFieldValue('secondDocumentDate', null)
+    setFieldValue('secondDocumentIssuedBy', '')
+    setFieldValue('secondDocumentNumber', '')
+
+    //при смене типа документа стираем все поля от предыдущего
+    //eslint-disable-next-line
+  }, [secondDocumentTypeField.value])
 
   return (
     <Box className={classes.gridContainer}>
@@ -35,15 +50,23 @@ export function SecondDocArea() {
         mask={maskDigitsOnly}
         gridColumn="span 3"
       />
-      <DateInputFormik name="secondDocumentDate" label="Дата выдачи второго документа" gridColumn="span 2" />
+      {!isHiddenNoInnFields && (
+        <DateInputFormik
+          name="secondDocumentDate"
+          label="Дата выдачи второго документа"
+          gridColumn="span 2"
+        />
+      )}
 
-      <MaskedInputFormik
-        name="secondDocumentIssuedBy"
-        label="Кем выдан"
-        placeholder="-"
-        mask={maskCyrillicAndDigits}
-        gridColumn="span 7"
-      />
+      {!isHiddenNoInnFields && (
+        <MaskedInputFormik
+          name="secondDocumentIssuedBy"
+          label="Кем выдан"
+          placeholder="-"
+          mask={maskCyrillicAndDigits}
+          gridColumn="span 7"
+        />
+      )}
     </Box>
   )
 }
