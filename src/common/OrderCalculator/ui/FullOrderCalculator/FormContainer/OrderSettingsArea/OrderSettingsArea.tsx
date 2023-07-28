@@ -24,10 +24,11 @@ import useStyles from './OrderSettingsArea.styles'
 type Props = {
   disabled: boolean
   isSubmitLoading: boolean
+  disabledSubmit: boolean
   requisites: RequisitesForFinancing | undefined
 }
 
-export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Props) {
+export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit, requisites }: Props) {
   const classes = useStyles()
 
   const { vendorCode } = getPointOfSaleFromCookies()
@@ -148,7 +149,12 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, requisites }: Pro
             ))}
           </Box>
         )}
-        <AreaFooter btnTitle="Рассчитать" btnType="submit" isLoadingBtn={isSubmitLoading} />
+        <AreaFooter
+          btnTitle="Рассчитать"
+          btnType="submit"
+          isLoadingBtn={isSubmitLoading}
+          disabled={disabledSubmit}
+        />
       </Box>
     </CollapsibleFormAreaContainer>
   )

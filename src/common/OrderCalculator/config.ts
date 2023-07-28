@@ -78,6 +78,7 @@ const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
   [FormFieldNameMap.isCustomFields]: false,
   [FormFieldNameMap.correspondentAccount]: undefined,
   [FormFieldNameMap.taxation]: undefined,
+  [FormFieldNameMap.taxPresence]: undefined,
 }
 
 export const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments = {
@@ -86,7 +87,6 @@ export const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments
   [FormFieldNameMap.legalPerson]: '',
   [FormFieldNameMap.taxValue]: null,
   [FormFieldNameMap.taxPercent]: null,
-  [FormFieldNameMap.taxPresence]: undefined,
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 
@@ -100,7 +100,6 @@ export const FULL_INITIAL_ADDITIONAL_SERVICE: FullInitialAdditionalService = {
   [FormFieldNameMap.providerTaxPercent]: null,
   [FormFieldNameMap.agentTaxValue]: null,
   [FormFieldNameMap.agentTaxPercent]: null,
-  [FormFieldNameMap.taxPresence]: undefined,
   ...INITIAL_BANK_DETAILS_VALUE,
 }
 

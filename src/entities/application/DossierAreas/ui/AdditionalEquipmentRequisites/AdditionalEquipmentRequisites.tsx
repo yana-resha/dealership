@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
@@ -23,8 +23,8 @@ import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 import { DOCUMENT_TYPES } from '../../configs/clientDetailedDossier.config'
 import { useAdditionalServices } from '../../hooks/useAdditionalServices'
 import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
+import { useRequisites } from '../../hooks/useRequisites'
 import { PreparedAdditionalEquipmentForFinancingMap } from '../../hooks/useRequisitesForFinancingQuery'
-import { DossierRequisites } from '../EditRequisitesArea/EditRequisitesArea'
 import { useStyles } from './AdditionalEquipmentRequisites.styles'
 
 type Props = {
@@ -56,8 +56,7 @@ export function AdditionalEquipmentRequisites({
   const classes = useStyles()
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
   const { legalPerson, beneficiaryBank, taxPresence, productCost } = equipmentItem
-  const initialValues = useRef(equipmentItem)
-  const [isManualEntry, setManualEntry] = useState(false)
+  const [isCustomFields, setCustomFields] = useState(false)
 
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
     parentName,
@@ -105,40 +104,24 @@ export function AdditionalEquipmentRequisites({
     [currentBank?.accounts],
   )
 
-  const toggleTaxInPercentField = useCallback(
-    (value: boolean) => {
-      setFieldValue(`${namePrefix}taxPresence`, value)
-      setFieldValue(`${namePrefix}taxation`, value ? '' : '0')
-    },
-    [namePrefix, setFieldValue],
-  )
-
-  const resetInitialValues = useCallback(() => {
-    setFieldValue(`${namePrefix}beneficiaryBank`, '')
-    setFieldValue(`${namePrefix}taxPresence`, initialValues.current.taxPresence)
-    setFieldValue(`${namePrefix}taxation`, initialValues.current.taxation)
-  }, [namePrefix, setFieldValue])
-
-  const clearFieldsForManualEntry = useCallback(() => {
-    setFieldValue(`${namePrefix}beneficiaryBank`, '')
-    setFieldValue(`${namePrefix}bankAccountNumber`, '')
-    setFieldValue(`${namePrefix}bankIdentificationCode`, '')
-    setFieldValue(`${namePrefix}correspondentAccount`, '')
-    setFieldValue(`${namePrefix}taxPresence`, false)
-    setFieldValue(`${namePrefix}taxation`, '0')
-  }, [namePrefix, setFieldValue])
+  const { toggleTaxInPercentField, resetInitialValues, clearFieldsForManualEntry } = useRequisites({
+    namePrefix,
+    values: equipmentItem,
+    currentBank,
+    isCustomFields,
+  })
 
   const handleManualEntryChange = useCallback(
     (manual: boolean) => {
       if (manual) {
         clearFieldsForManualEntry()
-        setManualEntry(true)
+        setCustomFields(true)
       } else {
-        setManualEntry(false)
+        setCustomFields(false)
         resetInitialValues()
       }
     },
-    [clearFieldsForManualEntry, resetInitialValues, setManualEntry],
+    [clearFieldsForManualEntry, resetInitialValues, setCustomFields],
   )
 
   useEffect(() => {
@@ -152,43 +135,19 @@ export function AdditionalEquipmentRequisites({
   }, [currentVendor?.tax, namePrefix, productCost, setFieldValue])
 
   useEffect(() => {
-    if (!isManualEntry) {
+    if (!isCustomFields) {
       setFieldValue(namePrefix + 'legalPerson', currentVendor?.vendorCode ? currentVendor?.vendorCode : '')
     }
-  }, [currentVendor?.vendorCode, isManualEntry, namePrefix, setFieldValue])
+  }, [currentVendor?.vendorCode, isCustomFields, namePrefix, setFieldValue])
 
   useEffect(() => {
-    if (!isManualEntry) {
+    if (!isCustomFields) {
       setFieldValue(
         namePrefix + 'beneficiaryBank',
-        currentVendor?.requisites.length === 1 ? currentVendor.requisites[0].bankName : '',
+        currentVendor?.requisites?.find(r => r.bankName === beneficiaryBank)?.bankName || '',
       )
     }
-  }, [currentVendor?.requisites, isManualEntry, namePrefix, setFieldValue])
-
-  useEffect(() => {
-    if (!isManualEntry) {
-      setFieldValue(namePrefix + 'bankIdentificationCode', currentBank?.bik || '')
-      setFieldValue(namePrefix + 'correspondentAccount', currentBank?.accountCorrNumber || '')
-      setFieldValue(
-        namePrefix + 'bankAccountNumber',
-        currentBank?.accounts?.length === 1 ? currentBank.accounts[0] : '',
-      )
-      setFieldValue(namePrefix + 'inn', currentBank?.inn || '', false)
-      setFieldValue(namePrefix + 'ogrn', currentBank?.ogrn || '', false)
-      setFieldValue(namePrefix + 'kpp', currentBank?.kpp || '', false)
-    }
-  }, [
-    currentBank?.accountCorrNumber,
-    currentBank?.accounts,
-    currentBank?.bik,
-    currentBank?.inn,
-    currentBank?.ogrn,
-    currentBank?.kpp,
-    isManualEntry,
-    namePrefix,
-    setFieldValue,
-  ])
+  }, [beneficiaryBank, currentVendor?.requisites, isCustomFields, namePrefix, setFieldValue])
 
   return (
     <Box className={classes.editingAreaContainer}>
@@ -257,7 +216,7 @@ export function AdditionalEquipmentRequisites({
       />
       <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
 
-      {isManualEntry ? (
+      {isCustomFields ? (
         <>
           <MaskedInputFormik
             name={`${namePrefix}bankIdentificationCode`}
@@ -304,7 +263,7 @@ export function AdditionalEquipmentRequisites({
 
       <Box gridColumn="span 3" width="auto" minWidth="min-content">
         <SwitchInput
-          value={isManualEntry}
+          value={isCustomFields}
           label="Ввести вручную"
           onChange={handleManualEntryChange}
           centered
@@ -312,7 +271,7 @@ export function AdditionalEquipmentRequisites({
         />
       </Box>
 
-      {isManualEntry && (
+      {isCustomFields && (
         <>
           <MaskedInputFormik
             name={`${namePrefix}correspondentAccount`}
