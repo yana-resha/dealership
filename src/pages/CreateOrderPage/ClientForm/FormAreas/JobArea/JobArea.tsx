@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
 import {
@@ -6,10 +6,12 @@ import {
   SuggestionGetAddressSuggestions,
   SuggestionGetOrganizationSuggestions,
 } from '@sberauto/dadata-proto/public'
+import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
 
 import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
+import { useOnScreen } from 'shared/hooks/useOnScreen'
 import { maskInn, maskNoRestrictions, maskPhoneNumber } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
@@ -30,9 +32,18 @@ export function JobArea() {
   const classes = useStyles()
   const [jobDisabled, setJobDisabled] = useState(false)
   const { values, setFieldValue } = useFormikContext<ClientData>()
-  const { employerName } = values
   const [isEmplAddressDialogVisible, setIsEmplAddressDialogVisible] = useState(false)
-  const { occupation, employerAddress, employerAddressString, emplNotKladr } = values
+  const {
+    occupation,
+    employerAddress,
+    employerAddressString,
+    emplNotKladr,
+    employerName,
+    incomeConfirmation,
+    ndfl2File,
+    ndfl3File,
+    bankStatementFile,
+  } = values
 
   const { mutate: fetchOrganizationSuggestions, data } = useGetOrganizationSuggestions()
   const [addressSuggestion, setAddressSuggestion] = useState<AddressGetOrganizationSuggestions>()
@@ -124,6 +135,47 @@ export function JobArea() {
     [setIsEmplAddressDialogVisible, setFieldValue],
   )
 
+  // Блок работы со скролом поля occupation - прокручиваем до этого поля,
+  // если оно незаполнено и пользователь пытается подтвердить доход.
+  const [isWasScrolled, setWasScrolled] = useState(false)
+  const occupationFieldRef = useRef<HTMLDivElement | undefined>()
+  const isIntersecting = useOnScreen(occupationFieldRef)
+  useEffect(() => {
+    // Без isWasScrolled в условии scrollIntoView будет всегда срабатывать при прокрутке.
+    if (incomeConfirmation && !occupation && !isIntersecting && !isWasScrolled) {
+      occupationFieldRef.current?.scrollIntoView()
+      // Потому запоминаем, что мы один раз уже прокурутили-показали поле occupation и больше не нужно.
+      setWasScrolled(true)
+    }
+  }, [incomeConfirmation, isIntersecting, occupation, isWasScrolled])
+  useEffect(() => {
+    if (!incomeConfirmation) {
+      // Сбрасываем значение isWasScrolled, чтобы в следующий раз снова  прокурутить-показать поле occupation
+      setWasScrolled(false)
+    }
+  }, [incomeConfirmation, isIntersecting, occupation, isWasScrolled])
+  //////
+
+  useEffect(() => {
+    switch (occupation) {
+      case OccupationType.INDIVIDUAL_ENTREPRENEUR:
+        setFieldValue('ndfl2File', null)
+        break
+      case OccupationType.WORKING_ON_A_TEMPORARY_CONTRACT:
+      case OccupationType.WORKING_ON_A_PERMANENT_CONTRACT:
+      case OccupationType.AGENT_ON_COMMISSION_CONTRACT:
+      case OccupationType.CONTRACTOR_UNDER_CIVIL_LAW_CONTRACT:
+        setFieldValue('ndfl3File', null)
+        break
+      case OccupationType.PRIVATE_PRACTICE:
+      case OccupationType.PENSIONER:
+      case OccupationType.UNEMPLOYED:
+      case OccupationType.SELF_EMPLOYED:
+        setFieldValue('ndfl3File', null)
+        break
+    }
+  }, [occupation, setFieldValue])
+
   return (
     <Box className={classes.gridContainer}>
       <Box gridColumn="1 / -1" minWidth="min-content">
@@ -131,6 +183,7 @@ export function JobArea() {
       </Box>
 
       <SelectInputFormik
+        ref={occupationFieldRef}
         name="occupation"
         label="Должность/Вид занятости"
         placeholder="-"

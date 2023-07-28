@@ -35,6 +35,10 @@ jest.mock('shared/ui/DateInput/DateInput', () => ({
   DateInput: MockedDateInput,
 }))
 
+jest.mock('shared/hooks/useOnScreen', () => ({
+  useOnScreen: () => false,
+}))
+
 type Props = {
   id: string
   isError: boolean

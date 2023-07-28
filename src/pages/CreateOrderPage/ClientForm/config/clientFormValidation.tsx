@@ -1,6 +1,6 @@
 import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import * as Yup from 'yup'
-import { AnyObject } from 'yup/lib/types'
+import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { SubmitAction } from '../ClientForm.types'
 
@@ -43,28 +43,42 @@ function getMinPassportDate() {
   return minPassportDate
 }
 
-function isIncomeProofUploadedCorrectly(
-  ndfl2File: File | null,
-  ndfl3File: File | null,
-  bankStatementFile: File | null,
-) {
-  if (ndfl2File !== null) {
-    if (ndfl3File !== null || bankStatementFile !== null) {
-      return false
-    }
+function isIncomeProofUploadedCorrectly(value: string | undefined, context: Yup.TestContext<AnyObject>) {
+  const { occupation, incomeConfirmation, ndfl2File, ndfl3File, bankStatementFile } =
+    (context.options as InternalOptions)?.from?.[0].value || {}
+
+  if (!incomeConfirmation) {
+    return true
   }
 
-  return true
-}
-
-function isIncomeProofUploaded(
-  incomeConfirmation: boolean,
-  ndfl2File: File | null,
-  ndfl3File: File | null,
-  bankStatementFile: File | null,
-) {
-  if (incomeConfirmation) {
-    return ndfl2File !== null || ndfl3File !== null || bankStatementFile !== null
+  switch (occupation) {
+    case OccupationType.INDIVIDUAL_ENTREPRENEUR:
+      if (!ndfl3File) {
+        return context.createError({
+          message: 'Необходимо загрузить подтверждающие документы (3НДФЛ обязателен)',
+        })
+      }
+      break
+    case OccupationType.WORKING_ON_A_TEMPORARY_CONTRACT:
+    case OccupationType.WORKING_ON_A_PERMANENT_CONTRACT:
+    case OccupationType.AGENT_ON_COMMISSION_CONTRACT:
+    case OccupationType.CONTRACTOR_UNDER_CIVIL_LAW_CONTRACT:
+      if (!ndfl2File) {
+        return context.createError({
+          message: 'Необходимо загрузить подтверждающие документы (2НДФЛ обязателен)',
+        })
+      }
+      break
+    case OccupationType.PRIVATE_PRACTICE:
+    case OccupationType.PENSIONER:
+    case OccupationType.UNEMPLOYED:
+    case OccupationType.SELF_EMPLOYED:
+      if (!ndfl2File && !bankStatementFile) {
+        return context.createError({
+          message: 'Необходимо загрузить подтверждающие документы - 2НДФЛ или Выписка из банка',
+        })
+      }
+      break
   }
 
   return true
@@ -159,17 +173,10 @@ export const clientFormValidationSchema = Yup.object().shape({
   email: setRequiredIfSave(Yup.string()).email('Введите корректный Email'),
   averageIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   additionalIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
-  incomeProofUploadValidator: Yup.string()
-    .when(['incomeConfirmation', 'ndfl2File', 'ndfl3File', 'bankStatementFile'], {
-      is: isIncomeProofUploaded,
-      otherwise: schema =>
-        schema.test('badUpload', 'Необходимо загрузить подтверждающие документы', () => false),
-    })
-    .when(['ndfl2File', 'ndfl3File', 'bankStatementFile'], {
-      is: isIncomeProofUploadedCorrectly,
-      otherwise: schema =>
-        schema.test('badUpload', '2НДФЛ не может быть загружен вместе с другими документами', () => false),
-    }),
+  incomeProofUploadValidator: Yup.string().test(
+    'isIncomeProofUploadedCorrectly',
+    isIncomeProofUploadedCorrectly,
+  ),
   familyIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   expenses: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   relatedToPublic: setRequiredIfSave(Yup.number().nullable()),
@@ -177,7 +184,10 @@ export const clientFormValidationSchema = Yup.object().shape({
   secondDocumentNumber: setRequiredIfSave(Yup.string()),
   secondDocumentDate: setRequiredIfSave(Yup.date().nullable()).min(getMinBirthDate(), 'Дата слишком ранняя'),
   secondDocumentIssuedBy: setRequiredIfSave(Yup.string()),
-  occupation: setRequiredIfSave(Yup.number().nullable()),
+  occupation: setRequiredIfSave(Yup.number().nullable()).when('incomeConfirmation', {
+    is: (incomeConfirmation: boolean) => incomeConfirmation,
+    then: schema => schema.test('isHasNotOccupation', '', value => !!value),
+  }),
   employmentDate: Yup.date()
     .nullable()
     .when('occupation', {

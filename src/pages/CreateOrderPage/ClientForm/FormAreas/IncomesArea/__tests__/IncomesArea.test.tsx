@@ -54,6 +54,20 @@ const createWrapper = ({ children }: PropsWithChildren) => (
     </Formik>
   </ThemeProviderMock>
 )
+const createWrapperWithData = ({ children }: PropsWithChildren) => (
+  <ThemeProviderMock>
+    <Formik
+      initialValues={{ ...mockedIncomeAreaFields, occupation: 1 }}
+      validationSchema={clientFormValidationSchema}
+      onSubmit={() => {}}
+    >
+      <Form>
+        {children}
+        <Button type="submit" data-testid="submit" />
+      </Form>
+    </Formik>
+  </ThemeProviderMock>
+)
 disableConsole('error')
 
 describe('IncomeAreaTest', () => {
@@ -73,11 +87,25 @@ describe('IncomeAreaTest', () => {
         expect(screen.getByTestId(`${fieldName}`)).toBeInTheDocument()
       })
     }
+  })
 
-    it('Поле для загрузки документов отображается на форме, только если выбрано подтверждение', async () => {
+  describe('Отображение поля для загрузки документов', () => {
+    it('Поле для загрузки документов отображается, если выбрано подтверждение и заполнено поле occupation', async () => {
+      render(<IncomesArea />, {
+        wrapper: createWrapperWithData,
+      })
       expect(screen.queryByTestId('incomeProofUploadArea')).not.toBeInTheDocument()
-      userEvent.click(screen.getByTestId('incomeConfirmation'))
+      userEvent.click(await screen.findByTestId('incomeConfirmation'))
       expect(await screen.findByTestId('incomeProofUploadArea')).toBeInTheDocument()
+    })
+
+    it('Если не заполнено поле occupation, и выбрано подтверждение, отображается ошибка', async () => {
+      render(<IncomesArea />, {
+        wrapper: createWrapper,
+      })
+      expect(screen.queryByTestId('hasNotOccupationErr')).not.toBeInTheDocument()
+      userEvent.click(await screen.findByTestId('incomeConfirmation'))
+      expect(await screen.findByTestId('hasNotOccupationErr')).toBeInTheDocument()
     })
   })
 
