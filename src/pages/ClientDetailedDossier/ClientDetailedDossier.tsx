@@ -3,7 +3,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { Box, Button } from '@mui/material'
 import {
   ApplicantDocsType,
-  DocumentType,
   SendApplicationToScoringRequest,
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'

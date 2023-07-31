@@ -19,7 +19,6 @@ const BANK_STATEMENT_FIELD_NAME = 'bankStatementFile'
 
 export const IncomeProofUploadArea = () => {
   const classes = useStyles()
-
   const [isVisible, setIsVisible] = useState(false)
   const { setFieldValue, values, setErrors, errors } = useFormikContext<ClientData>()
   const { occupation, ndfl2File, ndfl3File, bankStatementFile } = values
