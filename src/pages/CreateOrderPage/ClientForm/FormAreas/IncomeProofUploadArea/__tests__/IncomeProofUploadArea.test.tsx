@@ -4,6 +4,7 @@ import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
+import { QueryClient } from 'react-query'
 
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'

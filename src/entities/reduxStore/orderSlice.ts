@@ -14,6 +14,8 @@ export type Order = {
   birthDate?: string
   phoneNumber?: string
   creditProductsList?: RequiredProduct[]
+  /** Загружена ли для заявки "Анкета согласия" */
+  isExistQuestionnaireFile?: boolean
   orderData?: GetFullApplicationResponse | null | undefined
 }
 
