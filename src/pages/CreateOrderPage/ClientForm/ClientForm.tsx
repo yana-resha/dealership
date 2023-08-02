@@ -115,8 +115,6 @@ export function ClientForm({ formRef, onMount }: Props) {
           console.log('Print application')
         })
       }
-
-      return (await saveDraft(getDraftApplicationData(application))).dcAppId
     },
     [dcAppId, saveDraft, getDraftApplicationData, formRef],
   )
