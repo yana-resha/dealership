@@ -1,11 +1,12 @@
 import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
+import { DateTime, Interval } from 'luxon'
 import * as Yup from 'yup'
-import { AnyObject } from 'yup/lib/types'
+import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { SubmitAction } from '../ClientForm.types'
 
-const minAge = 21
-const maxAge = 65
+const MIN_AGE = 21
+const MAX_AGE = 65
 
 export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
 
@@ -24,23 +25,39 @@ function clientNameIsCorrect(value: string | undefined) {
 
 function getMaxBirthDate() {
   const maxBirthDay = new Date()
-  maxBirthDay.setFullYear(maxBirthDay.getFullYear() - minAge)
+  maxBirthDay.setFullYear(maxBirthDay.getFullYear() - MIN_AGE)
 
   return maxBirthDay
 }
 
 function getMinBirthDate() {
   const minBirthDay = new Date()
-  minBirthDay.setFullYear(minBirthDay.getFullYear() - maxAge)
+  minBirthDay.setFullYear(minBirthDay.getFullYear() - MAX_AGE)
 
   return minBirthDay
 }
 
-function getMinPassportDate() {
-  const minPassportDate = getMinBirthDate()
-  minPassportDate.setFullYear(minPassportDate.getFullYear() + 14)
+function validatePassportDate(value: Date | null | undefined, context: Yup.TestContext<AnyObject>) {
+  const birthDate = (context.options as InternalOptions)?.from?.[0].value.birthDate as Date | null
+  if (!birthDate || !value) {
+    return true
+  }
+  const age = Interval.fromDateTimes(DateTime.fromJSDate(birthDate), DateTime.now()).toDuration('years').years
+  const delta = age >= 45 ? 45 : age >= 20 ? 20 : 14
 
-  return minPassportDate
+  const formalPassportDate = DateTime.fromObject({
+    year: birthDate.getFullYear(),
+    month: birthDate.getMonth() + 1,
+    day: birthDate.getDate(),
+  }).plus({ years: delta })
+
+  const passportDate = DateTime.fromObject({
+    year: value.getFullYear(),
+    month: value.getMonth() + 1,
+    day: value.getDate(),
+  })
+
+  return passportDate.diff(formalPassportDate, ['days']).days >= 0
 }
 
 function isIncomeProofUploadedCorrectly(
@@ -134,9 +151,13 @@ export const clientFormValidationSchema = Yup.object().shape({
     .nullable()
     .required('Поле обязательно для заполнения')
     .min(getMinBirthDate(), 'Превышен максимальный возраст')
-    .max(getMaxBirthDate(), `Минимальный возраст ${minAge} год`),
+    .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`),
   birthPlace: setRequiredIfSave(Yup.string()),
-  passportDate: setRequiredIfSave(Yup.date().nullable()).min(getMinPassportDate(), 'Дата слишком ранняя'),
+  passportDate: setRequiredIfSave(Yup.date().nullable()).test(
+    'isLessPassportDate',
+    'Паспорт клиента не действителен',
+    validatePassportDate,
+  ),
   divisionCode: setRequiredIfSave(Yup.string().nullable()).min(6, 'Введите данные полностью'),
   sex: setRequiredIfSave(Yup.number().nullable()),
   issuedBy: setRequiredIfSave(Yup.string().nullable()),
