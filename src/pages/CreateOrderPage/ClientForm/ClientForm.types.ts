@@ -1,3 +1,5 @@
+import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
+
 export interface Address {
   postalCode: string
   regCode: string | null
@@ -67,7 +69,7 @@ export interface ClientData {
   secondDocumentNumber: string
   secondDocumentDate: Date | null
   secondDocumentIssuedBy: string
-  occupation: number | null
+  occupation: OccupationType | null
   employmentDate: Date | null
   employerName: string | null
   employerPhone: string

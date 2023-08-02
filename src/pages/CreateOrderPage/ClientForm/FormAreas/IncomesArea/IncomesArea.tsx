@@ -5,6 +5,7 @@ import { useFormikContext } from 'formik'
 
 import { maskDigitsOnly } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
+import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
@@ -14,8 +15,8 @@ import useStyles from './IncomesArea.styles'
 
 export function IncomesArea() {
   const classes = useStyles()
-  const { values, setFieldValue } = useFormikContext<ClientData>()
-  const { incomeConfirmation } = values
+  const { values, setFieldValue, setFieldTouched } = useFormikContext<ClientData>()
+  const { occupation, incomeConfirmation } = values
 
   useEffect(() => {
     if (!incomeConfirmation) {
@@ -24,6 +25,12 @@ export function IncomesArea() {
       setFieldValue('bankStatementFile', null)
     }
   }, [incomeConfirmation, setFieldValue])
+
+  useEffect(() => {
+    if (incomeConfirmation && !occupation) {
+      setFieldTouched('occupation', true)
+    }
+  }, [incomeConfirmation, occupation, setFieldTouched])
 
   return (
     <Box className={classes.gridContainer}>
@@ -47,7 +54,15 @@ export function IncomesArea() {
       />
       <SwitchInputFormik name="incomeConfirmation" label="Подтверждение" centered gridColumn="span 8" />
 
-      {incomeConfirmation && <IncomeProofUploadArea />}
+      {incomeConfirmation && occupation && <IncomeProofUploadArea />}
+
+      {incomeConfirmation && !occupation && (
+        <Box className={classes.docError} gridColumn="1/-1">
+          <SberTypography sberautoVariant="body3" component="p" data-testid="hasNotOccupationErr">
+            Перед загрузкой подтверждения заполните поле &quot;Должность/Вид занятости&quot;
+          </SberTypography>
+        </Box>
+      )}
 
       <MaskedInputFormik
         name="familyIncome"

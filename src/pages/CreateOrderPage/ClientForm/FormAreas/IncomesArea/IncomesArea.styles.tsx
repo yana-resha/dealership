@@ -34,4 +34,11 @@ export default makeStyles(theme => ({
     alignItems: 'flex-start',
     gap: theme.spacing(3),
   },
+
+  docError: {
+    display: 'flex',
+    flexDirection: 'column',
+    color: theme.palette.error.main,
+    gap: theme.spacing(2),
+  },
 }))

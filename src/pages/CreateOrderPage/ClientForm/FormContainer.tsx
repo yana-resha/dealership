@@ -52,9 +52,9 @@ export function FormContainer({ isDraftLoading, disabledButtons, saveDraftDisabl
     <Form className={classes.clientForm}>
       <PassportArea />
       <CommunicationArea />
-      <IncomesArea />
       <SecondDocArea />
       <JobArea />
+      <IncomesArea />
       <QuestionnaireUploadArea />
 
       <Box className={classes.buttonsArea}>

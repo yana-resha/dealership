@@ -1,3 +1,5 @@
+import { ForwardedRef, forwardRef } from 'react'
+
 import { Box } from '@mui/material'
 
 import { useFormikWrapper } from '../hooks/useFormikWrapper'
@@ -9,25 +11,28 @@ interface Props<T>
   name: string
   gridColumn?: string
 }
+export const SelectInputFormik = forwardRef(
+  <T extends string | number>(
+    { name, label, placeholder, options, gridColumn, emptyAvailable, disabled }: Props<T>,
+    ref: ForwardedRef<HTMLDivElement | undefined>,
+  ) => {
+    const { value, isError, error, onChange } = useFormikWrapper(name)
 
-export function SelectInputFormik<T extends string | number>(props: Props<T>) {
-  const { name, label, placeholder, options, gridColumn, emptyAvailable, disabled } = props
-  const { value, isError, error, onChange } = useFormikWrapper(name)
-
-  return (
-    <Box width="auto" gridColumn={gridColumn}>
-      <SelectInput
-        label={label}
-        placeholder={placeholder}
-        options={options}
-        emptyAvailable={emptyAvailable}
-        disabled={disabled}
-        id={name}
-        value={value}
-        onChange={onChange}
-        isError={isError}
-        errorMessage={error}
-      />
-    </Box>
-  )
-}
+    return (
+      <Box width="auto" gridColumn={gridColumn} ref={ref}>
+        <SelectInput
+          label={label}
+          placeholder={placeholder}
+          options={options}
+          emptyAvailable={emptyAvailable}
+          disabled={disabled}
+          id={name}
+          value={value}
+          onChange={onChange}
+          isError={isError}
+          errorMessage={error}
+        />
+      </Box>
+    )
+  },
+)

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 
 import { Button } from '@mui/material'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
@@ -19,31 +19,31 @@ const mockedIncomeProofUploadFields = {
   bankStatementFile: null,
 }
 
-const mockedFile = new File(['file'], 'File', {
-  type: 'application/pdf',
-})
+const createWrapper =
+  (additionalData?: { occupation: number }) =>
+  ({ children }: PropsWithChildren) =>
+    (
+      <ThemeProviderMock>
+        <Formik
+          initialValues={{ ...mockedIncomeProofUploadFields, ...additionalData }}
+          validationSchema={clientFormValidationSchema}
+          onSubmit={() => {}}
+        >
+          <Form>
+            {children}
+            <Button type="submit" data-testid="submit" />
+          </Form>
+        </Formik>
+      </ThemeProviderMock>
+    )
 
-const createWrapper = ({ children }: PropsWithChildren) => (
-  <ThemeProviderMock>
-    <Formik
-      initialValues={mockedIncomeProofUploadFields}
-      validationSchema={clientFormValidationSchema}
-      onSubmit={() => {}}
-    >
-      <Form>
-        {children}
-        <Button type="submit" data-testid="submit" />
-      </Form>
-    </Formik>
-  </ThemeProviderMock>
-)
 disableConsole('error')
 
 describe('IncomeProofUploadAreaTest', () => {
   describe('Все элементы отображаются на форме', () => {
     beforeEach(() => {
       render(<IncomeProofUploadArea />, {
-        wrapper: createWrapper,
+        wrapper: createWrapper(),
       })
     })
 
@@ -72,28 +72,40 @@ describe('IncomeProofUploadAreaTest', () => {
     })
   })
 
-  describe('Форма валидируется', () => {
-    beforeEach(() => {
+  describe('Валидация при выборе Вида занятости', () => {
+    it('Валидация при выборе ИП', async () => {
       render(<IncomeProofUploadArea />, {
-        wrapper: createWrapper,
+        wrapper: createWrapper({ occupation: 4 }),
       })
       userEvent.click(screen.getByTestId('submit'))
       userEvent.click(screen.getByText('Загрузить документы, подтверждающие доход'))
+      expect(
+        await screen.findAllByText('Необходимо загрузить подтверждающие документы (3НДФЛ обязателен)'),
+      ).toHaveLength(2)
     })
 
-    it('Если файлы отсутствуют, выводится сообщение об ошибке', async () => {
-      expect(await screen.findAllByText('Необходимо загрузить подтверждающие документы')).toHaveLength(2)
+    it('Валидация при выборе Служит по временному контракту', async () => {
+      render(<IncomeProofUploadArea />, {
+        wrapper: createWrapper({ occupation: 1 }),
+      })
+      userEvent.click(screen.getByTestId('submit'))
+      userEvent.click(screen.getByText('Загрузить документы, подтверждающие доход'))
+      expect(
+        await screen.findAllByText('Необходимо загрузить подтверждающие документы (2НДФЛ обязателен)'),
+      ).toHaveLength(2)
     })
 
-    it('Если загружен 2НДФЛ и другой файл, выводится сообщение об ошибке', async () => {
-      const uploadButton = screen.getAllByText('Загрузить документ')
-      fireEvent.change(uploadButton[0], {
-        target: { files: [mockedFile] },
+    it('Валидация при выборе Частная практика', async () => {
+      render(<IncomeProofUploadArea />, {
+        wrapper: createWrapper({ occupation: 3 }),
       })
-      fireEvent.change(uploadButton[1], {
-        target: { files: [mockedFile] },
-      })
-      expect(await screen.findAllByText('Необходимо загрузить подтверждающие документы')).toHaveLength(2)
+      userEvent.click(screen.getByTestId('submit'))
+      userEvent.click(screen.getByText('Загрузить документы, подтверждающие доход'))
+      expect(
+        await screen.findAllByText(
+          'Необходимо загрузить подтверждающие документы - 2НДФЛ или Выписка из банка',
+        ),
+      ).toHaveLength(2)
     })
   })
 })

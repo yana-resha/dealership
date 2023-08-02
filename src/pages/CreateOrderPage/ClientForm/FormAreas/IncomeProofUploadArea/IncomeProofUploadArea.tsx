@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { Box, Button, Divider, FormHelperText } from '@mui/material'
+import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useField, useFormikContext } from 'formik'
 
 import { ReactComponent as AttachIcon } from 'assets/icons/attach.svg'
@@ -21,7 +22,7 @@ export const IncomeProofUploadArea = () => {
   const classes = useStyles()
   const [isVisible, setIsVisible] = useState(false)
   const { setFieldValue, values } = useFormikContext<ClientData>()
-  const { ndfl2File, ndfl3File, bankStatementFile } = values
+  const { occupation, ndfl2File, ndfl3File, bankStatementFile } = values
   const [, meta] = useField('incomeProofUploadValidator')
   const isError = meta && meta.touched && meta.error
 
@@ -49,23 +50,64 @@ export const IncomeProofUploadArea = () => {
     [setFieldValue],
   )
 
-  const uploaderConfig = [
-    {
-      documentLabel: '2НДФЛ',
-      documentName: NDFL2,
-      document: ndfl2File,
-    },
-    {
-      documentLabel: '3НДФЛ',
-      documentName: NDFL3,
-      document: ndfl3File,
-    },
-    {
-      documentLabel: 'Выписка из банка',
-      documentName: BANK_STATEMENT,
-      document: bankStatementFile,
-    },
-  ]
+  const uploaderConfigs = useMemo(
+    () => [
+      {
+        documentLabel: '2НДФЛ',
+        documentName: NDFL2,
+        document: ndfl2File,
+        required: false,
+        disabled: false,
+      },
+      {
+        documentLabel: '3НДФЛ',
+        documentName: NDFL3,
+        document: ndfl3File,
+        required: false,
+        disabled: false,
+      },
+      {
+        documentLabel: 'Выписка из банка',
+        documentName: BANK_STATEMENT,
+        document: bankStatementFile,
+        required: false,
+        disabled: false,
+      },
+    ],
+    [bankStatementFile, ndfl2File, ndfl3File],
+  )
+
+  const filteredUploaderConfigs = useMemo(
+    () =>
+      uploaderConfigs.filter(config => {
+        switch (occupation) {
+          case OccupationType.INDIVIDUAL_ENTREPRENEUR:
+            if (config.documentName === NDFL2) {
+              return false
+            }
+            break
+          case OccupationType.WORKING_ON_A_TEMPORARY_CONTRACT:
+          case OccupationType.WORKING_ON_A_PERMANENT_CONTRACT:
+          case OccupationType.AGENT_ON_COMMISSION_CONTRACT:
+          case OccupationType.CONTRACTOR_UNDER_CIVIL_LAW_CONTRACT:
+            if (config.documentName === NDFL3) {
+              return false
+            }
+            break
+          case OccupationType.PRIVATE_PRACTICE:
+          case OccupationType.PENSIONER:
+          case OccupationType.UNEMPLOYED:
+          case OccupationType.SELF_EMPLOYED:
+            if (config.documentName === NDFL3) {
+              return false
+            }
+            break
+        }
+
+        return true
+      }),
+    [occupation, uploaderConfigs],
+  )
 
   return (
     <Box gridColumn="1 / -1">
@@ -77,7 +119,7 @@ export const IncomeProofUploadArea = () => {
       >
         Загрузить документы, подтверждающие доход
       </Button>
-      {uploaderConfig.map(section => (
+      {filteredUploaderConfigs.map(section => (
         <Box key={section.documentName}>
           {section.document != null && (
             <Box className={classes.documentPreview}>
@@ -95,7 +137,7 @@ export const IncomeProofUploadArea = () => {
         </Box>
       ))}
       <ModalDialog isVisible={isVisible} label="Документы, подтверждающие доход" onClose={closeUploadDialog}>
-        {uploaderConfig.map(section => (
+        {filteredUploaderConfigs.map(section => (
           <Box className={classes.documentSection} key={section.documentLabel}>
             <DragAndDropWrapper onChange={(files: FileList) => uploadDocument(files, section.documentName)}>
               <SberTypography sberautoVariant="h6" component="p">
