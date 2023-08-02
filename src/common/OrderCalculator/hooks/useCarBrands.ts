@@ -13,10 +13,13 @@ export function useCarBrands() {
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data } = useGetCarsListQuery({ vendorCode })
 
-  const [carBrandField] = useField(FormFieldNameMap.carBrand)
+  const [carBrandField] = useField<string | null>(FormFieldNameMap.carBrand)
   const prevCarBrandValue = usePrevious(carBrandField.value)
   const carBrands = useMemo(() => Object.keys(data?.cars || {}), [data?.cars])
-  const carModels = useMemo(() => data?.cars?.[carBrandField.value] || [], [carBrandField.value, data?.cars])
+  const carModels = useMemo(
+    () => data?.cars?.[carBrandField.value ?? '']?.models || [],
+    [carBrandField.value, data?.cars],
+  )
 
   useEffect(() => {
     if (prevCarBrandValue !== carBrandField.value) {

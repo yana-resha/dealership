@@ -7,13 +7,13 @@ import {
   OptionType,
 } from '@sberauto/dictionarydc-proto/public'
 
-export const carBrands: Car[] = [
-  { brand: 'BMW', models: ['1 series', '3 series'] },
-  { brand: 'Fiat', models: ['Ducato', 'Punto', '500'] },
-  { brand: 'KIA', models: ['Picanto', 'Rio', 'Ceed'] },
-  { brand: 'Toyota', models: ['Camry', 'Corolla'] },
-  { brand: 'Skoda', models: ['Rapid', 'Octavia', 'Superb'] },
-]
+export const carBrands = {
+  BMW: { brand: 'BMW', models: ['1 series', '3 series'], maxCarAge: 20 },
+  Fiat: { brand: 'Fiat', models: ['Ducato', 'Punto', '500'], maxCarAge: 20 },
+  KIA: { brand: 'KIA', models: ['Picanto', 'Rio', 'Ceed'], maxCarAge: 20 },
+  Toyota: { brand: 'Toyota', models: ['Camry', 'Corolla'], maxCarAge: 20 },
+  Skoda: { brand: 'Skoda', models: ['Rapid', 'Octavia', 'Superb'], maxCarAge: 20 },
+}
 
 export const creditProductListRsData: GetCreditProductListResponse = {
   fullDownpaymentMin: 0.2,

@@ -125,7 +125,7 @@ export interface OrderCalculatorFields {
   [FormFieldNameMap.carCondition]: number
   [FormFieldNameMap.carBrand]: string | null
   [FormFieldNameMap.carModel]: string | null
-  [FormFieldNameMap.carYear]: number
+  [FormFieldNameMap.carYear]: number | undefined
   [FormFieldNameMap.carCost]: string
   [FormFieldNameMap.carMileage]: string
   [FormFieldNameMap.creditProduct]: string
