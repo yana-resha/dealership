@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { Box } from '@mui/material'
 import { useFormikContext } from 'formik'
 
-import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import {
   maskBankAccountNumber,
@@ -26,11 +26,20 @@ type Props = {
   namePrefix?: string
 }
 
-export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix = '' }: Props) {
+export function DealerCenterRequisites({ vendor, namePrefix = '' }: Props) {
   const classes = useStyles()
   const { vendorName, vendorCode } = getPointOfSaleFromCookies()
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
-  const { beneficiaryBank, taxPresence, isCustomFields, loanAmount } = values
+  const {
+    beneficiaryBank,
+    taxPresence,
+    isCustomFields,
+    loanAmount,
+    carCost,
+    initialPayment,
+    additionalEquipments,
+    dealerAdditionalServices,
+  } = values
 
   const legalPersonOptions = useMemo(
     () => [{ value: vendorCode || '', label: vendorName }],
@@ -69,6 +78,32 @@ export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix
     [clearFieldsForManualEntry, namePrefix, resetInitialValues, setFieldValue],
   )
 
+  const priceOfAdditionalOptionsInCredit = useMemo(() => {
+    const equipmentCost = additionalEquipments?.reduce((acc, option) => {
+      if (option[FormFieldNameMap.isCredit]) {
+        acc += parseInt(option[FormFieldNameMap.productCost], 10)
+      }
+
+      return acc
+    }, 0)
+    const dealerServicesConst = dealerAdditionalServices?.reduce((acc, option) => {
+      if (option[FormFieldNameMap.isCredit]) {
+        acc += parseInt(option[FormFieldNameMap.productCost], 10)
+      }
+
+      return acc
+    }, 0)
+
+    return equipmentCost + dealerServicesConst
+  }, [additionalEquipments, dealerAdditionalServices])
+
+  useEffect(() => {
+    const loanAmount = parseInt(carCost, 10) + priceOfAdditionalOptionsInCredit - parseInt(initialPayment, 10)
+    setFieldValue(namePrefix + 'loanAmount', loanAmount >= 0 ? loanAmount : 0)
+    // Исключены лишние зависимости, чтобы избежать случайных перерендеров
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [carCost, initialPayment, priceOfAdditionalOptionsInCredit])
+
   useEffect(() => {
     if (vendor?.tax) {
       setFieldValue(namePrefix + 'taxPercent', vendor.tax)
@@ -95,7 +130,7 @@ export function DealerCenterRequisites({ vendor, isRequisiteEditable, namePrefix
         placeholder="-"
         mask={maskOnlyDigitsWithSeparator}
         gridColumn="span 3"
-        disabled={!isRequisiteEditable}
+        disabled
       />
       <Box gridColumn="span 6" />
 

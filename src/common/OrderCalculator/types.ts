@@ -76,11 +76,11 @@ export interface InitialBankDetailsValue {
   [FormFieldNameMap.bankAccountNumber]: string
   [FormFieldNameMap.isCustomFields]: boolean
   [FormFieldNameMap.correspondentAccount]?: string
+  [FormFieldNameMap.taxPresence]?: boolean
   [FormFieldNameMap.inn]?: string
   [FormFieldNameMap.ogrn]?: string
   [FormFieldNameMap.kpp]?: string
   [FormFieldNameMap.taxation]?: string
-  [FormFieldNameMap.taxPresence]: boolean | undefined
 }
 
 export interface FullInitialAdditionalEquipments

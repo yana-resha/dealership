@@ -207,7 +207,7 @@ export function useInitialValues<D extends boolean | undefined>(
         [FormFieldNameMap.legalPerson]:
           vendor?.vendorCode ?? vendorCode ?? (initialData as FullOrderCalculatorFields).legalPerson,
         [FormFieldNameMap.loanAmount]: `${
-          loanData?.amountWithoutOptions ?? (initialData as FullOrderCalculatorFields).loanAmount
+          loanData?.amount ?? (initialData as FullOrderCalculatorFields).loanAmount
         }`,
         [FormFieldNameMap.bankIdentificationCode]:
           vendor?.vendorBankDetails?.accountRequisite?.bic ??
@@ -227,6 +227,7 @@ export function useInitialValues<D extends boolean | undefined>(
         [FormFieldNameMap.taxation]:
           `${vendor?.taxInfo?.amount ?? ((initialData as FullOrderCalculatorFields).taxation || '')}` ||
           undefined,
+        [FormFieldNameMap.taxPresence]: !!vendor?.taxInfo?.amount,
         [FormFieldNameMap.taxPercent]: (initialData as FullOrderCalculatorFields).taxPercent,
         [FormFieldNameMap.taxValue]: (initialData as FullOrderCalculatorFields).taxValue,
       }
@@ -422,25 +423,6 @@ export function useInitialValues<D extends boolean | undefined>(
     [vendorOptions?.additionalOptionsMap],
   )
 
-  const getPriceOfAdditionalOptionsInCredit = useCallback((values: FullOrderCalculatorFields) => {
-    const equipmentCost = values.additionalEquipments.reduce((acc, option) => {
-      if (option[FormFieldNameMap.isCredit]) {
-        acc += parseInt(option[FormFieldNameMap.productCost], 10)
-      }
-
-      return acc
-    }, 0)
-    const dealerServicesConst = values.dealerAdditionalServices.reduce((acc, option) => {
-      if (option[FormFieldNameMap.isCredit]) {
-        acc += parseInt(option[FormFieldNameMap.productCost], 10)
-      }
-
-      return acc
-    }, 0)
-
-    return equipmentCost + dealerServicesConst
-  }, [])
-
   const remapApplicationValuesForSmallCalculator = useCallback(
     (values: OrderCalculatorFields) => {
       const {
@@ -510,6 +492,7 @@ export function useInitialValues<D extends boolean | undefined>(
         carPassportCreationDate,
         correspondentAccount,
         legalPerson,
+        loanAmount,
         salesContractDate,
         salesContractId,
       } = values
@@ -553,8 +536,7 @@ export function useInitialValues<D extends boolean | undefined>(
         downpaymentInPercent: parseFloat(initialPaymentPercent),
         term: parseInt(loanTerm.toString(), 10),
         amountWithoutOptions: parseInt(carCost, 10) - parseInt(initialPayment, 10),
-        amount:
-          getPriceOfAdditionalOptionsInCredit(values) + parseInt(carCost, 10) - parseInt(initialPayment, 10),
+        amount: !isNaN(parseInt(loanAmount, 10)) ? parseInt(loanAmount, 10) : 0,
         additionalOptions: remapAdditionalOptionsForFullCalculator(values),
       }
 
@@ -567,12 +549,7 @@ export function useInitialValues<D extends boolean | undefined>(
 
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
-    [
-      fullApplicationData,
-      getPriceOfAdditionalOptionsInCredit,
-      remapAdditionalOptionsForFullCalculator,
-      dispatch,
-    ],
+    [fullApplicationData, remapAdditionalOptionsForFullCalculator, dispatch],
   )
 
   const remapApplicationValues = useCallback(

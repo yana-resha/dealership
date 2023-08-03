@@ -51,7 +51,6 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     .required(FieldMessages.required)
     .test('', 'Дата ДКП не может превышать дату выпуска автомобиля', checkForCarCreationDate),
   [FormFieldNameMap.legalPerson]: Yup.string().required(FieldMessages.required),
-  [FormFieldNameMap.loanAmount]: Yup.string().required(FieldMessages.required),
 
   ...requiredBankDetailsFormValidation,
 
