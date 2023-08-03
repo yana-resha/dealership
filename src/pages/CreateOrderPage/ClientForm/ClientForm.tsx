@@ -61,7 +61,7 @@ export function ClientForm({ formRef, onMount }: Props) {
 
   const prepareApplicationForScoring = useCallback(
     (application: GetFullApplicationResponse) => {
-      const draftApplication = getDraftApplicationData(application)
+      const draftApplication = getDraftApplicationData(application, true)
       const applicationForScoring: SendApplicationToScoringRequest = {
         application: {
           ...draftApplication,
@@ -87,7 +87,7 @@ export function ClientForm({ formRef, onMount }: Props) {
   const saveApplicationDraft = useCallback(
     (application: GetFullApplicationResponse) => {
       console.log('ClientForm.saveApplicationDraft values:', application)
-      saveDraft(getDraftApplicationData(application))
+      saveDraft(getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false))
     },
     [saveDraft, getDraftApplicationData, dispatch, navigate],
   )
@@ -98,7 +98,9 @@ export function ClientForm({ formRef, onMount }: Props) {
       if (dcAppId) {
         console.log('Print application')
       } else {
-        saveDraft(getDraftApplicationData(application)).then(() => {
+        saveDraft(
+          getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
+        ).then(() => {
           console.log('application saved')
           console.log('Print application')
         })

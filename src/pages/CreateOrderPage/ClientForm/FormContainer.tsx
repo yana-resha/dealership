@@ -7,7 +7,7 @@ import { FraudDialog } from 'entities/SpecialMark'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
 import { useStyles } from './ClientForm.styles'
-import { SubmitAction } from './ClientForm.types'
+import { ClientData, SubmitAction } from './ClientForm.types'
 import { CommunicationArea } from './FormAreas/CommunicationArea/CommunicationArea'
 import { IncomesArea } from './FormAreas/IncomesArea/IncomesArea'
 import { JobArea } from './FormAreas/JobArea/JobArea'
@@ -23,23 +23,26 @@ interface Props {
 
 export function FormContainer({ isDraftLoading, disabledButtons, saveDraftDisabled }: Props) {
   const classes = useStyles()
-  const { handleSubmit, setFieldValue } = useFormikContext()
+  const { handleSubmit, setFieldValue, isValid } = useFormikContext<ClientData>()
   const [isShouldSubmit, setShouldSubmit] = useState(false)
 
   const handleDraftClick = useCallback(() => {
+    setFieldValue('isFormComplete', isValid)
     setFieldValue('submitAction', SubmitAction.Draft)
     setShouldSubmit(true)
-  }, [setFieldValue])
+  }, [isValid, setFieldValue])
 
   const handleSaveClick = useCallback(() => {
+    setFieldValue('isFormComplete', isValid)
     setFieldValue('submitAction', SubmitAction.Save)
     setShouldSubmit(true)
-  }, [setFieldValue])
+  }, [isValid, setFieldValue])
 
   const handlePrintClick = useCallback(() => {
+    setFieldValue('isFormComplete', isValid)
     setFieldValue('submitAction', SubmitAction.Print)
     setShouldSubmit(true)
-  }, [setFieldValue])
+  }, [isValid, setFieldValue])
 
   useEffect(() => {
     if (isShouldSubmit) {

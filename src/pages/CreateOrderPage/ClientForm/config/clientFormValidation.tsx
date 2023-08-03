@@ -61,10 +61,10 @@ function validatePassportDate(value: Date | null | undefined, context: Yup.TestC
 }
 
 function isIncomeProofUploadedCorrectly(value: string | undefined, context: Yup.TestContext<AnyObject>) {
-  const { occupation, incomeConfirmation, ndfl2File, ndfl3File, bankStatementFile } =
+  const { occupation, incomeConfirmation, ndfl2File, ndfl3File, bankStatementFile, submitAction } =
     (context.options as InternalOptions)?.from?.[0].value || {}
 
-  if (!incomeConfirmation) {
+  if (!incomeConfirmation || submitAction === SubmitAction.Draft) {
     return true
   }
 
@@ -196,6 +196,7 @@ export const clientFormValidationSchema = Yup.object().shape({
   additionalIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   incomeProofUploadValidator: Yup.string().test(
     'isIncomeProofUploadedCorrectly',
+    'submitAction',
     isIncomeProofUploadedCorrectly,
   ),
   familyIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),

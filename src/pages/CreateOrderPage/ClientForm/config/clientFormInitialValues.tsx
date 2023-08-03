@@ -72,6 +72,7 @@ export const configInitialValues: ClientData = {
   employerInn: '',
   questionnaireFile: null,
   submitAction: SubmitAction.Save,
+  isFormComplete: false,
 }
 
 export const FAMILY_STATUS_VALUES = [

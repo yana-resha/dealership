@@ -16,7 +16,8 @@ export enum PreparedStatus {
 }
 
 export enum ApplicationTypes {
-  initial = 1,
+  incomplete = 0,
+  complete = 1,
 }
 
 export const getStatus = (status: StatusCode) => {
