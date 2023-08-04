@@ -7,7 +7,7 @@ export const BANK_OFFERS_TABLE_HEADERS = [
   { key: 'overpayment', label: 'Переплата' },
   { key: 'currentRate', label: '% ставка' },
   { key: 'cascoFlag', label: 'КАСКО' },
-  { key: 'totalSum', label: 'Сумма кредита' },
+  { key: 'amountWithoutPercent', label: 'Сумма кредита' },
   //убрали тк не будет функционала в пилоте
   // { key: 'attachment', label: '', type: 'icon' }, //пустой столбец для отображения иконоки графика платежей
   { key: 'incomeFlag', label: '', type: 'icon' }, //пустой столбец для отображения иконки обязательности подтверждения дохода
