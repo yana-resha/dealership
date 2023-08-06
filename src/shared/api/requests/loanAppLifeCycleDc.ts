@@ -24,6 +24,7 @@ import {
   GetApplicationDocumentsListRequest,
   GetApplicationDocumentsListResponse,
   DownloadDocumentRequest,
+  DocType,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
@@ -234,19 +235,23 @@ const getPreparedApplication = (data: GetFullApplicationResponse): GetFullApplic
           ? MaritalStatus[data.application?.applicant.marital as unknown as keyof typeof MaritalStatus]
           : data.application?.applicant.marital,
         documents:
-          data.application?.applicant.documents?.map(d => ({
-            ...d,
-            type: d.type ? ApplicantDocsType[d.type as unknown as keyof typeof ApplicantDocsType] : d.type,
+          data.application?.applicant.documents?.map(document => ({
+            ...document,
+            type: document.type
+              ? ApplicantDocsType[document.type as unknown as keyof typeof ApplicantDocsType]
+              : document.type,
           })) || data.application?.applicant.documents,
         phones:
-          data.application?.applicant.phones?.map(p => ({
-            ...p,
-            type: p.type ? PhoneType[p.type as unknown as keyof typeof PhoneType] : p.type,
+          data.application?.applicant.phones?.map(phone => ({
+            ...phone,
+            type: phone.type ? PhoneType[phone.type as unknown as keyof typeof PhoneType] : phone.type,
           })) || data.application?.applicant.phones,
         addresses:
-          data.application?.applicant.addresses?.map(a => ({
-            ...a,
-            type: a.type ? AddressType[a.type as unknown as keyof typeof AddressType] : a.type,
+          data.application?.applicant.addresses?.map(address => ({
+            ...address,
+            type: address.type
+              ? AddressType[address.type as unknown as keyof typeof AddressType]
+              : address.type,
           })) || data.application?.applicant.addresses,
         employment: data.application?.applicant.employment
           ? {
@@ -276,13 +281,11 @@ const getPreparedApplication = (data: GetFullApplicationResponse): GetFullApplic
   const loanData = data.application?.loanData
     ? {
         ...data.application?.loanData,
-        additionalOptions:
-          data.application?.loanData.additionalOptions?.map(o => ({
-            ...o,
-            bankOptionType: o.bankOptionType
-              ? OptionType[o.bankOptionType as unknown as keyof typeof OptionType]
-              : o.bankOptionType,
-          })) || data.application?.loanData.additionalOptions,
+        additionalOptions: data.application?.loanData.additionalOptions?.map(option => ({
+          ...option,
+          bankOptionType: OptionType[(option.bankOptionType as unknown as keyof typeof OptionType) ?? ''],
+          docType: DocType[(option.docType as unknown as keyof typeof DocType) ?? ''],
+        })),
       }
     : data.application?.loanData
 

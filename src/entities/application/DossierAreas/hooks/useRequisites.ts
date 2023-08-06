@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { useFormikContext } from 'formik'
 
@@ -7,7 +7,6 @@ import {
   FullInitialAdditionalService,
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
-import { usePrevious } from 'shared/hooks/usePrevious'
 
 import { RequiredRequisite } from './useRequisitesForFinancingQuery'
 
@@ -16,8 +15,15 @@ type Params = {
   values: FullOrderCalculatorFields | FullInitialAdditionalEquipments | FullInitialAdditionalService
   currentBank: RequiredRequisite | undefined
   isCustomFields: boolean
+  isRequisitesFetched: boolean
 }
-export function useRequisites({ namePrefix, values, currentBank, isCustomFields }: Params) {
+export function useRequisites({
+  namePrefix,
+  values,
+  currentBank,
+  isCustomFields,
+  isRequisitesFetched,
+}: Params) {
   const { setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
   const { bankAccountNumber } = values
   const initialValues = useRef(values)
@@ -46,7 +52,7 @@ export function useRequisites({ namePrefix, values, currentBank, isCustomFields 
   }, [namePrefix, setFieldValue])
 
   useEffect(() => {
-    if (!isCustomFields) {
+    if (!isCustomFields && isRequisitesFetched) {
       setFieldValue(namePrefix + 'bankIdentificationCode', currentBank?.bik || '')
       setFieldValue(namePrefix + 'correspondentAccount', currentBank?.accountCorrNumber || '')
       setFieldValue(
@@ -66,6 +72,7 @@ export function useRequisites({ namePrefix, values, currentBank, isCustomFields 
     currentBank?.kpp,
     currentBank?.ogrn,
     isCustomFields,
+    isRequisitesFetched,
     namePrefix,
     setFieldValue,
   ])

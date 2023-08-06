@@ -25,11 +25,10 @@ import { DOCUMENT_TYPES } from '../../configs/clientDetailedDossier.config'
 import { useAdditionalServices } from '../../hooks/useAdditionalServices'
 import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
 import { useRequisites } from '../../hooks/useRequisites'
-import { PreparedAdditionalOptionForFinancingMap } from '../../hooks/useRequisitesForFinancingQuery'
+import { useRequisitesContext } from '../RequisitesContext'
 import { useStyles } from './DealerServicesRequisites.styles'
 
 type Props = {
-  optionRequisite: PreparedAdditionalOptionForFinancingMap | undefined
   index: number
   parentName: ServicesGroupName
   isNecessaryCasco?: boolean
@@ -54,7 +53,6 @@ const terms = [
 ]
 
 export function DealerServicesRequisites({
-  optionRequisite,
   index,
   parentName,
   isNecessaryCasco = false,
@@ -69,6 +67,9 @@ export function DealerServicesRequisites({
   const { values, setFieldValue, submitCount } = useFormikContext<FullOrderCalculatorFields>()
   const { provider, agent, beneficiaryBank, taxPresence, productCost, productType } = servicesItem
   const [isCustomFields, setCustomFields] = useState(false)
+
+  const { requisites, isRequisitesFetched } = useRequisitesContext()
+
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
     parentName,
     index,
@@ -85,6 +86,11 @@ export function DealerServicesRequisites({
     options: productOptions,
   })
 
+  const optionRequisite = useMemo(
+    () => requisites?.dealerOptionsMap?.[servicesItem.productType ?? ''],
+    [requisites?.dealerOptionsMap, servicesItem.productType],
+  )
+
   const vendorOptions = useMemo(
     () =>
       (optionRequisite?.vendorsWithBroker || []).map(v => ({
@@ -95,7 +101,7 @@ export function DealerServicesRequisites({
   )
   const currentVendor = useMemo(
     () => optionRequisite?.vendorsWithBrokerMap[provider],
-    [provider, optionRequisite?.vendorsWithBrokerMap],
+    [optionRequisite?.vendorsWithBrokerMap, provider],
   )
 
   const brokerOptions = useMemo(
@@ -130,6 +136,7 @@ export function DealerServicesRequisites({
     values: servicesItem,
     currentBank,
     isCustomFields,
+    isRequisitesFetched,
   })
 
   const handleManualEntryChange = useCallback(
@@ -146,19 +153,26 @@ export function DealerServicesRequisites({
   )
 
   useEffect(() => {
-    if (!isCustomFields) {
+    if (!isCustomFields && isRequisitesFetched) {
       setFieldValue(namePrefix + 'provider', currentVendor?.vendorCode ? currentVendor?.vendorCode : '')
     }
-  }, [currentVendor?.vendorCode, isCustomFields, namePrefix, setFieldValue])
+  }, [currentVendor?.vendorCode, isCustomFields, namePrefix, isRequisitesFetched, setFieldValue])
 
   useEffect(() => {
-    if (!isCustomFields) {
+    if (!isCustomFields && isRequisitesFetched) {
       setFieldValue(
         namePrefix + 'beneficiaryBank',
         currentBroker?.requisites?.find(r => r.bankName === beneficiaryBank)?.bankName || '',
       )
     }
-  }, [beneficiaryBank, currentBroker?.requisites, isCustomFields, namePrefix, setFieldValue])
+  }, [
+    beneficiaryBank,
+    currentBroker?.requisites,
+    isCustomFields,
+    namePrefix,
+    isRequisitesFetched,
+    setFieldValue,
+  ])
 
   useEffect(() => {
     if (currentVendor?.tax) {

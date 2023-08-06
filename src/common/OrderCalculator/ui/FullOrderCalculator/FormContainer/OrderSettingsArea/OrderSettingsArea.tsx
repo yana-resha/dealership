@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { Box } from '@mui/material'
-import { OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
 import { useGetVendorOptionsQuery } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPayment'
@@ -9,7 +9,6 @@ import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
-import { RequisitesForFinancing } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { maskOnlyDigitsWithSeparator, maskPercent } from 'shared/masks/InputMasks'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
@@ -25,10 +24,9 @@ type Props = {
   disabled: boolean
   isSubmitLoading: boolean
   disabledSubmit: boolean
-  requisites: RequisitesForFinancing | undefined
 }
 
-export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit, requisites }: Props) {
+export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }: Props) {
   const classes = useStyles()
 
   const { vendorCode } = getPointOfSaleFromCookies()
@@ -120,7 +118,6 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit, r
 
         <AdditionalEquipment
           options={{ productType: additionalEquipments, loanTerms }}
-          optionsRequisitesMap={requisites?.additionalEquipmentsMap || {}}
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
         />
@@ -129,7 +126,6 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit, r
           options={{ productType: dealerAdditionalServices, loanTerms }}
           name={ServicesGroupName.dealerAdditionalServices}
           isNecessaryCasco={isNecessaryCasco}
-          optionsRequisitesMap={requisites?.dealerOptionsMap || {}}
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
         />
@@ -137,7 +133,6 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit, r
           title="Дополнительные услуги банка"
           options={{ productType: [], loanTerms }}
           name={ServicesGroupName.bankAdditionalServices}
-          optionsRequisitesMap={requisites?.bankOptionsMap || {}}
           disabled
         />
         {!!commonErrors.length && (
