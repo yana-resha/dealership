@@ -30,8 +30,12 @@ export function useInitialValues<D extends boolean | undefined>(
 ) {
   const initialOrder = useAppSelector(state => state.order.order)
   const dispatch = useDispatch()
-  const { vendorCode } = getPointOfSaleFromCookies()
-  const { data: vendorOptions } = useGetVendorOptionsQuery({ vendorCode: vendorCode }, { enabled: false })
+
+  const pointOfSale = getPointOfSaleFromCookies()
+  const { data: vendorOptions } = useGetVendorOptionsQuery(
+    { vendorCode: pointOfSale.vendorCode },
+    { enabled: false },
+  )
   const fullApplicationData = initialOrder?.orderData
 
   const { loanCar, loanData, vendor } = useMemo(
@@ -205,7 +209,9 @@ export function useInitialValues<D extends boolean | undefined>(
           ? new Date(loanCar.dkpDate)
           : (initialData as FullOrderCalculatorFields).salesContractDate,
         [FormFieldNameMap.legalPerson]:
-          vendor?.vendorCode ?? vendorCode ?? (initialData as FullOrderCalculatorFields).legalPerson,
+          vendor?.vendorCode ??
+          pointOfSale.vendorCode ??
+          (initialData as FullOrderCalculatorFields).legalPerson,
         [FormFieldNameMap.loanAmount]: `${
           loanData?.amount ?? (initialData as FullOrderCalculatorFields).loanAmount
         }`,
@@ -513,6 +519,7 @@ export function useInitialValues<D extends boolean | undefined>(
         dkpDate: convertedDateToString(salesContractDate),
       }
       const newVendor: VendorFrontdc = {
+        ...pointOfSale,
         vendorCode: legalPerson,
         vendorBankDetails: {
           accountRequisite: {
@@ -549,7 +556,7 @@ export function useInitialValues<D extends boolean | undefined>(
 
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
-    [fullApplicationData, remapAdditionalOptionsForFullCalculator, dispatch],
+    [fullApplicationData, pointOfSale, remapAdditionalOptionsForFullCalculator, dispatch],
   )
 
   const remapApplicationValues = useCallback(
