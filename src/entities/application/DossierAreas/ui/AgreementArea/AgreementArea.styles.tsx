@@ -16,6 +16,10 @@ export const useStyles = makeStyles(theme => ({
     width: 'max-content',
   },
 
+  docFormButton: {
+    width: '215px',
+  },
+
   financingButton: {
     width: '267px',
   },

@@ -31,7 +31,7 @@ type Props = {
   applicationForScore: SendApplicationToScoringRequest
   returnToList: () => void
   goToTargetApplication: (targetAppId: string) => void
-  updateStatus: (statusCode: StatusCode) => void
+  updateApplicationStatusLocally: (statusCode: StatusCode) => void
   fileQuestionnaire: File | undefined
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void
@@ -49,7 +49,7 @@ export function ActionArea(props: Props) {
     applicationForScore,
     returnToList,
     goToTargetApplication,
-    updateStatus,
+    updateApplicationStatusLocally,
     agreementDocs,
     setAgreementDocs,
     setIsEditRequisitesMode,
@@ -240,7 +240,7 @@ export function ActionArea(props: Props) {
         <AgreementArea
           status={status}
           application={application}
-          updateStatus={updateStatus}
+          updateApplicationStatusLocally={updateApplicationStatusLocally}
           agreementDocs={agreementDocs}
           setAgreementDocs={setAgreementDocs}
           setIsEditRequisitesMode={setIsEditRequisitesMode}
@@ -264,7 +264,6 @@ export function ActionArea(props: Props) {
     setIsEditRequisitesMode,
     status,
     targetDcAppId,
-    updateStatus,
     vendorCode,
   ])
 

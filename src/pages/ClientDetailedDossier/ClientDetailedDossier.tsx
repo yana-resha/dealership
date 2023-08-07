@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, Button } from '@mui/material'
 import {
   ApplicantDocsType,
+  GetFullApplicationResponse,
   SendApplicationToScoringRequest,
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
@@ -19,7 +20,7 @@ import {
   InformationArea,
 } from 'entities/application/DossierAreas/ui'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateOrder } from 'entities/reduxStore/orderSlice'
+import { setOrder, updateOrder } from 'entities/reduxStore/orderSlice'
 import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
@@ -32,12 +33,17 @@ import { useStyles } from './ClientDetailedDossier.styles'
 
 export function ClientDetailedDossier() {
   const classes = useStyles()
-  const dispatch = useDispatch()
 
   const navigate = useNavigate()
   const { applicationId = '' } = useParams()
-  const { isLoading, isError } = useGetFullApplicationQuery({ applicationId })
+  const { isLoading, isError } = useGetFullApplicationQuery(
+    { applicationId },
+    (orderData: GetFullApplicationResponse) => {
+      dispatch(setOrder({ orderData: orderData }))
+    },
+  )
 
+  const dispatch = useDispatch()
   const fullApplicationData = useAppSelector(state => state.order.order)?.orderData
   const application = fullApplicationData?.application
   const { unit } = getPointOfSaleFromCookies()
@@ -56,18 +62,6 @@ export function ClientDetailedDossier() {
       fetchQuestionnaire()
     }
   }, [])
-
-  function updateStatus(statusCode: StatusCode) {
-    //sendRequest
-    dispatch(
-      updateOrder({
-        orderData: {
-          ...fullApplicationData,
-          application: { ...application, status: statusCode },
-        },
-      }),
-    )
-  }
 
   const clientName = getFullName(
     application?.applicant?.lastName,
@@ -99,7 +93,7 @@ export function ClientDetailedDossier() {
       carModel: application?.loanCar?.model || '',
       creditAmount: application?.loanData?.amount,
       monthlyPayment: application?.loanData?.monthlyPayment,
-      downPayment: application?.loanData?.downpayment, //TODO: рассинхрон с бэком
+      downPayment: application?.loanData?.downpayment,
       rate: application?.loanData?.productRates?.baseRate,
       productName: application?.loanData?.productName || '',
       term: application?.loanData?.term,
@@ -132,6 +126,22 @@ export function ClientDetailedDossier() {
   )
 
   const onBackButton = useCallback(() => navigate(-1), [navigate])
+
+  const updateApplicationStatusLocally = useCallback(
+    (statusCode: StatusCode) => {
+      if (application) {
+        dispatch(
+          updateOrder({
+            orderData: {
+              ...fullApplicationData,
+              application: { ...application, status: statusCode },
+            },
+          }),
+        )
+      }
+    },
+    [application, dispatch, fullApplicationData],
+  )
 
   return (
     <div className={classes.page} data-testid="clientDetailedDossier">
@@ -188,12 +198,12 @@ export function ClientDetailedDossier() {
                     applicationForScore={prepareApplicationForScore()}
                     returnToList={onBackButton}
                     goToTargetApplication={goToTargetApplication}
+                    updateApplicationStatusLocally={updateApplicationStatusLocally}
                     status={
                       application.status || application.status === StatusCode.INITIAL
                         ? application.status
                         : StatusCode.ERROR
                     }
-                    updateStatus={updateStatus}
                     fileQuestionnaire={fileQuestionnaire}
                     agreementDocs={agreementDocs}
                     setAgreementDocs={setAgreementDocs}

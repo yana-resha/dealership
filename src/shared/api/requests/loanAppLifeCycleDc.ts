@@ -19,13 +19,12 @@ import {
   Sex,
   StatusCode,
   SendApplicationToFinancingRequest,
+  ChangeApplicationStatusRequest,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { useDispatch } from 'react-redux'
 
 import { appConfig } from 'config'
-import { setOrder } from 'entities/reduxStore/orderSlice'
 
 import { Rest } from '../client'
 
@@ -47,6 +46,9 @@ const loanAppLifeCycleDcApi = createLoanAppLifeCycleDc(
   Rest.request,
 )
 
+const updateApplicationStatus = (params: ChangeApplicationStatusRequest) =>
+  loanAppLifeCycleDcApi.changeApplicationStatus({ data: params }).then(response => response.data ?? {})
+
 export const checkIfSberClient = (params: IsClientRequest) =>
   loanAppLifeCycleDcApi.isClient({ data: params }).then(response => response.data ?? {})
 
@@ -58,6 +60,29 @@ export const saveLoanApplicationDraft = (params: SaveLoanApplicationDraftRequest
 
 export const sendApplicationToScore = (params: SendApplicationToScoringRequest) =>
   loanAppLifeCycleDcApi.sendApplicationToScoring({ data: params }).then(response => response.data ?? {})
+
+export const useUpdateApplicationStatus = (appId: string, onSuccess: (statusCode: StatusCode) => void) => {
+  const { enqueueSnackbar } = useSnackbar()
+
+  return useMutation(
+    ['updateApplicationStatus'],
+    (statusCode: StatusCode) =>
+      updateApplicationStatus({
+        dcAppId: appId,
+        status: statusCode,
+      }),
+    {
+      onSuccess: response => {
+        if (response.status) {
+          onSuccess(prepareStatusCode(response.status as unknown as keyof typeof StatusCode))
+        }
+      },
+      onError: () => {
+        enqueueSnackbar('Не удалось обновить статус, попробуйте снова', { variant: 'error' })
+      },
+    },
+  )
+}
 
 export const useSendApplicationToScore = ({ onSuccess }: { onSuccess: () => void }) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -186,13 +211,12 @@ const getFullApplication = (params: GetFullApplicationRequest) =>
 
 export const useGetFullApplicationQuery = (
   params: GetFullApplicationRequest,
+  onSuccess: (orderData: GetFullApplicationResponse) => void,
   options?: UseQueryOptions<GetFullApplicationResponse, unknown, GetFullApplicationResponse, string[]>,
 ) => {
-  const dispatch = useDispatch()
-
   return useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
     retry: false,
-    onSuccess: response => dispatch(setOrder({ orderData: response })),
+    onSuccess: response => onSuccess(response),
     ...options,
   })
 }
