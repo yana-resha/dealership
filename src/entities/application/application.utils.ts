@@ -13,6 +13,7 @@ export enum PreparedStatus {
   authorized = 'Ожидание финансирования',
   financed = 'Кредит выдан',
   error = 'Ошибка',
+  issueError = 'Ошибка финансирования',
 }
 
 export enum ApplicationTypes {
@@ -44,6 +45,8 @@ export const getStatus = (status: StatusCode) => {
       return PreparedStatus.financed
     case StatusCode.AUTHORIZED:
       return PreparedStatus.authorized
+    case StatusCode.ISSUE_ERROR:
+      return PreparedStatus.issueError
     default:
       return PreparedStatus.error
   }

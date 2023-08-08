@@ -18,6 +18,7 @@ export const statusListItems: Record<string, string> = {
   [PreparedStatus.authorized]: '#FF971E',
   [PreparedStatus.financed]: '#17A131',
   [PreparedStatus.error]: '#FF0000',
+  [PreparedStatus.issueError]: '#FF0000',
 }
 
 type Props = {
