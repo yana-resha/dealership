@@ -35,6 +35,7 @@ const informationAreaProps = {
       bankOptionType: 2,
     },
   ],
+  overpayment: 1000.1,
 }
 
 describe('InformationAreaTest', () => {
@@ -78,8 +79,7 @@ describe('InformationAreaTest', () => {
 
     it('Отображается Переплата', () => {
       expect(screen.getByText('Переплата')).toBeInTheDocument()
-      /* TODO Добавить после подключения ручки getFullApplication */
-      // expect(screen.getByText('0 ₽')).toBeInTheDocument()
+      expect(screen.getByText('1 000,1 ₽')).toBeInTheDocument()
     })
 
     it('Отображается Процентная ставка', () => {

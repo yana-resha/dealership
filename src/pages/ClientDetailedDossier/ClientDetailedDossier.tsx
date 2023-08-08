@@ -86,6 +86,7 @@ export function ClientDetailedDossier() {
       productName: application?.loanData?.productName || '',
       term: application?.loanData?.term,
       additionalOptions: application?.loanData?.additionalOptions || [],
+      overpayment: application?.loanData?.overpayment,
     }),
     [
       application?.status,
@@ -101,6 +102,7 @@ export function ClientDetailedDossier() {
       application?.loanData?.productName,
       application?.loanData?.term,
       application?.loanData?.additionalOptions,
+      application?.loanData?.overpayment,
     ],
   )
 

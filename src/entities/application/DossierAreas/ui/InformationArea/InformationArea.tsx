@@ -26,6 +26,7 @@ type Props = {
   productName: string
   term: number | undefined
   additionalOptions: AdditionalOptionsFrontdc[]
+  overpayment: number | undefined
 }
 
 export function InformationArea({
@@ -41,6 +42,7 @@ export function InformationArea({
   productName,
   term,
   additionalOptions,
+  overpayment,
 }: Props) {
   const classes = useStyles()
   const { additionalEquipment, dealerServices, bankServices, productSum } = useMemo(
@@ -114,8 +116,7 @@ export function InformationArea({
       <InfoText label="Сумма кредита">{creditAmount ? formatMoney(creditAmount) : ''}</InfoText>
       <InfoText label="Платеж">{monthlyPayment ? formatMoney(monthlyPayment) : ''}</InfoText>
       <InfoText label="ПВ">{downPayment ? formatMoney(downPayment) : ''}</InfoText>
-      {/* TODO DCB-421 | Прокинуть значение, когда Аналитики дадут ответ, как его вычеслять или где взять */}
-      <InfoText label="Переплата">{/* formatMoney(overdraft) */}</InfoText>
+      <InfoText label="Переплата">{formatMoney(overpayment)}</InfoText>
       <InfoText label="% ставка">{rate || ''}%</InfoText>
       <Box className={classes.infoTextContainer} gridColumn="span 2">
         <InfoText label="Кредитный продукт">{productName}</InfoText>

@@ -92,6 +92,7 @@ export function useOrderSettings(nextStep: () => void, onChangeForm: () => void)
           rateDiscountCpi: creditProduct?.rateDiscountCpi,
           ratePenaltyCasco: creditProduct?.ratePenaltyCasco,
         },
+        overpayment: bankOffer.overpayment,
       }
       dispatch(
         updateOrder({ orderData: { ...orderData, application: { ...orderData?.application, loanData } } }),
@@ -99,7 +100,7 @@ export function useOrderSettings(nextStep: () => void, onChangeForm: () => void)
 
       nextStep()
     },
-    [dispatch, nextStep, orderData],
+    [calculateAmountWithoutOptions, creditProductsList, dispatch, nextStep, orderData],
   )
 
   useEffect(() => {
