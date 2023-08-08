@@ -27,8 +27,8 @@ const mockedVendor: Vendor = {
 jest.mock('shared/ui/ProgressBar/ProgressBar', () => ({
   ProgressBar: () => <div data-testid="progressBar" />,
 }))
-jest.mock('shared/ui/UploadFile/UploadFile', () => ({
-  UploadFile: ({ onClick }: any) => <div data-testid="uploadFile" onClick={onClick} />,
+jest.mock('shared/ui/FileDownloader/FileDownloader', () => ({
+  FileDownloader: ({ onClick }: any) => <div data-testid="uploadFile" onClick={onClick} />,
 }))
 jest.mock('../../../ui/RequisitesArea/RequisitesArea', () => ({
   RequisitesArea: () => <div data-testid="requisitesArea" />,

@@ -5,13 +5,13 @@ import userEvent from '@testing-library/user-event'
 
 import { MockProviders } from 'tests/mocks'
 
-import { UploadFile } from '../UploadFile'
+import { FileDownloader } from '../FileDownloader'
 
 const blob = new Blob([''], { type: 'text/html' })
 const file: File = new File([blob], 'file')
 const deleteFn = jest.fn()
 
-describe('UploadFile', () => {
+describe('FileDownloader', () => {
   beforeEach(() => {
     global.URL.createObjectURL = jest.fn()
   })
@@ -21,7 +21,7 @@ describe('UploadFile', () => {
 
     render(
       <MockProviders>
-        <UploadFile file={file} index={0} onClickDelete={deleteFn} />
+        <FileDownloader file={file} index={0} onClickDelete={deleteFn} />
       </MockProviders>,
     )
 
@@ -33,7 +33,7 @@ describe('UploadFile', () => {
   it('при клике на крестик вызывается onClickDelete', () => {
     render(
       <MockProviders>
-        <UploadFile file={file} index={0} onClickDelete={deleteFn} />
+        <FileDownloader file={file} index={0} onClickDelete={deleteFn} />
       </MockProviders>,
     )
 
@@ -45,7 +45,7 @@ describe('UploadFile', () => {
   it('если нет превью то показываем CircularProgress', () => {
     render(
       <MockProviders>
-        <UploadFile file={file} index={0} onClickDelete={deleteFn} />
+        <FileDownloader file={file} index={0} onClickDelete={deleteFn} />
       </MockProviders>,
     )
 

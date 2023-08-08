@@ -15,10 +15,6 @@ interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
-const mockedFileQuestionnaire = new File(['anketa'], 'anketa.png', {
-  type: 'image/png',
-})
-
 const mockedVendor: Vendor = {
   vendorCode: '2002703288',
 }
@@ -63,7 +59,6 @@ describe('ActionAreaTest', () => {
           applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
           returnToList={jest.fn}
           updateApplicationStatusLocally={jest.fn}
-          fileQuestionnaire={undefined}
           agreementDocs={[]}
           setAgreementDocs={jest.fn}
           setIsEditRequisitesMode={jest.fn}
@@ -87,7 +82,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={undefined}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}
@@ -111,7 +105,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={mockedFileQuestionnaire}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}
@@ -136,7 +129,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={undefined}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}
@@ -161,7 +153,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={undefined}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}
@@ -185,7 +176,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={undefined}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}
@@ -209,7 +199,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={undefined}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}
@@ -233,7 +222,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={undefined}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}
@@ -257,7 +245,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={undefined}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}
@@ -281,7 +268,6 @@ describe('ActionAreaTest', () => {
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
-            fileQuestionnaire={undefined}
             agreementDocs={[]}
             setAgreementDocs={jest.fn}
             setIsEditRequisitesMode={jest.fn}

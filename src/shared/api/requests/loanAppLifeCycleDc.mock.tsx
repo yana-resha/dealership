@@ -1,10 +1,10 @@
 import {
   OptionType,
   GetFullApplicationResponse,
-  IncomeDocumentType,
   PhoneType,
   StatusCode,
   DocType,
+  DocumentType,
 } from '@sberauto/loanapplifecycledc-proto/public'
 
 export const fullApplicationData: GetFullApplicationResponse = {
@@ -142,7 +142,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       },
       income: {
         incomeVerify: false,
-        incomeDocumentType: IncomeDocumentType.NDFL2,
+        incomeDocumentType: DocumentType.TWO_NDFL,
         basicIncome: 1000.45,
         addIncome: 1000.47,
         // acceptedIncome?: number,
@@ -351,6 +351,15 @@ export const fullApplicationData: GetFullApplicationResponse = {
         amount: 18,
       },
     },
+
+    scans: [
+      {
+        type: DocumentType.TWO_NDFL,
+        extension: '.pdf',
+        name: '2НДФЛ',
+      },
+    ],
+
     specialMark: 'Находится в нетрезвом состоянии',
   },
 }

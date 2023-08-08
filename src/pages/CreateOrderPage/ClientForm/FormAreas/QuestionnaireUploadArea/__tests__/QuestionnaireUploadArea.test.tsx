@@ -4,6 +4,7 @@ import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 import { SubmitAction } from 'pages/CreateOrderPage/ClientForm/ClientForm.types'
 import { ThemeProviderMock } from 'tests/mocks'
@@ -17,19 +18,22 @@ const mockedQuestionnaireUploadFields = {
   submitAction: SubmitAction.Save,
 }
 
+const queryClient = new QueryClient()
 const createWrapper = ({ children }: PropsWithChildren) => (
-  <ThemeProviderMock>
-    <Formik
-      initialValues={mockedQuestionnaireUploadFields}
-      validationSchema={clientFormValidationSchema}
-      onSubmit={() => {}}
-    >
-      <Form>
-        {children}
-        <Button type="submit" data-testid="submit" />
-      </Form>
-    </Formik>
-  </ThemeProviderMock>
+  <QueryClientProvider client={queryClient}>
+    <ThemeProviderMock>
+      <Formik
+        initialValues={mockedQuestionnaireUploadFields}
+        validationSchema={clientFormValidationSchema}
+        onSubmit={() => {}}
+      >
+        <Form>
+          {children}
+          <Button type="submit" data-testid="submit" />
+        </Form>
+      </Formik>
+    </ThemeProviderMock>
+  </QueryClientProvider>
 )
 disableConsole('error')
 

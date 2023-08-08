@@ -32,7 +32,6 @@ type Props = {
   returnToList: () => void
   goToTargetApplication: (targetAppId: string) => void
   updateApplicationStatusLocally: (statusCode: StatusCode) => void
-  fileQuestionnaire: File | undefined
   agreementDocs: (File | undefined)[]
   setAgreementDocs: (files: (File | undefined)[]) => void
   setIsEditRequisitesMode: (value: boolean) => void
@@ -264,6 +263,7 @@ export function ActionArea(props: Props) {
     setIsEditRequisitesMode,
     status,
     targetDcAppId,
+    updateApplicationStatusLocally,
     vendorCode,
   ])
 

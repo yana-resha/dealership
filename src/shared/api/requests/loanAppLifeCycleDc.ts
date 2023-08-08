@@ -9,7 +9,6 @@ import {
   GetFullApplicationRequest,
   GetFullApplicationResponse,
   GetVendorsListRequest,
-  IncomeDocumentType,
   IsClientRequest,
   MaritalStatus,
   OccupationType,
@@ -20,6 +19,11 @@ import {
   StatusCode,
   SendApplicationToFinancingRequest,
   ChangeApplicationStatusRequest,
+  UploadDocumentRequest,
+  DocumentType,
+  GetApplicationDocumentsListRequest,
+  GetApplicationDocumentsListResponse,
+  DownloadDocumentRequest,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
@@ -32,6 +36,10 @@ import { Rest } from '../client'
  * поэтому приводим к изначальному виду */
 function prepareStatusCode(status: keyof typeof StatusCode): StatusCode {
   return StatusCode[status] ?? StatusCode.ERROR
+}
+
+function prepareDocumentType(type: keyof typeof DocumentType): DocumentType {
+  return DocumentType[type] ?? DocumentType.UNSPECIFIED
 }
 
 function prepareApplication(application: Application): Application {
@@ -79,6 +87,83 @@ export const useUpdateApplicationStatus = (appId: string, onSuccess: (statusCode
       },
       onError: () => {
         enqueueSnackbar('Не удалось обновить статус, попробуйте снова', { variant: 'error' })
+      },
+    },
+  )
+}
+
+type UploadDocumentRequestMod = Omit<UploadDocumentRequest, 'file'> & {
+  file: File
+}
+export const uploadDocument = (data: UploadDocumentRequestMod) => {
+  const url = `${appConfig.apiUrl}/loanapplifecycledc`
+  const endpoint = 'uploadDocument'
+
+  const formData = new FormData()
+  formData.append('dc_app_id', data.dcAppId || '')
+  formData.append('document_type', `${data.documentType}`)
+  formData.append('file', data.file)
+
+  return Rest.request(`${url}/${endpoint}`, { data: formData })
+}
+
+export const useUploadDocumentMutation = () => {
+  const { enqueueSnackbar } = useSnackbar()
+
+  return useMutation(['uploadDocument'], (params: UploadDocumentRequestMod) => uploadDocument(params), {
+    onError: () => {
+      enqueueSnackbar('Ошибка. Не удалось отправить файл', {
+        variant: 'error',
+      })
+    },
+  })
+}
+
+function prepareApplicationDocumentType(response: GetApplicationDocumentsListResponse) {
+  const uploadDocumentList = response.uploadDocumentList?.map(el => {
+    const documentType = el.documentType
+      ? prepareDocumentType(el.documentType as unknown as keyof typeof DocumentType)
+      : undefined
+
+    return {
+      ...el,
+      documentType,
+    }
+  })
+
+  return { uploadDocumentList } as GetApplicationDocumentsListResponse
+}
+
+export const getApplicationDocumentsList = (params: GetApplicationDocumentsListRequest) =>
+  loanAppLifeCycleDcApi
+    .getApplicationDocumentsList({ data: params })
+    .then(response => prepareApplicationDocumentType(response.data ?? {}))
+
+/** Получение документа привязанного к заявке */
+export const downloadDocument = (data: DownloadDocumentRequest): Promise<File> => {
+  const url = `${appConfig.apiUrl}/loanapplifecycledc`
+  const endpoint = 'downloadDocument'
+
+  return Rest.request<DownloadDocumentRequest, File>(`${url}/${endpoint}`, {
+    data,
+    isResponseBlob: true,
+  })
+}
+
+export const useDownloadDocumentMutation = () =>
+  useMutation(['downloadDocument'], (params: DownloadDocumentRequest) => downloadDocument(params), {})
+
+export const useGetApplicationDocumentsListMutation = () => {
+  const { enqueueSnackbar } = useSnackbar()
+
+  return useMutation(
+    ['getApplicationDocumentsList'],
+    (params: GetApplicationDocumentsListRequest) => getApplicationDocumentsList(params),
+    {
+      onError: () => {
+        enqueueSnackbar('Ошибка. Не удалось отправить файл', {
+          variant: 'error',
+        })
       },
     },
   )
@@ -178,9 +263,9 @@ const getPreparedApplication = (data: GetFullApplicationResponse): GetFullApplic
           ? {
               ...data.application?.applicant.income,
               incomeDocumentType: data.application?.applicant.income.incomeDocumentType
-                ? IncomeDocumentType[
+                ? DocumentType[
                     data.application?.applicant.income
-                      .incomeDocumentType as unknown as keyof typeof IncomeDocumentType
+                      .incomeDocumentType as unknown as keyof typeof DocumentType
                   ]
                 : data.application?.applicant.income.incomeDocumentType,
             }
@@ -201,7 +286,15 @@ const getPreparedApplication = (data: GetFullApplicationResponse): GetFullApplic
       }
     : data.application?.loanData
 
-  return { ...data, application: { ...data.application, status: StatusCode[status], applicant, loanData } }
+  const scans = data.application?.scans?.map(scan => ({
+    ...scan,
+    type: prepareDocumentType(scan.type as unknown as keyof typeof DocumentType),
+  }))
+
+  return {
+    ...data,
+    application: { ...data.application, status: StatusCode[status], applicant, loanData, scans },
+  }
 }
 
 const getFullApplication = (params: GetFullApplicationRequest) =>
@@ -211,15 +304,12 @@ const getFullApplication = (params: GetFullApplicationRequest) =>
 
 export const useGetFullApplicationQuery = (
   params: GetFullApplicationRequest,
-  onSuccess: (orderData: GetFullApplicationResponse) => void,
   options?: UseQueryOptions<GetFullApplicationResponse, unknown, GetFullApplicationResponse, string[]>,
-) => {
-  return useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
+) =>
+  useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
     retry: false,
-    onSuccess: response => onSuccess(response),
     ...options,
   })
-}
 
 export const sendApplicationToFinancing = (params: SendApplicationToFinancingRequest) =>
   loanAppLifeCycleDcApi.sendApplicationToFinancing({ data: params })

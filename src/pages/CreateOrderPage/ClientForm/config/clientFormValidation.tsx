@@ -3,12 +3,18 @@ import { DateTime, Interval } from 'luxon'
 import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
 
+import { FileInfo } from 'features/ApplicationFileUploader'
+
 import { SubmitAction } from '../ClientForm.types'
 
 const MIN_AGE = 21
 const MAX_AGE = 65
 
 export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
+
+function isEmpty(value: any) {
+  return value === undefined || value === null
+}
 
 function clientNameIsCorrect(value: string | undefined) {
   if (value == undefined) {
@@ -68,6 +74,15 @@ function isIncomeProofUploadedCorrectly(value: string | undefined, context: Yup.
     return true
   }
 
+  const uploadingErrorFile = [ndfl2File, ndfl3File, bankStatementFile].find(
+    file => file && file.status === 'error',
+  )
+  if (uploadingErrorFile) {
+    return context.createError({
+      message: `Ошибка загрузки файла ${uploadingErrorFile.name}`,
+    })
+  }
+
   switch (occupation) {
     case OccupationType.INDIVIDUAL_ENTREPRENEUR:
       if (!ndfl3File) {
@@ -96,6 +111,14 @@ function isIncomeProofUploadedCorrectly(value: string | undefined, context: Yup.
         })
       }
       break
+  }
+
+  return true
+}
+
+function fileUploadStatusNotError(file: FileInfo | null | undefined) {
+  if (file) {
+    return file.status !== 'error'
   }
 
   return true
@@ -199,6 +222,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     'submitAction',
     isIncomeProofUploadedCorrectly,
   ),
+
   familyIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   expenses: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   relatedToPublic: setRequiredIfSave(Yup.number().nullable()),
@@ -234,5 +258,12 @@ export const clientFormValidationSchema = Yup.object().shape({
     is: (occupation: number | null) => isJobDisabled(occupation),
     otherwise: schema => setRequiredIfSave(schema),
   }),
-  questionnaireFile: setRequiredIfSave(Yup.string().nullable(), 'Необходимо загрузить анкету'),
+  questionnaireFile: setRequiredIfSave(
+    Yup.object()
+      .nullable()
+      .test('badUpload', 'Ошибка при выгрузке файла', questionnaireFile =>
+        fileUploadStatusNotError(questionnaireFile as unknown as FileInfo | null),
+      ),
+    'Необходимо загрузить анкету',
+  ),
 })

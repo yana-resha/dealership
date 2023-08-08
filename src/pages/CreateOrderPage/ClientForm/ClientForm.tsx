@@ -4,13 +4,14 @@ import { Box } from '@mui/material'
 import {
   SendApplicationToScoringRequest,
   GetFullApplicationResponse,
+  SaveLoanApplicationDraftResponse,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { Formik, FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { clearOrder } from 'entities/reduxStore/orderSlice'
+import { clearOrder, setAppId } from 'entities/reduxStore/orderSlice'
 import {
   useSaveDraftApplicationMutation,
   useSendApplicationToScore,
@@ -24,7 +25,7 @@ import { ClientData, SubmitAction } from './ClientForm.types'
 import { clientFormValidationSchema } from './config/clientFormValidation'
 import { FormContainer } from './FormContainer'
 import { useGetDraftApplicationData } from './hooks/useGetDraftApplicationData'
-import { useInitialValues } from './useInitialValues'
+import { useInitialValues } from './hooks/useInitialValues'
 
 type Props = {
   formRef: React.RefObject<FormikProps<ClientData>>
@@ -34,21 +35,17 @@ type Props = {
 export function ClientForm({ formRef, onMount }: Props) {
   const classes = useStyles()
   const navigate = useNavigate()
-  const location = useLocation()
   const dispatch = useDispatch()
+
+  const location = useLocation()
   const state = location.state as CreateOrderPageState
   const saveDraftDisabled = state && state.saveDraftDisabled != undefined ? state.saveDraftDisabled : false
+
   const { remapApplicationValues, isShouldShowLoading, initialValues, dcAppId } = useInitialValues()
   const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation(
-    (dcAppId: string) => {
-      if (dcAppId) {
-        navigate(appRoutes.order(dcAppId))
-      } else {
-        dispatch(clearOrder())
-        navigate(appRoutes.orderList())
-      }
-    },
+    (dcAppId: string) => dcAppId && dispatch(setAppId({ dcAppId })),
   )
+
   const { mutate: sendToScore } = useSendApplicationToScore({
     onSuccess: () => {
       dispatch(clearOrder())
@@ -84,12 +81,25 @@ export function ClientForm({ formRef, onMount }: Props) {
     [prepareApplicationForScoring, sendToScore],
   )
 
+  const goToOrderPage = useCallback(
+    (order: SaveLoanApplicationDraftResponse) => {
+      if (order?.dcAppId) {
+        navigate(appRoutes.order(order.dcAppId))
+      } else {
+        dispatch(clearOrder())
+        navigate(appRoutes.orderList())
+      }
+    },
+    [dispatch, navigate],
+  )
+
   const saveApplicationDraft = useCallback(
     (application: GetFullApplicationResponse) => {
-      console.log('ClientForm.saveApplicationDraft values:', application)
-      saveDraft(getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false))
+      saveDraft(getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false)).then(
+        goToOrderPage,
+      )
     },
-    [saveDraft, getDraftApplicationData, dispatch, navigate],
+    [saveDraft, getDraftApplicationData, formRef, goToOrderPage],
   )
 
   const saveDraftAndPrint = useCallback(
@@ -106,7 +116,28 @@ export function ClientForm({ formRef, onMount }: Props) {
         })
       }
     },
-    [dcAppId, getDraftApplicationData, saveDraft],
+    [dcAppId, saveDraft, getDraftApplicationData, formRef],
+  )
+
+  /** Сохраняем заявку чтобы сформировать ID заявки */
+  const getOrderId = useCallback(
+    async (orderForm: ClientData) => {
+      if (dcAppId) {
+        return dcAppId
+      }
+
+      const application = remapApplicationValues(orderForm)
+      if (!application) {
+        return
+      }
+
+      return (
+        await saveDraft(
+          getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
+        )
+      ).dcAppId
+    },
+    [dcAppId, remapApplicationValues, saveDraft, getDraftApplicationData, formRef],
   )
 
   const getSubmitAction = useCallback(
@@ -114,10 +145,12 @@ export function ClientForm({ formRef, onMount }: Props) {
       if (!formRef.current) {
         return
       }
+
       const updatedApplication = remapApplicationValues(values)
       if (!updatedApplication) {
         return
       }
+
       switch (formRef.current.values.submitAction) {
         case SubmitAction.Draft:
           saveApplicationDraft(updatedApplication)
@@ -156,6 +189,7 @@ export function ClientForm({ formRef, onMount }: Props) {
           innerRef={formRef}
         >
           <FormContainer
+            getOrderId={getOrderId}
             isDraftLoading={isDraftLoading}
             disabledButtons={disabledButtons}
             saveDraftDisabled={saveDraftDisabled}

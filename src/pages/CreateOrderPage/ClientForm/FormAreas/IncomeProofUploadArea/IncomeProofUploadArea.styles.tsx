@@ -36,7 +36,7 @@ export default makeStyles(theme => ({
 
   divider: {
     '&.MuiDivider-root': {
-      margin: `0 -${theme.spacing(3)} 0 -${theme.spacing(3)}`,
+      margin: `${theme.spacing(2)} -${theme.spacing(2)} 0 -${theme.spacing(3)}`,
     },
   },
 }))

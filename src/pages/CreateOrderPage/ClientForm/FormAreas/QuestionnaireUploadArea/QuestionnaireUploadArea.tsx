@@ -1,67 +1,68 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
-import { DragAndDropWrapper } from 'shared/ui/DragAndDropWrapper/DragAndDropWrapper'
-import { FileUploadButton } from 'shared/ui/FileUploadButton/FileUploadButton'
-import SberTypography from 'shared/ui/SberTypography/SberTypography'
-import { UploadFile } from 'shared/ui/UploadFile/UploadFile'
+import { FileInfo, UploaderConfig, Uploader, DocumentUploadStatus } from 'features/ApplicationFileUploader'
+import { MAX_FILE_SIZE_MB } from 'shared/config/uploadFile.config'
 
+import { ClientData } from '../../ClientForm.types'
+import { UPLOADED_DOCUMENTS } from '../../config/clientFormInitialValues'
 import { useStyles } from './QuestionnaireUploadArea.styles'
+
+const FIELD_NAME = 'questionnaireFile'
 
 export const QuestionnaireUploadArea = () => {
   const classes = useStyles()
-  const [field, meta] = useField('questionnaireFile')
-  const { value } = field
-  const { setFieldValue } = useFormikContext()
-  const isError = meta != undefined && meta.touched && meta.error != undefined
 
-  const uploadQuestionnaire = useCallback(
-    (files: FileList) => {
-      if (files.length > 0) {
-        setFieldValue('questionnaireFile', files.item(0))
-      }
+  const [field, meta] = useField(FIELD_NAME)
+  const { value } = field
+  const { setFieldValue, setErrors } = useFormikContext<ClientData>()
+
+  /** Фиксируем ошибку при выгрузке файла */
+  const onUploadError = useCallback(
+    (documentName: string) => {
+      setErrors({ [documentName]: 'Ошибка загрузки файла' })
     },
-    [setFieldValue],
+    [setErrors],
   )
 
-  const deleteQuestionnaire = useCallback(() => {
-    setFieldValue('questionnaireFile', null)
-  }, [setFieldValue])
+  const onUploadDocument = useCallback(
+    (file: FileInfo['file'], documentName: string, status: FileInfo['status']) => {
+      setFieldValue(documentName, { file, status })
+      if (status === DocumentUploadStatus.Error) {
+        onUploadError(documentName)
+      }
+    },
+    [onUploadError, setFieldValue],
+  )
+
+  const onDeleteDocument = useCallback(
+    (documentName: string) => {
+      setErrors({ [documentName]: undefined })
+      setFieldValue(documentName, null)
+    },
+    [setErrors, setFieldValue],
+  )
+
+  const uploaderConfig: UploaderConfig = {
+    ...UPLOADED_DOCUMENTS[FIELD_NAME],
+    documentFile: value,
+    documentError: meta.error,
+  }
 
   return (
     <Box className={classes.uploadAreaContainer}>
       <Box className={classes.uploadQuestionnaire} gridColumn="span 12">
-        <DragAndDropWrapper onChange={uploadQuestionnaire}>
-          <SberTypography sberautoVariant="h6" component="p">
-            Подписанная анкета
-          </SberTypography>
-          <SberTypography sberautoVariant="body3" component="p" className={classes.uploadInstruction}>
-            Загрузите или перетащите сюда анкету подписанную клиентом в jpg, png, pdf и не более 5 мб.
-          </SberTypography>
-          <Box gridColumn="1 / -1">
-            {value ? (
-              <UploadFile
-                file={value}
-                loadingMessage="Анкета загружается"
-                index={0}
-                onClickDelete={deleteQuestionnaire}
-              />
-            ) : (
-              <FileUploadButton
-                buttonText="Загрузить анкету"
-                onChange={uploadQuestionnaire}
-                uniqName="uploadIncomeProof"
-              />
-            )}
-          </Box>
-          {isError && (
-            <Box gridColumn="1 / -1">
-              <Typography className={classes.errorMessage}>{meta.error}</Typography>
-            </Box>
-          )}
-        </DragAndDropWrapper>
+        <Uploader
+          uploaderConfig={uploaderConfig}
+          suggest={`Загрузите или перетащите сюда анкету подписанную клиентом в jpg, png, pdf и не более ${MAX_FILE_SIZE_MB} мб.`}
+          loadingMessage="Анкета загружается"
+          motivateMessage="Загрузить анкету"
+          onUploadDocument={onUploadDocument}
+          onDeleteDocument={onDeleteDocument}
+          onError={onUploadError}
+        />
       </Box>
     </Box>
   )

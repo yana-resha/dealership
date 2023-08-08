@@ -7,35 +7,39 @@ import {
   ApplicationFrontdc,
   PhoneType,
   GetFullApplicationResponse,
+  DocumentType,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
 import { DateTime, Interval } from 'luxon'
 import { useDispatch } from 'react-redux'
 
 import { updateOrder } from 'entities/reduxStore/orderSlice'
+import { DocumentUploadStatus } from 'features/ApplicationFileUploader'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
-import { ClientData } from './ClientForm.types'
-import { configAddressInitialValues } from './config/clientFormInitialValues'
+import { ClientData } from '../ClientForm.types'
+import { configAddressInitialValues, UPLOADED_DOCUMENTS } from '../config/clientFormInitialValues'
 import {
   AREA_TYPES,
   CITY_TYPES,
   SETTLEMENT_TYPES,
   STREET_TYPES,
-} from './FormAreas/AddressDialog/AddressDialog.config'
-import { addressTransformForForm, addressTransformForRequest } from './utils/addressTransformForRequest'
-import { makeClientForm } from './utils/makeClienForm'
-import { transformDocsForRequest } from './utils/transformDocsForRequest'
-import { transformPhoneForRequest } from './utils/transformPhoneForRequest'
+} from '../FormAreas/AddressDialog/AddressDialog.config'
+import { addressTransformForForm, addressTransformForRequest } from '../utils/addressTransformForRequest'
+import { makeClientForm } from '../utils/makeClienForm'
+import { transformDocsForRequest } from '../utils/transformDocsForRequest'
+import { transformPhoneForRequest } from '../utils/transformPhoneForRequest'
 
 export function useInitialValues() {
-  const initialValues = useAppSelector(state => makeClientForm(state.order.order))
-  const initialOrder = useAppSelector(state => state.order.order)
   const dispatch = useDispatch()
+
+  const initialOrder = useAppSelector(state => state.order.order)
+  const initialValues = makeClientForm(initialOrder)
+
   const fullApplicationData = initialOrder?.orderData
 
   const { applicant, createdDate } = useMemo(
@@ -127,6 +131,7 @@ export function useInitialValues() {
       ),
     [
       applicant?.addresses,
+      getStringIfPresent,
       initialValues.employerAddressString,
       initialValues.livingAddressString,
       initialValues.registrationAddressString,
@@ -222,6 +227,9 @@ export function useInitialValues() {
         familyIncome,
         expenses,
         incomeConfirmation,
+        ndfl2File,
+        ndfl3File,
+        bankStatementFile,
         averageIncome,
         familyStatus,
         occupation,
@@ -232,6 +240,7 @@ export function useInitialValues() {
       if (!application) {
         return undefined
       }
+
       const {
         firstName: clientFirstName,
         lastName: clientLastName,
@@ -243,6 +252,17 @@ export function useInitialValues() {
         middleName: previousClientMiddleName,
       } = getSplitedName(clientFormerName)
       const actualLivingAddress = regAddrIsLivingAddr ? registrationAddress : livingAddress
+
+      let incomeDocumentType: null | DocumentType = null
+      if (bankStatementFile) {
+        incomeDocumentType = UPLOADED_DOCUMENTS['bankStatementFile'].documentType
+      }
+      if (ndfl2File) {
+        incomeDocumentType = UPLOADED_DOCUMENTS['ndfl2File'].documentType
+      }
+      if (ndfl3File) {
+        incomeDocumentType = UPLOADED_DOCUMENTS['ndfl3File'].documentType
+      }
 
       const newApplicant: ApplicantFrontdc = {
         firstName: clientFirstName,
@@ -286,6 +306,9 @@ export function useInitialValues() {
         ]),
         income: {
           incomeVerify: incomeConfirmation,
+          incomeDocumentType: incomeConfirmation
+            ? (incomeDocumentType as unknown as DocumentType)
+            : undefined,
           basicIncome: stringToNumber(averageIncome),
           addIncome: stringToNumber(additionalIncome),
           familyIncome: stringToNumber(familyIncome),
@@ -316,62 +339,85 @@ export function useInitialValues() {
 
       return { ...fullApplicationData, application: updatedApplication }
     },
-    [fullApplicationData],
+    [dispatch, fullApplicationData],
   )
+
+  const makeDocumentTypeFile = (expectedType: DocumentType) => {
+    const currentScan = fullApplicationData?.application?.scans?.find(scan => scan.type === expectedType)
+    const dcAppId = fullApplicationData?.application?.dcAppId
+
+    if (!currentScan?.type || !dcAppId) {
+      return undefined
+    }
+
+    return {
+      file: { dcAppId, documentType: currentScan.type, name: currentScan.name },
+      status: DocumentUploadStatus.Upload,
+    }
+  }
+
+  const dcAppId = fullApplicationData?.application?.dcAppId
+  const initialValuesClientData: ClientData = {
+    ...initialValues,
+    ...(fullApplicationData?.application?.applicant
+      ? {
+          clientName:
+            getFullName(applicant?.firstName, applicant?.lastName, applicant?.middleName) ||
+            initialValues.clientName,
+          hasNameChanged: !!clientFormerName,
+          clientFormerName: clientFormerName || initialValues.clientFormerName,
+          numOfChildren: `${applicant?.children ?? initialValues.numOfChildren}`,
+          sex: applicant?.sex ?? initialValues.sex,
+          familyStatus: applicant?.marital ?? initialValues.familyStatus,
+          birthDate: applicant?.birthDate ? new Date(applicant.birthDate) : initialValues.birthDate,
+          birthPlace: applicant?.birthPlace ?? initialValues.birthPlace,
+          passport: formatPassport(passport.series, passport.number),
+          passportDate: passport.issuedDate ? new Date(passport.issuedDate) : initialValues.passportDate,
+          divisionCode: passport.issuedCode ?? initialValues.divisionCode,
+          issuedBy: passport.issuedBy ?? initialValues.issuedBy,
+          registrationAddressString,
+          registrationAddress,
+          regAddrIsLivingAddr,
+          livingAddressString,
+          livingAddress,
+          mobileNumber,
+          additionalNumber,
+          email: applicant?.email ?? initialValues.email,
+          averageIncome: `${applicant?.income?.basicIncome ?? initialValues.averageIncome}`,
+          additionalIncome: `${applicant?.income?.addIncome ?? initialValues.additionalIncome}`,
+
+          incomeConfirmation: !!(applicant?.income?.incomeVerify ?? initialValues.incomeConfirmation),
+          ndfl2File: makeDocumentTypeFile(DocumentType.TWO_NDFL),
+          ndfl3File: makeDocumentTypeFile(DocumentType.TAX_DECLARATION),
+          bankStatementFile: makeDocumentTypeFile(DocumentType.CERTIFICATE_FREE_FORM),
+
+          familyIncome: `${applicant?.income?.familyIncome ?? initialValues.familyIncome}`,
+          expenses: `${applicant?.income?.expenses ?? initialValues.expenses}`,
+          relatedToPublic: relatedToPublic,
+          secondDocumentType: secondDocument.type ?? initialValues.secondDocumentType,
+          secondDocumentNumber:
+            (secondDocument.series || '') + (secondDocument.number || '') ||
+            initialValues.secondDocumentNumber,
+          secondDocumentDate: secondDocument.issuedDate
+            ? new Date(secondDocument.issuedDate)
+            : initialValues.passportDate,
+          secondDocumentIssuedBy: secondDocument.issuedBy ?? initialValues.secondDocumentIssuedBy,
+          occupation: applicant?.employment?.occupation ?? initialValues.occupation,
+          employmentDate,
+          employerName: applicant?.employment?.orgName ?? initialValues.employerName,
+          employerPhone,
+          employerAddress,
+          employerAddressString,
+          employerInn: applicant?.employment?.inn ?? initialValues.employerInn,
+          questionnaireFile: makeDocumentTypeFile(DocumentType.CONSENT_FORM),
+        }
+      : {}),
+  }
 
   return {
     remapApplicationValues,
     isShouldShowLoading: false,
-    initialValues: {
-      ...initialValues,
-      ...(fullApplicationData?.application?.applicant
-        ? {
-            clientName:
-              getFullName(applicant?.firstName, applicant?.lastName, applicant?.middleName) ||
-              initialValues.clientName,
-            hasNameChanged: !!clientFormerName,
-            clientFormerName: clientFormerName || initialValues.clientFormerName,
-            numOfChildren: `${applicant?.children ?? initialValues.numOfChildren}`,
-            sex: applicant?.sex ?? initialValues.sex,
-            familyStatus: applicant?.marital ?? initialValues.familyStatus,
-            birthDate: applicant?.birthDate ? new Date(applicant.birthDate) : initialValues.birthDate,
-            birthPlace: applicant?.birthPlace ?? initialValues.birthPlace,
-            passport: formatPassport(passport.series, passport.number),
-            passportDate: passport.issuedDate ? new Date(passport.issuedDate) : initialValues.passportDate,
-            divisionCode: passport.issuedCode ?? initialValues.divisionCode,
-            issuedBy: passport.issuedBy ?? initialValues.issuedBy,
-            registrationAddressString,
-            registrationAddress,
-            regAddrIsLivingAddr,
-            livingAddressString,
-            livingAddress,
-            mobileNumber,
-            additionalNumber,
-            email: applicant?.email ?? initialValues.email,
-            averageIncome: `${applicant?.income?.basicIncome ?? initialValues.averageIncome}`,
-            additionalIncome: `${applicant?.income?.addIncome ?? initialValues.additionalIncome}`,
-            incomeConfirmation: !!(applicant?.income?.incomeVerify ?? initialValues.incomeConfirmation),
-            familyIncome: `${applicant?.income?.familyIncome ?? initialValues.familyIncome}`,
-            expenses: `${applicant?.income?.expenses ?? initialValues.expenses}`,
-            relatedToPublic: relatedToPublic,
-            secondDocumentType: secondDocument.type ?? initialValues.secondDocumentType,
-            secondDocumentNumber:
-              (secondDocument.series || '') + (secondDocument.number || '') ||
-              initialValues.secondDocumentNumber,
-            secondDocumentDate: secondDocument.issuedDate
-              ? new Date(secondDocument.issuedDate)
-              : initialValues.passportDate,
-            secondDocumentIssuedBy: secondDocument.issuedBy ?? initialValues.secondDocumentIssuedBy,
-            occupation: applicant?.employment?.occupation ?? initialValues.occupation,
-            employmentDate,
-            employerName: applicant?.employment?.orgName ?? initialValues.employerName,
-            employerPhone,
-            employerAddress,
-            employerAddressString,
-            employerInn: applicant?.employment?.inn ?? initialValues.employerInn,
-          }
-        : {}),
-    },
-    dcAppId: fullApplicationData?.application?.dcAppId,
+    initialValues: initialValuesClientData,
+    dcAppId,
   }
 }
