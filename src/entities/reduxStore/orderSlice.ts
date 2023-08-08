@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { GetFullApplicationResponse } from '@sberauto/loanapplifecycledc-proto/public'
+import { ApplicationFrontdc, GetFullApplicationResponse } from '@sberauto/loanapplifecycledc-proto/public'
+import merge from 'lodash/merge'
 
 import { RequiredProduct } from '../../common/OrderCalculator/utils/prepareCreditProductListData'
 
@@ -32,11 +33,31 @@ const orderSlice = createSlice({
     updateOrder: (state, action: PayloadAction<Order>) => {
       state.order = { ...(state.order || {}), ...action.payload }
     },
+    updateApplication: (state, action: PayloadAction<ApplicationFrontdc>) => {
+      state.order = {
+        ...(state.order || {}),
+        orderData: {
+          ...state.order?.orderData,
+          application: {
+            ...state.order?.orderData?.application,
+            ...action.payload,
+          },
+        },
+      }
+    },
     clearOrder: state => {
       state.order = undefined
+    },
+    setAppId: (state, action: PayloadAction<{ dcAppId: string }>) => {
+      const currentOrder: Order = state.order ?? {}
+      const orderWithAppId: Order = {
+        orderData: { application: { dcAppId: action.payload.dcAppId } },
+      }
+
+      state.order = merge(currentOrder, orderWithAppId)
     },
   },
 })
 
-export const { updateOrder, setOrder, clearOrder } = orderSlice.actions
+export const { updateOrder, setOrder, clearOrder, setAppId, updateApplication } = orderSlice.actions
 export default orderSlice

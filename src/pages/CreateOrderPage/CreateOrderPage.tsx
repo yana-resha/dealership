@@ -12,7 +12,7 @@ import { appRoutes } from 'shared/navigation/routerPath'
 import { useAppSelector } from '../../shared/hooks/store/useAppSelector'
 import { ClientForm } from './ClientForm'
 import { ClientData } from './ClientForm/ClientForm.types'
-import { useInitialValues } from './ClientForm/useInitialValues'
+import { useInitialValues } from './ClientForm/hooks/useInitialValues'
 import { useStyles } from './CreateOrderPage.styles'
 import { OrderSearching } from './OrderSearching'
 

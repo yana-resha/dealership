@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
-import { ThemeProviderMock } from 'tests/mocks'
+import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { clientFormValidationSchema } from '../../../config/clientFormValidation'
@@ -23,7 +23,7 @@ const createWrapper =
   (additionalData?: { occupation: number }) =>
   ({ children }: PropsWithChildren) =>
     (
-      <ThemeProviderMock>
+      <MockProviders>
         <Formik
           initialValues={{ ...mockedIncomeProofUploadFields, ...additionalData }}
           validationSchema={clientFormValidationSchema}
@@ -34,7 +34,7 @@ const createWrapper =
             <Button type="submit" data-testid="submit" />
           </Form>
         </Formik>
-      </ThemeProviderMock>
+      </MockProviders>
     )
 
 disableConsole('error')

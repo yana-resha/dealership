@@ -12,7 +12,7 @@ describe('FileUploadButton', () => {
   it('корректная отрисовка компонента', () => {
     render(
       <MockProviders>
-        <FileUploadButton buttonText="btn" uniqName="name" onChange={changeFn} multiple />
+        <FileUploadButton buttonText="btn" onChange={changeFn} multiple />
       </MockProviders>,
     )
 
@@ -24,7 +24,7 @@ describe('FileUploadButton', () => {
   it('Вызывается переданная функция', () => {
     render(
       <MockProviders>
-        <FileUploadButton buttonText="btn" uniqName="name" onChange={changeFn} multiple />
+        <FileUploadButton buttonText="btn" onChange={changeFn} multiple />
       </MockProviders>,
     )
 

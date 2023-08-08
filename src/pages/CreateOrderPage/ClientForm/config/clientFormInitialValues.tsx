@@ -3,7 +3,10 @@ import {
   MaritalStatus,
   OccupationType,
   Sex,
+  DocumentType,
 } from '@sberauto/loanapplifecycledc-proto/public'
+
+import { UploaderConfig } from 'features/ApplicationFileUploader'
 
 import { Address, ClientData, SubmitAction } from '../ClientForm.types'
 
@@ -50,14 +53,17 @@ export const configInitialValues: ClientData = {
   email: '',
   averageIncome: '',
   additionalIncome: '',
-  incomeConfirmation: false,
   familyIncome: '',
   expenses: '',
   relatedToPublic: null,
+
+  // Справки о доходах
+  incomeConfirmation: false,
   ndfl2File: null,
   ndfl3File: null,
   bankStatementFile: null,
   incomeProofUploadValidator: '',
+
   secondDocumentType: null,
   secondDocumentNumber: '',
   secondDocumentDate: null,
@@ -137,3 +143,28 @@ export const DOCUMENT_TYPE_VALUES = [
   // },
   // { label: 'Студенческий билет', value: ApplicantDocsType.StudentID },
 ]
+
+type Documents = Omit<UploaderConfig, 'documentFile' | 'documentError'>
+/** Мапа названия файла (название поля в форме) и его типа */
+export const UPLOADED_DOCUMENTS = {
+  ndfl2File: {
+    documentLabel: '2НДФЛ',
+    documentName: 'ndfl2File',
+    documentType: DocumentType.TWO_NDFL,
+  } as Documents,
+  ndfl3File: {
+    documentLabel: '3НДФЛ',
+    documentName: 'ndfl3File',
+    documentType: DocumentType.TAX_DECLARATION,
+  } as Documents,
+  bankStatementFile: {
+    documentLabel: 'Выписка из банка',
+    documentName: 'bankStatementFile',
+    documentType: DocumentType.CERTIFICATE_FREE_FORM,
+  } as Documents,
+  questionnaireFile: {
+    documentLabel: 'Подписанная анкета',
+    documentName: 'questionnaireFile',
+    documentType: DocumentType.CONSENT_FORM,
+  },
+} as const

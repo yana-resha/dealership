@@ -1,10 +1,12 @@
+import { FC } from 'react'
+
 import throttle from 'lodash/throttle'
 
 import { appConfig } from 'config'
 import { getUserSessionId } from 'shared/lib/getUserSessionId'
 
-import { Options } from '../helpers/baseFetch'
 import { authToken } from '../token'
+import { Options } from './types'
 
 type RefreshMethod = () => Promise<any>
 type LogoutMethod = () => Promise<void> | void
@@ -130,6 +132,8 @@ class Rest {
       await this.waitingRefreshed()
     }
 
+    // Формируем headers
+    const isDataFormdata = data instanceof FormData
     const headers = new Headers({
       'Content-Type': 'application/json',
       ...additionalHeaders,
@@ -144,9 +148,24 @@ class Rest {
     if (withCredentials) {
       headers.append('Authorization', `Bearer ${authToken.jwt.get()}`)
     }
+    if (isDataFormdata) {
+      headers.delete('Content-Type')
+    }
+
+    // Формируем body
+    const body = (() => {
+      if (isDataFormdata) {
+        return data
+      }
+      if (data) {
+        return JSON.stringify(data)
+      }
+
+      return null
+    })()
 
     return fetch(url, {
-      body: data ? JSON.stringify(data) : null,
+      body,
       headers,
       method,
       ...opt,

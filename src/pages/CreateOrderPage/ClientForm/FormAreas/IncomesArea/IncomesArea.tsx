@@ -52,9 +52,9 @@ export function IncomesArea() {
         mask={maskDigitsOnly}
         gridColumn="span 4"
       />
-      <SwitchInputFormik name="incomeConfirmation" label="Подтверждение" centered gridColumn="span 8" />
 
-      {incomeConfirmation && occupation && <IncomeProofUploadArea />}
+      <SwitchInputFormik name="incomeConfirmation" label="Подтверждение" centered gridColumn="span 8" />
+      {incomeConfirmation && !!occupation && <IncomeProofUploadArea />}
 
       {incomeConfirmation && !occupation && (
         <Box className={classes.docError} gridColumn="1/-1">

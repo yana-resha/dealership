@@ -2,13 +2,12 @@ import React from 'react'
 
 import { renderHook } from '@testing-library/react'
 
-import { Order } from 'entities/reduxStore/orderSlice'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { disableConsole } from 'tests/utils'
 
-import { useInitialValues } from '../useInitialValues'
-import { EXPECTED_DATA } from './useInitialValues.mock'
+import { useInitialValues } from '../hooks/useInitialValues'
+import { EXPECTED_DATA, EXPECTED_EMPTY_DATA } from './useInitialValues.mock'
 
 disableConsole('error')
 
@@ -27,23 +26,15 @@ describe('useInitialValues', () => {
 
   describe('Преобразование данных работает корректно', () => {
     it('Заменяет начальное значение на данные из запроса', () => {
-      mockedUseAppSelector.mockImplementation(() => {
-        const orderData: Order = { orderData: mockApplication }
-
-        return orderData
-      })
+      mockedUseAppSelector.mockImplementation(() => ({ orderData: mockApplication }))
       const result = renderHook(() => useInitialValues())
       expect(result.result.current.initialValues).toEqual(EXPECTED_DATA)
     })
 
     it('При отсутствии данных из запроса отдает начальные данные', () => {
-      mockedUseAppSelector.mockImplementation(() => {
-        const orderData: Order = { orderData: undefined }
-
-        return orderData
-      })
+      mockedUseAppSelector.mockImplementation(() => ({ orderData: undefined }))
       const result = renderHook(() => useInitialValues())
-      expect(result.result.current.initialValues).toEqual({ orderData: undefined })
+      expect(result.result.current.initialValues).toEqual(EXPECTED_EMPTY_DATA)
     })
   })
 })

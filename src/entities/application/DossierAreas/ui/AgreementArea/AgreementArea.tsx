@@ -10,11 +10,11 @@ import {
 } from 'shared/api/requests/loanAppLifeCycleDc'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
+import { FileDownloader } from 'shared/ui/FileDownloader/FileDownloader'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
-import { UploadFile } from 'shared/ui/UploadFile/UploadFile'
 
 import { RequisitesArea } from '../'
 import { getPointOfSaleFromCookies } from '../../../../pointOfSale'
@@ -188,7 +188,7 @@ export function AgreementArea({
       {preparedStatus === PreparedStatus.formation && (
         <Box>
           {isDocsLoading ? (
-            <UploadFile
+            <FileDownloader
               file={undefined}
               index={0}
               loadingMessage="Идет формирование договора. Это может занять 2-5 мин."
@@ -198,7 +198,7 @@ export function AgreementArea({
               {agreementDocs.map((document, index) => (
                 <Box key={document?.name} className={classes.documentContainer}>
                   <Box className={classes.document}>
-                    <UploadFile
+                    <FileDownloader
                       file={document}
                       index={index}
                       loadingMessage="Файл загружается"

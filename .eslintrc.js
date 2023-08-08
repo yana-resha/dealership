@@ -77,6 +77,7 @@ module.exports = {
           { pattern: 'app/**', group: 'internal' },
           { pattern: 'pages/**', group: 'internal' },
           { pattern: 'common/**', group: 'internal' },
+          { pattern: 'features/**', group: 'internal' },
           { pattern: 'entities/**', group: 'internal' },
           { pattern: 'store/**', group: 'internal' },
           { pattern: 'shared/**', group: 'internal' },

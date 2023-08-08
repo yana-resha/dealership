@@ -1,5 +1,7 @@
 import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { FileInfo } from 'features/ApplicationFileUploader'
+
 export interface Address {
   postalCode: string
   regCode: string | null
@@ -57,14 +59,17 @@ export interface ClientData {
   email: string
   averageIncome: string
   additionalIncome: string
-  incomeConfirmation: boolean
   familyIncome: string
   expenses: string
   relatedToPublic: number | null
-  ndfl2File: File | null
-  ndfl3File: File | null
-  bankStatementFile: File | null
+
+  // Справки о доходах
+  incomeConfirmation: boolean
+  ndfl2File: FileInfo | null
+  ndfl3File: FileInfo | null
+  bankStatementFile: FileInfo | null
   incomeProofUploadValidator: string
+
   secondDocumentType: number | null
   secondDocumentNumber: string
   secondDocumentDate: Date | null
@@ -77,7 +82,7 @@ export interface ClientData {
   employerAddressString: string
   emplNotKladr: boolean
   employerInn: string
-  questionnaireFile: File | null
+  questionnaireFile: FileInfo | null
   submitAction: SubmitAction
   isFormComplete: boolean
 }

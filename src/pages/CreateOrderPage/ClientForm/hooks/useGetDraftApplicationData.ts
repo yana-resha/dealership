@@ -12,23 +12,34 @@ export const useGetDraftApplicationData = () => {
   const { vendorCode, unit } = getPointOfSaleFromCookies()
 
   return useCallback(
-    (fullApplication: GetFullApplicationResponse, isFormValid: boolean): ApplicationFrontdc => ({
-      dcAppId: fullApplication?.application?.dcAppId,
-      unit,
-      anketaType: isFormValid ? ApplicationTypes.complete : ApplicationTypes.incomplete,
-      vendor: {
-        ...fullApplication?.application?.vendor,
-        vendorCode,
-      },
-      employees: {
-        tabNumActual: user?.employeeId,
-        fullNameCreated: getFullName(user?.firstName, user?.lastName),
-      },
-      specialMark: fullApplication?.application?.specialMark,
-      applicant: fullApplication?.application?.applicant,
-      loanCar: fullApplication?.application?.loanCar,
-      loanData: fullApplication?.application?.loanData,
-    }),
+    (fullApplication: GetFullApplicationResponse, isFormValid: boolean): ApplicationFrontdc => {
+      // Форматируем значения для loanCar
+      const preparedLoanCar = fullApplication?.application?.loanCar
+        ? { ...fullApplication?.application?.loanCar }
+        : undefined
+      if (preparedLoanCar && preparedLoanCar.mileage === '') {
+        // mileage не должен быть пустой строкой
+        preparedLoanCar.mileage = '0'
+      }
+
+      return {
+        dcAppId: fullApplication?.application?.dcAppId,
+        unit,
+        anketaType: isFormValid ? ApplicationTypes.complete : ApplicationTypes.incomplete,
+        vendor: {
+          ...fullApplication?.application?.vendor,
+          vendorCode,
+        },
+        employees: {
+          tabNumActual: user?.employeeId,
+          fullNameCreated: getFullName(user?.firstName, user?.lastName),
+        },
+        specialMark: fullApplication?.application?.specialMark,
+        applicant: fullApplication?.application?.applicant,
+        loanCar: preparedLoanCar,
+        loanData: fullApplication?.application?.loanData,
+      }
+    },
     [user, unit, vendorCode],
   )
 }
