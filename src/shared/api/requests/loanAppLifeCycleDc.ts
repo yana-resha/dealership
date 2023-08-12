@@ -27,6 +27,7 @@ import {
   DocType,
   FormContractRequest,
   Scan,
+  GetPreliminaryPaymentScheduleFormRequest,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation } from 'react-query'
@@ -324,6 +325,19 @@ export const useSendToFinancingMutation = () =>
 
 export const formContract = (params: FormContractRequest) =>
   loanAppLifeCycleDcApi.formContract({ data: params })
-
 export const useFormContractMutation = (params: FormContractRequest) =>
   useMutation('formContract', () => formContract(params))
+
+export const getPreliminaryPaymentScheduleForm = (
+  data: GetPreliminaryPaymentScheduleFormRequest,
+): Promise<File> => {
+  const url = `${appConfig.apiUrl}/loanapplifecycledc`
+  const endpoint = 'getPreliminaryPaymentScheduleForm'
+
+  return Rest.request<GetPreliminaryPaymentScheduleFormRequest, File>(`${url}/${endpoint}`, {
+    data,
+    isResponseBlob: true,
+  })
+}
+export const useGetPreliminaryPaymentScheduleFormMutation = () =>
+  useMutation('getPreliminaryPaymentScheduleForm', getPreliminaryPaymentScheduleForm)

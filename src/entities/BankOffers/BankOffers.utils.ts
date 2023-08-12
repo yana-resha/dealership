@@ -2,7 +2,7 @@ import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 
 import { formatNumber } from 'shared/lib/utils'
 
-import { BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
+import { BANK_OFFERS_TABLE_HEADERS, TableCellKey } from './BankOffers.config'
 
 export const prepareRow = (row: CalculatedProduct) => {
   const options = {
@@ -37,14 +37,12 @@ export const prepareRow = (row: CalculatedProduct) => {
   }
 }
 
-export const getCellsChildren = (
-  row: CalculatedProduct,
-): { name: string; value: string | boolean | number; type?: string }[] =>
+export const getCellsChildren = (row: CalculatedProduct) =>
   BANK_OFFERS_TABLE_HEADERS.map(header => {
     let value: string | boolean | number | undefined = prepareRow(row)[header.key as keyof CalculatedProduct]
     let { type } = header
 
-    if (header.key === 'incomeFlag') {
+    if (header.key === TableCellKey.IncomeFlag) {
       type = value ? type : undefined
       value = ''
     }

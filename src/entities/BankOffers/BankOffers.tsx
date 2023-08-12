@@ -1,9 +1,14 @@
-import { forwardRef } from 'react'
+import { forwardRef, useCallback } from 'react'
 
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 
-import { BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
+import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
+import { useGetPreliminaryPaymentScheduleFormMutation } from 'shared/api/requests/loanAppLifeCycleDc'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+import { DownloaderIcon } from 'shared/ui/DownloaderIcon'
+
+import { BANK_OFFERS_TABLE_HEADERS, TableCellKey, TableCellType } from './BankOffers.config'
 import useStyles from './BankOffers.styles'
 import { getCellsChildren } from './BankOffers.utils'
 import { ButtonsCell } from './ButtonsCell/ButtonsCell'
@@ -15,6 +20,31 @@ type Props = {
 
 export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
   const classes = useStyles()
+  const autoPrice = useAppSelector(state => state.order.order?.orderData?.application?.loanCar?.autoPrice)
+  const { mutateAsync: getPreliminaryPaymentScheduleFormMutation } =
+    useGetPreliminaryPaymentScheduleFormMutation()
+
+  const handleAttachmentClick = useCallback(
+    async (row: CalculatedProduct) => {
+      const blob = await getPreliminaryPaymentScheduleFormMutation({
+        productName: row.productName,
+        incomeFlag: row.incomeFlag,
+        autoPrice: autoPrice,
+        rate: row.currentRate,
+        downpayment: row.downpayment,
+        monthlyPayment: row.monthlyPayment,
+        term: row.term,
+        overpayment: row.overpayment,
+        servicesInCreditPrice: row.servicesInCreditPrice,
+        equipmentInCreditPrice: row.equipmentInCreditPrice,
+      })
+
+      if (blob) {
+        return new File([blob], 'График платежей', { type: 'application/pdf' })
+      }
+    },
+    [autoPrice, getPreliminaryPaymentScheduleFormMutation],
+  )
 
   return (
     <Box className={classes.container} ref={ref}>
@@ -39,9 +69,19 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
                     key={cell.name}
                     align="left"
                     className={classes.bodyCell}
-                    onClick={cell.type === 'icon' ? () => null : () => onRowClick(row)}
+                    onClick={cell.type === TableCellType.Icon ? () => null : () => onRowClick(row)}
                   >
-                    {cell.type === 'icon' ? <ButtonsCell type={cell.name} /> : <>{cell.value}</>}
+                    {cell.type === TableCellType.Icon && cell.name === TableCellKey.IncomeFlag && (
+                      <ButtonsCell />
+                    )}
+
+                    {cell.type === TableCellType.Icon && cell.name === TableCellKey.Attachment && (
+                      <DownloaderIcon onDownloadFile={async () => await handleAttachmentClick(row)}>
+                        <ScheduleIcon />
+                      </DownloaderIcon>
+                    )}
+
+                    {cell.type !== TableCellType.Icon && cell.value}
                   </TableCell>
                 ))}
               </TableRow>
