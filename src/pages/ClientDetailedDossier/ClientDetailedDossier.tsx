@@ -72,7 +72,10 @@ export function ClientDetailedDossier() {
       creditAmount: application?.loanData?.amount,
       monthlyPayment: application?.loanData?.monthlyPayment,
       downPayment: application?.loanData?.downpayment,
-      rate: application?.loanData?.productRates?.baseRate,
+      // переводим baseRate (0...1) в проценты
+      rate: application?.loanData?.productRates?.baseRate
+        ? application?.loanData?.productRates?.baseRate * 100
+        : undefined,
       productName: application?.loanData?.productName || '',
       term: application?.loanData?.term,
       additionalOptions: application?.loanData?.additionalOptions || [],
