@@ -83,7 +83,7 @@ disableConsole('error')
 describe('DealerCenterRequisitesTest', () => {
   describe('Все поля отображаются на форме', () => {
     beforeEach(() => {
-      render(<DealerCenterRequisites vendor={mockedRequisites} isRequisiteEditable={false} />, {
+      render(<DealerCenterRequisites isRequisiteEditable={false} />, {
         wrapper: createWrapper,
       })
     })
@@ -137,7 +137,7 @@ describe('DealerCenterRequisitesTest', () => {
 
   describe('Все поля валидируются', () => {
     beforeEach(() => {
-      render(<DealerCenterRequisites vendor={mockedRequisites} isRequisiteEditable={false} />, {
+      render(<DealerCenterRequisites isRequisiteEditable={false} />, {
         wrapper: createWrapper,
       })
       // userEvent.click(screen.getByText('Ввести вручную'))

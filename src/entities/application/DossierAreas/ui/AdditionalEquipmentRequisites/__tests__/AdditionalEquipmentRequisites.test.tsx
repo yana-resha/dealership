@@ -127,7 +127,6 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     beforeEach(() => {
       render(
         <AdditionalEquipmentRequisites
-          optionRequisite={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.additionalEquipments}
@@ -202,7 +201,6 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     beforeEach(() => {
       render(
         <AdditionalEquipmentRequisites
-          optionRequisite={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.additionalEquipments}

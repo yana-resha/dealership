@@ -24,11 +24,10 @@ import { DOCUMENT_TYPES } from '../../configs/clientDetailedDossier.config'
 import { useAdditionalServices } from '../../hooks/useAdditionalServices'
 import { ServicesGroupName, useAdditionalServicesOptions } from '../../hooks/useAdditionalServicesOptions'
 import { useRequisites } from '../../hooks/useRequisites'
-import { PreparedAdditionalEquipmentForFinancingMap } from '../../hooks/useRequisitesForFinancingQuery'
+import { useRequisitesContext } from '../RequisitesContext'
 import { useStyles } from './AdditionalEquipmentRequisites.styles'
 
 type Props = {
-  optionRequisite: PreparedAdditionalEquipmentForFinancingMap | undefined
   index: number
   parentName: ServicesGroupName
   isRequisiteEditable: boolean
@@ -43,7 +42,6 @@ type Props = {
 }
 
 export function AdditionalEquipmentRequisites({
-  optionRequisite,
   index,
   parentName,
   isRequisiteEditable,
@@ -57,6 +55,8 @@ export function AdditionalEquipmentRequisites({
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
   const { legalPerson, beneficiaryBank, taxPresence, productCost } = equipmentItem
   const [isCustomFields, setCustomFields] = useState(false)
+
+  const { requisites, isRequisitesFetched } = useRequisitesContext()
 
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
     parentName,
@@ -73,6 +73,11 @@ export function AdditionalEquipmentRequisites({
     parentName,
     options: productOptions,
   })
+
+  const optionRequisite = useMemo(
+    () => requisites?.additionalEquipmentsMap?.[equipmentItem.productType ?? ''],
+    [equipmentItem.productType, requisites?.additionalEquipmentsMap],
+  )
 
   const vendorOptions = useMemo(
     () =>
@@ -109,6 +114,7 @@ export function AdditionalEquipmentRequisites({
     values: equipmentItem,
     currentBank,
     isCustomFields,
+    isRequisitesFetched,
   })
 
   const handleManualEntryChange = useCallback(
@@ -125,6 +131,28 @@ export function AdditionalEquipmentRequisites({
   )
 
   useEffect(() => {
+    if (!isCustomFields && isRequisitesFetched) {
+      setFieldValue(namePrefix + 'legalPerson', currentVendor?.vendorCode ? currentVendor?.vendorCode : '')
+    }
+  }, [currentVendor?.vendorCode, isCustomFields, isRequisitesFetched, namePrefix, setFieldValue])
+
+  useEffect(() => {
+    if (!isCustomFields && isRequisitesFetched) {
+      setFieldValue(
+        namePrefix + 'beneficiaryBank',
+        currentVendor?.requisites?.find(r => r.bankName === beneficiaryBank)?.bankName || '',
+      )
+    }
+  }, [
+    beneficiaryBank,
+    currentVendor?.requisites,
+    isCustomFields,
+    isRequisitesFetched,
+    namePrefix,
+    setFieldValue,
+  ])
+
+  useEffect(() => {
     if (currentVendor?.tax) {
       setFieldValue(namePrefix + 'taxPercent', currentVendor.tax)
       setFieldValue(namePrefix + 'taxValue', currentVendor.tax * parseInt(productCost || '0', 10))
@@ -133,21 +161,6 @@ export function AdditionalEquipmentRequisites({
       setFieldValue(namePrefix + 'taxValue', null)
     }
   }, [currentVendor?.tax, namePrefix, productCost, setFieldValue])
-
-  useEffect(() => {
-    if (!isCustomFields) {
-      setFieldValue(namePrefix + 'legalPerson', currentVendor?.vendorCode ? currentVendor?.vendorCode : '')
-    }
-  }, [currentVendor?.vendorCode, isCustomFields, namePrefix, setFieldValue])
-
-  useEffect(() => {
-    if (!isCustomFields) {
-      setFieldValue(
-        namePrefix + 'beneficiaryBank',
-        currentVendor?.requisites?.find(r => r.bankName === beneficiaryBank)?.bankName || '',
-      )
-    }
-  }, [beneficiaryBank, currentVendor?.requisites, isCustomFields, namePrefix, setFieldValue])
 
   return (
     <Box className={classes.editingAreaContainer}>

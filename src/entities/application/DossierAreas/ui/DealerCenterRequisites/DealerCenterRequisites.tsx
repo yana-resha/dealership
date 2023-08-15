@@ -17,18 +17,18 @@ import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
 import { useRequisites } from '../../hooks/useRequisites'
-import { PreparedVendorWithoutBrokerMap } from '../../hooks/useRequisitesForFinancingQuery'
+import { useRequisitesContext } from '../RequisitesContext'
 import { useStyles } from './DealerCenterRequisites.styles'
 
 type Props = {
-  vendor: PreparedVendorWithoutBrokerMap | undefined
   isRequisiteEditable: boolean
   namePrefix?: string
 }
 
-export function DealerCenterRequisites({ vendor, namePrefix = '' }: Props) {
+export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   const classes = useStyles()
   const { vendorName, vendorCode } = getPointOfSaleFromCookies()
+  const { requisites, isRequisitesFetched } = useRequisitesContext()
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
   const {
     beneficiaryBank,
@@ -46,12 +46,12 @@ export function DealerCenterRequisites({ vendor, namePrefix = '' }: Props) {
     [vendorCode, vendorName],
   )
   const banksOptions = useMemo(
-    () => (vendor?.requisites || []).map(r => ({ value: r.bankName })),
-    [vendor?.requisites],
+    () => (requisites?.vendorAccounts?.requisites || []).map(r => ({ value: r.bankName })),
+    [requisites?.vendorAccounts?.requisites],
   )
   const currentBank = useMemo(
-    () => vendor?.requisitesMap[beneficiaryBank],
-    [beneficiaryBank, vendor?.requisitesMap],
+    () => requisites?.vendorAccounts?.requisitesMap[beneficiaryBank],
+    [beneficiaryBank, requisites?.vendorAccounts?.requisitesMap],
   )
   const accountNumberOptions = useMemo(
     () => (currentBank?.accounts || []).map(a => ({ value: a })),
@@ -63,6 +63,7 @@ export function DealerCenterRequisites({ vendor, namePrefix = '' }: Props) {
     values,
     currentBank,
     isCustomFields,
+    isRequisitesFetched,
   })
 
   const handleManualEntryChange = useCallback(
@@ -105,14 +106,14 @@ export function DealerCenterRequisites({ vendor, namePrefix = '' }: Props) {
   }, [carCost, initialPayment, priceOfAdditionalOptionsInCredit])
 
   useEffect(() => {
-    if (vendor?.tax) {
-      setFieldValue(namePrefix + 'taxPercent', vendor.tax)
-      setFieldValue(namePrefix + 'taxValue', vendor.tax * parseFloat(loanAmount))
+    if (requisites?.vendorAccounts?.tax) {
+      setFieldValue(namePrefix + 'taxPercent', requisites?.vendorAccounts.tax)
+      setFieldValue(namePrefix + 'taxValue', requisites?.vendorAccounts.tax * parseFloat(loanAmount))
     } else {
       setFieldValue(namePrefix + 'taxPercent', null)
       setFieldValue(namePrefix + 'taxValue', null)
     }
-  }, [loanAmount, namePrefix, setFieldValue, vendor?.tax])
+  }, [loanAmount, namePrefix, setFieldValue, requisites?.vendorAccounts?.tax])
 
   return (
     <Box className={classes.editingAreaContainer}>

@@ -10,6 +10,7 @@ import {
   RequisitesForFinancing,
   useRequisitesForFinancingQuery,
 } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
+import { RequisitesContextProvider } from 'entities/application/DossierAreas/ui/RequisitesContext'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
@@ -25,6 +26,7 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
   const { values } = useFormikContext<FullOrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
   const [requisites, setRequisites] = useState<RequisitesForFinancing | undefined>()
+
   const additionalOptionsIds = useMemo(
     () =>
       [...values.bankAdditionalServices, ...values.dealerAdditionalServices]
@@ -47,7 +49,9 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
     additionalEquipments: additionalEquipmentsIds,
   })
 
-  /* requisitesData необходимо кластьв стейт requisites, чтобы обеспечить "Бесшовный переход" -
+  const isRequisitesFetched = !isRequisitesQueryLoading && requisitesData === requisites
+
+  /* requisitesData необходимо класть в стейт requisites, чтобы обеспечить "Бесшовный переход" -
   в противном случае после начала запроса useRequisitesForFinancingQuery requisitesData становится undefined,
   и только по завершению запроса появляются новые данные. Даже если новые данные равны предыдущим,
   все равно происходит сброс всех ранее выбранных реквизитов (при каждом изменении списка допов).*/
@@ -118,18 +122,18 @@ export function FormContainer({ isSubmitLoading, onChangeForm, shouldFetchProduc
 
   return (
     <Form>
-      <CarSettingsArea
-        onFilled={changeShouldFetchProducts}
-        visibleFooter={!shouldShowOrderSettings}
-        vendor={requisites?.vendorAccounts}
-        isLoading={isLoading}
-      />
-      <OrderSettingsArea
-        disabled={!shouldShowOrderSettings}
-        disabledSubmit={isRequisitesQueryLoading}
-        isSubmitLoading={isSubmitLoading}
-        requisites={requisites}
-      />
+      <RequisitesContextProvider requisites={requisites} isRequisitesFetched={isRequisitesFetched}>
+        <CarSettingsArea
+          onFilled={changeShouldFetchProducts}
+          visibleFooter={!shouldShowOrderSettings}
+          isLoading={isLoading}
+        />
+        <OrderSettingsArea
+          disabled={!shouldShowOrderSettings}
+          disabledSubmit={isRequisitesQueryLoading}
+          isSubmitLoading={isSubmitLoading}
+        />
+      </RequisitesContextProvider>
     </Form>
   )
 }

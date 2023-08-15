@@ -7,13 +7,11 @@ import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditio
 import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
-import { PreparedAdditionalEquipmentForFinancingMap } from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
 import { AdditionalEquipmentRequisites } from 'entities/application/DossierAreas/ui'
 
 import useStyles from './AdditionalEquipment.styles'
 
 type Props = {
-  optionsRequisitesMap: Record<string, PreparedAdditionalEquipmentForFinancingMap>
   disabled?: boolean
   isError?: boolean
   errorMessage?: string
@@ -23,13 +21,7 @@ type Props = {
   }
 }
 
-export function AdditionalEquipment({
-  optionsRequisitesMap,
-  disabled = false,
-  options,
-  isError,
-  errorMessage,
-}: Props) {
+export function AdditionalEquipment({ disabled = false, options, isError, errorMessage }: Props) {
   const classes = useStyles()
   const [field] = useField<FullInitialAdditionalEquipments[]>(ServicesGroupName.additionalEquipments)
 
@@ -50,7 +42,6 @@ export function AdditionalEquipment({
             {field.value.map((v, index: number, arr: any[]) => (
               <React.Fragment key={ids[index]}>
                 <AdditionalEquipmentRequisites
-                  optionRequisite={v.productType ? optionsRequisitesMap[v.productType] : undefined}
                   index={index}
                   parentName={ServicesGroupName.additionalEquipments}
                   isRequisiteEditable={true}

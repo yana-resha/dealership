@@ -216,7 +216,6 @@ describe('DealerServicesRequisitesTest', () => {
     beforeEach(() => {
       render(
         <DealerServicesRequisites
-          optionRequisite={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.dealerAdditionalServices}
@@ -306,7 +305,6 @@ describe('DealerServicesRequisitesTest', () => {
     beforeEach(() => {
       render(
         <DealerServicesRequisites
-          optionRequisite={mockedRequisites}
           index={0}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.dealerAdditionalServices}
