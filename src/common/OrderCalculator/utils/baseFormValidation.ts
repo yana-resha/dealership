@@ -45,7 +45,7 @@ export const baseFormValidation = {
   [FormFieldNameMap.carCondition]: Yup.number().required(FieldMessages.required),
   [FormFieldNameMap.carBrand]: Yup.string().nullable().required(FieldMessages.required),
   [FormFieldNameMap.carModel]: Yup.string().nullable().required(FieldMessages.required),
-  [FormFieldNameMap.carYear]: Yup.string().required(FieldMessages.required),
+  [FormFieldNameMap.carYear]: Yup.number().nullable().required(FieldMessages.required),
   [FormFieldNameMap.carCost]: Yup.string().required(FieldMessages.required),
   [FormFieldNameMap.carMileage]: Yup.string().when([FormFieldNameMap.carCondition], {
     is: (carCondition: number) => !carCondition,

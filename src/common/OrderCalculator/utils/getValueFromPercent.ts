@@ -3,12 +3,7 @@ export enum RoundOption {
   max = 'max',
 }
 
-export function getMinMaxValueFromPercent(
-  percent: number | undefined,
-  baseStr: string,
-  option?: RoundOption,
-) {
-  const base = parseFloat(baseStr)
+export function getMinMaxValueFromPercent(percent: number | undefined, base: number, option?: RoundOption) {
   if (!percent || isNaN(base)) {
     return undefined
   }

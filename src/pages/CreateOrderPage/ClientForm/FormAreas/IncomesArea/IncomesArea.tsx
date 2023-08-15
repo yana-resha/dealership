@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
 
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { maskDigitsOnly } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
@@ -15,8 +16,16 @@ import useStyles from './IncomesArea.styles'
 
 export function IncomesArea() {
   const classes = useStyles()
+  const orderData = useAppSelector(state => state.order.order)?.orderData
+  const incomeProduct = orderData?.application?.loanData?.incomeProduct
   const { values, setFieldValue, setFieldTouched } = useFormikContext<ClientData>()
   const { occupation, incomeConfirmation } = values
+
+  useEffect(() => {
+    setFieldValue('incomeConfirmation', incomeProduct)
+    // Исключены лишние зависимости, чтобы не было случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [incomeProduct])
 
   useEffect(() => {
     if (!incomeConfirmation) {
@@ -52,8 +61,14 @@ export function IncomesArea() {
         mask={maskDigitsOnly}
         gridColumn="span 4"
       />
+      <SwitchInputFormik
+        name="incomeConfirmation"
+        label="Подтверждение"
+        centered
+        gridColumn="span 8"
+        disabled={incomeProduct}
+      />
 
-      <SwitchInputFormik name="incomeConfirmation" label="Подтверждение" centered gridColumn="span 8" />
       {incomeConfirmation && !!occupation && <IncomeProofUploadArea />}
 
       {incomeConfirmation && !occupation && (

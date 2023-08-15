@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Box } from '@mui/material'
 import {
@@ -10,6 +10,7 @@ import { Formik, FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import { DcConfirmationModal } from 'entities/application/DossierAreas/ui/EditConfirmationModal/DcConfirmationModal'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { clearOrder, setAppId } from 'entities/reduxStore/orderSlice'
 import {
@@ -38,10 +39,15 @@ export function ClientForm({ formRef, onMount }: Props) {
   const dispatch = useDispatch()
 
   const location = useLocation()
+  const { vendorCode } = getPointOfSaleFromCookies()
   const state = location.state as CreateOrderPageState
   const saveDraftDisabled = state && state.saveDraftDisabled != undefined ? state.saveDraftDisabled : false
 
-  const { remapApplicationValues, isShouldShowLoading, initialValues, dcAppId } = useInitialValues()
+  const [actionText, setActionText] = useState('')
+  const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false)
+  const confirmedAction = useRef<() => void>()
+  const { remapApplicationValues, isShouldShowLoading, applicationVendorCode, initialValues, dcAppId } =
+    useInitialValues()
   const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation(
     (dcAppId: string) => dcAppId && dispatch(setAppId({ dcAppId })),
   )
@@ -55,6 +61,16 @@ export function ClientForm({ formRef, onMount }: Props) {
   const getDraftApplicationData = useGetDraftApplicationData()
   const disabledButtons = isDraftLoading
   const { unit } = getPointOfSaleFromCookies()
+
+  const closeConfirmationDialog = useCallback(() => {
+    setConfirmationModalVisible(false)
+  }, [])
+
+  const showConfirmationModalDialog = useCallback((actionForConfirmation: () => void, actionText: string) => {
+    confirmedAction.current = actionForConfirmation
+    setActionText(actionText)
+    setConfirmationModalVisible(true)
+  }, [])
 
   const prepareApplicationForScoring = useCallback(
     (application: GetFullApplicationResponse) => {
@@ -74,11 +90,23 @@ export function ClientForm({ formRef, onMount }: Props) {
 
   const onSubmit = useCallback(
     (application: GetFullApplicationResponse) => {
-      console.log('ClientForm.onSubmit values:', application)
       const applicationForScoring = prepareApplicationForScoring(application)
-      sendToScore(applicationForScoring)
+      if (vendorCode !== applicationVendorCode) {
+        showConfirmationModalDialog(
+          () => sendToScore(applicationForScoring),
+          'Заявка будет отправлена на скоринг под ДЦ:',
+        )
+      } else {
+        sendToScore(applicationForScoring)
+      }
     },
-    [prepareApplicationForScoring, sendToScore],
+    [
+      applicationVendorCode,
+      prepareApplicationForScoring,
+      sendToScore,
+      showConfirmationModalDialog,
+      vendorCode,
+    ],
   )
 
   const goToOrderPage = useCallback(
@@ -95,11 +123,30 @@ export function ClientForm({ formRef, onMount }: Props) {
 
   const saveApplicationDraft = useCallback(
     (application: GetFullApplicationResponse) => {
-      saveDraft(getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false)).then(
-        goToOrderPage,
-      )
+      console.log('ClientForm.saveApplicationDraft values:', application)
+      if (vendorCode !== applicationVendorCode) {
+        showConfirmationModalDialog(
+          () =>
+            saveDraft(
+              getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
+            ).then(goToOrderPage),
+          'Заявка будет сохранена под ДЦ:',
+        )
+      } else {
+        saveDraft(
+          getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
+        ).then(goToOrderPage)
+      }
     },
-    [saveDraft, getDraftApplicationData, formRef, goToOrderPage],
+    [
+      vendorCode,
+      applicationVendorCode,
+      showConfirmationModalDialog,
+      saveDraft,
+      getDraftApplicationData,
+      formRef,
+      goToOrderPage,
+    ],
   )
 
   const saveDraftAndPrint = useCallback(
@@ -108,15 +155,36 @@ export function ClientForm({ formRef, onMount }: Props) {
       if (dcAppId) {
         console.log('Print application')
       } else {
-        saveDraft(
-          getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
-        ).then(() => {
-          console.log('application saved')
-          console.log('Print application')
-        })
+        if (vendorCode !== applicationVendorCode) {
+          showConfirmationModalDialog(
+            () =>
+              saveDraft(
+                getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
+              ).then(() => {
+                console.log('application saved')
+                console.log('Print application')
+              }),
+            'Заявка будет сохранена под ДЦ:',
+          )
+        } else {
+          saveDraft(
+            getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
+          ).then(() => {
+            console.log('application saved')
+            console.log('Print application')
+          })
+        }
       }
     },
-    [dcAppId, saveDraft, getDraftApplicationData, formRef],
+    [
+      applicationVendorCode,
+      dcAppId,
+      getDraftApplicationData,
+      saveDraft,
+      showConfirmationModalDialog,
+      vendorCode,
+      formRef,
+    ],
   )
 
   /** Сохраняем заявку чтобы сформировать ID заявки */
@@ -182,19 +250,27 @@ export function ClientForm({ formRef, onMount }: Props) {
           <CircularProgressWheel size="large" />
         </Box>
       ) : (
-        <Formik
-          initialValues={initialValues}
-          validationSchema={clientFormValidationSchema}
-          onSubmit={getSubmitAction}
-          innerRef={formRef}
-        >
-          <FormContainer
-            getOrderId={getOrderId}
-            isDraftLoading={isDraftLoading}
-            disabledButtons={disabledButtons}
-            saveDraftDisabled={saveDraftDisabled}
+        <>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={clientFormValidationSchema}
+            onSubmit={getSubmitAction}
+            innerRef={formRef}
+          >
+            <FormContainer
+              getOrderId={getOrderId}
+              isDraftLoading={isDraftLoading}
+              disabledButtons={disabledButtons}
+              saveDraftDisabled={saveDraftDisabled}
+            />
+          </Formik>
+          <DcConfirmationModal
+            actionText={actionText}
+            isVisible={isConfirmationModalVisible}
+            onClose={closeConfirmationDialog}
+            confirmedAction={confirmedAction.current}
           />
-        </Formik>
+        </>
       )}
     </Box>
   )

@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Calculator } from 'common/OrderCalculator/ui/Calculator/Calculator'
+import { OrderContext } from 'common/OrderCalculator/ui/OrderContext'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { appRoutes } from 'shared/navigation/routerPath'
 
@@ -100,45 +101,49 @@ export function CreateOrderPage() {
 
   const isActiveLastStep = (idx: number) => isEnabledLastStep && idx === steps.length - 1
 
-  return (
-    <div className={classes.page} data-testid="dealershipPage">
-      <Box className={classes.loaderContainer}>
-        <Typography className={classes.pageTitle}>{currentStep.pageTitle}</Typography>
+  const scrolContainerRef = useRef<HTMLDivElement | null>(null)
 
-        {isEnabledSearchOrder ? (
-          <OrderSearching
-            nextStep={changeEnabledSearchOrder}
-            onApplicationOpen={handleApplicationOpen}
-            onMount={disableLastStep}
-          />
-        ) : (
-          <>
-            <Stepper activeStep={currentStepIdx} className={classes.stepContainer}>
-              {steps.map((step, idx) => (
-                <Step
-                  key={step.label}
-                  className={classes.step}
-                  onClick={handleStepChange(idx)}
-                  disabled={!(isActiveLastStep(idx) || currentStepIdx >= idx)}
-                  active={isActiveLastStep(idx) || currentStepIdx >= idx}
-                >
-                  <StepLabel
-                    StepIconComponent={props => <StepIcon {...props} icon={props.icon} completed={false} />}
+  return (
+    <div className={classes.page} data-testid="dealershipPage" ref={scrolContainerRef}>
+      <OrderContext scrolContainer={scrolContainerRef.current?.parentElement ?? null}>
+        <Box className={classes.loaderContainer}>
+          <Typography className={classes.pageTitle}>{currentStep.pageTitle}</Typography>
+
+          {isEnabledSearchOrder ? (
+            <OrderSearching
+              nextStep={changeEnabledSearchOrder}
+              onApplicationOpen={handleApplicationOpen}
+              onMount={disableLastStep}
+            />
+          ) : (
+            <>
+              <Stepper activeStep={currentStepIdx} className={classes.stepContainer}>
+                {steps.map((step, idx) => (
+                  <Step
+                    key={step.label}
+                    className={classes.step}
+                    onClick={handleStepChange(idx)}
+                    disabled={!(isActiveLastStep(idx) || currentStepIdx >= idx)}
+                    active={isActiveLastStep(idx) || currentStepIdx >= idx}
                   >
-                    {step.title}
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-            {currentStep.label === StepKey.OrderSettings && (
-              <Calculator nextStep={nextStep} onChangeForm={disableLastStep} />
-            )}
-            {currentStep.label === StepKey.ClientForm && (
-              <ClientForm formRef={formRef} onMount={enableLastStep} />
-            )}
-          </>
-        )}
-      </Box>
+                    <StepLabel
+                      StepIconComponent={props => <StepIcon {...props} icon={props.icon} completed={false} />}
+                    >
+                      {step.title}
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+              {currentStep.label === StepKey.OrderSettings && (
+                <Calculator nextStep={nextStep} onChangeForm={disableLastStep} />
+              )}
+              {currentStep.label === StepKey.ClientForm && (
+                <ClientForm formRef={formRef} onMount={enableLastStep} />
+              )}
+            </>
+          )}
+        </Box>
+      </OrderContext>
     </div>
   )
 }

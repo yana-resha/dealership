@@ -18,9 +18,11 @@ import {
   ValidationParams,
 } from '../types'
 import { RoundOption, getMinMaxValueFromPercent } from '../utils/getValueFromPercent'
+import { useGetCarsListQuery } from './useGetCarsListQuery'
 import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 
 const LOAN_TERM_GRADUATION_VALUE = 12
+const MONTH_OF_YEAR_COUNT = 12
 const ADDITIONAL_EQUIPMENT_FROM_CAR_COST_SETPOINT = 0.3
 const DEALER_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.45
 const BANK_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.3
@@ -57,8 +59,7 @@ function checkIfExceededServicesLimit(carCost: number, criterion: boolean) {
 */
 export function useLimits({ vendorCode }: Params) {
   const dispatch = useDispatch()
-  const [creditProductField] = useField<string>(FormFieldNameMap.creditProduct)
-  const [carCostField] = useField<string>(FormFieldNameMap.carCost)
+  const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
   const [commonErrorsField, , { setValue: setCommonErrors }] = useField<CommonError>(
     FormFieldNameMap.commonError,
   )
@@ -67,7 +68,19 @@ export function useLimits({ vendorCode }: Params) {
   )
 
   const { values, setFieldTouched } = useFormikContext<OrderCalculatorFields>()
+  const {
+    carBrand,
+    carYear,
+    creditProduct,
+    additionalEquipments,
+    bankAdditionalServices,
+    dealerAdditionalServices,
+  } = values
+  const carCost = parseFloat(values.carCost)
+
   const { data } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
+
+  const carMaxAge = carBrand ? carsData?.cars?.[carBrand]?.maxCarAge ?? 0 : 0
 
   useEffect(() => {
     dispatch(updateOrder({ creditProductsList: data?.products }))
@@ -77,23 +90,12 @@ export function useLimits({ vendorCode }: Params) {
     () => data?.products.map(p => ({ value: p.productId, label: p.productName })) || [],
     [data?.products],
   )
-  const currentProduct = useMemo(
-    () => data?.productsMap?.[creditProductField.value],
-    [creditProductField.value, data?.productsMap],
-  )
+  const currentProduct = useMemo(() => data?.productsMap?.[creditProduct], [creditProduct, data?.productsMap])
 
   const minInitialPaymentPercent = currentProduct?.downpaymentMin || data?.fullDownpaymentMin
   const maxInitialPaymentPercent = currentProduct?.downpaymentMax || data?.fullDownpaymentMax
-  const minInitialPayment = getMinMaxValueFromPercent(
-    minInitialPaymentPercent,
-    carCostField.value,
-    RoundOption.min,
-  )
-  const maxInitialPayment = getMinMaxValueFromPercent(
-    maxInitialPaymentPercent,
-    carCostField.value,
-    RoundOption.max,
-  )
+  const minInitialPayment = getMinMaxValueFromPercent(minInitialPaymentPercent, carCost, RoundOption.min)
+  const maxInitialPayment = getMinMaxValueFromPercent(maxInitialPaymentPercent, carCost, RoundOption.max)
   /*
   Сформирован на основе минимального и максимального срока кредита
   массив допустимых значений для поля Срок кредита. Просто возвращается компоненту.
@@ -102,11 +104,17 @@ export function useLimits({ vendorCode }: Params) {
     const durationMin =
       Math.ceil((currentProduct?.durationMin || data?.fullDurationMin || 0) / LOAN_TERM_GRADUATION_VALUE) *
       LOAN_TERM_GRADUATION_VALUE
-    const durationMax =
+    const durationMaxFromProduct =
       Math.floor((currentProduct?.durationMax || data?.fullDurationMax || 0) / LOAN_TERM_GRADUATION_VALUE) *
       LOAN_TERM_GRADUATION_VALUE
 
-    if (durationMin > durationMax) {
+    const durationMaxFromCarAge = carYear
+      ? (carMaxAge - (new Date().getFullYear() - carYear)) * MONTH_OF_YEAR_COUNT
+      : 0
+
+    const durationMax =
+      durationMaxFromProduct <= durationMaxFromCarAge ? durationMaxFromProduct : durationMaxFromCarAge
+    if (durationMin > durationMax || durationMax <= 0) {
       return []
     }
 
@@ -116,7 +124,14 @@ export function useLimits({ vendorCode }: Params) {
     }))
 
     return loanTerms
-  }, [currentProduct?.durationMax, currentProduct?.durationMin, data?.fullDurationMax, data?.fullDurationMin])
+  }, [
+    carMaxAge,
+    carYear,
+    currentProduct?.durationMax,
+    currentProduct?.durationMin,
+    data?.fullDurationMax,
+    data?.fullDurationMin,
+  ])
 
   /*
   Сформирована на основе минимального и максимального Первоначального взноса
@@ -184,10 +199,9 @@ export function useLimits({ vendorCode }: Params) {
     validationParamsField.value,
   ])
 
-  const carCost = parseFloat(values.carCost)
-  const additionalEquipmentsCost = getServicesTotalCost(values.additionalEquipments)
-  const bankAdditionalServicesCost = getServicesTotalCost(values.bankAdditionalServices)
-  const dealerAdditionalServicesCost = getServicesTotalCost(values.dealerAdditionalServices)
+  const additionalEquipmentsCost = getServicesTotalCost(additionalEquipments)
+  const bankAdditionalServicesCost = getServicesTotalCost(bankAdditionalServices)
+  const dealerAdditionalServicesCost = getServicesTotalCost(dealerAdditionalServices)
 
   const isExceededServicesTotalLimit = useMemo(
     () =>
@@ -281,7 +295,7 @@ export function useLimits({ vendorCode }: Params) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentProduct?.cascoFlag, validationParamsField.value])
 
-  const isHasCasco = values.dealerAdditionalServices.some(e => e.productType === OptionID.CASCO)
+  const isHasCasco = dealerAdditionalServices.some(e => e.productType === OptionID.CASCO)
 
   /*
   В initialValues формика прописано свойство commonErrors. Поля для него нет,
@@ -314,21 +328,21 @@ export function useLimits({ vendorCode }: Params) {
   */
   useEffect(() => {
     if (commonErrorsField.value.isExceededAdditionalEquipmentsLimit) {
-      values.additionalEquipments.forEach((e, i) =>
+      additionalEquipments.forEach((e, i) =>
         setFieldTouched(`${ServicesGroupName.additionalEquipments}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
     if (commonErrorsField.value.isExceededDealerAdditionalServicesLimit) {
-      values.dealerAdditionalServices.forEach((e, i) =>
+      dealerAdditionalServices.forEach((e, i) =>
         setFieldTouched(`${ServicesGroupName.dealerAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
     if (commonErrorsField.value.isExceededBankAdditionalServicesLimit) {
-      values.bankAdditionalServices.forEach((e, i) =>
+      bankAdditionalServices.forEach((e, i) =>
         setFieldTouched(`${ServicesGroupName.bankAdditionalServices}.${i}.${FormFieldNameMap.productCost}`),
       )
     }
-    // Исключили values.additionalEquipments, values.bankAdditionalServices, values.dealerAdditionalServices
+    // Исключили additionalEquipments, bankAdditionalServices, dealerAdditionalServices
     // что бы избежать случайного перерендера
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commonErrorsField.value, setFieldTouched])

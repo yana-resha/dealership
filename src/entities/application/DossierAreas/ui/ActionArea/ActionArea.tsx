@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 import {
@@ -10,6 +10,7 @@ import {
 import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
+import { DcConfirmationModal } from 'entities/application/DossierAreas/ui/EditConfirmationModal/DcConfirmationModal'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { NoMatchesModal } from 'pages/CreateOrderPage/OrderSearching/components/NoMatchesModal/NoMatchesModal'
 import { checkIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
@@ -66,6 +67,8 @@ export function ActionArea(props: Props) {
     PreparedStatus.financed,
   ]
   const [isVisibleModal, setVisibleModal] = useState(false)
+  const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false)
+  const confirmedAction = useRef<() => void>()
   const navigate = useNavigate()
   const { applicant } = application
   const { vendorCode } = getPointOfSaleFromCookies()
@@ -88,6 +91,22 @@ export function ActionArea(props: Props) {
   }, [])
 
   const closeModal = useCallback(() => setVisibleModal(false), [])
+
+  const editApplication = useCallback(
+    (editFunction: () => void) => {
+      if (application.vendor?.vendorCode !== vendorCode) {
+        setConfirmationModalVisible(true)
+        confirmedAction.current = editFunction
+      } else {
+        editFunction()
+      }
+    },
+    [application.vendor?.vendorCode, vendorCode],
+  )
+
+  const closeConfirmationModal = useCallback(() => {
+    setConfirmationModalVisible(false)
+  }, [])
 
   const getToNewApplication = useCallback(() => {
     if (targetDcAppId) {
@@ -156,7 +175,7 @@ export function ActionArea(props: Props) {
     if (preparedStatus == PreparedStatus.initial) {
       return (
         <Box className={classes.actionButtons}>
-          <Button variant="contained" onClick={editApplicationWithInitialStatus}>
+          <Button variant="contained" onClick={() => editApplication(editApplicationWithInitialStatus)}>
             Редактировать
           </Button>
           {application.anketaType == ApplicationTypes.complete && (
@@ -170,7 +189,7 @@ export function ActionArea(props: Props) {
     if (preparedStatus == PreparedStatus.approved) {
       return (
         <Box className={classes.actionButtons}>
-          <Button variant="contained" onClick={editApplicationWithApprovedStatus}>
+          <Button variant="contained" onClick={() => editApplication(editApplicationWithApprovedStatus)}>
             Редактировать
           </Button>
           {application.vendor?.vendorCode === vendorCode && (
@@ -224,7 +243,7 @@ export function ActionArea(props: Props) {
     if (preparedStatus == PreparedStatus.error) {
       return (
         <Box className={classes.actionButtons}>
-          <Button variant="contained" onClick={editApplicationWithErrorStatus}>
+          <Button variant="contained" onClick={() => editApplication(editApplicationWithErrorStatus)}>
             Редактировать
           </Button>
         </Box>
@@ -243,6 +262,10 @@ export function ActionArea(props: Props) {
           agreementDocs={agreementDocs}
           setAgreementDocs={setAgreementDocs}
           setIsEditRequisitesMode={setIsEditRequisitesMode}
+          isConfirmationModalVisible={isConfirmationModalVisible}
+          closeConfirmationModal={closeConfirmationModal}
+          confirmedAction={confirmedAction.current}
+          editApplication={editApplication}
         />
       )
     }
@@ -275,6 +298,12 @@ export function ActionArea(props: Props) {
         </SberTypography>
       )}
       {shownBlock}
+      <DcConfirmationModal
+        actionText="Заявка будет заведена под:"
+        isVisible={isConfirmationModalVisible}
+        onClose={closeConfirmationModal}
+        confirmedAction={confirmedAction.current}
+      />
       <NoMatchesModal isVisible={isVisibleModal} onClose={closeModal} />
     </Box>
   )

@@ -77,7 +77,7 @@ describe('FullOrderCalculator', () => {
     mockedUseGetCarsListQuery.mockImplementation(
       () =>
         ({
-          data: carBrands,
+          data: { cars: carBrands },
           isError: false,
         } as any),
     )
@@ -263,6 +263,12 @@ describe('FullOrderCalculator', () => {
     }, 10000)
 
     it('Дата выдачи ПТС не превышает дату выпуска автомобиля', async () => {
+      const carBrand = screen.getByTestId('carBrand')
+      const carBrandBtn = carBrand.querySelector('button')
+      userEvent.click(carBrandBtn as Element)
+      await act(() => {})
+      userEvent.click(await screen.findByText('KIA'))
+
       userEvent.click(screen.getByTestId('carYear').firstElementChild as Element)
       userEvent.click(await screen.findByText(previousYear))
 
@@ -272,7 +278,7 @@ describe('FullOrderCalculator', () => {
       userEvent.type(carPassportCreationDateField, '10101900')
       await act(() => {})
       expect(
-        screen.queryByText('Дата выдачи ПТС не может превышать дату выпуска автомобиля'),
+        await screen.findByText('Дата выдачи ПТС не может превышать дату выпуска автомобиля'),
       ).toBeInTheDocument()
 
       userEvent.clear(carPassportCreationDateField)
@@ -281,9 +287,15 @@ describe('FullOrderCalculator', () => {
       expect(
         screen.queryByText('Дата выдачи ПТС не может превышать дату выпуска автомобиля'),
       ).not.toBeInTheDocument()
-    })
+    }, 10000)
 
     it('Дата ДКП не превышает дату выпуска автомобиля', async () => {
+      const carBrand = screen.getByTestId('carBrand')
+      const carBrandBtn = carBrand.querySelector('button')
+      userEvent.click(carBrandBtn as Element)
+      await act(() => {})
+      userEvent.click(await screen.findByText('KIA'))
+
       userEvent.click(screen.getByTestId('carYear').firstElementChild as Element)
       userEvent.click(await screen.findByText(previousYear))
 
@@ -300,7 +312,7 @@ describe('FullOrderCalculator', () => {
       expect(
         screen.queryByText('Дата ДКП не может превышать дату выпуска автомобиля'),
       ).not.toBeInTheDocument()
-    })
+    }, 10000)
 
     it('Поле Номер VIN/кузова - принимает только числа и латиницу', async () => {
       const carIdField = document.querySelector('#carId')!

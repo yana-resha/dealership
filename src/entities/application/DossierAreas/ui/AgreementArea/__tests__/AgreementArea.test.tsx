@@ -81,6 +81,9 @@ describe('AgreementAreaTest', () => {
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
           setIsEditRequisitesMode={jest.fn}
+          closeConfirmationModal={jest.fn}
+          isConfirmationModalVisible={false}
+          editApplication={jest.fn}
         />,
         {
           wrapper: createWrapper,
@@ -99,6 +102,9 @@ describe('AgreementAreaTest', () => {
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
+            closeConfirmationModal={jest.fn}
+            isConfirmationModalVisible={false}
+            editApplication={jest.fn}
           />,
           {
             wrapper: createWrapper,
@@ -131,6 +137,9 @@ describe('AgreementAreaTest', () => {
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
+            closeConfirmationModal={jest.fn}
+            isConfirmationModalVisible={false}
+            editApplication={jest.fn}
           />,
           {
             wrapper: createWrapper,
@@ -148,6 +157,9 @@ describe('AgreementAreaTest', () => {
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
+            closeConfirmationModal={jest.fn}
+            isConfirmationModalVisible={false}
+            editApplication={jest.fn}
           />,
           {
             wrapper: createWrapper,
@@ -166,6 +178,9 @@ describe('AgreementAreaTest', () => {
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
           setIsEditRequisitesMode={jest.fn}
+          closeConfirmationModal={jest.fn}
+          isConfirmationModalVisible={false}
+          editApplication={jest.fn}
         />,
         {
           wrapper: createWrapper,
@@ -183,6 +198,9 @@ describe('AgreementAreaTest', () => {
           agreementDocs={mockedAgreementDocs}
           setAgreementDocs={mockSetAgreementDocs}
           setIsEditRequisitesMode={jest.fn}
+          closeConfirmationModal={jest.fn}
+          isConfirmationModalVisible={false}
+          editApplication={jest.fn}
         />,
         {
           wrapper: createWrapper,
@@ -203,6 +221,9 @@ describe('AgreementAreaTest', () => {
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
+            closeConfirmationModal={jest.fn}
+            isConfirmationModalVisible={false}
+            editApplication={jest.fn}
           />,
           {
             wrapper: createWrapper,
@@ -225,6 +246,9 @@ describe('AgreementAreaTest', () => {
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
+            closeConfirmationModal={jest.fn}
+            isConfirmationModalVisible={false}
+            editApplication={jest.fn}
           />,
           {
             wrapper: createWrapper,
@@ -253,6 +277,9 @@ describe('AgreementAreaTest', () => {
             agreementDocs={mockedAgreementDocs}
             setAgreementDocs={mockSetAgreementDocs}
             setIsEditRequisitesMode={jest.fn}
+            closeConfirmationModal={jest.fn}
+            isConfirmationModalVisible={false}
+            editApplication={jest.fn}
           />,
           {
             wrapper: createWrapper,

@@ -88,10 +88,10 @@ export const AutocompleteInput = React.memo(
       freeSolo: isCustomValueAllowed,
       autoHighlight: true,
       onChange: handleChange,
+      id,
     }
 
     const textFieldConfig = {
-      id,
       placeholder: placeholder,
       error: isError,
       helperText: isError ? errorMessage : '',
@@ -106,6 +106,7 @@ export const AutocompleteInput = React.memo(
         <Box>
           <Autocomplete
             {...autocompleteConfig}
+            data-testid={id}
             noOptionsText="Ничего не найдено"
             popupIcon={<KeyboardArrowDownIcon />}
             className={classes.autocompleteField}

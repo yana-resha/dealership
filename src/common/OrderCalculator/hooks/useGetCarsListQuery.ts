@@ -6,10 +6,10 @@ import { UseQueryOptions, useQuery } from 'react-query'
 
 import { getCarsList } from 'shared/api/requests/dictionaryDc.api'
 
-import { prepareCars } from '../utils/prepareCars'
+import { NormalizedCar, prepareCars } from '../utils/prepareCars'
 
 type NormalizedCars = {
-  cars: Record<string, string[]>
+  cars: Record<string, NormalizedCar>
 }
 
 export const useGetCarsListQuery = (

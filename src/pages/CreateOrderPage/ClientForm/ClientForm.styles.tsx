@@ -7,9 +7,8 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.spacing(3),
-    backgroundColor: theme.palette.background.paper,
     borderRadius: 4 * theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.paper,
   },
 
   circular: {
@@ -20,6 +19,7 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(3),
+    padding: theme.spacing(3),
   },
 
   buttonsArea: {
