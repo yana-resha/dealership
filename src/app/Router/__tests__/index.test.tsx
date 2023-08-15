@@ -35,7 +35,11 @@ const getMockRouter = () => (
 describe('Router component', () => {
   beforeEach(() => {
     // Переопределяем результаты работы методов перед каждым тестом
-    useAuthContextMock.mockImplementation(() => ({ isAuth: true }))
+    useAuthContextMock.mockImplementation(() => ({
+      isAuth: true,
+      logoutUrl: undefined,
+      setLogoutUrl: () => undefined,
+    }))
   })
 
   afterEach(() => {
@@ -43,7 +47,11 @@ describe('Router component', () => {
   })
 
   it('Проверяем, если пользователь авторизован, то отображается главный рабочий экран', async () => {
-    useAuthContextMock.mockImplementation(() => ({ isAuth: true }))
+    useAuthContextMock.mockImplementation(() => ({
+      isAuth: true,
+      logoutUrl: undefined,
+      setLogoutUrl: () => undefined,
+    }))
     useCheckPointOfSale.mockImplementation(() => true)
 
     render(getMockRouter())
@@ -51,7 +59,11 @@ describe('Router component', () => {
     expect(await screen.findByTestId('dealershipPage')).toBeInTheDocument()
   })
   it('Проверяем, если пользователь НЕ авторизован, то отображается экран авторизации', async () => {
-    useAuthContextMock.mockImplementation(() => ({ isAuth: false }))
+    useAuthContextMock.mockImplementation(() => ({
+      isAuth: false,
+      logoutUrl: undefined,
+      setLogoutUrl: () => undefined,
+    }))
 
     render(getMockRouter())
 

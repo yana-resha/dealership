@@ -27,19 +27,19 @@ describe('useCheckToken', () => {
   it('возвращает true, если в куках есть токен', () => {
     Cookies.set(COOKIE_JWT_TOKEN, 'test-token')
 
-    const { result } = renderHook(() => useCheckToken())
+    const { result } = renderHook(() => useCheckToken(undefined))
 
     expect(result.current).toBe(true)
   })
 
   it('возвращает false, если в куках нет токена', () => {
-    const { result } = renderHook(() => useCheckToken())
+    const { result } = renderHook(() => useCheckToken(undefined))
 
     expect(result.current).toBe(false)
   })
 
   it('обновляет состояние токена при изменении токена в куках', () => {
-    const { result } = renderHook(() => useCheckToken())
+    const { result } = renderHook(() => useCheckToken(undefined))
 
     Cookies.set(COOKIE_JWT_TOKEN, 'new-test-token')
     jest.advanceTimersByTime(750)
@@ -50,7 +50,7 @@ describe('useCheckToken', () => {
   it('удаляет интервал при размонтировании компонента', () => {
     const clearIntervalSpy = jest.spyOn(window, 'clearInterval')
 
-    const { unmount } = renderHook(() => useCheckToken())
+    const { unmount } = renderHook(() => useCheckToken(undefined))
 
     unmount()
 
@@ -60,7 +60,7 @@ describe('useCheckToken', () => {
   it('вызывается onLogout когда токен протухает', () => {
     const getTokenMock = jest.spyOn(authToken.jwt, 'get').mockImplementation(() => 'token')
 
-    renderHook(() => useCheckToken())
+    renderHook(() => useCheckToken(undefined))
 
     getTokenMock.mockImplementation(() => '')
 

@@ -7,10 +7,9 @@ import { useLogout } from './useLogout'
 type Timer = any
 
 /** Проверяет наличие токена */
-export const useCheckToken = () => {
+export const useCheckToken = (logoutUrl: string | undefined) => {
   const [token, setToken] = useState(authToken.jwt.get())
-
-  const { onLogout } = useLogout()
+  const { onLogout } = useLogout(logoutUrl)
 
   const timerRef = useRef<Timer | undefined>()
 
