@@ -39,8 +39,8 @@ export const addressTransformForRequest = (address: Address, addressType: Addres
     house,
     houseExt,
     unit,
-    unitNum,
-    office: unitNum,
+    unitNum: addressType !== AddressType.WORKPLACE ? unitNum : undefined,
+    office: addressType === AddressType.WORKPLACE ? unitNum : undefined,
   }
 
   return result
@@ -61,5 +61,8 @@ export const addressTransformForForm = (address: AddressFrontdc, initialValuesMa
   house: address.house ?? initialValuesMap?.house ?? '',
   unit: address.unit ?? initialValuesMap?.unit ?? '',
   houseExt: address.houseExt ?? initialValuesMap?.houseExt ?? '',
-  unitNum: address.unitNum ?? initialValuesMap?.unitNum ?? '',
+  unitNum:
+    (address.type !== AddressType.WORKPLACE ? address.unitNum : address.office) ??
+    initialValuesMap?.unitNum ??
+    '',
 })

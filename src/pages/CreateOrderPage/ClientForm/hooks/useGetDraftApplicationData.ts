@@ -29,7 +29,12 @@ export const useGetDraftApplicationData = () => {
           ? AnketaType.Complete
           : AnketaType.Incomplete
 
+      /* TODO Обсудить - кажется, этот хук уже не нужен. useCallback используется всегда в компоненте
+      ClientForm, и всегда на вход получает данные из функции remapApplicationValues, которая также
+      занимается подготовкой данных. Может стоит их объеденить? */
       return {
+        // Раньше spread не было, т.е. не все входные данные уходили на выход. Так было задумано намеренно?
+        ...fullApplication.application,
         dcAppId: fullApplication?.application?.dcAppId,
         unit,
         anketaType,

@@ -21,7 +21,7 @@ import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
-import { ClientData } from '../ClientForm.types'
+import { ClientData, SubmitAction } from '../ClientForm.types'
 import { AREA_TYPES, CITY_TYPES, SETTLEMENT_TYPES, STREET_TYPES } from '../config/address.config'
 import { configAddressInitialValues, UPLOADED_DOCUMENTS } from '../config/clientFormInitialValues'
 import { addressTransformForForm, addressTransformForRequest } from '../utils/addressTransformForRequest'
@@ -37,7 +37,7 @@ export function useInitialValues() {
 
   const fullApplicationData = initialOrder?.orderData
 
-  const { applicant, createdDate } = useMemo(
+  const { dcAppId, applicant, createdDate } = useMemo(
     () => fullApplicationData?.application || ({} as ApplicationFrontdc),
     [fullApplicationData?.application],
   )
@@ -230,6 +230,7 @@ export function useInitialValues() {
         occupation,
         divisionCode,
         sex,
+        submitAction,
       } = values
       const application = fullApplicationData?.application
       if (!application) {
@@ -258,6 +259,8 @@ export function useInitialValues() {
       if (ndfl3File) {
         incomeDocumentType = UPLOADED_DOCUMENTS['ndfl3File'].documentType
       }
+
+      const newCreatedDate = dcAppId ? createdDate : convertedDateToString(new Date())
 
       const newApplicant: ApplicantFrontdc = {
         firstName: clientFirstName,
@@ -305,20 +308,29 @@ export function useInitialValues() {
             ? (incomeDocumentType as unknown as DocumentType)
             : undefined,
           basicIncome: stringToNumber(averageIncome),
-          addIncome: stringToNumber(additionalIncome),
+          // свойство addIncome должно быть обязательно number, даже если пользователь не заполнил его,
+          // но только в случае отправки заявки, а не сохранения черновика
+          addIncome:
+            submitAction === SubmitAction.Save
+              ? stringToNumber(additionalIncome) || 0
+              : stringToNumber(additionalIncome),
           familyIncome: stringToNumber(familyIncome),
           expenses: stringToNumber(expenses),
         },
         employment: {
           occupation: occupation ?? undefined,
-          currentWorkExperience: employmentDate
-            ? parseInt(
-                Interval.fromDateTimes(DateTime.fromJSDate(employmentDate), DateTime.now())
-                  .toDuration(['months'])
-                  .toFormat('MM'),
-                10,
-              )
-            : undefined,
+          currentWorkExperience:
+            employmentDate && newCreatedDate
+              ? parseInt(
+                  Interval.fromDateTimes(
+                    DateTime.fromJSDate(employmentDate),
+                    DateTime.fromISO(newCreatedDate),
+                  )
+                    .toDuration(['months'])
+                    .toFormat('MM'),
+                  10,
+                )
+              : undefined,
           orgName: employerName ?? undefined,
           inn: employerInn,
         },
@@ -327,19 +339,18 @@ export function useInitialValues() {
       const updatedApplication = {
         ...application,
         applicant: newApplicant,
-        createdDate: convertedDateToString(new Date()),
+        createdDate: newCreatedDate,
       }
 
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
 
       return { ...fullApplicationData, application: updatedApplication }
     },
-    [dispatch, fullApplicationData],
+    [createdDate, dcAppId, dispatch, fullApplicationData],
   )
 
   const makeDocumentTypeFile = (expectedType: DocumentType) => {
     const currentScan = fullApplicationData?.application?.scans?.find(scan => scan.type === expectedType)
-    const dcAppId = fullApplicationData?.application?.dcAppId
 
     if (!currentScan?.type || !dcAppId) {
       return undefined
@@ -351,7 +362,6 @@ export function useInitialValues() {
     }
   }
 
-  const dcAppId = fullApplicationData?.application?.dcAppId
   const initialValuesClientData: ClientData = {
     ...initialValues,
     ...(fullApplicationData?.application?.applicant

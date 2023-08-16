@@ -31,10 +31,10 @@ export const EXPECTED_DATA = {
     street: 'Севастопольская',
     streetType: '34',
     unit: 'ж',
-    unitNum: '174',
+    unitNum: '15',
   },
   employerAddressString:
-    '410055 77 Москва 55 Усть-Курдюмский 77 Москва 45 Курдюм 34 Севастопольская 17 ж 5 174 ',
+    '410055 77 Москва 55 Усть-Курдюмский 77 Москва 45 Курдюм 34 Севастопольская 17 ж 5 15 ',
   employerInn: '123123123',
   employerName: 'ДрайвКликБанк',
   employerPhone: '79033800013',
