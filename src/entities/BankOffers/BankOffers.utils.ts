@@ -10,12 +10,23 @@ export const prepareRow = (row: CalculatedProduct) => {
   const monthlyPayment = formatNumber(row.monthlyPayment != undefined ? row.monthlyPayment.toString() : '')
   const lastPayment = formatNumber(row.lastPayment != undefined ? row.lastPayment.toString() : '')
   const overpayment = formatNumber(row.overpayment != undefined ? row.overpayment.toString() : '')
-  const totalSum = formatNumber(row.totalSum != undefined ? row.totalSum.toString() : '')
+  const amountWithoutPercent = formatNumber(
+    row.amountWithoutPercent != undefined ? row.amountWithoutPercent.toString() : '',
+  )
   const currentRate = formatNumber(row.currentRate != undefined ? (row.currentRate * 100).toString() : '', {
     digits: 2,
   })
 
-  return { ...row, downpayment, term, monthlyPayment, lastPayment, currentRate, overpayment, totalSum }
+  return {
+    ...row,
+    downpayment,
+    term,
+    monthlyPayment,
+    lastPayment,
+    currentRate,
+    overpayment,
+    amountWithoutPercent,
+  }
 }
 
 export const getCellsChildren = (
