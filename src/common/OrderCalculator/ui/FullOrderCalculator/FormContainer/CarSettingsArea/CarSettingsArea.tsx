@@ -9,7 +9,7 @@ import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
 import { useCarYears } from 'common/OrderCalculator/hooks/useCarYears'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { DealerCenterRequisites } from 'entities/application/DossierAreas/ui'
+import { DealerCenterRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskVin,

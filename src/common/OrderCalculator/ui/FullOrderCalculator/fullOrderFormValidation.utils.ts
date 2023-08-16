@@ -8,7 +8,7 @@ import {
   checkAdditionalEquipmentsLimit,
   checkDealerAdditionalServicesLimit,
 } from 'common/OrderCalculator/utils/baseFormValidation'
-import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import { FieldMessages } from 'shared/constants/fieldMessages'
 
 import {

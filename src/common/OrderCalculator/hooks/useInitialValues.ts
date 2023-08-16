@@ -12,7 +12,7 @@ import { ApplicationFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime } from 'luxon'
 import { useDispatch } from 'react-redux'
 
-import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'

@@ -1,26 +1,26 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
 import { MockStore } from 'redux-mock-store'
 
 import { Order } from 'entities/reduxStore/orderSlice'
-import * as useGetFullApplicationQueryModule from 'shared/api/requests/loanAppLifeCycleDc'
+import * as useGetFullApplicationQueryModule from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { MockProviders, ThemeProviderMock } from 'tests/mocks'
 
 import { ClientDetailedDossier } from '../ClientDetailedDossier'
 
-jest.mock('entities/application/DossierAreas/ui/DossierIdArea/DossierIdArea', () => ({
+jest.mock('../DossierIdArea/DossierIdArea', () => ({
   DossierIdArea: () => <div data-testid="DossierIdArea" />,
 }))
-jest.mock('entities/application/DossierAreas/ui/InformationArea/InformationArea', () => ({
+jest.mock('../InformationArea/InformationArea', () => ({
   InformationArea: () => <div data-testid="InformationArea" />,
 }))
-jest.mock('entities/application/DossierAreas/ui/DocumentsArea/DocumentsArea', () => ({
+jest.mock('../DocumentsArea/DocumentsArea', () => ({
   DocumentsArea: () => <div data-testid="DocumentsArea" />,
 }))
-jest.mock('entities/application/DossierAreas/ui/ActionArea/ActionArea', () => ({
+jest.mock('../ActionArea/ActionArea', () => ({
   ActionArea: () => <div data-testid="ActionArea" />,
 }))
 

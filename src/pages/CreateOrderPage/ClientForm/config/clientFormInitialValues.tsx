@@ -6,7 +6,7 @@ import {
   DocumentType,
 } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { UploaderConfig } from 'features/ApplicationFileUploader'
+import { UploaderConfig } from 'features/ApplicationFileLoader'
 
 import { Address, ClientData, SubmitAction } from '../ClientForm.types'
 

@@ -10,9 +10,9 @@ import { Formik, FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { DcConfirmationModal } from 'entities/application/DossierAreas/ui/EditConfirmationModal/DcConfirmationModal'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { clearOrder, setAppId } from 'entities/reduxStore/orderSlice'
+import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'
 import {
   useSaveDraftApplicationMutation,
   useSendApplicationToScore,

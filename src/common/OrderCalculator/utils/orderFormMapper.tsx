@@ -6,7 +6,7 @@ import {
   OptionID,
 } from '@sberauto/dictionarydc-proto/public'
 
-import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
 import {

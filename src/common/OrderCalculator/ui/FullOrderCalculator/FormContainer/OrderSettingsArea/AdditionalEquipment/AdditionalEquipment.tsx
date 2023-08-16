@@ -6,8 +6,8 @@ import { FieldArray, useField } from 'formik'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
-import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
-import { AdditionalEquipmentRequisites } from 'entities/application/DossierAreas/ui'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
+import { AdditionalEquipmentRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
 
 import useStyles from './AdditionalEquipment.styles'
 

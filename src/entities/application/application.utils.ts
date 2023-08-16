@@ -29,6 +29,7 @@ export const getStatus = (status: StatusCode) => {
       return PreparedStatus.processed
     case StatusCode.APPROVED:
       return PreparedStatus.approved
+    case StatusCode.NEED_REFORMATION:
     case StatusCode.FINALLY_APPROVED:
       return PreparedStatus.finallyApproved
     case StatusCode.FORMATION:

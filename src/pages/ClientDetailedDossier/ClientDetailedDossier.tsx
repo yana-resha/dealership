@@ -11,16 +11,9 @@ import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { ApplicationProvider } from 'entities/application/ApplicationProvider'
-import {
-  ActionArea,
-  DocumentsArea,
-  DossierIdArea,
-  EditRequisitesArea,
-  InformationArea,
-} from 'entities/application/DossierAreas/ui'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { setOrder, updateOrder } from 'entities/reduxStore/orderSlice'
-import { useGetFullApplicationQuery } from 'shared/api/requests/loanAppLifeCycleDc'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
+import { useGetFullApplicationQuery } from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { appRoutes } from 'shared/navigation/routerPath'
@@ -28,27 +21,24 @@ import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularP
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { getFullName } from 'shared/utils/clientNameTransform'
 
+import { ActionArea } from './ActionArea/ActionArea'
 import { useStyles } from './ClientDetailedDossier.styles'
+import { DocumentsArea } from './DocumentsArea/DocumentsArea'
+import { DossierIdArea } from './DossierIdArea/DossierIdArea'
+import { EditRequisitesArea } from './EditRequisitesArea/EditRequisitesArea'
+import { InformationArea } from './InformationArea/InformationArea'
 
 export function ClientDetailedDossier() {
   const classes = useStyles()
 
   const navigate = useNavigate()
   const { applicationId = '' } = useParams()
-  const { isLoading, isError } = useGetFullApplicationQuery(
-    { applicationId },
-    {
-      onSuccess: response => {
-        dispatch(setOrder({ orderData: response }))
-      },
-    },
-  )
+  const { isLoading, isError } = useGetFullApplicationQuery({ applicationId })
 
   const dispatch = useDispatch()
   const fullApplicationData = useAppSelector(state => state.order.order)?.orderData
   const application = fullApplicationData?.application
   const { unit } = getPointOfSaleFromCookies()
-  const [agreementDocs, setAgreementDocs] = useState<(File | undefined)[]>([])
   const [isEditRequisitesMode, setIsEditRequisitesMode] = useState(false)
 
   const clientName = getFullName(
@@ -177,8 +167,6 @@ export function ClientDetailedDossier() {
                   <Box className={classes.dossierContainer}>
                     <InformationArea {...appInfo} />
                     <DocumentsArea
-                      agreementDocs={agreementDocs}
-                      setAgreementDocs={setAgreementDocs}
                       status={
                         application.status || application.status === StatusCode.INITIAL
                           ? application.status
@@ -197,8 +185,6 @@ export function ClientDetailedDossier() {
                           ? application.status
                           : StatusCode.ERROR
                       }
-                      agreementDocs={agreementDocs}
-                      setAgreementDocs={setAgreementDocs}
                       setIsEditRequisitesMode={setIsEditRequisitesMode}
                       updateApplicationStatusLocally={updateApplicationStatusLocally}
                     />

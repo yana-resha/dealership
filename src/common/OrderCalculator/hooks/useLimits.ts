@@ -4,7 +4,7 @@ import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { useField, useFormikContext } from 'formik'
 import { useDispatch } from 'react-redux'
 
-import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { formatMoney, formatNumber } from 'shared/lib/utils'
 

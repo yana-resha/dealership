@@ -14,7 +14,7 @@ import { DateTime, Interval } from 'luxon'
 import { useDispatch } from 'react-redux'
 
 import { updateOrder } from 'entities/reduxStore/orderSlice'
-import { DocumentUploadStatus } from 'features/ApplicationFileUploader'
+import { DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
