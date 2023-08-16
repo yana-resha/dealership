@@ -5,15 +5,23 @@ import { formatNumber } from 'shared/lib/utils'
 import { BANK_OFFERS_TABLE_HEADERS } from './BankOffers.config'
 
 export const prepareRow = (row: CalculatedProduct) => {
-  const downpayment = formatNumber(row.downpayment != undefined ? row.downpayment.toString() : '')
+  const options = {
+    digits: 0,
+  }
+  const downpayment = formatNumber(row.downpayment !== undefined ? row.downpayment.toString() : '', options)
   const term = `${row.term} мес`
-  const monthlyPayment = formatNumber(row.monthlyPayment != undefined ? row.monthlyPayment.toString() : '')
-  const lastPayment = formatNumber(row.lastPayment != undefined ? row.lastPayment.toString() : '')
-  const overpayment = formatNumber(row.overpayment != undefined ? row.overpayment.toString() : '')
-  const amountWithoutPercent = formatNumber(
-    row.amountWithoutPercent != undefined ? row.amountWithoutPercent.toString() : '',
+  const monthlyPayment = formatNumber(
+    row.monthlyPayment !== undefined ? row.monthlyPayment.toString() : '',
+    options,
   )
-  const currentRate = formatNumber(row.currentRate != undefined ? (row.currentRate * 100).toString() : '', {
+
+  const lastPayment = formatNumber(row.lastPayment !== undefined ? row.lastPayment.toString() : '', options)
+  const overpayment = formatNumber(row.overpayment !== undefined ? row.overpayment.toString() : '', options)
+  const amountWithoutPercent = formatNumber(
+    row.amountWithoutPercent !== undefined ? row.amountWithoutPercent.toString() : '',
+    options,
+  )
+  const currentRate = formatNumber(row.currentRate !== undefined ? (row.currentRate * 100).toString() : '', {
     digits: 2,
   })
 
