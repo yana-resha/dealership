@@ -19,7 +19,7 @@ import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import SberTypography from 'shared/ui/SberTypography'
 
-import { ApplicationTypes, getStatus, PreparedStatus } from '../../../entities/application/application.utils'
+import { AnketaType, getStatus, PreparedStatus } from '../../../entities/application/application.utils'
 import { DcConfirmationModal } from '../EditConfirmationModal/DcConfirmationModal'
 import { useStyles } from './ActionArea.styles'
 import { AgreementArea } from './AgreementArea/AgreementArea'
@@ -174,7 +174,7 @@ export function ActionArea(props: Props) {
           <Button variant="contained" onClick={() => editApplication(editApplicationWithInitialStatus)}>
             Редактировать
           </Button>
-          {application.anketaType == ApplicationTypes.complete && (
+          {application.anketaType == AnketaType.Complete && (
             <Button variant="contained" onClick={sendApplicationToScore}>
               Отправить на решение
             </Button>

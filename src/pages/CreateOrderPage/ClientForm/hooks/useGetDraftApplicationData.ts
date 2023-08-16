@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { ApplicationFrontdc, GetFullApplicationResponse } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { ApplicationTypes } from 'entities/application/application.utils'
+import { AnketaType } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useGetUserQuery } from 'shared/api/requests/authdc'
 import { getFullName } from 'shared/utils/clientNameTransform'
@@ -22,10 +22,17 @@ export const useGetDraftApplicationData = () => {
         preparedLoanCar.mileage = '0'
       }
 
+      const anketaType =
+        fullApplication?.application?.anketaType === AnketaType.Full
+          ? AnketaType.Full
+          : isFormValid
+          ? AnketaType.Complete
+          : AnketaType.Incomplete
+
       return {
         dcAppId: fullApplication?.application?.dcAppId,
         unit,
-        anketaType: isFormValid ? ApplicationTypes.complete : ApplicationTypes.incomplete,
+        anketaType,
         vendor: {
           ...fullApplication?.application?.vendor,
           vendorCode,

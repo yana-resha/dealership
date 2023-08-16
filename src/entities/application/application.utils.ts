@@ -16,9 +16,10 @@ export enum PreparedStatus {
   issueError = 'Ошибка финансирования',
 }
 
-export enum ApplicationTypes {
-  incomplete = 0,
-  complete = 1,
+export enum AnketaType {
+  Incomplete = 0,
+  Complete = 1,
+  Full = 2,
 }
 
 export const getStatus = (status: StatusCode) => {
