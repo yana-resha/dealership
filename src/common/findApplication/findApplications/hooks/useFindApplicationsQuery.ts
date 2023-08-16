@@ -18,7 +18,8 @@ export const useFindApplicationsQuery = (
     ['findApplications', params],
     () => findApplications(params ?? {}),
     {
-      staleTime: 1000 * 30,
+      // кэш не позволяет обновить список, когда возвращаешься после отправки заявки на решение
+      // staleTime: 1000 * 30,
 
       select: response => makeApplicationTableData(response.applicationList ?? []),
       onError: (err: any) => {

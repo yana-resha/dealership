@@ -16,7 +16,7 @@ import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useGetFullApplicationQuery } from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
-import { appRoutes } from 'shared/navigation/routerPath'
+import { appRoutePaths, appRoutes } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { getFullName } from 'shared/utils/clientNameTransform'
@@ -107,7 +107,7 @@ export function ClientDetailedDossier() {
 
   const onGetOrderId = useCallback(async () => applicationId, [applicationId])
 
-  const onBackButton = useCallback(() => navigate(-1), [navigate])
+  const onBackButton = useCallback(() => navigate(appRoutePaths.orderList), [navigate])
 
   const updateApplicationStatusLocally = useCallback(
     (statusCode: StatusCode) => {
