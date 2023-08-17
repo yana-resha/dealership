@@ -25,12 +25,13 @@ export function formatNumber(num: number | string, options?: { postfix?: string;
   if (typeof num === 'string' && !num.trim()) {
     return num.trim()
   }
-  const params = digits
-    ? {
-        minimumFractionDigits: digits,
-        maximumFractionDigits: digits,
-      }
-    : undefined
+  const params =
+    typeof digits !== undefined
+      ? {
+          minimumFractionDigits: digits,
+          maximumFractionDigits: digits,
+        }
+      : undefined
 
   return new Intl.NumberFormat('ru-RU', params).format(+num) + postfixStr
 }

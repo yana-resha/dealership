@@ -12,7 +12,8 @@ import { ApplicationFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime } from 'luxon'
 import { useDispatch } from 'react-redux'
 
-import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
+import { AnketaType } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
@@ -465,6 +466,10 @@ export function useInitialValues<D extends boolean | undefined>(
         ...application,
         loanCar: newLoanCar,
         loanData: newLoanData,
+        /* Если попали на короткий калькулятор, то выйти из него можно с anketaType=0 или anketaType=1,
+        в зависимости от полноты данных, даже если до этого в заявке был anketaType=2.
+        Потому тут изначально ставим 0, а на этапе сохранения выбираем 0 или 1 */
+        anketaType: AnketaType.Incomplete,
       }
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
@@ -552,6 +557,9 @@ export function useInitialValues<D extends boolean | undefined>(
         loanCar: newLoanCar,
         loanData: newLoanData,
         vendor: newVendor,
+        // Если попали на большой калькулятор, то выйти из него можно только заполнив все поля
+        // большого калькулятора и анкеты, а это как раз anketaType=2
+        anketaType: AnketaType.Full,
       }
 
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))

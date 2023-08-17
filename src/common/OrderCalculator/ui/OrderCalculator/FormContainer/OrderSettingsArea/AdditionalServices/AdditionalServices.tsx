@@ -3,7 +3,7 @@ import { FieldArray, useField } from 'formik'
 
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
-import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 
 import { AdditionalServiceItem } from './AdditionalServiceItem/AdditionalServiceItem'
 import useStyles from './AdditionalServices.styles'

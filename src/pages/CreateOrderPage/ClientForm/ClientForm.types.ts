@@ -1,6 +1,6 @@
 import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { FileInfo } from 'features/ApplicationFileUploader'
+import { FileInfo } from 'features/ApplicationFileLoader'
 
 export interface Address {
   postalCode: string

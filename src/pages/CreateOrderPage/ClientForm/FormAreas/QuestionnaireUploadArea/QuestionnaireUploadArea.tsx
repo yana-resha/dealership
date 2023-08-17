@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
-import { FileInfo, UploaderConfig, Uploader, DocumentUploadStatus } from 'features/ApplicationFileUploader'
+import { FileInfo, UploaderConfig, Uploader, DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { MAX_FILE_SIZE_MB } from 'shared/config/uploadFile.config'
 
 import { ClientData } from '../../ClientForm.types'

@@ -9,8 +9,8 @@ import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import {
   RequisitesForFinancing,
   useRequisitesForFinancingQuery,
-} from 'entities/application/DossierAreas/hooks/useRequisitesForFinancingQuery'
-import { RequisitesContextProvider } from 'entities/application/DossierAreas/ui/RequisitesContext'
+} from 'entities/application/AdditionalOptionsRequisites/hooks/useRequisitesForFinancingQuery'
+import { RequisitesContextProvider } from 'entities/application/AdditionalOptionsRequisites/ui/RequisitesContext'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'

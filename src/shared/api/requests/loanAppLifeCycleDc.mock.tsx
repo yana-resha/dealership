@@ -358,6 +358,16 @@ export const fullApplicationData: GetFullApplicationResponse = {
         extension: '.pdf',
         name: '2НДФЛ',
       },
+      {
+        type: DocumentType.CREDIT_CONTRACT,
+        extension: '.pdf',
+        name: 'Договор (ИУК).pdf',
+      },
+      {
+        type: DocumentType.ACCOUNT_OPEN_FORM,
+        extension: '.pdf',
+        name: 'Заявление на открытие счёта.pdf',
+      },
     ],
 
     specialMark: 'Находится в нетрезвом состоянии',

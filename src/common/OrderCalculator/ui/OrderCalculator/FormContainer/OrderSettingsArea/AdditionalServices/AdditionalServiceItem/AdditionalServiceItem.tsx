@@ -6,11 +6,11 @@ import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
 import { INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, OrderCalculatorFields } from 'common/OrderCalculator/types'
-import { useAdditionalServices } from 'entities/application/DossierAreas/hooks/useAdditionalServices'
+import { useAdditionalServices } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServices'
 import {
   ServicesGroupName,
   useAdditionalServicesOptions,
-} from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+} from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'

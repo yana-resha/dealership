@@ -25,13 +25,21 @@ import {
   GetApplicationDocumentsListResponse,
   DownloadDocumentRequest,
   DocType,
+  FormContractRequest,
+  Scan,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
-import { useMutation, useQuery, UseQueryOptions } from 'react-query'
+import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
 
 import { Rest } from '../client'
+
+export interface RequiredScan extends Scan {
+  type: DocumentType
+  name?: string
+  extension?: string
+}
 
 /** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,
  * поэтому приводим к изначальному виду */
@@ -70,7 +78,10 @@ export const saveLoanApplicationDraft = (params: SaveLoanApplicationDraftRequest
 export const sendApplicationToScore = (params: SendApplicationToScoringRequest) =>
   loanAppLifeCycleDcApi.sendApplicationToScoring({ data: params }).then(response => response.data ?? {})
 
-export const useUpdateApplicationStatus = (appId: string, onSuccess: (statusCode: StatusCode) => void) => {
+export const useUpdateApplicationStatusMutation = (
+  appId: string,
+  onSuccess: (statusCode: StatusCode) => void,
+) => {
   const { enqueueSnackbar } = useSnackbar()
 
   return useMutation(
@@ -300,22 +311,19 @@ const getPreparedApplication = (data: GetFullApplicationResponse): GetFullApplic
   }
 }
 
-const getFullApplication = (params: GetFullApplicationRequest) =>
+export const getFullApplication = (params: GetFullApplicationRequest) =>
   loanAppLifeCycleDcApi
     .getFullApplication({ data: params })
     .then(response => (response.data ? getPreparedApplication(response.data) : response.data))
-
-export const useGetFullApplicationQuery = (
-  params: GetFullApplicationRequest,
-  options?: UseQueryOptions<GetFullApplicationResponse, unknown, GetFullApplicationResponse, string[]>,
-) =>
-  useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
-    retry: false,
-    ...options,
-  })
 
 export const sendApplicationToFinancing = (params: SendApplicationToFinancingRequest) =>
   loanAppLifeCycleDcApi.sendApplicationToFinancing({ data: params })
 
 export const useSendToFinancingMutation = () =>
   useMutation('sendApplicationToFinancing', sendApplicationToFinancing)
+
+export const formContract = (params: FormContractRequest) =>
+  loanAppLifeCycleDcApi.formContract({ data: params })
+
+export const useFormContractMutation = (params: FormContractRequest) =>
+  useMutation('formContract', () => formContract(params))

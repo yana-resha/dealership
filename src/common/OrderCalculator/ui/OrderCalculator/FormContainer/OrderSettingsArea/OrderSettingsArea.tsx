@@ -8,7 +8,7 @@ import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPaymen
 import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { ServicesGroupName } from 'entities/application/DossierAreas/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { FraudDialog } from 'entities/SpecialMark'
 import { maskOnlyDigitsWithSeparator, maskPercent } from 'shared/masks/InputMasks'

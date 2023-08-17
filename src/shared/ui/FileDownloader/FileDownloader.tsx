@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 
 /** Данные о файле по которым его можно подтянуть с бэка,
  * файл прилетает в base64  а не в виде url, поэтому грузить сразу расточительно */
-type FileMetadata = {
+export type FileMetadata = {
   dcAppId: string
   documentType: number
   name?: string
@@ -46,7 +46,7 @@ type FileMetadata = {
 
 type FileOrMetadata = File | FileMetadata
 
-type UploadFileProps = {
+type FileDownloaderProps = {
   file: FileOrMetadata | undefined
   index: number
   loadingMessage?: string
@@ -55,8 +55,14 @@ type UploadFileProps = {
   onDownloadFile?: (metadata: FileMetadata) => Promise<File>
 }
 
-export const FileDownloader = (props: UploadFileProps) => {
-  const { file, index, onClick, loadingMessage, onClickDelete, onDownloadFile } = props
+export const FileDownloader = ({
+  file,
+  index,
+  onClick,
+  loadingMessage,
+  onClickDelete,
+  onDownloadFile,
+}: FileDownloaderProps) => {
   const styles = useStyles()
 
   const [isLoading, setIsLoading] = useState(false)

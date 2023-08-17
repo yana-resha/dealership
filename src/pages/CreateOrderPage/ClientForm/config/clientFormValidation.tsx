@@ -3,7 +3,7 @@ import { DateTime, Interval } from 'luxon'
 import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
 
-import { FileInfo } from 'features/ApplicationFileUploader'
+import { FileInfo } from 'features/ApplicationFileLoader'
 
 import { SubmitAction } from '../ClientForm.types'
 
