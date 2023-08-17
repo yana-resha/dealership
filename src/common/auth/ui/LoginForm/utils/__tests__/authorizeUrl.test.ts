@@ -1,6 +1,6 @@
-import { authorizeUrl } from '../authorizeUrl'
+import { getAuthorizeUrl } from '../authorizeUrl'
 
-describe('LoginForm.authorizeUrl', () => {
+describe('LoginForm.getAuthorizeUrl', () => {
   const outputQueryStr =
     'client_id=frontDC&redirect_uri=dc.ru%2Fauth&response_type=code&scope=username+phone+lastname&response_mode=query&state=12-3&nonce=4-.%3F%2056'
 
@@ -12,7 +12,7 @@ describe('LoginForm.authorizeUrl', () => {
       redirectUri: 'dc.ru/auth',
       scope: 'username+phone+lastname',
     }
-    const [_, res] = (authorizeUrl(params) || '').split('?')
+    const [_, res] = (getAuthorizeUrl(params) || '').split('?')
 
     expect(res).toBe(outputQueryStr)
   })

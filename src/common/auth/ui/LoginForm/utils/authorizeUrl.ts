@@ -3,6 +3,10 @@ import { GetStateAndNonceResponse } from '@sberauto/authsberteamid-proto/public'
 import { appConfig } from 'config'
 import { toSnakecaseKeysData } from 'shared/lib/utils'
 
+const REALM = 'SIAM'
+const authPath = `/auth/realms/${REALM}/protocol/openid-connect/auth`
+const logoutPath = `/auth/realms/${REALM}/protocol/openid-connect/logout`
+
 function encodeGetParams(params: Record<string, string | undefined>) {
   const validParts = Object.entries(params).filter(
     (param): param is [string, string] => typeof param[1] === 'string',
@@ -15,10 +19,7 @@ function encodeGetParams(params: Record<string, string | undefined>) {
 }
 
 /* Формируем ссылку на страницу авторизации TeamID */
-export const authorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: GetStateAndNonceResponse) => {
-  const realm = 'SIAM'
-  const path = `/auth/realms/${realm}/protocol/openid-connect/auth`
-
+export const getAuthorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: GetStateAndNonceResponse) => {
   const params = toSnakecaseKeysData({
     clientId,
     redirectUri,
@@ -31,7 +32,7 @@ export const authorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: Get
     nonce,
   })
 
-  /** Если хотя бы один параметр из списка пустой, то флаг примет значение true */
+  /** Если хотя бы один параметр из списка пустой, то флаг примет значение false */
   const isNotNullable = Object.values(params).reduce((prev, item) => !!item && prev, true)
   if (!isNotNullable) {
     return undefined
@@ -39,5 +40,22 @@ export const authorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: Get
 
   const queryParams = encodeGetParams(params)
 
-  return `${appConfig.sberTeamIdUrl}${path}?${queryParams}`
+  return `${appConfig.sberTeamIdUrl}${authPath}?${queryParams}`
+}
+
+export const getLogoutUrl = ({ clientId, redirectUri }: GetStateAndNonceResponse) => {
+  const params = toSnakecaseKeysData({
+    clientId,
+    postLogoutRedirectUri: redirectUri,
+  })
+
+  /** Если хотя бы один параметр из списка пустой, то флаг примет значение false */
+  const isNotNullable = Object.values(params).reduce((prev, item) => !!item && prev, true)
+  if (!isNotNullable) {
+    return undefined
+  }
+
+  const queryParams = encodeGetParams(params)
+
+  return `${appConfig.sberTeamIdUrl}${logoutPath}?${queryParams}`
 }

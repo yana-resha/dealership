@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useCheckToken } from 'common/auth/hooks/useCheckToken'
 import { useRefreshControl } from 'common/auth/hooks/useRefreshControl'
@@ -11,7 +11,8 @@ import { AuthContext } from './context'
 type AuthProviderProps = React.PropsWithChildren<{}>
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const isAuth = useCheckToken()
+  const [logoutUrl, setLogoutUrl] = useState<string>()
+  const isAuth = useCheckToken(logoutUrl)
   useRefreshControl()
 
   const { onLogout } = useLogout()
@@ -22,5 +23,5 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     Rest.setLogout(() => onLogout({ text: 'Ошибка авторизации' }))
   }, [onLogout])
 
-  return <AuthContext.Provider value={{ isAuth }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ isAuth, logoutUrl, setLogoutUrl }}>{children}</AuthContext.Provider>
 }
