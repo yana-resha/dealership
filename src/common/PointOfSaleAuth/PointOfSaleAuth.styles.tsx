@@ -23,6 +23,7 @@ export default makeStyles(theme => ({
       top: theme.spacing(3),
       width: theme.spacing(3),
       height: theme.spacing(3),
+      zIndex: 2000,
     },
   },
 
@@ -34,13 +35,6 @@ export default makeStyles(theme => ({
     },
   },
 
-  formMessage: {
-    '&.MuiTypography-root': {
-      fontWeight: 600,
-      fontSize: 19,
-      lineHeight: theme.spacing(3),
-    },
-  },
   subtitle: {
     '&.MuiTypography-root': {
       fontWeight: 400,
@@ -49,9 +43,89 @@ export default makeStyles(theme => ({
       marginBottom: theme.spacing(1),
     },
   },
+
   autocompleteContainer: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
+  },
+
+  greetingContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    minHeight: 191,
+    width: '100%',
+    flexBasis: '50%',
+    zIndex: 1000,
+  },
+
+  imgContainer: {
+    flexShrink: 0,
+    position: 'relative',
+    overflow: 'hidden',
+    width: '50%',
+    height: 191,
+  },
+
+  carImg: ({ animationDuration }: { animationDuration: number }) => ({
+    position: 'absolute',
+    // Нельзя положить в animationCarImg, т.к. стиль animationName не работает с функцией
+    animationDuration: `${animationDuration}ms`,
+  }),
+
+  animationCarImg: {
+    animationName: '$car',
+  },
+
+  '@keyframes car': {
+    from: {
+      left: '-100%',
+      top: '-100%',
+      opacity: 0,
+    },
+    to: {
+      left: 0,
+      top: 0,
+      opacity: 1,
+    },
+  },
+
+  greetingTextContainer: {
+    position: 'relative',
+
+    display: 'flex',
+    alignItems: 'center',
+    overflow: 'hidden',
+    width: '50%',
+    height: '100%',
+  },
+
+  formMessage: ({ animationDuration }: { animationDuration: number }) => ({
+    '&.MuiTypography-root': {
+      fontWeight: 600,
+      fontSize: 22,
+      lineHeight: theme.spacing(3),
+    },
+
+    position: 'absolute',
+    width: '100%',
+    // Нельзя положить в animationFormMessage, т.к. стиль animationName не работает с функцией
+    animationDuration: `${animationDuration}ms`,
+  }),
+
+  animationFormMessage: {
+    animationName: '$greetingText',
+  },
+
+  '@keyframes greetingText': {
+    from: {
+      marginTop: '100%',
+      opacity: 0,
+    },
+    to: {
+      marginTop: '0',
+      opacity: 1,
+    },
   },
 }))

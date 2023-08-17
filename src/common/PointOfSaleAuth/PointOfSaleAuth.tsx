@@ -1,9 +1,11 @@
-/* eslint-disable no-constant-condition */
+import { useEffect, useState } from 'react'
+
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
+import cx from 'classnames'
 
+import { ReactComponent as Car } from 'assets/icons/car.svg'
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
 import { useLogout } from 'common/auth'
 import { ChoosePoint } from 'entities/pointOfSale'
@@ -12,12 +14,21 @@ import SberTypography from 'shared/ui/SberTypography'
 
 import useStyles from './PointOfSaleAuth.styles'
 
+const ANIMATION_DURATION = 1500
+
 export function PointOfSaleAuth() {
-  const classes = useStyles()
+  const classes = useStyles({ animationDuration: ANIMATION_DURATION })
+  const [isAllowedAnimation, setAllowedAnimation] = useState(true)
 
   const { onLogout } = useLogout()
 
   const { data } = useGetUserQuery()
+
+  useEffect(() => {
+    if (data && isAllowedAnimation) {
+      setTimeout(() => setAllowedAnimation(false), ANIMATION_DURATION)
+    }
+  }, [data, isAllowedAnimation])
 
   return (
     <Box className={classes.pointOfSaleFormContainer}>
@@ -25,13 +36,22 @@ export function PointOfSaleAuth() {
         <KeyboardArrowLeft />
       </IconButton>
 
-      {data ? (
-        <Typography className={classes.formMessage}>
-          {`Привет, ${data?.lastName} ${data?.firstName}`}
-        </Typography>
-      ) : (
-        <Skeleton variant="text" sx={{ fontSize: 19 }} width={210} />
-      )}
+      <Box className={classes.greetingContainer}>
+        {data && (
+          <>
+            <Box className={classes.imgContainer}>
+              <Car className={cx(classes.carImg, { [classes.animationCarImg]: isAllowedAnimation })} />
+            </Box>
+            <Box className={classes.greetingTextContainer}>
+              <Typography
+                className={cx(classes.formMessage, { [classes.animationFormMessage]: isAllowedAnimation })}
+              >
+                {`👋 Привет, ${data?.lastName} ${data?.firstName}`}
+              </Typography>
+            </Box>
+          </>
+        )}
+      </Box>
 
       <Box className={classes.autocompleteContainer}>
         <SberTypography sberautoVariant="body5" component="p" className={classes.subtitle} align="left">
