@@ -79,7 +79,7 @@ export function AgreementArea({
   const agreementAreaRef = useRef<HTMLDivElement | undefined>()
 
   const { vendorCode } = getPointOfSaleFromCookies()
-  const { mutate: sendToFinancing, isLoading: isSendLoading } = useSendToFinancingMutation()
+  const { mutateAsync: sendToFinancing, isLoading: isSendLoading } = useSendToFinancingMutation()
   const { mutate: updateApplicationStatus, isLoading: isStatusLoading } = useUpdateApplicationStatusMutation(
     application?.dcAppId ?? '',
     updateApplicationStatusLocally,
@@ -88,10 +88,8 @@ export function AgreementArea({
     dcAppId: application?.dcAppId ?? '',
   })
 
-  const { refetch: refetchFullApplication } = useGetFullApplicationQuery(
-    { applicationId },
-    { enabled: false },
-  )
+  const { refetch: refetchFullApplication, isFetching: isRefetchFullApplicationLoading } =
+    useGetFullApplicationQuery({ applicationId }, { enabled: false })
   const { checkApplicationDocumentsList } = useCheckDocumentsList()
   const { downloadFile } = useDownloadDocument()
 
@@ -162,12 +160,18 @@ export function AgreementArea({
     fetchAgreement()
   }, [preparedStatus, formContractMutate, checkDocuments, enqueueSnackbar, updateApplicationStatusLocally])
 
-  const onButtonClick = useCallback(() => {
-    sendToFinancing({
+  const onButtonClick = useCallback(async () => {
+    const res = await sendToFinancing({
       dcAppId: application.dcAppId,
       assignmentOfClaim: rightsAssigned,
-    })
-  }, [application.dcAppId, sendToFinancing, rightsAssigned])
+    }).catch(err => err)
+
+    if (res.success) {
+      await refetchFullApplication()
+    } else {
+      enqueueSnackbar('Не удалось отправить на финансирование. Попробуйте еще раз', { variant: 'error' })
+    }
+  }, [sendToFinancing, application.dcAppId, rightsAssigned, refetchFullApplication, enqueueSnackbar])
 
   useEffect(() => {
     if (
@@ -356,9 +360,13 @@ export function AgreementArea({
               variant="contained"
               className={classes.financingButton}
               onClick={onButtonClick}
-              disabled={!financingEnabled || isSendLoading}
+              disabled={!financingEnabled || isSendLoading || isRefetchFullApplicationLoading}
             >
-              {isSendLoading ? <CircularProgressWheel size="small" /> : <>Отправить на финансирование</>}
+              {isSendLoading || isRefetchFullApplicationLoading ? (
+                <CircularProgressWheel size="small" />
+              ) : (
+                <>Отправить на финансирование</>
+              )}
             </Button>
           )}
         </Box>
