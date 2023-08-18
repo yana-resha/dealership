@@ -4,6 +4,7 @@ import { DefaultLayout } from 'common/layout/DefaultLayout'
 import { ClientDetailedDossier } from 'pages/ClientDetailedDossier'
 import { CreateOrderPage } from 'pages/CreateOrderPage'
 import { DealershipPage } from 'pages/Dealership'
+import { DevelopmentCoverPage } from 'pages/DevelopmentCover'
 import { NotFoundPage } from 'pages/NotFound'
 import { appRoutePaths, defaultRoute } from 'shared/navigation/routerPath'
 
@@ -19,6 +20,7 @@ export function MainRouter(): JSX.Element {
         <Route path={appRoutePaths.orderList} element={<DealershipPage />} />
         <Route path={appRoutePaths.createOrder} element={<CreateOrderPage />} />
         <Route path={appRoutePaths.order} element={<ClientDetailedDossier />} />
+        <Route path={appRoutePaths.documentStorage} element={<DevelopmentCoverPage />} />
       </Route>
     </Routes>
   )

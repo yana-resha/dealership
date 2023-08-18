@@ -1,20 +1,23 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
+
+import { useTheme } from '@mui/styles'
+import cx from 'classnames'
 
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
-import { ReactComponent as OrderCreateIconSelected } from 'assets/icons/orderCreateSelected.svg'
 import { ReactComponent as OrderListIcon } from 'assets/icons/orderList.svg'
-import { ReactComponent as OrderListIconSelected } from 'assets/icons/orderListSelected.svg'
+import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { AuthType } from 'common/auth'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
+import useStyles from './menuIcon.styles'
 import { MenuItem } from './types'
 
 type UseGetItemsProps = {
   authType: AuthType
 }
 
-export const useGetItems = (props: UseGetItemsProps): MenuItem[] => {
-  const { authType } = props
+export const useGetItems = ({ authType }: UseGetItemsProps): MenuItem[] => {
+  const styles = useStyles()
 
   const menuItems = useMemo(() => {
     switch (authType) {
@@ -22,13 +25,24 @@ export const useGetItems = (props: UseGetItemsProps): MenuItem[] => {
         const items: MenuItem[] = [
           {
             label: 'Создать заявку',
-            icon: ({ isSelected }) => (isSelected ? <OrderCreateIconSelected /> : <OrderCreateIcon />),
+            icon: ({ isSelected }) => (
+              <OrderCreateIcon className={cx(styles.icon, { [styles.selectedIcon]: isSelected })} />
+            ),
             path: appRoutePaths.createOrder,
           },
           {
             label: 'Текущие заявки',
-            icon: ({ isSelected }) => (isSelected ? <OrderListIconSelected /> : <OrderListIcon />),
+            icon: ({ isSelected }) => (
+              <OrderListIcon className={cx(styles.icon, { [styles.selectedIcon]: isSelected })} />
+            ),
             path: appRoutePaths.orderList,
+          },
+          {
+            label: 'Документы',
+            icon: ({ isSelected }) => (
+              <ScheduleIcon className={cx(styles.icon, { [styles.selectedIcon]: isSelected })} />
+            ),
+            path: appRoutePaths.documentStorage,
           },
         ]
 
@@ -38,7 +52,7 @@ export const useGetItems = (props: UseGetItemsProps): MenuItem[] => {
         return []
       }
     }
-  }, [authType])
+  }, [authType, styles.icon, styles.selectedIcon])
 
   return menuItems
 }
