@@ -36,7 +36,7 @@ export function NavigationMenu(props: Props) {
       }
       navigate(item.path)
     },
-    [navigate],
+    [dispatch, navigate],
   )
 
   const handleChange = useCallback(
