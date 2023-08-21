@@ -204,16 +204,22 @@ export const clientFormValidationSchema = Yup.object().shape({
     then: schema => setRequiredIfSave(schema),
   }),
   mobileNumber: Yup.string().required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
-  additionalNumber: Yup.string().when('occupation', {
-    is: (occupation: number | null) => isJobDisabled(occupation),
-    then: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
-    otherwise: schema =>
-      schema.test(
-        'additionalNumber',
-        'Введите номер полностью',
-        (value: string | undefined) => value === undefined || value.trim().length == 11,
-      ),
-  }),
+  additionalNumber: Yup.string()
+    .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
+      const { mobileNumber, employerPhone } = (context.options as InternalOptions)?.from?.[0].value || {}
+
+      return value !== mobileNumber && value !== employerPhone
+    })
+    .when('occupation', {
+      is: (occupation: number | null) => isJobDisabled(occupation),
+      then: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
+      otherwise: schema =>
+        schema.test(
+          'additionalNumber',
+          'Введите номер полностью',
+          (value: string | undefined) => value === undefined || value.trim().length == 11,
+        ),
+    }),
   email: setRequiredIfSave(Yup.string()).email('Введите корректный Email'),
   averageIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   additionalIncome: Yup.string().max(13, 'Значение слишком большое'),
@@ -261,10 +267,16 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: (occupation: number | null) => isJobDisabled(occupation),
       otherwise: schema => setRequiredIfSave(schema),
     }),
-  employerPhone: Yup.string().when('occupation', {
-    is: (occupation: number | null) => isJobDisabled(occupation),
-    otherwise: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
-  }),
+  employerPhone: Yup.string()
+    .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
+      const { mobileNumber, additionalNumber } = (context.options as InternalOptions)?.from?.[0].value || {}
+
+      return value !== mobileNumber && value !== additionalNumber
+    })
+    .when('occupation', {
+      is: (occupation: number | null) => isJobDisabled(occupation),
+      otherwise: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
+    }),
   employerAddressString: Yup.string().when('occupation', {
     is: (occupation: number | null) => isJobDisabled(occupation),
     otherwise: schema => setRequiredIfSave(schema),
