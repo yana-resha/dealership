@@ -4,6 +4,7 @@ import { Box, Typography } from '@mui/material'
 import { ApplicantDocsType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useField, useFormikContext } from 'formik'
 
+import { usePrevious } from 'shared/hooks/usePrevious'
 import { maskCyrillicAndDigits, maskDigitsOnly } from 'shared/masks/InputMasks'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -17,12 +18,16 @@ export function SecondDocArea() {
   const [secondDocumentTypeField] = useField('secondDocumentType')
   const { setFieldValue } = useFormikContext()
 
+  const prevSecondDocumentType = usePrevious(secondDocumentTypeField.value)
+
   const isHiddenNoInnFields = secondDocumentTypeField.value === ApplicantDocsType.INN
 
   useEffect(() => {
-    setFieldValue('secondDocumentDate', null)
-    setFieldValue('secondDocumentIssuedBy', '')
-    setFieldValue('secondDocumentNumber', '')
+    if (secondDocumentTypeField.value !== prevSecondDocumentType) {
+      setFieldValue('secondDocumentDate', null)
+      setFieldValue('secondDocumentIssuedBy', '')
+      setFieldValue('secondDocumentNumber', '')
+    }
 
     //при смене типа документа стираем все поля от предыдущего
     //eslint-disable-next-line
