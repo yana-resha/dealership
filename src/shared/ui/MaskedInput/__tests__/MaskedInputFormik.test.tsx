@@ -8,7 +8,7 @@ import * as mockFormik from 'formik'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
-import { maskPhoneNumber } from '../../../masks/InputMasks'
+import { maskMobilePhoneNumber } from '../../../masks/InputMasks'
 import { MaskedInputFormik } from '../MaskedInputFormik'
 
 const createWrapper = ({ children }: PropsWithChildren) => (
@@ -35,7 +35,7 @@ describe('MaskedInputFormikTest', () => {
           name="testMaskedInputName"
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
-          mask={maskPhoneNumber}
+          mask={maskMobilePhoneNumber}
         />,
         {
           wrapper: createWrapper,

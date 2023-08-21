@@ -1,7 +1,7 @@
 import { IsClientRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime } from 'luxon'
 
-import { maskPhoneNumber } from 'shared/masks/InputMasks'
+import { maskMobilePhoneNumber } from 'shared/masks/InputMasks'
 import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
 
 import { OrderFormData } from '../OrderForm.types'
@@ -18,7 +18,7 @@ export const prepareData = (data: OrderFormData): IsClientRequest => {
       ? DateTime.fromJSDate(data.birthDate).toFormat('yyyy-LL-dd')
       : data.birthDate || undefined
 
-  const phoneNumber = data.phoneNumber ? maskPhoneNumber(data.phoneNumber, true) : undefined
+  const phoneNumber = data.phoneNumber ? maskMobilePhoneNumber(data.phoneNumber, true) : undefined
 
   return {
     passportSeries,

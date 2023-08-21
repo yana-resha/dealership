@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { maskPhoneNumber } from 'shared/masks/InputMasks'
+import { maskMobilePhoneNumber } from 'shared/masks/InputMasks'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -20,7 +20,7 @@ describe('MaskedInputTest', () => {
         <MaskedInput
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
-          mask={maskPhoneNumber}
+          mask={maskMobilePhoneNumber}
         />,
         {
           wrapper: createWrapper,
@@ -43,7 +43,7 @@ describe('MaskedInputTest', () => {
         <MaskedInput
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
-          mask={maskPhoneNumber}
+          mask={maskMobilePhoneNumber}
         />,
         {
           wrapper: createWrapper,
@@ -71,7 +71,7 @@ describe('MaskedInputTest', () => {
           onChange={mockedSetFieldValue}
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
-          mask={maskPhoneNumber}
+          mask={maskMobilePhoneNumber}
         />,
         {
           wrapper: createWrapper,
@@ -91,7 +91,7 @@ describe('MaskedInputTest', () => {
         <MaskedInput
           placeholder="Тестовый плейсхолдер"
           label="Тестовое поле с маской"
-          mask={maskPhoneNumber}
+          mask={maskMobilePhoneNumber}
           isError={true}
           errorMessage="Поле обязательно для заполнения"
         />,
