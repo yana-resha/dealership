@@ -23,6 +23,7 @@ import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 import { ClientData } from '../../ClientForm.types'
 import { configAddressInitialValues, OCCUPATION_VALUES } from '../../config/clientFormInitialValues'
 import { JOB_DISABLED_OCCUPATIONS } from '../../config/clientFormValidation'
+import { prepareAddress } from '../../utils/prepareAddress'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './JobArea.styles'
 
@@ -40,9 +41,6 @@ export function JobArea() {
     emplNotKladr,
     employerName,
     incomeConfirmation,
-    ndfl2File,
-    ndfl3File,
-    bankStatementFile,
   } = values
 
   const { mutate: fetchOrganizationSuggestions, data } = useGetOrganizationSuggestions()
@@ -245,6 +243,7 @@ export function JobArea() {
           gridColumn="span 12"
           disabled={jobDisabled}
           forceValue={addressSuggestion as SuggestionGetAddressSuggestions}
+          prepareAddress={prepareAddress}
         />
       )}
 

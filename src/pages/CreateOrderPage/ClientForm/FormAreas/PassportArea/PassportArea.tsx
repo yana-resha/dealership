@@ -28,6 +28,7 @@ import {
   SEX_VALUES,
   configAddressInitialValues,
 } from '../../config/clientFormInitialValues'
+import { prepareAddress } from '../../utils/prepareAddress'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './PassportArea.styles'
 
@@ -249,6 +250,7 @@ export function PassportArea() {
           label="Адрес по регистрации (КЛАДР)"
           placeholder="-"
           gridColumn="span 12"
+          prepareAddress={prepareAddress}
         />
       )}
 
@@ -291,6 +293,7 @@ export function PassportArea() {
               label="Адрес проживания (КЛАДР)"
               placeholder="-"
               gridColumn="span 12"
+              prepareAddress={prepareAddress}
             />
           )}
         </>
