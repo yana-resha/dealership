@@ -156,6 +156,13 @@ describe('DocumentsAreaTest', () => {
         expect(await screen.findByTestId('uploadFile')).toBeInTheDocument()
       })
 
+      it('Отображается анкета для статуса clientRejected (Отказ по клиенту)', async () => {
+        render(<DocumentsArea status={StatusCode.CLIENT_REJECTED} />, {
+          wrapper: createWrapper,
+        })
+        expect(await screen.findByTestId('uploadFile')).toBeInTheDocument()
+      })
+
       it('Отображается анкета для статуса CanceledDeal (КД отменен)', async () => {
         render(<DocumentsArea status={StatusCode.CANCELED_DEAL} />, {
           wrapper: createWrapper,

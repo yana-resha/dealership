@@ -12,6 +12,7 @@ export const statusListItems: Record<string, string> = {
   [PreparedStatus.finallyApproved]: '#17A131',
   [PreparedStatus.formation]: '#17A131',
   [PreparedStatus.rejected]: '#FF2E43',
+  [PreparedStatus.clientRejected]: '#FF2E43',
   [PreparedStatus.canceledDeal]: '#D3D3D3',
   [PreparedStatus.canceled]: '#D7DCE1',
   [PreparedStatus.signed]: '#17A131',

@@ -23,6 +23,12 @@ describe('ApplicationStatus', () => {
       expect(screen.getByText('Отказ')).toBeInTheDocument()
       expect(screen.getByText('Отказ')).toHaveStyle('background-color: rgb(255, 46, 67)')
     })
+    it('clientRejected', () => {
+      render(<ApplicationStatus status={StatusCode.CLIENT_REJECTED} />)
+
+      expect(screen.getByText('Отказ по клиенту')).toBeInTheDocument()
+      expect(screen.getByText('Отказ по клиенту')).toHaveStyle('background-color: rgb(255, 46, 67)')
+    })
     it('error', () => {
       render(<ApplicationStatus status={StatusCode.ERROR} />)
 

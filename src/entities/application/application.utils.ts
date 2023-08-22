@@ -14,6 +14,7 @@ export enum PreparedStatus {
   financed = 'Кредит выдан',
   error = 'Ошибка',
   issueError = 'Ошибка финансирования',
+  clientRejected = 'Отказ по клиенту',
 }
 
 export enum AnketaType {
@@ -49,6 +50,8 @@ export const getStatus = (status: StatusCode) => {
       return PreparedStatus.authorized
     case StatusCode.ISSUE_ERROR:
       return PreparedStatus.issueError
+    case StatusCode.CLIENT_REJECTED:
+      return PreparedStatus.clientRejected
     default:
       return PreparedStatus.error
   }
