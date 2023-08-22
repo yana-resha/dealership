@@ -201,7 +201,7 @@ export function PassportArea() {
         name="birthPlace"
         label="Место рождения"
         placeholder="-"
-        mask={maskNoRestrictions}
+        mask={maskCyrillicAndDigits}
         gridColumn="span 8"
       />
 
