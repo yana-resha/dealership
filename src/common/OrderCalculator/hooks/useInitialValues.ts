@@ -462,10 +462,14 @@ export function useInitialValues<D extends boolean | undefined>(
         term: parseInt(loanTerm.toString(), 10),
         additionalOptions: remapAdditionalOptionsForSmallCalculator(values),
       }
+      const newVendor: VendorFrontdc = {
+        ...pointOfSale,
+      }
       const updatedApplication = {
         ...application,
         loanCar: newLoanCar,
         loanData: newLoanData,
+        vendor: newVendor,
         /* Если попали на короткий калькулятор, то выйти из него можно с anketaType=0 или anketaType=1,
         в зависимости от полноты данных, даже если до этого в заявке был anketaType=2.
         Потому тут изначально ставим 0, а на этапе сохранения выбираем 0 или 1 */
@@ -473,7 +477,7 @@ export function useInitialValues<D extends boolean | undefined>(
       }
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
-    [fullApplicationData, remapAdditionalOptionsForSmallCalculator, dispatch],
+    [fullApplicationData, remapAdditionalOptionsForSmallCalculator, pointOfSale, dispatch],
   )
 
   const remapApplicationValuesForFullCalculator = useCallback(
