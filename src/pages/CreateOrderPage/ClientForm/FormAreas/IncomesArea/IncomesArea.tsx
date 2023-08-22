@@ -5,6 +5,7 @@ import { useFormikContext } from 'formik'
 
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { maskDigitsOnly } from 'shared/masks/InputMasks'
+import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
@@ -61,13 +62,16 @@ export function IncomesArea() {
         mask={maskDigitsOnly}
         gridColumn="span 4"
       />
-      <SwitchInputFormik
-        name="incomeConfirmation"
-        label="Подтверждение"
-        centered
-        gridColumn="span 8"
-        disabled={incomeProduct}
-      />
+      <Box gridColumn="span 8">
+        <CustomTooltip arrow title={<span>Подтверждение среднемесячного дохода</span>}>
+          <SwitchInputFormik
+            name="incomeConfirmation"
+            label="Подтверждение"
+            centered
+            disabled={incomeProduct}
+          />
+        </CustomTooltip>
+      </Box>
 
       {incomeConfirmation && !!occupation && <IncomeProofUploadArea />}
 

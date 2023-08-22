@@ -1,9 +1,10 @@
 import { FC } from 'react'
 
-import { Box, IconButton, Tooltip } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 
 import { ReactComponent as ConfirmationDocumentIcon } from 'assets/icons/confirmationDocument.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
+import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 
 import useStyles from './ButtonsCell.styles'
 
@@ -22,13 +23,12 @@ export const ButtonsCell: FC<Props> = ({ type }) => {
         </IconButton>
       )}
       {type === 'incomeFlag' && (
-        <Tooltip
+        <CustomTooltip
           arrow
-          title={<span>Требуется справка подтверждающая доход</span>}
-          classes={{ tooltip: classes.tooltip, arrow: classes.tooltipArrow }}
+          title={<span style={{ maxWidth: 150 }}>Требуется справка подтверждающая доход</span>}
         >
           <ConfirmationDocumentIcon className={classes.icon} />
-        </Tooltip>
+        </CustomTooltip>
       )}
     </Box>
   )
