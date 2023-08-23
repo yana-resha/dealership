@@ -11,6 +11,7 @@ import {
   OrderCalculatorFields,
   ValidationParams,
   OrderCalculatorAdditionalServiceDocInfo,
+  AutoCategory,
 } from './types'
 
 const CAR_YEARS_LENGTH = 20
@@ -80,7 +81,6 @@ const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
   [FormFieldNameMap.correspondentAccount]: undefined,
   [FormFieldNameMap.taxPresence]: undefined,
   [FormFieldNameMap.taxation]: undefined,
-  [FormFieldNameMap.taxPresence]: undefined,
 }
 
 export const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments = {
@@ -173,3 +173,9 @@ export const CREDIT_PRODUCT_PARAMS_FIELDS = [
   FormFieldNameMap.carModel,
   FormFieldNameMap.carYear,
 ]
+
+export const AUTO_TYPE_MAP = {
+  [AutoCategory.A]: '3',
+  [AutoCategory.B]: '1',
+  [AutoCategory.C]: '2',
+}

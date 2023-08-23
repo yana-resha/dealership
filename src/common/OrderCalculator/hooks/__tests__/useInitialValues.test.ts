@@ -3,9 +3,10 @@ import React from 'react'
 import { renderHook } from '@testing-library/react'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
+import * as useGetCarsListQueryModule from 'common/OrderCalculator/hooks/useGetCarsListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { Order } from 'entities/reduxStore/orderSlice'
-import { mockGetVendorOptionsResponse } from 'shared/api/requests/dictionaryDc.mock'
+import { carBrands, mockGetVendorOptionsResponse } from 'shared/api/requests/dictionaryDc.mock'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { disableConsole } from 'tests/utils'
@@ -24,6 +25,7 @@ jest.mock('react-redux', () => ({
 }))
 
 const mockedUseGetVendorOptions = jest.spyOn(useGetVendorOptionsQueryModule, 'useGetVendorOptionsQuery')
+const mockeGetCarsList = jest.spyOn(useGetCarsListQueryModule, 'useGetCarsListQuery')
 
 describe('useInitialValues', () => {
   beforeEach(() => {
@@ -32,6 +34,13 @@ describe('useInitialValues', () => {
       () =>
         ({
           data: mockGetVendorOptionsResponse,
+          isError: false,
+        } as any),
+    )
+    mockeGetCarsList.mockImplementation(
+      () =>
+        ({
+          data: { cars: carBrands },
           isError: false,
         } as any),
     )

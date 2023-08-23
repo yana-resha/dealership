@@ -180,3 +180,20 @@ export type CreditProductParams = Partial<
     | FormFieldNameMap.carYear
   >
 >
+
+export enum CountryMade {
+  Domestic = 'DOMESTIC',
+  China = 'CHINA',
+}
+
+export enum CountryMark {
+  Domestic = 1,
+  Foreign = 2,
+  China = 3,
+}
+
+export enum AutoCategory {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+}

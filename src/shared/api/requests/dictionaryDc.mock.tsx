@@ -1,6 +1,4 @@
 import {
-  CalculateCreditResponse,
-  Car,
   GetCreditProductListResponse,
   GetVendorOptionsListResponse,
   OptionID,
@@ -8,11 +6,41 @@ import {
 } from '@sberauto/dictionarydc-proto/public'
 
 export const carBrands = {
-  BMW: { brand: 'BMW', models: ['1 series', '3 series'], maxCarAge: 20 },
-  Fiat: { brand: 'Fiat', models: ['Ducato', 'Punto', '500'], maxCarAge: 20 },
-  KIA: { brand: 'KIA', models: ['Picanto', 'Rio', 'Ceed'], maxCarAge: 20 },
-  Toyota: { brand: 'Toyota', models: ['Camry', 'Corolla'], maxCarAge: 20 },
-  Skoda: { brand: 'Skoda', models: ['Rapid', 'Octavia', 'Superb'], maxCarAge: 20 },
+  BMW: {
+    brand: 'BMW',
+    models: ['1 series', '3 series'],
+    maxCarAge: 20,
+    madeIn: 'GERMANY',
+    autoCategory: 'B',
+  },
+  Fiat: {
+    brand: 'Fiat',
+    models: ['Ducato', 'Punto', '500'],
+    maxCarAge: 20,
+    madeIn: 'ITALY',
+    autoCategory: 'B',
+  },
+  KIA: {
+    brand: 'KIA',
+    models: ['Picanto', 'Rio', 'Ceed'],
+    maxCarAge: 20,
+    madeIn: 'KOREA',
+    autoCategory: 'B',
+  },
+  Toyota: {
+    brand: 'Toyota',
+    models: ['Camry', 'Corolla'],
+    maxCarAge: 20,
+    madeIn: 'JAPAN',
+    autoCategory: 'B',
+  },
+  Skoda: {
+    brand: 'Skoda',
+    models: ['Rapid', 'Octavia', 'Superb'],
+    maxCarAge: 20,
+    madeIn: 'CZECH',
+    autoCategory: 'B',
+  },
 }
 
 export const creditProductListRsData: GetCreditProductListResponse = {

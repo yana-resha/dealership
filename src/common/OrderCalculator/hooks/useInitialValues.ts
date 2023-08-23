@@ -19,8 +19,10 @@ import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
-import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
-import { FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
+import { AUTO_TYPE_MAP, CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
+import { AutoCategory, FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
+import { getCountryMark } from '../utils/getCountryMark'
+import { useGetCarsListQuery } from './useGetCarsListQuery'
 import { useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
 type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : OrderCalculatorFields
@@ -37,6 +39,8 @@ export function useInitialValues<D extends boolean | undefined>(
     { vendorCode: pointOfSale.vendorCode },
     { enabled: false },
   )
+  const { data: carsData } = useGetCarsListQuery({ vendorCode: pointOfSale.vendorCode }, { enabled: false })
+
   const fullApplicationData = initialOrder?.orderData
 
   const { loanCar, loanData, vendor } = useMemo(
@@ -430,6 +434,20 @@ export function useInitialValues<D extends boolean | undefined>(
     [vendorOptions?.additionalOptionsMap],
   )
 
+  const getCarCountryData = useCallback(
+    (carBrand: string | null) => {
+      const currentCarBrand = carsData?.cars?.[carBrand ?? '']
+
+      return {
+        mark: getCountryMark(currentCarBrand?.madeIn),
+        countryMade: currentCarBrand?.madeIn,
+        type: AUTO_TYPE_MAP[currentCarBrand?.autoCategory as AutoCategory],
+        category: currentCarBrand?.autoCategory,
+      }
+    },
+    [carsData?.cars],
+  )
+
   const remapApplicationValuesForSmallCalculator = useCallback(
     (values: OrderCalculatorFields) => {
       const {
@@ -454,6 +472,7 @@ export function useInitialValues<D extends boolean | undefined>(
         mileage: carMileage,
         model: carModel ?? undefined,
         autoCreateYear: carYear,
+        ...getCarCountryData(carBrand),
       }
       const newLoanData: LoanDataFrontdc = {
         productId: creditProduct,
@@ -477,7 +496,7 @@ export function useInitialValues<D extends boolean | undefined>(
       }
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
-    [fullApplicationData, remapAdditionalOptionsForSmallCalculator, pointOfSale, dispatch],
+    [fullApplicationData, getCarCountryData, remapAdditionalOptionsForSmallCalculator, pointOfSale, dispatch],
   )
 
   const remapApplicationValuesForFullCalculator = useCallback(
@@ -526,6 +545,7 @@ export function useInitialValues<D extends boolean | undefined>(
         carBody: carIdType === 0 ? carId : undefined,
         dkpNumber: salesContractId,
         dkpDate: convertedDateToString(salesContractDate),
+        ...getCarCountryData(carBrand),
       }
       const newVendor: VendorFrontdc = {
         ...pointOfSale,
