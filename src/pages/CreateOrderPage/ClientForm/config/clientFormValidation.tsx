@@ -1,4 +1,4 @@
-import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
+import { ApplicantDocsType, OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime, Interval } from 'luxon'
 import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
@@ -228,8 +228,18 @@ export const clientFormValidationSchema = Yup.object().shape({
   relatedToPublic: setRequiredIfSave(Yup.number().nullable()),
   secondDocumentType: setRequiredIfSave(Yup.number().nullable()),
   secondDocumentNumber: setRequiredIfSave(Yup.string()),
-  secondDocumentDate: setRequiredIfSave(Yup.date().nullable()).min(getMinBirthDate(), 'Дата слишком ранняя'),
-  secondDocumentIssuedBy: setRequiredIfSave(Yup.string()),
+  secondDocumentDate: Yup.date()
+    .nullable()
+    .when('secondDocumentType', {
+      is: (secondDocumentType: number | null) => secondDocumentType !== ApplicantDocsType.INN,
+      then: schema => setRequiredIfSave(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
+    }),
+  secondDocumentIssuedBy: Yup.string()
+    .nullable()
+    .when('secondDocumentType', {
+      is: (secondDocumentType: number | null) => secondDocumentType !== ApplicantDocsType.INN,
+      then: schema => setRequiredIfSave(schema),
+    }),
   occupation: setRequiredIfSave(Yup.number().nullable()).when('incomeConfirmation', {
     is: (incomeConfirmation: boolean) => incomeConfirmation,
     then: schema => schema.test('isHasNotOccupation', '', value => !!value),
