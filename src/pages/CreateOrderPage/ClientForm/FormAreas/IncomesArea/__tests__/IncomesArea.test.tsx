@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 
 import { Button } from '@mui/material'
+import { MaritalStatus } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
@@ -33,7 +34,7 @@ interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
-const formFields = ['averageIncome', 'additionalIncome', 'familyIncome', 'expenses', 'relatedToPublic']
+const formFields = ['averageIncome', 'familyIncome', 'expenses', 'relatedToPublic']
 
 const mockedIncomeAreaFields = {
   averageIncome: '',
@@ -43,6 +44,7 @@ const mockedIncomeAreaFields = {
   expenses: '',
   relatedToPublic: '',
   submitAction: SubmitAction.Save,
+  familyStatus: MaritalStatus.MARRIED,
 }
 
 const createWrapper = ({ children, store }: WrapperProps) => (

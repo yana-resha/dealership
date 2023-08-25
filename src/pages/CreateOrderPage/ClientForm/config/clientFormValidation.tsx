@@ -1,4 +1,4 @@
-import { ApplicantDocsType, OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
+import { ApplicantDocsType, OccupationType, MaritalStatus } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime, Interval } from 'luxon'
 import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
@@ -216,14 +216,19 @@ export const clientFormValidationSchema = Yup.object().shape({
   }),
   email: setRequiredIfSave(Yup.string()).email('Введите корректный Email'),
   averageIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
-  additionalIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
+  additionalIncome: Yup.string().max(13, 'Значение слишком большое'),
   incomeProofUploadValidator: Yup.string().test(
     'isIncomeProofUploadedCorrectly',
     'submitAction',
     isIncomeProofUploadedCorrectly,
   ),
-
-  familyIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
+  familyIncome: Yup.string()
+    .max(13, 'Значение слишком большое')
+    .when(['familyStatus'], {
+      is: (familyStatus: number) =>
+        familyStatus === MaritalStatus.MARRIED || familyStatus === MaritalStatus.CIVILMARRIAGE,
+      then: schema => setRequiredIfSave(schema),
+    }),
   expenses: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   relatedToPublic: setRequiredIfSave(Yup.number().nullable()),
   secondDocumentType: setRequiredIfSave(Yup.number().nullable()),
