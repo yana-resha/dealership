@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
 import { Box } from '@mui/material'
 import { DataGetAddressSuggestions, SuggestionGetAddressSuggestions } from '@sberauto/dadata-proto/public'
@@ -17,6 +17,7 @@ type Props = {
   gridColumn?: string
   disabled?: boolean
   forceValue?: SuggestionGetAddressSuggestions
+  prepareAddress?: (addressObjectData: DataGetAddressSuggestions | null | undefined) => AddressFrontdc
 }
 
 export const AutocompleteDaDataAddressFormik = ({
@@ -27,6 +28,7 @@ export const AutocompleteDaDataAddressFormik = ({
   gridColumn,
   disabled,
   forceValue,
+  prepareAddress,
 }: Props) => {
   const { value: valueString, isError, error } = useFormikWrapper(nameOfString)
   const { value: valueObject } = useFormikWrapper(nameOfObject)
@@ -37,28 +39,36 @@ export const AutocompleteDaDataAddressFormik = ({
   }
   const { setFieldValue } = useFormikContext()
 
-  const mapAddressToModel = useCallback((addressObject: SuggestionGetAddressSuggestions): AddressFrontdc => {
-    const data = addressObject?.data
-    const address: AddressFrontdc = {
-      postalCode: data?.postalCode ?? '',
-      regCode: data?.regionKladrId ? data.regionKladrId.slice(0, 2) : '',
-      area: data?.area ?? '',
-      areaType: data?.areaTypeFull ?? '',
-      city: data?.city ?? '',
-      cityType: data?.cityTypeFull ?? '',
-      house: data?.house ?? '',
-      houseExt: data?.block ?? '',
-      region: data?.region ?? '',
-      settlement: data?.settlement ?? '',
-      settlementType: data?.settlementTypeFull ?? '',
-      street: data?.street ?? '',
-      streetType: data?.streetTypeFull ?? '',
-      unit: '',
-      unitNum: data?.flat ?? '',
-    }
+  const mapAddressToModel = useCallback(
+    (addressObject: SuggestionGetAddressSuggestions): AddressFrontdc => {
+      const data = addressObject?.data
 
-    return address
-  }, [])
+      if (prepareAddress) {
+        return prepareAddress(data)
+      }
+
+      const address: AddressFrontdc = {
+        postalCode: data?.postalCode ?? '',
+        regCode: data?.regionKladrId ? data.regionKladrId.slice(0, 2) : '',
+        area: data?.area ?? '',
+        areaType: data?.areaTypeFull ?? '',
+        city: data?.city ?? '',
+        cityType: data?.cityTypeFull ?? '',
+        house: data?.house ?? '',
+        houseExt: data?.block ?? '',
+        region: data?.region ?? '',
+        settlement: data?.settlement ?? '',
+        settlementType: data?.settlementTypeFull ?? '',
+        street: data?.street ?? '',
+        streetType: data?.streetTypeFull ?? '',
+        unit: '',
+        unitNum: data?.flat ?? '',
+      }
+
+      return address
+    },
+    [prepareAddress],
+  )
 
   const onChange = useCallback(
     (values: SuggestionGetAddressSuggestions) => {

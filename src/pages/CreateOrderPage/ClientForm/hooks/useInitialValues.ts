@@ -22,13 +22,8 @@ import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { ClientData } from '../ClientForm.types'
+import { AREA_TYPES, CITY_TYPES, SETTLEMENT_TYPES, STREET_TYPES } from '../config/address.config'
 import { configAddressInitialValues, UPLOADED_DOCUMENTS } from '../config/clientFormInitialValues'
-import {
-  AREA_TYPES,
-  CITY_TYPES,
-  SETTLEMENT_TYPES,
-  STREET_TYPES,
-} from '../FormAreas/AddressDialog/AddressDialog.config'
 import { addressTransformForForm, addressTransformForRequest } from '../utils/addressTransformForRequest'
 import { makeClientForm } from '../utils/makeClienForm'
 import { transformDocsForRequest } from '../utils/transformDocsForRequest'

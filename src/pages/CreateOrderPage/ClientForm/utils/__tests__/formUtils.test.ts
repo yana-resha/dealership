@@ -1,5 +1,6 @@
 import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { prepareAddress } from '../prepareAddress'
 import { transformDocsForRequest } from '../transformDocsForRequest'
 import { transformPhoneForRequest } from '../transformPhoneForRequest'
 
@@ -48,6 +49,61 @@ describe('утилиты анкеты клиента', () => {
       countryPrefix: '7',
       prefix: '999',
       number: '8887766',
+    })
+  })
+
+  it('prepareAddress работает корректно', () => {
+    expect(
+      prepareAddress({
+        postalCode: '108813',
+        regionKladrId: '770000000000',
+        area: 'Московский',
+        areaTypeFull: 'поселение',
+        city: 'Московский',
+        cityTypeFull: 'город',
+        house: '',
+        block: '',
+        region: 'Москва',
+        settlement: '',
+        settlementTypeFull: '',
+        street: 'Хабарова',
+        streetTypeFull: 'улица',
+        flat: '',
+      }),
+    ).toMatchObject({
+      postalCode: '108813',
+      regCode: '77',
+      area: 'Московский',
+      areaType: '',
+      city: 'Московский',
+      cityType: '301',
+      house: '',
+      houseExt: '',
+      region: 'Москва',
+      settlement: '',
+      settlementType: '',
+      street: 'Хабарова',
+      streetType: '529',
+      unitNum: '',
+    })
+  })
+
+  it('prepareAddress работает корректно с пустыми значениями', () => {
+    expect(prepareAddress({})).toMatchObject({
+      postalCode: '',
+      regCode: '',
+      area: '',
+      areaType: '',
+      city: '',
+      cityType: '',
+      house: '',
+      houseExt: '',
+      region: '',
+      settlement: '',
+      settlementType: '',
+      street: '',
+      streetType: '',
+      unitNum: '',
     })
   })
 })

@@ -9,8 +9,14 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 
 import { Address } from '../../ClientForm.types'
+import {
+  AREA_TYPES,
+  CITY_TYPES,
+  REGION_CODE,
+  SETTLEMENT_TYPES,
+  STREET_TYPES,
+} from '../../config/address.config'
 import { clientAddressValidationSchema } from '../../config/clientFormValidation'
-import { AREA_TYPES, CITY_TYPES, REGION_CODE, SETTLEMENT_TYPES, STREET_TYPES } from './AddressDialog.config'
 import { useStyles } from './AddressDialog.styles'
 
 type Props = {
@@ -91,7 +97,7 @@ export const AddressDialog = (props: Props) => {
       setFieldValue(`${addressName}String`, buildAddressString(values))
       setIsVisible(false)
     },
-    [setIsVisible, setFieldValue, addressName, buildAddressString],
+    [setFieldValue, addressName, getLabel, buildAddressString, setIsVisible],
   )
 
   return (
