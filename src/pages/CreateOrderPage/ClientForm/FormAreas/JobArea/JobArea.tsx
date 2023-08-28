@@ -12,7 +12,7 @@ import throttle from 'lodash/throttle'
 
 import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
 import { useOnScreen } from 'shared/hooks/useOnScreen'
-import { maskInn, maskNoRestrictions, maskPhoneNumber } from 'shared/masks/InputMasks'
+import { maskInn, maskNoRestrictions, maskCommonPhoneNumber } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
@@ -219,7 +219,7 @@ export function JobArea() {
         name="employerPhone"
         label="Телефон"
         placeholder="-"
-        mask={maskPhoneNumber}
+        mask={maskCommonPhoneNumber}
         gridColumn="span 5"
         disabled={jobDisabled}
       />

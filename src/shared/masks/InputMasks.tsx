@@ -76,9 +76,18 @@ export const maskPassport = (value: string, unmasked?: boolean) => {
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
-export const maskPhoneNumber = (number: string, unmasked?: boolean) => {
+export const maskCommonPhoneNumber = (
+  number: string,
+  unmasked?: boolean,
+  definition?: Record<'#', string | RegExp>,
+) => {
   const masked = IMask.createMask({
-    mask: '+{7} {9}00 000 00 00',
+    mask: '+{7} #00 000 00 00',
+    definitions: definition
+      ? definition
+      : {
+          '#': /[2,3,4,8,9]/,
+        },
     prepare: (appended: string, masked: { value: string }) => {
       if (appended === '8' && masked.value === '') {
         return ''
@@ -91,6 +100,9 @@ export const maskPhoneNumber = (number: string, unmasked?: boolean) => {
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
+
+export const maskMobilePhoneNumber = (number: string, unmasked?: boolean) =>
+  maskCommonPhoneNumber(number, unmasked, { '#': '{9}' })
 
 export const maskEmail = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({

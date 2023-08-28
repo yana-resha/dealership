@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Box, Typography } from '@mui/material'
 
-import { maskEmail, maskPhoneNumber } from 'shared/masks/InputMasks'
+import { maskEmail, maskMobilePhoneNumber, maskCommonPhoneNumber } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 
 import useStyles from './CommunicationArea.styles'
@@ -20,7 +20,7 @@ export function CommunicationArea() {
         name="mobileNumber"
         label="Мобильный телефон"
         placeholder="-"
-        mask={maskPhoneNumber}
+        mask={maskMobilePhoneNumber}
         gridColumn="span 5"
         disabled
       />
@@ -28,7 +28,7 @@ export function CommunicationArea() {
         name="additionalNumber"
         label="Дополнительный телефон"
         placeholder="-"
-        mask={maskPhoneNumber}
+        mask={maskCommonPhoneNumber}
         gridColumn="span 5"
       />
 
