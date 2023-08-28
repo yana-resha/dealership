@@ -197,15 +197,18 @@ export function ActionArea(props: Props) {
       )
     }
     if (
-      preparedStatus == PreparedStatus.canceled ||
-      preparedStatus == PreparedStatus.canceledDeal ||
-      preparedStatus == PreparedStatus.rejected
+      preparedStatus === PreparedStatus.canceled ||
+      preparedStatus === PreparedStatus.canceledDeal ||
+      preparedStatus === PreparedStatus.rejected ||
+      preparedStatus === PreparedStatus.clientRejected
     ) {
       return (
         <Box className={classes.actionButtons}>
-          {((preparedStatus == PreparedStatus.rejected &&
+          {(((preparedStatus === PreparedStatus.rejected ||
+            preparedStatus === PreparedStatus.clientRejected) &&
             ((moratoryEndDate && new Date() > new Date(moratoryEndDate)) || targetDcAppId)) ||
-            preparedStatus != PreparedStatus.rejected) && (
+            (preparedStatus !== PreparedStatus.rejected &&
+              preparedStatus !== PreparedStatus.clientRejected)) && (
             <>
               {targetDcAppId ? (
                 <Button variant="contained" onClick={getToNewApplication}>
@@ -263,13 +266,17 @@ export function ActionArea(props: Props) {
       )
     }
   }, [
-    application,
+    application.anketaType,
+    application.vendor?.vendorCode,
     classes.actionButtons,
+    closeConfirmationModal,
+    editApplication,
     editApplicationWithApprovedStatus,
     editApplicationWithErrorStatus,
     editApplicationWithInitialStatus,
     extendApplicationWithApprovedStatus,
     getToNewApplication,
+    isConfirmationModalVisible,
     moratoryEndDate,
     preparedStatus,
     recreateApplication,

@@ -153,6 +153,20 @@ describe('StatusFilter', () => {
       userEvent.click(screen.getByText('Отказ'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
+    it('Отказ по клиенту', () => {
+      const change = jest.fn()
+
+      render(
+        <ThemeProviderMock>
+          <StatusFilter onChange={change} />
+        </ThemeProviderMock>,
+      )
+
+      userEvent.click(screen.getByText('Отказ по клиенту'))
+      expect(change).toHaveBeenNthCalledWith(1, [StatusCode.CLIENT_REJECTED])
+      userEvent.click(screen.getByText('Отказ по клиенту'))
+      expect(change).toHaveBeenNthCalledWith(2, [])
+    })
     it('Актуальные заявки + Черновик', () => {
       const change = jest.fn()
 

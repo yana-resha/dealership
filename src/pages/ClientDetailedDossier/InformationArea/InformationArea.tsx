@@ -108,6 +108,11 @@ export function InformationArea({
           Данные индивидуальных условий кредитования могли устареть. Требуется переформировать печатные формы.
         </Box>
       )}
+      {statusCode === StatusCode.CLIENT_REJECTED && (
+        <Box className={cx(classes.textButtonContainer, classes.warningTextContainer)} gridColumn="1/-1">
+          Клиенту необходимо обратиться в отделение банка для актуализации данных.
+        </Box>
+      )}
       <Box className={classes.infoTextContainer} gridColumn="span 7">
         <InfoText label="ДЦ">
           {vendorCode && <SberTypography component="span">{vendorCode}&nbsp;</SberTypography>}

@@ -72,6 +72,10 @@ const config = [
     filter: [StatusCode.REJECTED],
     textValue: PreparedStatus.rejected,
   },
+  {
+    filter: [StatusCode.CLIENT_REJECTED],
+    textValue: PreparedStatus.clientRejected,
+  },
 ]
 
 type Props = { onChange: (value: StatusCode[]) => void }
