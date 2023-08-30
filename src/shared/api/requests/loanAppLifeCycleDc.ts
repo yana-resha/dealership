@@ -28,6 +28,7 @@ import {
   FormContractRequest,
   Scan,
   GetPreliminaryPaymentScheduleFormRequest,
+  GetShareFormRequest,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation } from 'react-query'
@@ -341,3 +342,15 @@ export const getPreliminaryPaymentScheduleForm = (
 }
 export const useGetPreliminaryPaymentScheduleFormMutation = () =>
   useMutation('getPreliminaryPaymentScheduleForm', getPreliminaryPaymentScheduleForm)
+
+export const getShareForm = (data: GetShareFormRequest): Promise<File> => {
+  const url = `${appConfig.apiUrl}/loanapplifecycledc`
+  const endpoint = 'getShareForm'
+
+  return Rest.request<GetShareFormRequest, File>(`${url}/${endpoint}`, {
+    data,
+    isResponseBlob: true,
+  })
+}
+export const useGetShareFormMutation = (data: GetShareFormRequest) =>
+  useMutation('getShareForm', () => getShareForm(data))

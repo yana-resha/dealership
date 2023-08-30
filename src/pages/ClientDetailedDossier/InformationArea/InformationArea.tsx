@@ -1,12 +1,15 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import Box from '@mui/material/Box'
 import { AdditionalOptionsFrontdc, OptionType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import cx from 'classnames'
+import { useParams } from 'react-router-dom'
 
+import { ReactComponent as DownloadIcon } from 'assets/icons/download.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
-import { ReactComponent as ShareIcon } from 'assets/icons/share.svg'
+import { useGetShareFormMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 import { formatMoney, formatTerm } from 'shared/lib/utils'
+import { Downloader } from 'shared/ui/Downloader'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
 
@@ -46,6 +49,10 @@ export function InformationArea({
   overpayment,
 }: Props) {
   const classes = useStyles()
+  const { applicationId = '' } = useParams()
+
+  const { mutateAsync: getShareFormMutate } = useGetShareFormMutation({ dcAppId: applicationId })
+
   const { additionalEquipment, dealerServices, bankServices, productSum } = useMemo(
     () =>
       additionalOptions.reduce(
@@ -92,17 +99,28 @@ export function InformationArea({
     PreparedStatus.finallyApproved,
   ].includes(status)
 
+  const handleShareClick = useCallback(async () => {
+    const blob = await getShareFormMutate()
+    if (blob) {
+      return new File([blob], 'Письмо об одобрении', { type: 'application/pdf' })
+    }
+  }, [getShareFormMutate])
+
   return (
     <Box className={classes.blockContainer}>
       <SberTypography gridColumn="span 6" sberautoVariant="h5" component="p">
         Информация
       </SberTypography>
-      <Box className={classes.textButtonContainer}>
-        <ShareIcon />
-        <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
-          Поделиться
-        </SberTypography>
-      </Box>
+      {(status === PreparedStatus.approved || status === PreparedStatus.finallyApproved) && (
+        <Downloader onDownloadFile={handleShareClick}>
+          <Box className={classes.textButtonContainer}>
+            <DownloadIcon />
+            <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
+              Скачать
+            </SberTypography>
+          </Box>
+        </Downloader>
+      )}
       {statusCode === StatusCode.NEED_REFORMATION && (
         <Box className={cx(classes.textButtonContainer, classes.warningTextContainer)} gridColumn="1/-1">
           Данные индивидуальных условий кредитования могли устареть. Требуется переформировать печатные формы.

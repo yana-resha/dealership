@@ -1,1 +1,0 @@
-export { DownloaderIcon } from './DownloaderIcon'
