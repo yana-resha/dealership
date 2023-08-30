@@ -1,4 +1,4 @@
-import { createAuthDc, GetTokenRequest, GetUserRequest } from '@sberauto/authdc-proto/public'
+import { createAuthDc, GetTokenRequest, GetUserRequest, GetUserResponse } from '@sberauto/authdc-proto/public'
 import { useQuery } from 'react-query'
 
 import { appConfig } from 'config'
@@ -11,8 +11,24 @@ const authDcApi = createAuthDc(`${appConfig.apiUrl}/authdc`, Rest.request)
 export const getToken = (params: GetTokenRequest) =>
   authDcApi.getToken({ data: params }).then(response => response.data ?? {})
 
+export enum Role {
+  FrontdcCreditExpert = 'frontdc_credit_expert',
+  FrontdcContentManager = 'frontdc_content_manager',
+}
+export interface PreparedUser extends Omit<GetUserResponse, 'roles'> {
+  roles: Record<string, boolean>
+}
+const prepareUser = (data: GetUserResponse): PreparedUser => {
+  const roles = (data.roles || []).reduce((acc, cur) => {
+    acc[cur] = true
+
+    return acc
+  }, {} as Record<string, boolean>)
+
+  return { ...data, roles }
+}
 export const getUser = (params: GetUserRequest) =>
-  authDcApi.getUser({ data: params }).then(response => response.data ?? {})
+  authDcApi.getUser({ data: params }).then(res => (res.data ? prepareUser(res.data) : res.data ?? {}))
 
 export const refreshAuthByToken = () =>
   authDcApi

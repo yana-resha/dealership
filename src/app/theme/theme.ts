@@ -130,6 +130,15 @@ export const theme = createTheme({
             color: alpha(BLACK, 0.38),
           },
         },
+        outlined: {
+          boxShadow: 'none',
+          borderRadius: 48,
+
+          '&:disabled': {
+            backgroundColor: LIGHT_GRAY,
+            color: alpha(BLACK, 0.38),
+          },
+        },
         containedPrimary: {
           backgroundColor: PRIMARY_MAIN,
 

@@ -4,9 +4,8 @@ import {
   useDownloadDocumentMutation,
   useGetApplicationDocumentsListMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
+import { DEFAULT_FILE_NAME } from 'shared/config/uploadFile.config'
 import { FileMetadata } from 'shared/ui/FileDownloader/FileDownloader'
-
-const DEFAULT_FILE_NAME = 'Файл'
 
 /** Загружает файл с сервера */
 const useDownloadDocument = () => {

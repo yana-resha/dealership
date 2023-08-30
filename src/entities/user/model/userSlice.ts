@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { GetUserResponse } from '@sberauto/authdc-proto/public'
+
+import { PreparedUser } from 'shared/api/requests/authdc'
 
 interface UserState {
-  user?: GetUserResponse
+  user?: PreparedUser
 }
 
 const initialState: UserState = {}
@@ -11,7 +12,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUserInfo: (state, action: PayloadAction<GetUserResponse>) => {
+    setUserInfo: (state, action: PayloadAction<PreparedUser>) => {
       state.user = action.payload
     },
     removeUserInfo: state => {

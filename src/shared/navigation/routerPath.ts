@@ -19,5 +19,4 @@ export const appRoutePaths = {
   order: appRoutes.order(':applicationId'),
   documentStorage: appRoutes.documentStorage(),
 }
-
 export const defaultRoute = appRoutePaths.orderList

@@ -6,7 +6,7 @@ import { useField, useFormikContext } from 'formik'
 
 import { ReactComponent as AttachIcon } from 'assets/icons/attach.svg'
 import { FileInfo, UploaderConfig, Uploader, DocumentUploadStatus } from 'features/ApplicationFileLoader'
-import { MAX_FILE_SIZE_MB } from 'shared/config/uploadFile.config'
+import { DEFAULT_MAX_FILE_SIZE_MB } from 'shared/config/uploadFile.config'
 import { ModalDialog } from 'shared/ui/ModalDialog'
 
 import { ClientData } from '../../ClientForm.types'
@@ -143,7 +143,7 @@ export const IncomeProofUploadArea = () => {
             {index > 0 && <Divider classes={{ root: classes.divider }} />}
             <Uploader
               uploaderConfig={uploaderConfig}
-              suggest={`Одним документом не более ${MAX_FILE_SIZE_MB} мб.`}
+              suggest={`Одним документом не более ${DEFAULT_MAX_FILE_SIZE_MB} мб.`}
               loadingMessage="Документ загружается"
               motivateMessage="Загрузить документ"
               onUploadDocument={handleUploadDocument}

@@ -224,3 +224,12 @@ export const maskElectronicСarPassportId = (value: string, unmasked?: boolean) 
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
+
+export const maskFolderName = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: /^[^\\/):*?"<>|+]+$/,
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
