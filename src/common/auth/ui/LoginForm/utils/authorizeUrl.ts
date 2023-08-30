@@ -3,7 +3,7 @@ import { GetStateAndNonceResponse } from '@sberauto/authsberteamid-proto/public'
 import { appConfig } from 'config'
 import { toSnakecaseKeysData } from 'shared/lib/utils'
 
-const REALM = 'SIAM'
+const REALM = appConfig.sberTeamAuthEnv === 'dev' ? 'SIAM' : 'SUID'
 const authPath = `/auth/realms/${REALM}/protocol/openid-connect/auth`
 const logoutPath = `/auth/realms/${REALM}/protocol/openid-connect/logout`
 
