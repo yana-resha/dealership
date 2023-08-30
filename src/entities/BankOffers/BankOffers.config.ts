@@ -1,15 +1,32 @@
+export enum TableCellKey {
+  ProductName = 'productName',
+  Downpayment = 'downpayment',
+  Term = 'term',
+  MonthlyPayment = 'monthlyPayment',
+  LastPayment = 'lastPayment',
+  Overpayment = 'overpayment',
+  CurrentRate = 'currentRate',
+  CascoFlag = 'cascoFlag',
+  TotalSum = 'totalSum',
+  Attachment = 'attachment',
+  IncomeFlag = 'incomeFlag',
+}
+
+export enum TableCellType {
+  Icon = 'icon',
+}
+
 export const BANK_OFFERS_TABLE_HEADERS = [
-  { key: 'productName', label: 'Продукт' },
-  { key: 'downpayment', label: 'ПВ' },
-  { key: 'term', label: 'Срок' },
-  { key: 'monthlyPayment', label: 'Платеж' },
+  { key: TableCellKey.ProductName, label: 'Продукт' },
+  { key: TableCellKey.Downpayment, label: 'ПВ' },
+  { key: TableCellKey.Term, label: 'Срок' },
+  { key: TableCellKey.MonthlyPayment, label: 'Платеж' },
   // убрали тк не будет функционала в пилоте
-  // { key: 'lastPayment', label: 'Последний платеж' },
-  { key: 'overpayment', label: 'Переплата' },
-  { key: 'currentRate', label: '% ставка' },
-  { key: 'cascoFlag', label: 'КАСКО' },
-  { key: 'amountWithoutPercent', label: 'Сумма кредита' },
-  // убрали тк не будет функционала в пилоте
-  // { key: 'attachment', label: '', type: 'icon' }, //пустой столбец для отображения иконоки графика платежей
-  { key: 'incomeFlag', label: '', type: 'icon' }, //пустой столбец для отображения иконки обязательности подтверждения дохода
+  // { key: TableCellKey.LastPayment, label: 'Последний платеж' },
+  { key: TableCellKey.Overpayment, label: 'Переплата' },
+  { key: TableCellKey.CurrentRate, label: '% ставка' },
+  { key: TableCellKey.CascoFlag, label: 'КАСКО' },
+  { key: TableCellKey.TotalSum, label: 'Сумма кредита' },
+  { key: TableCellKey.Attachment, label: '', type: TableCellType.Icon }, //пустой столбец для отображения иконоки графика платежей
+  { key: TableCellKey.IncomeFlag, label: '', type: TableCellType.Icon }, //пустой столбец для отображения иконки обязательности подтверждения дохода
 ]

@@ -171,14 +171,6 @@ class Rest {
       ...opt,
     })
       .then(async response => {
-        if (isResponseBlob) {
-          try {
-            return (await response.blob()) as any
-          } catch (err) {
-            throw makeError(response.statusText, response.status, `blob parser error, info: ${err}`)
-          }
-        }
-
         if (!response.ok) {
           let error: FetchError | undefined
           try {
@@ -189,6 +181,14 @@ class Rest {
 
           const { code, description } = error?.errors?.[0] || {}
           throw makeError(code, response.status, description)
+        }
+
+        if (isResponseBlob) {
+          try {
+            return (await response.blob()) as any
+          } catch (err) {
+            throw makeError(response.statusText, response.status, `blob parser error, info: ${err}`)
+          }
         }
 
         try {
