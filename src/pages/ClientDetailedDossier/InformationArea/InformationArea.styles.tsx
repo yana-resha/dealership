@@ -17,7 +17,7 @@ export const useStyles = makeStyles(theme => ({
   textButtonContainer: {
     display: 'flex',
     gap: theme.spacing(2),
-    alignSelf: 'end',
+    alignSelf: 'center',
     cursor: 'pointer',
     color: theme.palette.primary.main,
     userSelect: 'none',

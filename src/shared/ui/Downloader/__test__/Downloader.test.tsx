@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { sleep } from 'shared/lib/sleep'
 import { ThemeProviderMock } from 'tests/mocks'
 
-import { DownloaderIcon } from '../DownloaderIcon'
+import { Downloader } from '../Downloader'
 
 const blob = new Blob([''], { type: 'text/html' })
 const file = new File([blob], 'file')
@@ -22,7 +22,7 @@ describe('FileDownloader', () => {
     onDownloadFileFn.mockImplementation(() => Promise.resolve(file))
     render(
       <ThemeProviderMock>
-        <DownloaderIcon onDownloadFile={onDownloadFileFn} />,
+        <Downloader onDownloadFile={onDownloadFileFn} />,
       </ThemeProviderMock>,
     )
     userEvent.click(screen.getByTestId('downloaderLinkDownloader'))
@@ -33,7 +33,7 @@ describe('FileDownloader', () => {
     onDownloadFileFn.mockImplementation(() => Promise.resolve(undefined))
     render(
       <ThemeProviderMock>
-        <DownloaderIcon onDownloadFile={onDownloadFileFn} />,
+        <Downloader onDownloadFile={onDownloadFileFn} />,
       </ThemeProviderMock>,
     )
     userEvent.click(screen.getByTestId('downloaderLinkDownloader'))
@@ -49,7 +49,7 @@ describe('FileDownloader', () => {
     )
     render(
       <ThemeProviderMock>
-        <DownloaderIcon onDownloadFile={onDownloadFileFn} />,
+        <Downloader onDownloadFile={onDownloadFileFn} />,
       </ThemeProviderMock>,
     )
     userEvent.click(screen.getByTestId('downloaderLinkDownloader'))

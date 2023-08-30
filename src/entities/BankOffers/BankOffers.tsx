@@ -6,7 +6,7 @@ import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { useGetPreliminaryPaymentScheduleFormMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { DownloaderIcon } from 'shared/ui/DownloaderIcon'
+import { Downloader } from 'shared/ui/Downloader'
 
 import { BANK_OFFERS_TABLE_HEADERS, TableCellKey, TableCellType } from './BankOffers.config'
 import useStyles from './BankOffers.styles'
@@ -21,12 +21,12 @@ type Props = {
 export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
   const classes = useStyles()
   const autoPrice = useAppSelector(state => state.order.order?.orderData?.application?.loanCar?.autoPrice)
-  const { mutateAsync: getPreliminaryPaymentScheduleFormMutation } =
+  const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
     useGetPreliminaryPaymentScheduleFormMutation()
 
   const handleAttachmentClick = useCallback(
     async (row: CalculatedProduct) => {
-      const blob = await getPreliminaryPaymentScheduleFormMutation({
+      const blob = await getPreliminaryPaymentScheduleFormMutate({
         productName: row.productName,
         incomeFlag: row.incomeFlag,
         autoPrice: autoPrice,
@@ -43,7 +43,7 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
         return new File([blob], 'График платежей', { type: 'application/pdf' })
       }
     },
-    [autoPrice, getPreliminaryPaymentScheduleFormMutation],
+    [autoPrice, getPreliminaryPaymentScheduleFormMutate],
   )
 
   return (
@@ -76,9 +76,9 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
                     )}
 
                     {cell.type === TableCellType.Icon && cell.name === TableCellKey.Attachment && (
-                      <DownloaderIcon onDownloadFile={async () => await handleAttachmentClick(row)}>
+                      <Downloader onDownloadFile={async () => await handleAttachmentClick(row)}>
                         <ScheduleIcon />
-                      </DownloaderIcon>
+                      </Downloader>
                     )}
 
                     {cell.type !== TableCellType.Icon && cell.value}

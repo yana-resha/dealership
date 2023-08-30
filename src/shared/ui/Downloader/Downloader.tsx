@@ -5,13 +5,13 @@ import { Box } from '@mui/system'
 import { useSnackbar } from 'notistack'
 
 import { CircularProgressWheel } from '../CircularProgressWheel/CircularProgressWheel'
-import useStyles from './DownloaderIcon.styles'
+import useStyles from './Downloader.styles'
 
 type DownloaderIconProps = {
   onDownloadFile: () => Promise<File | undefined>
 }
 
-export function DownloaderIcon({ onDownloadFile, children }: React.PropsWithChildren<DownloaderIconProps>) {
+export function Downloader({ onDownloadFile, children }: React.PropsWithChildren<DownloaderIconProps>) {
   const styles = useStyles()
   const { enqueueSnackbar } = useSnackbar()
 

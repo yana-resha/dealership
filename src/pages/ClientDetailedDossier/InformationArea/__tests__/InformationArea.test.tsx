@@ -2,12 +2,17 @@ import React, { PropsWithChildren } from 'react'
 
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
+import { UseMutationResult } from 'react-query'
 
+import * as loanAppLifeCycleDcModule from 'shared/api/requests/loanAppLifeCycleDc'
 import { ThemeProviderMock } from 'tests/mocks'
 
 import { InformationArea } from '../InformationArea'
 
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
+
+const blob = new Blob([''], { type: 'text/html' })
+const mockedUseGetShareFormMutation = jest.spyOn(loanAppLifeCycleDcModule, 'useGetShareFormMutation')
 
 const informationAreaProps = {
   statusCode: StatusCode.INITIAL,
@@ -39,6 +44,14 @@ const informationAreaProps = {
 }
 
 describe('InformationAreaTest', () => {
+  beforeEach(() => {
+    mockedUseGetShareFormMutation.mockImplementation(
+      () =>
+        ({
+          mutateAsync: () => Promise.resolve(blob as File),
+        } as UseMutationResult<File, unknown, void, unknown>),
+    )
+  })
   describe('Отображаются вся информация о заявке', () => {
     beforeEach(() => {
       render(<InformationArea {...informationAreaProps} />, { wrapper: createWrapper })
@@ -47,8 +60,15 @@ describe('InformationAreaTest', () => {
       expect(screen.getByText('Информация')).toBeInTheDocument()
     })
 
-    it('Отображается кнопка "Поделиться"', () => {
-      expect(screen.getByText('Поделиться')).toBeInTheDocument()
+    it('Не отображается кнопка "Скачать", если заявка не имеет Одобрено и Предварительно одобрено', () => {
+      expect(screen.queryByText('Скачать')).not.toBeInTheDocument()
+    })
+
+    it('Отображается кнопка "Скачать", если заявка имеет Одобрено и Предварительно одобрено', () => {
+      render(<InformationArea {...informationAreaProps} statusCode={StatusCode.APPROVED} />, {
+        wrapper: createWrapper,
+      })
+      expect(screen.getByText('Скачать')).toBeInTheDocument()
     })
 
     it('Отображается информация о ДЦ', () => {
