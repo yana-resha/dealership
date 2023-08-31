@@ -1,10 +1,14 @@
-import React, { DragEvent, PropsWithChildren, useCallback, useEffect, useState } from 'react'
+import { DragEvent, PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { Button } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import cx from 'classnames'
 
-import { ALLOWED_FILE_TYPES, MAX_FILE_SIZE_MB, maxFileSizeBite } from '../../config/uploadFile.config'
+import {
+  DEFAULT_ALLOWED_FILE_TYPES,
+  DEFAULT_MAX_FILE_SIZE_MB,
+  defaultMaxFileSizeBite,
+} from '../../config/uploadFile.config'
 import { ModalDialog } from '../ModalDialog/ModalDialog'
 import SberTypography from '../SberTypography/SberTypography'
 
@@ -49,14 +53,14 @@ export const DragAndDropWrapper = ({ onChange, children }: PropsWithChildren<Pro
         for (let i = 0; i < files.length; i++) {
           const file = files.item(i)
           if (file != null) {
-            if (file.size > maxFileSizeBite) {
+            if (file.size > defaultMaxFileSizeBite) {
               setErrorLabel('Файл слишком большой')
-              setErrorMessage(`Максимальный размер файла: ${MAX_FILE_SIZE_MB} МБ`)
+              setErrorMessage(`Максимальный размер файла: ${DEFAULT_MAX_FILE_SIZE_MB} МБ`)
               setIsVisible(true)
 
               return
             }
-            if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            if (!DEFAULT_ALLOWED_FILE_TYPES.includes(file.type)) {
               setErrorLabel('Неверный тип файла')
               setErrorMessage('Разрешенные типы: jpg, png, pdf')
               setIsVisible(true)

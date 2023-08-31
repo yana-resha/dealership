@@ -4,6 +4,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import {
   Autocomplete,
   AutocompleteChangeReason,
+  AutocompleteRenderOptionState,
   AutocompleteValue,
   Box,
   InputLabel,
@@ -14,12 +15,17 @@ import { Masked, maskNoRestrictions } from '../../masks/InputMasks'
 import useStyles from './AutocompleteInput.styles'
 
 type Props = {
-  label: string
+  label?: string
   placeholder: string
   options: string[]
   value?: string
   onChange?: (value: string | string[] | null) => void
   getOptionLabel?: (value: string) => string
+  renderOption?: (
+    props: React.HTMLAttributes<HTMLLIElement>,
+    option: string,
+    state: AutocompleteRenderOptionState,
+  ) => React.ReactNode
   isError?: boolean
   errorMessage?: string
   id?: string
@@ -37,6 +43,7 @@ export const AutocompleteInput = React.memo(
     value,
     onChange,
     getOptionLabel,
+    renderOption,
     isCustomValueAllowed,
     isError,
     errorMessage,
@@ -84,6 +91,7 @@ export const AutocompleteInput = React.memo(
       inputValue: isCustomValueAllowed ? getMaskedValue(value ?? '') : undefined,
       options,
       getOptionLabel,
+      renderOption,
       disabled,
       freeSolo: isCustomValueAllowed,
       autoHighlight: true,
@@ -100,9 +108,11 @@ export const AutocompleteInput = React.memo(
 
     return (
       <Box className={classes.inputContainer}>
-        <InputLabel htmlFor={id} className={classes.inputLabel}>
-          {label}
-        </InputLabel>
+        {!!label && (
+          <InputLabel htmlFor={id} className={classes.inputLabel}>
+            {label}
+          </InputLabel>
+        )}
         <Box>
           <Autocomplete
             {...autocompleteConfig}

@@ -4,8 +4,13 @@ import { Box, Button } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
 import { ReactComponent as AttachIcon } from 'assets/icons/attach.svg'
+import { megaBiteToBite } from 'shared/utils/megaBiteToBite'
 
-import { ALLOWED_FILE_TYPES, MAX_FILE_SIZE_MB, maxFileSizeBite } from '../../config/uploadFile.config'
+import {
+  DEFAULT_ALLOWED_FILE_TYPES,
+  DEFAULT_MAX_FILE_SIZE_MB,
+  defaultMaxFileSizeBite,
+} from '../../config/uploadFile.config'
 import { ModalDialog } from '../ModalDialog/ModalDialog'
 import SberTypography from '../SberTypography/SberTypography'
 
@@ -24,15 +29,25 @@ const useStyles = makeStyles(theme => ({
 }))
 
 type Props = {
-  buttonText?: string
   onChange: (files: FileList) => void
+  icon?: React.ReactNode
+  buttonText?: string
   multiple?: boolean
+  allowedFileTypes?: string
+  maxFileSizeMb?: number
 }
 
-const FileUploadButton = ({ buttonText = 'Загрузите файл', onChange, multiple }: Props) => {
+const FileUploadButton = ({
+  onChange,
+  icon,
+  buttonText = 'Загрузите файл',
+  multiple,
+  allowedFileTypes,
+  maxFileSizeMb,
+}: Props) => {
   const styles = useStyles()
-
   const [isVisible, setIsVisible] = useState(false)
+  const maxFileSizeBite = maxFileSizeMb ? megaBiteToBite(maxFileSizeMb) : defaultMaxFileSizeBite
 
   const onChangeInput = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +67,7 @@ const FileUploadButton = ({ buttonText = 'Загрузите файл', onChange
       e.target.files?.length && onChange(e.target.files)
       e.target.value = ''
     },
-    [onChange],
+    [maxFileSizeBite, onChange],
   )
 
   const onClose = useCallback(() => {
@@ -63,7 +78,7 @@ const FileUploadButton = ({ buttonText = 'Загрузите файл', onChange
     <Box>
       <Button
         classes={{ root: styles.root, startIcon: styles.startIcon }}
-        startIcon={<AttachIcon />}
+        startIcon={icon ?? <AttachIcon />}
         component="label"
       >
         <input
@@ -71,7 +86,7 @@ const FileUploadButton = ({ buttonText = 'Загрузите файл', onChange
           hidden
           multiple={multiple}
           type="file"
-          accept={ALLOWED_FILE_TYPES}
+          accept={allowedFileTypes ?? DEFAULT_ALLOWED_FILE_TYPES}
           onChange={onChangeInput}
         />
         {buttonText}
@@ -79,7 +94,7 @@ const FileUploadButton = ({ buttonText = 'Загрузите файл', onChange
 
       <ModalDialog isVisible={isVisible} label="Файл слишком большой" onClose={onClose}>
         <SberTypography sberautoVariant="body3" component="p">
-          Максимальный размер файла: {MAX_FILE_SIZE_MB} МБ
+          Максимальный размер файла: {maxFileSizeMb ?? DEFAULT_MAX_FILE_SIZE_MB} МБ
         </SberTypography>
         <Button onClick={onClose} variant="contained">
           ОК

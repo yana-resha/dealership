@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
 import { FileInfo, UploaderConfig, Uploader, DocumentUploadStatus } from 'features/ApplicationFileLoader'
-import { MAX_FILE_SIZE_MB } from 'shared/config/uploadFile.config'
+import { DEFAULT_MAX_FILE_SIZE_MB } from 'shared/config/uploadFile.config'
 
 import { ClientData } from '../../ClientForm.types'
 import { UPLOADED_DOCUMENTS } from '../../config/clientFormInitialValues'
@@ -56,7 +56,7 @@ export const QuestionnaireUploadArea = () => {
       <Box className={classes.uploadQuestionnaire} gridColumn="span 12">
         <Uploader
           uploaderConfig={uploaderConfig}
-          suggest={`Загрузите или перетащите сюда анкету подписанную клиентом в jpg, png, pdf и не более ${MAX_FILE_SIZE_MB} мб.`}
+          suggest={`Загрузите или перетащите сюда анкету подписанную клиентом в jpg, png, pdf и не более ${DEFAULT_MAX_FILE_SIZE_MB} мб.`}
           loadingMessage="Анкета загружается"
           motivateMessage="Загрузить анкету"
           onUploadDocument={onUploadDocument}

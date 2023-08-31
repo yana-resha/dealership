@@ -2198,10 +2198,10 @@
   resolved "https://nexus.x.sberauto.com/repository/npm/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
   integrity "sha1-i+NqH2bzJlOJ6QtfnJliFGdY9yg= sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg=="
 
-"@sberauto/authdc-proto@1.0.4":
-  version "1.0.4"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-1.0.4.tgz#bc571cd7de0bff8760afaab99f9488a0f6d7bede"
-  integrity sha512-rUPICua0mkdIwxdOnuzC2LLixFOSRKR1y/P2DGfJIN0sp2EmiIA9c53ABPTUU/74lF6g7SnjIseRPD9ljWmDcw==
+"@sberauto/authdc-proto@1.0.6":
+  version "1.0.6"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-1.0.6.tgz#eb10a29f0cbeee8b2895df932ae5c8a2dbaafca1"
+  integrity sha512-MGL+0g39jWE8pqfrjlxF4IQeWXHFMvdOMmw7VSn9D/txJRk9SQQD5Y7H1S+9BtSYNoWwcb1FNsxcPkz0dZQDxg==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
@@ -2236,6 +2236,14 @@
   integrity "sha1-FoK2bjg3TUqzMaHIlECArgPsGMo= sha512-P6N+qCF7SmlAqwEqjhJqHvtDE7/eovmpleLViPUaUyWJvrtgxmWihcige1McQiGd5zG0/UgHQat/4yAgMUWIXw=="
   dependencies:
     requireindex "1.2.0"
+
+"@sberauto/filestoragedc-proto@0.2.6":
+  version "0.2.6"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/filestoragedc-proto/-/filestoragedc-proto-0.2.6.tgz#9651df06180f32fcd262eba193100a1134a30439"
+  integrity sha512-p5KrmuR3eTRMtHCGGPwmP9rE4blgs/hm/uHOXxO0cedy4QbmPNVtwbnHBpuR5xD8o07ODB3M3d+3nv9fTKvuPQ==
+  dependencies:
+    camelcase-keys "^6.2.2"
+    snakecase-keys "^3.2.1"
 
 "@sberauto/loanapplifecycledc-proto@0.33.4":
   version "0.33.4"
@@ -3720,7 +3728,7 @@ bonjour-service@^1.0.11:
     fast-deep-equal "^3.1.3"
     multicast-dns "^7.2.5"
 
-boolbase@^1.0.0:
+boolbase@^1.0.0, boolbase@~1.0.0:
   version "1.0.0"
   resolved "https://nexus.x.sberauto.com/repository/npm/boolbase/-/boolbase-1.0.0.tgz"
   integrity "sha1-aN/1++YMUes3cl6p4+0xDcwed24= sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww=="
@@ -4279,7 +4287,7 @@ css-select@^2.0.0:
     boolbase "^1.0.0"
     css-what "^3.2.1"
     domutils "^1.7.0"
-    nth-check "2.0.1"
+    nth-check "^1.0.2"
 
 css-select@^4.1.3:
   version "4.3.0"
@@ -4290,7 +4298,7 @@ css-select@^4.1.3:
     css-what "^6.0.1"
     domhandler "^4.3.1"
     domutils "^2.8.0"
-    nth-check "2.0.1"
+    nth-check "^2.0.1"
 
 css-tree@1.0.0-alpha.37:
   version "1.0.0-alpha.37"
@@ -7882,10 +7890,17 @@ npm-run-path@^4.0.1:
   dependencies:
     path-key "^3.0.0"
 
-nth-check@2.0.1:
-  version "2.0.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/nth-check/-/nth-check-2.0.1.tgz#2efe162f5c3da06a28959fbd3db75dbeea9f0fc2"
-  integrity sha512-it1vE95zF6dTT9lBsYbxvqh0Soy4SPowchj0UBGj/V6cTPnXXtQOPUbhZ6CmGzAD/rW22LQK6E96pcdJXk4A4w==
+nth-check@^1.0.2:
+  version "1.0.2"
+  resolved "https://nexus.x.sberauto.com/repository/npm/nth-check/-/nth-check-1.0.2.tgz#b2bd295c37e3dd58a3bf0700376663ba4d9cf05c"
+  integrity sha512-WeBOdju8SnzPN5vTUJYxYUxLeXpCaVP5i5e0LF8fg7WORF2Wd7wFX/pk0tYZk7s8T+J7VLy0Da6J1+wCT0AtHg==
+  dependencies:
+    boolbase "~1.0.0"
+
+nth-check@^2.0.1:
+  version "2.1.1"
+  resolved "https://nexus.x.sberauto.com/repository/npm/nth-check/-/nth-check-2.1.1.tgz#c9eab428effce36cd6b92c924bdb000ef1f1ed1d"
+  integrity sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==
   dependencies:
     boolbase "^1.0.0"
 

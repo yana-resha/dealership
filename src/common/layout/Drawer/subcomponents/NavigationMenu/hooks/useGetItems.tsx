@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
-import { useTheme } from '@mui/styles'
 import cx from 'classnames'
 
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'

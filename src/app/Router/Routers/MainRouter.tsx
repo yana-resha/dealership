@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 
 import { DefaultLayout } from 'common/layout/DefaultLayout'
+import { Catalog } from 'pages/Catalog'
 import { ClientDetailedDossier } from 'pages/ClientDetailedDossier'
 import { CreateOrderPage } from 'pages/CreateOrderPage'
 import { DealershipPage } from 'pages/Dealership'
@@ -20,7 +21,7 @@ export function MainRouter(): JSX.Element {
         <Route path={appRoutePaths.orderList} element={<DealershipPage />} />
         <Route path={appRoutePaths.createOrder} element={<CreateOrderPage />} />
         <Route path={appRoutePaths.order} element={<ClientDetailedDossier />} />
-        <Route path={appRoutePaths.documentStorage} element={<DevelopmentCoverPage />} />
+        <Route path={appRoutePaths.documentStorage} element={<Catalog />} />
       </Route>
     </Routes>
   )
