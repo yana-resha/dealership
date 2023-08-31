@@ -72,7 +72,9 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
   return (
     <TableRow key={data.name} className={styles.bodyRow}>
       <TableCell align="left" className={cx(styles.bodyCell, styles.iconCell)} onClick={handleItemClick}>
-        <Box className={styles.iconContainer}>{isFile ? <FileIcon /> : <FolderIcon />}</Box>
+        <Box className={styles.iconContainer}>
+          {isFile ? <FileIcon data-testid="fileIcon" /> : <FolderIcon data-testid="folderIcon" />}
+        </Box>
       </TableCell>
       <TableCell align="left" className={styles.bodyCell} onClick={handleItemClick}>
         {data.name || 'Без имени'}
@@ -84,9 +86,10 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
         align="left"
         className={cx(styles.bodyCell, styles.iconCell)}
         onClick={isContentManager ? handleRemove : handleItemClick}
+        data-testid="cartCell"
       >
         {isContentManager && (
-          <Box className={styles.iconContainer}>
+          <Box className={styles.iconContainer} data-testid="cartIcon">
             <CartIcon />
           </Box>
         )}
