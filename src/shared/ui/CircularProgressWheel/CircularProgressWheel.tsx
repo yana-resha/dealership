@@ -39,6 +39,7 @@ enum WheelSize {
   small = 30,
   medium = 36,
   large = 40,
+  extraLarge = 64,
 }
 
 export const CircularProgressWheel = ({ size = 'small', color = theme.palette.text.primary }: Props) => {

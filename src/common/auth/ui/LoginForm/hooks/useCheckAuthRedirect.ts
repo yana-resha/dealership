@@ -17,6 +17,7 @@ export const useCheckAuthRedirect = (onReject: (text: string) => void) => {
 
   const code = searchParams.get('code') ?? undefined
   const state = searchParams.get('state') ?? undefined
+  const isHasCodeAndState = !!code && !!state
 
   const fetchData = useCallback(async () => {
     if (code && state) {
@@ -55,5 +56,5 @@ export const useCheckAuthRedirect = (onReject: (text: string) => void) => {
     fetchData()
   }, [fetchData])
 
-  return { isLoading }
+  return { isLoading, isHasCodeAndState }
 }

@@ -25,9 +25,13 @@ export function LoginForm() {
   )
 
   const { authLink, isLoading: authLinkLoading, error } = useGetAuthLink(code)
-  const { isLoading: redirectLoading } = useCheckAuthRedirect(showError)
+  const { isLoading: redirectLoading, isHasCodeAndState } = useCheckAuthRedirect(showError)
 
-  const isLoading = authLinkLoading || redirectLoading
+  const isLoading = authLinkLoading
+
+  if (isHasCodeAndState || redirectLoading) {
+    return <CircularProgressWheel size="extraLarge" />
+  }
 
   return (
     <Box className={classes.pointOfSaleFormContainer} data-testid="loginForm">
