@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 
+import AnnouncementIcon from '@mui/icons-material/Announcement'
 import cx from 'classnames'
 
+import { ReactComponent as HelpdeskIcon } from 'assets/icons/helpdesk.svg'
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
 import { ReactComponent as OrderListIcon } from 'assets/icons/orderList.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
@@ -42,6 +44,13 @@ export const useGetItems = ({ authType }: UseGetItemsProps): MenuItem[] => {
               <ScheduleIcon className={cx(styles.icon, { [styles.selectedIcon]: isSelected })} />
             ),
             path: appRoutePaths.documentStorage,
+          },
+          {
+            label: 'Поддержка',
+            icon: ({ isSelected }) => (
+              <HelpdeskIcon className={cx(styles.icon, { [styles.selectedIcon]: isSelected })} />
+            ),
+            path: appRoutePaths.helpdesk,
           },
         ]
 
