@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
 import SberTypography from 'shared/ui/SberTypography'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
@@ -31,42 +32,37 @@ type Props = {
   rowsPerPage?: number
 }
 
-const ROWS_PER_PAGE = 6
-
 export const ApplicationTable = (props: Props) => {
   const { data, onClickRow, startPage = 1, isLoading, rowsPerPage: rowsPerPageProp } = props
   const styles = useStyles()
 
-  const [page, setPage] = useState(startPage)
-
-  const rowsPerPage = rowsPerPageProp ? rowsPerPageProp : ROWS_PER_PAGE
-  const emptyRows =
-    page === Math.ceil(data.length / rowsPerPage) ? Math.max(0, rowsPerPage - (data.length % rowsPerPage)) : 0
-
-  useEffect(() => {
-    setPage(1)
-  }, [data])
-
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage)
-  }
-
-  const currentRowData =
-    rowsPerPage >= 0 ? data.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage) : data
-  const pageCount = Math.ceil(data.length / rowsPerPage)
+  const {
+    tableBodyRef,
+    currentRowData,
+    emptyRows,
+    pageCount,
+    page,
+    rowsPerPage,
+    rowHeight,
+    handleChangePage,
+  } = useRowsPerPage({
+    data,
+    startPage,
+    rowsPerPage: rowsPerPageProp,
+  })
 
   if (isLoading) {
     return (
       <>
-        <Skeleton height={72} width="100%" />
-        <Skeleton height={72} width="100%" />
-        <Skeleton height={72} width="100%" />
+        <Skeleton height={rowHeight} width="100%" />
+        <Skeleton height={rowHeight} width="100%" />
+        <Skeleton height={rowHeight} width="100%" />
       </>
     )
   }
 
   return (
-    <Table size="small" data-testid="applicationTable">
+    <Table size="small" data-testid="applicationTable" style={{ flexGrow: 1 }}>
       <TableHead>
         <TableRow className={styles.headerRow}>
           {applicationHeaders.map(header => (
@@ -89,7 +85,7 @@ export const ApplicationTable = (props: Props) => {
         </TableHead>
       )}
 
-      <TableBody>
+      <TableBody className={styles.tableBody} ref={tableBodyRef}>
         {currentRowData.map(row => (
           <TableRow
             key={row.applicationNumber}
@@ -112,7 +108,7 @@ export const ApplicationTable = (props: Props) => {
           </TableRow>
         ))}
         {emptyRows > 0 && (
-          <TableRow style={{ height: 72 * emptyRows }}>
+          <TableRow style={{ height: rowHeight * emptyRows }}>
             <TableCell colSpan={applicationHeaders.length} className={styles.bodyCell} />
           </TableRow>
         )}

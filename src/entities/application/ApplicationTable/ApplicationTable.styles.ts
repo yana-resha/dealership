@@ -19,6 +19,10 @@ export default makeStyles(theme => ({
       paddingRight: theme.spacing(2),
     },
   },
+  tableBody: {
+    flexGrow: 1,
+    flexShrink: 0,
+  },
   bodyCell: {
     '&.MuiTableCell-root': {
       padding: theme.spacing(2, 1),

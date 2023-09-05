@@ -5,6 +5,8 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    height: '100%',
+    boxSizing: 'border-box',
     padding: theme.spacing(6),
 
     [theme.breakpoints.down('sm')]: {
@@ -16,10 +18,11 @@ export const useStyles = makeStyles(theme => ({
 
   loaderContainer: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'start',
     alignItems: 'center',
     flexDirection: 'column',
     width: '100%',
+    height: '100%',
     gap: theme.spacing(4),
   },
 
@@ -30,5 +33,6 @@ export const useStyles = makeStyles(theme => ({
     borderRadius: theme.spacing(2),
     boxSizing: 'border-box',
     overflow: 'hidden',
+    flexShrink: 0,
   },
 }))

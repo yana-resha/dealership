@@ -77,7 +77,7 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
         </Box>
       </TableCell>
       <TableCell align="left" className={styles.bodyCell} onClick={handleItemClick}>
-        {data.name || 'Без имени'}
+        <Box className={styles.nameContainer}>{data.name || 'Без имени'}</Box>
       </TableCell>
       <TableCell align="left" className={styles.bodyCell} onClick={handleItemClick}>
         {date}

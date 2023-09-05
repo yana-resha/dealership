@@ -77,6 +77,7 @@ export const ApplicationFilters = ({ onSubmitClick }: Props) => {
       borderRadius={4}
       boxSizing="border-box"
       overflow="hidden"
+      flexShrink={0}
     >
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         <Form>
