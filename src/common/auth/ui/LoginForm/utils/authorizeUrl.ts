@@ -3,7 +3,11 @@ import { GetStateAndNonceResponse } from '@sberauto/authsberteamid-proto/public'
 import { appConfig } from 'config'
 import { toSnakecaseKeysData } from 'shared/lib/utils'
 
-const REALM = appConfig.sberTeamAuthEnv === 'dev' ? 'SIAM' : 'SUID'
+// Нарочно сделано двойное условие, просто чтобы перечислить все environment от sberTeam.
+// environment 'dev' не важен, т.к. на dev не происходит обращение к sberTeam.
+const REALM =
+  appConfig.sberTeamAuthEnv === 'integration' ? 'SIAM' : appConfig.sberTeamAuthEnv === 'prod' ? 'SUID' : ''
+
 const authPath = `/auth/realms/${REALM}/protocol/openid-connect/auth`
 const logoutPath = `/auth/realms/${REALM}/protocol/openid-connect/logout`
 
