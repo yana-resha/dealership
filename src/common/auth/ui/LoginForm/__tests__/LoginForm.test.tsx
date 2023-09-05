@@ -32,6 +32,7 @@ describe('LoginForm', () => {
     }))
     mockUseCheckAuthRedirect.mockImplementation(() => ({
       isLoading: false,
+      isHasCodeAndState: false,
     }))
   })
 
@@ -75,7 +76,7 @@ describe('LoginForm', () => {
   })
 
   it('отображает индикатор загрузки в кнопке, когда UseCheckAuthRedirect.isLoading равно true', () => {
-    mockUseCheckAuthRedirect.mockImplementation(() => ({ isLoading: true }))
+    mockUseCheckAuthRedirect.mockImplementation(() => ({ isLoading: true, isHasCodeAndState: false }))
 
     render(
       <MockProviders>
@@ -95,6 +96,7 @@ describe('LoginForm', () => {
     }))
     mockUseCheckAuthRedirect.mockImplementation(() => ({
       isLoading: false,
+      isHasCodeAndState: false,
     }))
 
     render(
@@ -126,6 +128,7 @@ describe('LoginForm', () => {
   it('Проверяем что были вызван хук получения токена', () => {
     mockUseCheckAuthRedirect.mockImplementation(() => ({
       isLoading: false,
+      isHasCodeAndState: false,
     }))
 
     render(
