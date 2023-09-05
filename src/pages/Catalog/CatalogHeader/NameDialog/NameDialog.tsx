@@ -37,7 +37,7 @@ export function NameDialog({ isVisible, onClose, onSubmit }: Props) {
   }, [isDisabledSubmit, newCatalogName])
 
   return (
-    <ModalDialog isVisible={isVisible} label="" onClose={onClose}>
+    <ModalDialog isVisible={isVisible} label="" onClose={onClose} testId="nameDialog">
       <SberTypography sberautoVariant="body3" component="p">
         Введите имя папки
       </SberTypography>

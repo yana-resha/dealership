@@ -87,7 +87,7 @@ export function CatalogHeader({ currentFolderId, onBack }: CatalogHeaderProps) {
     <Box className={styles.container}>
       <Box className={styles.titleContainer}>
         {currentFolderId ? (
-          <IconButton className={styles.iconButton} onClick={handleBackClick}>
+          <IconButton data-testid="backBtn" className={styles.iconButton} onClick={handleBackClick}>
             <KeyboardArrowLeft />
           </IconButton>
         ) : (
@@ -100,6 +100,7 @@ export function CatalogHeader({ currentFolderId, onBack }: CatalogHeaderProps) {
         <Box className={styles.btnContainer}>
           <Button
             variant="text"
+            data-testid="createCatalogBtn"
             startIcon={<AddingFolder />}
             className={styles.createCatalogBtn}
             onClick={() => setVisible(true)}

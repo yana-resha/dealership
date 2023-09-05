@@ -104,6 +104,7 @@ export function SearchForm({ fileName, setFileName, onFoundFile, onReset }: Prop
     <Box className={styles.container}>
       <Box flex={1}>
         <AutocompleteInput
+          id="searchInput"
           value={fileName}
           onChange={handleChange}
           placeholder="Введите имя файла, который хотите найти"
