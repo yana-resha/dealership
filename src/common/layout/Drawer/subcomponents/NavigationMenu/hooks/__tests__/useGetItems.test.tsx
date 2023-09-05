@@ -29,6 +29,11 @@ describe('useGetItems', () => {
         icon: expect.any(Function),
         path: '/document_storage',
       },
+      {
+        label: 'Поддержка',
+        icon: expect.any(Function),
+        path: '/helpdesk',
+      },
     ]
 
     expect(result.current).toMatchObject(expectedMenuItems)

@@ -22,6 +22,7 @@ export function MainRouter(): JSX.Element {
         <Route path={appRoutePaths.createOrder} element={<CreateOrderPage />} />
         <Route path={appRoutePaths.order} element={<ClientDetailedDossier />} />
         <Route path={appRoutePaths.documentStorage} element={<Catalog />} />
+        <Route path={appRoutePaths.helpdesk} element={<DevelopmentCoverPage />} />
       </Route>
     </Routes>
   )
