@@ -4,51 +4,26 @@ import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { FileInfo } from 'features/ApplicationFileLoader'
+import {
+  clientNameIsCorrect,
+  getMaxBirthDate,
+  getMinBirthDate,
+} from 'pages/CreateOrderPage/CreateOrderPage.utils'
+import { MIN_AGE } from 'shared/config/client.config'
 
 import { SubmitAction } from '../ClientForm.types'
 
-const MIN_AGE = 21
-const MAX_AGE = 65
-
 export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
-
-function isEmpty(value: any) {
-  return value === undefined || value === null
-}
-
-function clientNameIsCorrect(value: string | undefined) {
-  if (value == undefined) {
-    return false
-  }
-  const nameParts = value.trim().split(' ')
-  // ФИО может быть без отчества
-  if (nameParts.length >= 2 && nameParts.length <= 3) {
-    return true
-  }
-
-  return false
-}
-
-function getMaxBirthDate() {
-  const maxBirthDay = new Date()
-  maxBirthDay.setFullYear(maxBirthDay.getFullYear() - MIN_AGE)
-
-  return maxBirthDay
-}
-
-function getMinBirthDate() {
-  const minBirthDay = new Date()
-  minBirthDay.setFullYear(minBirthDay.getFullYear() - MAX_AGE)
-
-  return minBirthDay
-}
 
 function validatePassportDate(value: Date | null | undefined, context: Yup.TestContext<AnyObject>) {
   const birthDate = (context.options as InternalOptions)?.from?.[0].value.birthDate as Date | null
   if (!birthDate || !value) {
     return true
   }
-  const age = Interval.fromDateTimes(DateTime.fromJSDate(birthDate), DateTime.now()).toDuration('years').years
+  const age = Interval.fromDateTimes(
+    DateTime.fromJSDate(birthDate),
+    DateTime.now().minus({ months: 3 }),
+  ).toDuration('years').years
   const delta = age >= 45 ? 45 : age >= 20 ? 20 : 14
 
   const formalPassportDate = DateTime.fromObject({

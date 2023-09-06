@@ -4,6 +4,7 @@ import { OptionType, OptionID } from '@sberauto/dictionarydc-proto/public'
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
+import { MockStore } from 'redux-mock-store'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import * as useGetCarsListQueryModule from 'common/OrderCalculator/hooks/useGetCarsListQuery'
@@ -17,6 +18,8 @@ import {
   creditProductListRsData,
   mockGetVendorOptionsResponse,
 } from 'shared/api/requests/dictionaryDc.mock'
+import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { sleep } from 'shared/lib/sleep'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
@@ -25,14 +28,16 @@ import { FullOrderCalculator } from '../FullOrderCalculator'
 import { formFields } from './FullOrderCalculator.mock'
 
 jest.mock('entities/pointOfSale')
+disableConsole('error')
 
-const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
+const createWrapper = ({ store, children }: PropsWithChildren<{ store?: MockStore }>) => (
+  <MockProviders mockStore={store}>{children}</MockProviders>
+)
 const currentDate = new Date()
 const previousYear = currentDate.getFullYear() - 1
 const currentDateString = `3112${currentDate.getFullYear()}`
 
-disableConsole('error')
-
+const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
 const mockedUseGetVendorOptions = jest.spyOn(useGetVendorOptionsQueryModule, 'useGetVendorOptionsQuery')
 const mockedUseGetCarsListQuery = jest.spyOn(useGetCarsListQueryModule, 'useGetCarsListQuery')
 const mockedUseGetCreditProductListQuery = jest.spyOn(
@@ -97,6 +102,7 @@ describe('FullOrderCalculator', () => {
           isSuccess: true,
         } as any),
     )
+    mockedUseAppSelector.mockImplementation(() => fullApplicationData.application?.applicant?.birthDate)
   })
 
   describe('Форма отображается корректно', () => {
@@ -431,6 +437,25 @@ describe('FullOrderCalculator', () => {
     //   await act(() => userEvent.type(correspondentAccountField, '1'))
     //   expect(screen.queryByText('Введите данные полностью')).not.toBeInTheDocument()
     // }, 10000)
+  })
+
+  describe('Валидация ПВ', () => {
+    beforeEach(() => {
+      mockedUseInitialValues.mockImplementation(
+        () =>
+          ({
+            isShouldShowLoading: false,
+            initialValues: {
+              ...fullInitialValueMap,
+              carBrand: carBrands.KIA.brand,
+            },
+          } as any),
+      )
+      render(<FullOrderCalculator isSubmitLoading={false} onSubmit={fn} onChangeForm={fn} />, {
+        wrapper: createWrapper,
+      })
+      userEvent.click(screen.getByText('Рассчитать'))
+    })
 
     it('Ограничения минимума ПВ работает', async () => {
       const orderCalculatorForm = document.querySelector('[data-testid="fullOrderCalculatorForm"]')!
@@ -688,6 +713,7 @@ describe('FullOrderCalculator', () => {
             isShouldShowLoading: false,
             initialValues: {
               ...fullInitialValueMap,
+              carBrand: carBrands.KIA.brand,
               // Выбран кредитный продукт с cascoFlag=true
               creditProduct: creditProductListRsData.creditProducts?.[0].productId,
             },
