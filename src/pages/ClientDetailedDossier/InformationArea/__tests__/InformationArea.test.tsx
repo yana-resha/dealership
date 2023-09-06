@@ -143,112 +143,115 @@ describe('InformationAreaTest', () => {
     })
   })
 
-  describe('Кнопка "График платежей" отображается при определенных статусах', () => {
-    it('График платежей отображается при статусе Initial (Черновик)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.INITIAL }} />, {
-        wrapper: createWrapper,
-      })
+  // describe('Кнопка "График платежей" отображается при определенных статусах', () => {
+  //   it('График платежей отображается при статусе Initial (Черновик)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.INITIAL }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.getByText('График платежей')).toBeInTheDocument()
-    })
+  //     expect(screen.getByText('График платежей')).toBeInTheDocument()
+  //   })
 
-    it('График платежей отображается при статусе Processed (Ожидает решение)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.PROCESSED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отображается при статусе Processed (Ожидает решение)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.PROCESSED }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.getByText('График платежей')).toBeInTheDocument()
-    })
+  //     expect(screen.getByText('График платежей')).toBeInTheDocument()
+  //   })
 
-    it('График платежей отображается при статусе Approved (Предварительно одобрен)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.APPROVED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отображается при статусе Approved (Предварительно одобрен)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.APPROVED }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.getByText('График платежей')).toBeInTheDocument()
-    })
+  //     expect(screen.getByText('График платежей')).toBeInTheDocument()
+  //   })
 
-    it('График платежей отображается при статусе FinallyApproved (Кредит одобрен)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.FINALLY_APPROVED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отображается при статусе FinallyApproved (Кредит одобрен)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.FINALLY_APPROVED }} />,
+  // {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.getByText('График платежей')).toBeInTheDocument()
-    })
+  //     expect(screen.getByText('График платежей')).toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе Formation (Формирование КД)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.FORMATION }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе Formation (Формирование КД)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.FORMATION }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-    })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе Singed (КД подписан)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.SIGNED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе Singed (КД подписан)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.SIGNED }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-    })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе Rejected (Отказ)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.REJECTED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе Rejected (Отказ)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.REJECTED }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-    })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе clientRejected (Отказ по клиенту), есть предупреждение', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.CLIENT_REJECTED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе clientRejected (Отказ по клиенту), есть предупреждение',
+  // () => {
+  //     render(
+  // <InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.CLIENT_REJECTED }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-      expect(
-        screen.queryByText('Клиенту необходимо обратиться в отделение банка для актуализации данных.'),
-      ).toBeInTheDocument()
-    })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //     expect(
+  //       screen.queryByText('Клиенту необходимо обратиться в отделение банка для актуализации данных.'),
+  //     ).toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе CanceledDeal (КД Отменен)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.CANCELED_DEAL }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе CanceledDeal (КД Отменен)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.CANCELED_DEAL }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-    })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе Canceled (Отменен)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.CANCELED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе Canceled (Отменен)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.CANCELED }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-    })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе Authorized (Ожидание финансирования)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.AUTHORIZED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе Authorized (Ожидание финансирования)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.AUTHORIZED }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-    })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе Financed (Кредит выдан)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.ISSUED }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе Financed (Кредит выдан)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.ISSUED }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-    })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //   })
 
-    it('График платежей отсутствует при статусе Error (Ошибка)', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.ERROR }} />, {
-        wrapper: createWrapper,
-      })
+  //   it('График платежей отсутствует при статусе Error (Ошибка)', () => {
+  //     render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.ERROR }} />, {
+  //       wrapper: createWrapper,
+  //     })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-    })
-  })
+  //     expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+  //   })
+  // })
 })

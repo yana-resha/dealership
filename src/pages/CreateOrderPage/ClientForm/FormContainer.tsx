@@ -81,14 +81,14 @@ export function FormContainer(props: Props) {
                 {isDraftLoading && <CircularProgressWheel size="small" />}
               </Button>
             )}
-            <Button
+            {/* <Button
               className={classes.button}
               variant="outlined"
               disabled={disabledButtons}
               onClick={handlePrintClick}
             >
               Распечатать
-            </Button>
+            </Button> */}
             <Button
               className={classes.button}
               variant="contained"

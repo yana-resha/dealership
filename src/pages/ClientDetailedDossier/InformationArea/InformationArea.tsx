@@ -152,14 +152,14 @@ export function InformationArea({
       </Box>
       <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
       <InfoText label="Срок кредита">{term ? formatTerm(term) : ''}</InfoText>
-      {showGraphicButton && (
+      {/* {showGraphicButton && (
         <Box className={classes.textButtonContainer} gridColumn="span 2">
           <ScheduleIcon />
           <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
             График платежей
           </SberTypography>
         </Box>
-      )}
+      )} */}
 
       <AdditionalOptionList title="Дополнительное оборудование" options={additionalEquipment} />
       <AdditionalOptionList title="Дополнительные услуги дилера" options={dealerServices} />

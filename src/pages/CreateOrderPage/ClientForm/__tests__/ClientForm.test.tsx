@@ -82,9 +82,9 @@ describe('ClientFormTest', () => {
       expect(screen.getByText('Сохранить черновик')).toBeInTheDocument()
     })
 
-    it('Отображается кнопка "Распечатать"', () => {
-      expect(screen.getByText('Распечатать')).toBeInTheDocument()
-    })
+    // it('Отображается кнопка "Распечатать"', () => {
+    //   expect(screen.getByText('Распечатать')).toBeInTheDocument()
+    // })
 
     it('Отображается кнопка "Далее"', () => {
       expect(screen.getByText('Далее')).toBeInTheDocument()
