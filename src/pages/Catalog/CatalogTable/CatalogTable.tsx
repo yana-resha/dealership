@@ -43,7 +43,7 @@ const CatalogTable = ({
     { folderId: currentFolderId },
     { enabled: false },
   )
-  console.log('catalogData', catalogData)
+
   const data = useMemo(
     () =>
       (catalogData?.catalog || []).filter((catalog: RequiredCatalog) =>

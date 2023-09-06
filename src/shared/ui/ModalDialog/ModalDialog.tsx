@@ -1,6 +1,7 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { Box, Dialog, IconButton } from '@mui/material'
+import cx from 'classnames'
 
 import { ReactComponent as Close } from 'assets/icons/close.svg'
 
@@ -12,15 +13,16 @@ type Props = {
   label?: string
   onClose: () => void
   testId?: string
+  paperClassName?: string
 }
 
 export const ModalDialog = (props: PropsWithChildren<Props>) => {
-  const classes = useStyles()
-  const { isVisible, label, onClose, testId, children } = props
+  const styles = useStyles()
+  const { isVisible, label, onClose, testId, children, paperClassName } = props
 
   return (
     <Dialog
-      classes={{ paper: classes.dialogBlock }}
+      classes={{ paper: cx(styles.dialogBlock, paperClassName) }}
       open={isVisible}
       maxWidth="xs"
       fullWidth
@@ -28,11 +30,11 @@ export const ModalDialog = (props: PropsWithChildren<Props>) => {
     >
       <Box display="flex" overflow="visible" data-testid={testId}>
         {!!label && (
-          <SberTypography sberautoVariant="h5" component="p" className={classes.label}>
+          <SberTypography sberautoVariant="h5" component="p" className={styles.label}>
             {label}
           </SberTypography>
         )}
-        <IconButton className={classes.closeButton} onClick={onClose} data-testid="modalDialogClose">
+        <IconButton className={styles.closeButton} onClick={onClose} data-testid="modalDialogClose">
           <Close />
         </IconButton>
       </Box>
