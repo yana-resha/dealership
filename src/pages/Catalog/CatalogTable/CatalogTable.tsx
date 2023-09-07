@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 
 import {
   Skeleton,
@@ -14,6 +14,7 @@ import {
 import { RequiredCatalog, useGetCatalogQuery } from 'shared/api/requests/fileStorageDc.api'
 import SberTypography from 'shared/ui/SberTypography'
 
+import { useRowsPerPage } from '../../../shared/hooks/useRowsPerPage'
 import { CatalogRow } from './CatalogRow'
 import { catalogTableHeaders } from './CatalogTable.config'
 import useStyles from './CatalogTable.styles'
@@ -27,8 +28,6 @@ type Props = {
   rowsPerPage?: number
   foundedFileName?: string
 }
-
-const ROWS_PER_PAGE = 6
 
 const CatalogTable = ({
   currentFolderId,
@@ -52,19 +51,20 @@ const CatalogTable = ({
     [catalogData?.catalog, foundedFileName],
   )
 
-  const [page, setPage] = useState(startPage)
-
-  const rowsPerPage = rowsPerPageProp ? rowsPerPageProp : ROWS_PER_PAGE
-  const emptyRows =
-    page === Math.ceil(data.length / rowsPerPage) ? Math.max(0, rowsPerPage - (data.length % rowsPerPage)) : 0
-
-  useEffect(() => {
-    setPage(1)
-  }, [data])
-
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage)
-  }
+  const {
+    tableBodyRef,
+    currentRowData,
+    emptyRows,
+    pageCount,
+    page,
+    rowsPerPage,
+    rowHeight,
+    handleChangePage,
+  } = useRowsPerPage({
+    data,
+    startPage,
+    rowsPerPage: rowsPerPageProp,
+  })
 
   const [removedFile, setRemovedFile] = useState<RemovedFile>()
   const closeModal = useCallback(() => setRemovedFile(undefined), [])
@@ -72,23 +72,19 @@ const CatalogTable = ({
     setRemovedFile({ id, name })
   }, [])
 
-  const currentRowData =
-    rowsPerPage >= 0 ? data.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage) : data
-  const pageCount = Math.ceil(data.length / rowsPerPage)
-
   if (isLoading) {
     return (
       <>
-        <Skeleton height={56} width="100%" />
-        <Skeleton height={56} width="100%" />
-        <Skeleton height={56} width="100%" />
+        <Skeleton height={rowHeight} width="100%" />
+        <Skeleton height={rowHeight} width="100%" />
+        <Skeleton height={rowHeight} width="100%" />
       </>
     )
   }
 
   return (
     <>
-      <Table size="small" data-testid="catalogTable">
+      <Table size="small" data-testid="catalogTable" style={{ flexGrow: 1 }}>
         {!data.length && (
           <TableHead>
             <TableRow>
@@ -101,12 +97,12 @@ const CatalogTable = ({
           </TableHead>
         )}
 
-        <TableBody>
+        <TableBody className={styles.tableBody} ref={tableBodyRef}>
           {currentRowData.map(row => (
             <CatalogRow key={row.id} onRowClick={onFolderClick} data={row} onRemove={handleRemove} />
           ))}
           {emptyRows > 0 && (
-            <TableRow style={{ height: 56 * emptyRows }}>
+            <TableRow style={{ height: rowHeight * emptyRows }}>
               <TableCell colSpan={catalogTableHeaders.length} className={styles.bodyCell} />
             </TableRow>
           )}

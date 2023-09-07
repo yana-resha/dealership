@@ -51,7 +51,21 @@ export default makeStyles(theme => ({
     '&.MuiTableCell-root': {
       padding: theme.spacing(2, 1),
       borderBottom: 'none',
+      boxSizing: 'border-box',
+      height: 56,
     },
+  },
+
+  nameContainer: {
+    maxWidth: '50vw',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+  },
+
+  tableBody: {
+    flexGrow: 1,
+    flexShrink: 0,
   },
 
   iconCell: {
