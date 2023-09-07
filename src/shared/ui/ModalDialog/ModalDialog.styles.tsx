@@ -5,7 +5,7 @@ export const useStyles = makeStyles(theme => ({
     '&.MuiPaper-root': {
       position: 'relative',
       display: 'flex',
-      flexDisplay: 'column',
+      flexDirection: 'column',
       padding: theme.spacing(3),
       boxSizing: 'border-box',
       backgroundColor: theme.palette.background.default,
