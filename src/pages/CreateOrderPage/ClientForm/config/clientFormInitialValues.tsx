@@ -68,6 +68,7 @@ export const configInitialValues: ClientData = {
   secondDocumentNumber: '',
   secondDocumentDate: null,
   secondDocumentIssuedBy: '',
+  secondDocumentIssuedCode: '',
   occupation: null,
   employmentDate: null,
   employerName: '',

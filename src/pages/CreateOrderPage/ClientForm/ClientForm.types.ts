@@ -74,6 +74,7 @@ export interface ClientData {
   secondDocumentNumber: string
   secondDocumentDate: Date | null
   secondDocumentIssuedBy: string
+  secondDocumentIssuedCode: string
   occupation: OccupationType | null
   employmentDate: Date | null
   employerName: string | null

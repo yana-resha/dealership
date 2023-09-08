@@ -7,7 +7,8 @@ export const transformDocsForRequest = (
   type: number | null,
   docNumber: string,
   issuedDate: Date | null,
-  issuedBy?: string,
+  issuedBy: string,
+  issuedCode: string,
 ): DocumentFrontdc => {
   let series
   let number
@@ -41,8 +42,9 @@ export const transformDocsForRequest = (
     type: type ? type : undefined,
     series,
     number,
-    issuedBy: issuedBy,
     issuedDate: convertedDateToString(issuedDate),
+    issuedBy: issuedBy || undefined,
+    issuedCode: issuedCode || undefined,
   }
 
   return result

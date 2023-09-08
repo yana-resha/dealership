@@ -200,6 +200,7 @@ export function useInitialValues() {
         birthDate,
         issuedBy,
         secondDocumentIssuedBy,
+        secondDocumentIssuedCode,
         secondDocumentNumber,
         mobileNumber,
         additionalNumber,
@@ -278,14 +279,20 @@ export function useInitialValues() {
         publicPerson: relatedToPublic === 1,
         documents: compact([
           {
-            ...transformDocsForRequest(ApplicantDocsType.PASSPORT, passport, passportDate, issuedBy),
-            issuedCode: divisionCode,
+            ...transformDocsForRequest(
+              ApplicantDocsType.PASSPORT,
+              passport,
+              passportDate,
+              issuedBy,
+              divisionCode,
+            ),
           },
           transformDocsForRequest(
             secondDocumentType,
             secondDocumentNumber,
             secondDocumentDate,
             secondDocumentIssuedBy,
+            secondDocumentIssuedCode,
           ),
         ]),
         addresses: compact([
@@ -407,6 +414,7 @@ export function useInitialValues() {
             ? new Date(secondDocument.issuedDate)
             : initialValues.passportDate,
           secondDocumentIssuedBy: secondDocument.issuedBy ?? initialValues.secondDocumentIssuedBy,
+          secondDocumentIssuedCode: secondDocument.issuedCode ?? initialValues.secondDocumentIssuedCode,
           occupation: applicant?.employment?.occupation ?? initialValues.occupation,
           employmentDate,
           employerName: applicant?.employment?.orgName ?? initialValues.employerName,
