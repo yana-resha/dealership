@@ -5,7 +5,11 @@ import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
-import { FullInitialAdditionalService, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import {
+  FormFieldNameMap,
+  FullInitialAdditionalService,
+  FullOrderCalculatorFields,
+} from 'common/OrderCalculator/types'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -32,6 +36,7 @@ type Props = {
   index: number
   parentName: ServicesGroupName
   isNecessaryCasco?: boolean
+  isLoadedCreditProducts?: boolean
   isRequisiteEditable: boolean
   productOptions?: {
     value: string | number
@@ -56,6 +61,7 @@ export function DealerServicesRequisites({
   index,
   parentName,
   isNecessaryCasco = false,
+  isLoadedCreditProducts = false,
   isRequisiteEditable,
   arrayHelpers,
   arrayLength,
@@ -64,8 +70,10 @@ export function DealerServicesRequisites({
   productOptions,
 }: Props) {
   const classes = useStyles()
+
   const { values, setFieldValue, submitCount } = useFormikContext<FullOrderCalculatorFields>()
-  const { provider, agent, beneficiaryBank, taxPresence, productCost, productType } = servicesItem
+  const { provider, agent, beneficiaryBank, taxPresence, productCost, productType, cascoLimit, isCredit } =
+    servicesItem
   const [isCustomFields, setCustomFields] = useState(false)
 
   const { requisites, isRequisitesFetched } = useRequisitesContext()
@@ -206,6 +214,33 @@ export function DealerServicesRequisites({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cascoLimitMeta.touched, isShouldShowCascoLimitField, submitCount])
 
+  useEffect(() => {
+    if (isLoadedCreditProducts && !isShouldShowCascoLimitField && cascoLimit) {
+      setFieldValue(namePrefix + 'cascoLimit', '')
+    }
+  }, [cascoLimit, isLoadedCreditProducts, isShouldShowCascoLimitField, namePrefix, setFieldValue])
+
+  useEffect(() => {
+    if (isCredit) {
+      return
+    }
+    setFieldValue(namePrefix + 'agent', '')
+    setFieldValue(namePrefix + 'bankIdentificationCode', '')
+    setFieldValue(namePrefix + 'beneficiaryBank', '')
+    setFieldValue(namePrefix + 'bankAccountNumber', '')
+    setFieldValue(namePrefix + 'correspondentAccount', undefined)
+    setFieldValue(namePrefix + 'taxPresence', undefined)
+    setFieldValue(namePrefix + 'taxation', undefined)
+
+    if (!isShouldShowCascoLimitField) {
+      setFieldValue(namePrefix + 'provider', '')
+      setFieldValue(namePrefix + 'loanTerm', undefined)
+      setFieldValue(namePrefix + 'documentType', null)
+      setFieldValue(namePrefix + 'documentNumber', '')
+      setFieldValue(namePrefix + 'documentDate', null)
+    }
+  }, [isCredit, isShouldShowCascoLimitField, namePrefix, setFieldValue])
+
   return (
     <Box className={classes.editingAreaContainer}>
       {isRequisiteEditable && productOptions ? (
@@ -226,156 +261,215 @@ export function DealerServicesRequisites({
           disabled
         />
       )}
-      <SelectInputFormik
-        name={`${namePrefix}provider`}
-        label="Страховая компания или поставщик"
-        placeholder="-"
-        options={vendorOptions}
-        gridColumn="span 6"
-      />
+
+      {(isCredit || isShouldShowCascoLimitField) && (
+        <SelectInputFormik
+          name={`${namePrefix}provider`}
+          label="Страховая компания или поставщик"
+          placeholder="-"
+          options={vendorOptions}
+          gridColumn="span 6"
+        />
+      )}
+
+      {!isCredit && !isShouldShowCascoLimitField && (
+        <MaskedInputFormik
+          name={namePrefix + FormFieldNameMap.productCost}
+          label="Стоимость"
+          placeholder="-"
+          mask={maskOnlyDigitsWithSeparator}
+          gridColumn="span 3"
+        />
+      )}
+
       <SwitchInputFormik
         name={`${namePrefix}isCredit`}
         label="В кредит"
-        gridColumn="span 2"
+        gridColumn={isCredit || isShouldShowCascoLimitField ? 'span 2' : 'span 3'}
         centered
         disabled={!isRequisiteEditable}
       />
+
       {isRequisiteEditable && (
-        <Box className={classes.btnContainer} gridColumn="span 1">
+        <Box
+          className={classes.btnContainer}
+          gridColumn={isCredit || isShouldShowCascoLimitField ? 'span 1' : 'span 3'}
+        >
           <CloseSquareBtn onClick={removeItem} />
           <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />
         </Box>
       )}
-      <SelectInputFormik
-        name={`${namePrefix}agent`}
-        label="Агент получатель"
-        placeholder="-"
-        options={brokerOptions}
-        gridColumn="span 6"
-        disabled={!brokerOptions.length}
-      />
-      <SelectInputFormik
-        name={`${namePrefix}loanTerm`}
-        label="Срок"
-        placeholder="-"
-        options={terms}
-        gridColumn="span 3"
-      />
-      <MaskedInputFormik
-        name={`${namePrefix}productCost`}
-        label="Стоимость"
-        placeholder="-"
-        mask={maskOnlyDigitsWithSeparator}
-        gridColumn="span 3"
-        disabled={!isRequisiteEditable}
-      />
-      {isShouldShowCascoLimitField && (
-        <MaskedInputFormik
-          name={`${namePrefix}cascoLimit`}
-          label="Сумма покрытия КАСКО"
-          placeholder="-"
-          mask={maskOnlyDigitsWithSeparator}
-          gridColumn="span 3"
-          disabled={!isRequisiteEditable}
-        />
+
+      {!isCredit && isShouldShowCascoLimitField && (
+        <>
+          <SelectInputFormik
+            name={`${namePrefix}loanTerm`}
+            label="Срок"
+            placeholder="-"
+            options={terms}
+            gridColumn="1/4"
+          />
+          <MaskedInputFormik
+            name={namePrefix + FormFieldNameMap.productCost}
+            label="Стоимость"
+            placeholder="-"
+            mask={maskOnlyDigitsWithSeparator}
+            gridColumn="4/7"
+          />
+          <MaskedInputFormik
+            name={`${namePrefix}cascoLimit`}
+            label="Сумма покрытия КАСКО"
+            placeholder="-"
+            mask={maskOnlyDigitsWithSeparator}
+            gridColumn="7/11"
+            disabled={!isRequisiteEditable}
+          />
+        </>
       )}
 
-      <SelectInputFormik
-        name={`${namePrefix}documentType`}
-        label="Тип документа"
-        placeholder="-"
-        options={DOCUMENT_TYPES}
-        gridColumn="span 4"
-      />
-      <MaskedInputFormik
-        name={`${namePrefix}documentNumber`}
-        label="Номер документа"
-        placeholder="-"
-        mask={maskNoRestrictions}
-        gridColumn="span 4"
-      />
-      <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
-      {isCustomFields ? (
+      {isCredit && (
         <>
-          <MaskedInputFormik
-            name={`${namePrefix}bankIdentificationCode`}
-            label="БИК"
+          <SelectInputFormik
+            name={`${namePrefix}agent`}
+            label="Агент получатель"
             placeholder="-"
-            mask={maskBankIdentificationCode}
+            options={brokerOptions}
+            gridColumn="span 6"
+            disabled={!brokerOptions.length}
+          />
+          <SelectInputFormik
+            name={`${namePrefix}loanTerm`}
+            label="Срок"
+            placeholder="-"
+            options={terms}
             gridColumn="span 3"
           />
           <MaskedInputFormik
-            name={`${namePrefix}beneficiaryBank`}
-            label="Банк получатель денежных средств"
-            placeholder="-"
-            mask={maskNoRestrictions}
-            gridColumn="span 5"
-          />
-          <MaskedInputFormik
-            name={`${namePrefix}bankAccountNumber`}
-            label="Расчетный счет"
-            placeholder="-"
-            mask={maskBankAccountNumber}
-            gridColumn="span 4"
-          />
-        </>
-      ) : (
-        <>
-          <SelectInputFormik
-            name={`${namePrefix}beneficiaryBank`}
-            label="Банк получатель денежных средств"
-            placeholder="-"
-            options={banksOptions}
-            gridColumn="span 6"
-            disabled={!banksOptions.length}
-          />
-          <SelectInputFormik
-            name={`${namePrefix}bankAccountNumber`}
-            label="Расчетный счет"
-            placeholder="-"
-            options={accountNumberOptions}
-            gridColumn="span 6"
-            disabled={!accountNumberOptions.length}
-          />
-        </>
-      )}
-      <Box gridColumn="span 3" width="auto" minWidth="min-content">
-        <SwitchInput
-          value={isCustomFields}
-          label="Ввести вручную"
-          onChange={handleManualEntryChange}
-          centered
-          disabled
-        />
-      </Box>
-      {isCustomFields && (
-        <>
-          <MaskedInputFormik
-            name={`${namePrefix}correspondentAccount`}
-            label="Корреспондентский счёт"
-            placeholder="-"
-            mask={maskBankAccountNumber}
-            gridColumn="span 5"
-          />
-          <Box display="flex" justifyContent="center" minWidth="max-content" gridColumn="span 3">
-            <RadioGroupInput
-              radioValues={[
-                { radioValue: false, radioLabel: 'Без НДС' },
-                { radioValue: true, radioLabel: 'С НДС' },
-              ]}
-              defaultValue={false}
-              onChange={toggleTaxInPercentField}
-              centered
-            />
-          </Box>
-          <MaskedInputFormik
-            name={`${namePrefix}taxation`}
-            label="Налог"
+            name={`${namePrefix}productCost`}
+            label="Стоимость"
             placeholder="-"
             mask={maskOnlyDigitsWithSeparator}
-            gridColumn="span 4"
-            disabled={!taxPresence}
+            gridColumn="span 3"
+            disabled={!isRequisiteEditable}
           />
+          {isShouldShowCascoLimitField && (
+            <MaskedInputFormik
+              name={`${namePrefix}cascoLimit`}
+              label="Сумма покрытия КАСКО"
+              placeholder="-"
+              mask={maskOnlyDigitsWithSeparator}
+              gridColumn="span 3"
+              disabled={!isRequisiteEditable}
+            />
+          )}
+        </>
+      )}
+
+      {(isCredit || isShouldShowCascoLimitField) && (
+        <>
+          <SelectInputFormik
+            name={`${namePrefix}documentType`}
+            label="Тип документа"
+            placeholder="-"
+            options={DOCUMENT_TYPES}
+            gridColumn="1/7"
+          />
+          <MaskedInputFormik
+            name={`${namePrefix}documentNumber`}
+            label="Номер документа"
+            placeholder="-"
+            mask={maskNoRestrictions}
+            gridColumn="span 4"
+          />
+          <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
+        </>
+      )}
+
+      {isCredit && (
+        <>
+          {isCustomFields ? (
+            <>
+              <MaskedInputFormik
+                name={`${namePrefix}bankIdentificationCode`}
+                label="БИК"
+                placeholder="-"
+                mask={maskBankIdentificationCode}
+                gridColumn="span 3"
+              />
+              <MaskedInputFormik
+                name={`${namePrefix}beneficiaryBank`}
+                label="Банк получатель денежных средств"
+                placeholder="-"
+                mask={maskNoRestrictions}
+                gridColumn="span 5"
+              />
+              <MaskedInputFormik
+                name={`${namePrefix}bankAccountNumber`}
+                label="Расчетный счет"
+                placeholder="-"
+                mask={maskBankAccountNumber}
+                gridColumn="span 4"
+              />
+            </>
+          ) : (
+            <>
+              <SelectInputFormik
+                name={`${namePrefix}beneficiaryBank`}
+                label="Банк получатель денежных средств"
+                placeholder="-"
+                options={banksOptions}
+                gridColumn="span 6"
+                disabled={!banksOptions.length}
+              />
+              <SelectInputFormik
+                name={`${namePrefix}bankAccountNumber`}
+                label="Расчетный счет"
+                placeholder="-"
+                options={accountNumberOptions}
+                gridColumn="span 6"
+                disabled={!accountNumberOptions.length}
+              />
+            </>
+          )}
+          <Box gridColumn="span 3" width="auto" minWidth="min-content">
+            <SwitchInput
+              value={isCustomFields}
+              label="Ввести вручную"
+              onChange={handleManualEntryChange}
+              centered
+              disabled
+            />
+          </Box>
+          {isCustomFields && (
+            <>
+              <MaskedInputFormik
+                name={`${namePrefix}correspondentAccount`}
+                label="Корреспондентский счёт"
+                placeholder="-"
+                mask={maskBankAccountNumber}
+                gridColumn="span 5"
+              />
+              <Box display="flex" justifyContent="center" minWidth="max-content" gridColumn="span 3">
+                <RadioGroupInput
+                  radioValues={[
+                    { radioValue: false, radioLabel: 'Без НДС' },
+                    { radioValue: true, radioLabel: 'С НДС' },
+                  ]}
+                  defaultValue={false}
+                  onChange={toggleTaxInPercentField}
+                  centered
+                />
+              </Box>
+              <MaskedInputFormik
+                name={`${namePrefix}taxation`}
+                label="Налог"
+                placeholder="-"
+                mask={maskOnlyDigitsWithSeparator}
+                gridColumn="span 4"
+                disabled={!taxPresence}
+              />
+            </>
+          )}
         </>
       )}
     </Box>

@@ -61,6 +61,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
     loanTerms,
     commonErrors,
     isNecessaryCasco,
+    isLoadedCreditProducts,
   } = useLimits({ vendorCode })
 
   const {
@@ -126,6 +127,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
           options={{ productType: dealerAdditionalServices, loanTerms }}
           name={ServicesGroupName.dealerAdditionalServices}
           isNecessaryCasco={isNecessaryCasco}
+          isLoadedCreditProducts={isLoadedCreditProducts}
           isError={vendorOptionsIsError}
           errorMessage="Произошла ошибка при получении дополнительных услуг дилера. Перезагрузите страницу"
         />

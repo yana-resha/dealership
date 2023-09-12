@@ -13,4 +13,10 @@ export const useStyles = makeStyles(theme => ({
     gap: theme.spacing(0.5),
     marginTop: theme.spacing(3.6),
   },
+
+  costContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+  },
 }))

@@ -119,25 +119,25 @@ describe('FullOrderCalculator', () => {
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(4)
             break
           case 'Юридическое лицо':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
+            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(1)
             break
           case 'Банк получатель денежных средств':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(3)
+            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(1)
             break
           case 'Расчетный счет':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(4)
+            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(1)
             break
           case 'Страховая компания или поставщик':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
+            expect(screen.queryAllByText(`${fieldName}`)).toHaveLength(0)
             break
           case 'Агент получатель':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
+            expect(screen.queryAllByText(`${fieldName}`)).toHaveLength(0)
             break
           case 'Тип продукта':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
             break
           case 'Срок':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(3)
+            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(1)
             break
           default:
             expect(screen.getByText(`${fieldName}`)).toBeInTheDocument()
@@ -150,19 +150,27 @@ describe('FullOrderCalculator', () => {
       expect(screen.queryByText('С НДС')).not.toBeInTheDocument()
       expect(screen.queryByText('Без НДС')).not.toBeInTheDocument()
       expect(screen.queryByText('Налог')).not.toBeInTheDocument()
+    })
 
-      // userEvent.click(screen.getAllByText('Ввести вручную')[0])
-      // expect(screen.getAllByText('Корреспондентский счет')).toHaveLength(1)
+    it('Дополнительные поля блока AdditionalEquipment при включенном свитче "В кредит" присутствуют в форме', () => {
+      userEvent.click(screen.getAllByText('В кредит')[0])
+      expect(screen.queryAllByText('Юридическое лицо')).toHaveLength(2)
+      expect(screen.queryAllByText('Тип документа')).toHaveLength(1)
+      expect(screen.queryAllByText('Номер документа')).toHaveLength(1)
+      expect(screen.queryAllByText('Дата документа')).toHaveLength(1)
+      expect(screen.queryAllByText('Банк получатель денежных средств')).toHaveLength(2)
+      expect(screen.queryAllByText('Расчетный счет')).toHaveLength(2)
+    })
 
-      // userEvent.click(screen.getByText('С НДС'))
-      // expect(screen.getAllByText('Налог')).toHaveLength(1)
-
-      // Проверка наличия дополнительных полей блока AdditionalServiceItem
-      expect(screen.queryAllByText('Срок')).toHaveLength(3)
-      expect(screen.queryAllByText('Номер документа')).toHaveLength(3)
-
+    it('Дополнительные поля блока AdditionalServiceItem при включенном свитче "В кредит" присутствуют в форме', () => {
       userEvent.click(screen.getAllByText('В кредит')[1])
-      expect(screen.queryAllByText('Срок')).toHaveLength(3)
+      expect(screen.queryAllByText('Юридическое лицо')).toHaveLength(1)
+      expect(screen.queryAllByText('Тип документа')).toHaveLength(1)
+      expect(screen.queryAllByText('Номер документа')).toHaveLength(1)
+      expect(screen.queryAllByText('Дата документа')).toHaveLength(1)
+      expect(screen.queryAllByText('Банк получатель денежных средств')).toHaveLength(2)
+      expect(screen.queryAllByText('Расчетный счет')).toHaveLength(2)
+      expect(screen.queryAllByText('Срок')).toHaveLength(2)
     })
   })
 
@@ -200,6 +208,8 @@ describe('FullOrderCalculator', () => {
           ),
         )
       })
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
+      await act(() => userEvent.click(screen.getAllByText('В кредит')[0]))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
 
       // await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[1]))
@@ -218,10 +228,9 @@ describe('FullOrderCalculator', () => {
           await screen.findByText(mockGetVendorOptionsResponse?.additionalOptions?.[0]?.optionName as string),
         ),
       )
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
-
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(14)
       await act(() => userEvent.click(screen.getAllByText('В кредит')[1]))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(22)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(21)
 
       // await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[2]))
       // expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
@@ -357,8 +366,7 @@ describe('FullOrderCalculator', () => {
           ),
         )
       })
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
-
+      await act(() => userEvent.click(screen.getAllByText('В кредит')[0]))
       const additionalEquipmentsCostField = document.getElementById('additionalEquipments[0].productCost')!
       await act(() => userEvent.type(additionalEquipmentsCostField, 'test'))
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(20)
@@ -376,6 +384,7 @@ describe('FullOrderCalculator', () => {
         ),
       )
 
+      await act(() => userEvent.click(screen.getAllByText('В кредит')[1]))
       const dealerAdditionalServicesCostField = document.getElementById(
         'dealerAdditionalServices[0].productCost',
       )!

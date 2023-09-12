@@ -146,7 +146,7 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
           />
           <MaskedInputFormik
             name={namePrefix + 'beneficiaryBank'}
-            label="Банк Получатель средств за авто"
+            label="Банк получатель денежных средств"
             placeholder="-"
             mask={maskNoRestrictions}
             gridColumn="span 5"
@@ -163,7 +163,7 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
         <>
           <SelectInputFormik
             name={namePrefix + 'beneficiaryBank'}
-            label="Банк Получатель средств за авто"
+            label="Банк получатель денежных средств"
             placeholder="-"
             options={banksOptions}
             gridColumn="span 6"

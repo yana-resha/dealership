@@ -53,9 +53,8 @@ export function AdditionalEquipmentRequisites({
 }: Props) {
   const classes = useStyles()
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
-  const { legalPerson, beneficiaryBank, taxPresence, productCost } = equipmentItem
+  const { legalPerson, beneficiaryBank, taxPresence, productCost, isCredit } = equipmentItem
   const [isCustomFields, setCustomFields] = useState(false)
-
   const { requisites, isRequisitesFetched } = useRequisitesContext()
 
   const { namePrefix, removeItem, addItem } = useAdditionalServices({
@@ -162,6 +161,21 @@ export function AdditionalEquipmentRequisites({
     }
   }, [currentVendor?.tax, namePrefix, productCost, setFieldValue])
 
+  useEffect(() => {
+    if (!isCredit) {
+      setFieldValue(namePrefix + 'legalPerson', '')
+      setFieldValue(namePrefix + 'documentType', null)
+      setFieldValue(namePrefix + 'documentNumber', '')
+      setFieldValue(namePrefix + 'documentDate', null)
+      setFieldValue(namePrefix + 'bankIdentificationCode', '')
+      setFieldValue(namePrefix + 'beneficiaryBank', '')
+      setFieldValue(namePrefix + 'bankAccountNumber', '')
+      setFieldValue(namePrefix + 'correspondentAccount', undefined)
+      setFieldValue(namePrefix + 'taxPresence', undefined)
+      setFieldValue(namePrefix + 'taxation', undefined)
+    }
+  }, [isCredit, namePrefix, setFieldValue])
+
   return (
     <Box className={classes.editingAreaContainer}>
       {isRequisiteEditable && productOptions ? (
@@ -204,114 +218,118 @@ export function AdditionalEquipmentRequisites({
         </Box>
       )}
 
-      <SelectInputFormik
-        name={`${namePrefix}legalPerson`}
-        label="Юридическое лицо"
-        placeholder="-"
-        options={vendorOptions}
-        gridColumn="span 6"
-      />
-      <Box gridColumn="span 9" />
-
-      <SelectInputFormik
-        name={`${namePrefix}documentType`}
-        label="Тип документа"
-        placeholder="-"
-        options={DOCUMENT_TYPES}
-        gridColumn="span 4"
-      />
-      <MaskedInputFormik
-        name={`${namePrefix}documentNumber`}
-        label="Номер документа"
-        placeholder="-"
-        mask={maskNoRestrictions}
-        gridColumn="span 4"
-      />
-      <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
-
-      {isCustomFields ? (
+      {isCredit && (
         <>
-          <MaskedInputFormik
-            name={`${namePrefix}bankIdentificationCode`}
-            label="БИК"
+          <SelectInputFormik
+            name={`${namePrefix}legalPerson`}
+            label="Юридическое лицо"
             placeholder="-"
-            mask={maskBankIdentificationCode}
-            gridColumn="span 3"
+            options={vendorOptions}
+            gridColumn="span 6"
+          />
+          <Box gridColumn="span 9" />
+
+          <SelectInputFormik
+            name={`${namePrefix}documentType`}
+            label="Тип документа"
+            placeholder="-"
+            options={DOCUMENT_TYPES}
+            gridColumn="span 6"
           />
           <MaskedInputFormik
-            name={`${namePrefix}beneficiaryBank`}
-            label="Банк получатель денежных средств"
+            name={`${namePrefix}documentNumber`}
+            label="Номер документа"
             placeholder="-"
             mask={maskNoRestrictions}
-            gridColumn="span 5"
-          />
-          <MaskedInputFormik
-            name={`${namePrefix}bankAccountNumber`}
-            label="Расчетный счет"
-            placeholder="-"
-            mask={maskBankAccountNumber}
             gridColumn="span 4"
           />
-        </>
-      ) : (
-        <>
-          <SelectInputFormik
-            name={`${namePrefix}beneficiaryBank`}
-            label="Банк получатель денежных средств"
-            placeholder="-"
-            options={banksOptions}
-            gridColumn="span 6"
-            disabled={!banksOptions.length}
-          />
-          <SelectInputFormik
-            name={`${namePrefix}bankAccountNumber`}
-            label="Расчетный счет"
-            placeholder="-"
-            options={accountNumberOptions}
-            gridColumn="span 6"
-            disabled={!accountNumberOptions.length}
-          />
-        </>
-      )}
+          <DateInputFormik name={`${namePrefix}documentDate`} label="Дата документа" gridColumn="span 4" />
 
-      <Box gridColumn="span 3" width="auto" minWidth="min-content">
-        <SwitchInput
-          value={isCustomFields}
-          label="Ввести вручную"
-          onChange={handleManualEntryChange}
-          centered
-          disabled
-        />
-      </Box>
+          {isCustomFields ? (
+            <>
+              <MaskedInputFormik
+                name={`${namePrefix}bankIdentificationCode`}
+                label="БИК"
+                placeholder="-"
+                mask={maskBankIdentificationCode}
+                gridColumn="span 3"
+              />
+              <MaskedInputFormik
+                name={`${namePrefix}beneficiaryBank`}
+                label="Банк получатель денежных средств"
+                placeholder="-"
+                mask={maskNoRestrictions}
+                gridColumn="span 5"
+              />
+              <MaskedInputFormik
+                name={`${namePrefix}bankAccountNumber`}
+                label="Расчетный счет"
+                placeholder="-"
+                mask={maskBankAccountNumber}
+                gridColumn="span 4"
+              />
+            </>
+          ) : (
+            <>
+              <SelectInputFormik
+                name={`${namePrefix}beneficiaryBank`}
+                label="Банк получатель денежных средств"
+                placeholder="-"
+                options={banksOptions}
+                gridColumn="span 6"
+                disabled={!banksOptions.length}
+              />
+              <SelectInputFormik
+                name={`${namePrefix}bankAccountNumber`}
+                label="Расчетный счет"
+                placeholder="-"
+                options={accountNumberOptions}
+                gridColumn="span 6"
+                disabled={!accountNumberOptions.length}
+              />
+            </>
+          )}
 
-      {isCustomFields && (
-        <>
-          <MaskedInputFormik
-            name={`${namePrefix}correspondentAccount`}
-            label="Расчетный счет"
-            placeholder="-"
-            mask={maskBankAccountNumber}
-            gridColumn="span 5"
-          />
-          <Box display="flex" justifyContent="center" minWidth="max-content" gridColumn="span 3">
-            <RadioGroupInput
-              radioValues={[
-                { radioValue: false, radioLabel: 'Без НДС' },
-                { radioValue: true, radioLabel: 'С НДС' },
-              ]}
-              defaultValue={false}
-              onChange={toggleTaxInPercentField}
+          <Box gridColumn="span 3" width="auto" minWidth="min-content">
+            <SwitchInput
+              value={isCustomFields}
+              label="Ввести вручную"
+              onChange={handleManualEntryChange}
               centered
+              disabled
             />
           </Box>
-          <MaskedInputFormik
-            name={`${namePrefix}taxation`}
-            label="Налог"
-            placeholder="-"
-            mask={maskOnlyDigitsWithSeparator}
-            gridColumn="span 4"
-            disabled={!taxPresence}
-          />
+
+          {isCustomFields && (
+            <>
+              <MaskedInputFormik
+                name={`${namePrefix}correspondentAccount`}
+                label="Корреспондентский счёт"
+                placeholder="-"
+                mask={maskBankAccountNumber}
+                gridColumn="span 5"
+              />
+              <Box display="flex" justifyContent="center" minWidth="max-content" gridColumn="span 3">
+                <RadioGroupInput
+                  radioValues={[
+                    { radioValue: false, radioLabel: 'Без НДС' },
+                    { radioValue: true, radioLabel: 'С НДС' },
+                  ]}
+                  defaultValue={false}
+                  onChange={toggleTaxInPercentField}
+                  centered
+                />
+              </Box>
+              <MaskedInputFormik
+                name={`${namePrefix}taxation`}
+                label="Налог"
+                placeholder="-"
+                mask={maskOnlyDigitsWithSeparator}
+                gridColumn="span 4"
+                disabled={!taxPresence}
+              />
+            </>
+          )}
         </>
       )}
     </Box>

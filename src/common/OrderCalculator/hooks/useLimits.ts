@@ -87,7 +87,7 @@ export function useLimits({ vendorCode }: Params) {
   } = values
   const carCost = parseFloat(values.carCost)
 
-  const { data } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
+  const { data, isLoading, isSuccess } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
 
   useEffect(() => {
     dispatch(updateOrder({ creditProductsList: data?.products }))
@@ -335,6 +335,7 @@ export function useLimits({ vendorCode }: Params) {
   ])
 
   const isNecessaryCasco = !!currentProduct?.cascoFlag
+  const isLoadedCreditProducts = !isLoading && isSuccess
 
   /*
   В initialValues формика прописано свойство validationParams. Поля для него нет,
@@ -424,5 +425,6 @@ export function useLimits({ vendorCode }: Params) {
     loanTerms,
     commonErrors,
     isNecessaryCasco,
+    isLoadedCreditProducts,
   }
 }

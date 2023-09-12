@@ -1,4 +1,3 @@
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import * as Yup from 'yup'
 import { InternalOptions } from 'yup/lib/types'
 
@@ -26,17 +25,6 @@ export const additionalServiceBaseValidation = (checkFn: (commonError: CommonErr
         '',
         // @ts-ignore
         (value, context) => checkFn(context.from[1].value.commonError),
-      ),
-  }),
-  [FormFieldNameMap.cascoLimit]: Yup.string().when([FormFieldNameMap.productType], {
-    is: (productType: string) => productType === `${OptionID.CASCO}`,
-    then: schema =>
-      schema.test(
-        'isHasNotCascoLimit',
-        FieldMessages.required,
-        // @ts-ignore
-        (value, context) =>
-          !(context.options as InternalOptions)?.from?.[1].value.validationParams.isNecessaryCasco || !!value,
       ),
   }),
 })

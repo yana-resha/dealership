@@ -4,7 +4,8 @@ export default makeStyles(theme => ({
   button: {
     width: '36px',
     height: '36px',
-    padding: 0 + '!important',
+    padding: '0px!important',
+    borderRadius: '4px!important',
 
     '&.Mui-disabled > svg > path': {
       fill: theme.palette.text.secondary + '!important',
