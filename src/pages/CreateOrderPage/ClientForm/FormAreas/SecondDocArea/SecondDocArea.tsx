@@ -28,7 +28,9 @@ export function SecondDocArea() {
 
   const prevSecondDocumentType = usePrevious(secondDocumentTypeField.value)
 
-  const isHiddenNoInnFields = secondDocumentTypeField.value === ApplicantDocsType.INN
+  const isHiddenDateAndIssued =
+    secondDocumentTypeField.value === ApplicantDocsType.INN ||
+    secondDocumentTypeField.value === ApplicantDocsType.PENSIONCERTIFICATE
   const isShouldShowIssuedCodeField = secondDocumentTypeField.value === ApplicantDocsType.DRIVERLICENSE
 
   const maskDocumentNumber = useCallback(
@@ -84,13 +86,13 @@ export function SecondDocArea() {
         gridColumn="span 3"
       />
 
-      {!isHiddenNoInnFields && (
+      {!isHiddenDateAndIssued && (
         <Box gridColumn="span 3" className={styles.dateInputContainer}>
           <DateInputFormik name="secondDocumentDate" label="Дата выдачи" gridColumn="span 3" />
         </Box>
       )}
 
-      {!isHiddenNoInnFields && (
+      {!isHiddenDateAndIssued && (
         <MaskedInputFormik
           name="secondDocumentIssuedBy"
           label="Кем выдан"

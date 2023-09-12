@@ -32,6 +32,13 @@ const formFields = [
   'secondDocumentIssuedBy',
 ]
 
+type InitialValues = {
+  secondDocumentType: number | null
+  secondDocumentNumber?: string
+  secondDocumentDate?: Date | null
+  secondDocumentIssuedBy?: string
+  submitAction?: SubmitAction
+}
 const mockedSecondDocAreaFields = {
   secondDocumentType: null,
   secondDocumentNumber: '',
@@ -40,10 +47,13 @@ const mockedSecondDocAreaFields = {
   submitAction: SubmitAction.Save,
 }
 
-const createWrapper = ({ children }: PropsWithChildren) => (
+const ProviderWrapper = ({
+  initialValues,
+  children,
+}: PropsWithChildren<{ initialValues?: InitialValues }>) => (
   <ThemeProviderMock>
     <Formik
-      initialValues={mockedSecondDocAreaFields}
+      initialValues={{ ...mockedSecondDocAreaFields, ...initialValues }}
       validationSchema={clientFormValidationSchema}
       onSubmit={() => {}}
     >
@@ -60,7 +70,7 @@ describe('SecondDocAreaTest', () => {
   describe('Все поля отображаются на форме', () => {
     beforeEach(() => {
       render(<SecondDocArea />, {
-        wrapper: createWrapper,
+        wrapper: ({ children }: PropsWithChildren) => <ProviderWrapper>{children}</ProviderWrapper>,
       })
     })
 
@@ -75,10 +85,39 @@ describe('SecondDocAreaTest', () => {
     }
   })
 
+  describe('Проверка условных полей', () => {
+    it('Для типа документа ВУ присутствует поле Код подразделения', () => {
+      render(<SecondDocArea />, {
+        wrapper: ({ children }: PropsWithChildren) => (
+          <ProviderWrapper initialValues={{ secondDocumentType: 15 }}>{children}</ProviderWrapper>
+        ),
+      })
+      expect(screen.getByText('Код подразделения')).toBeInTheDocument()
+    })
+
+    it('Для типа документа ИНН отсутствуют поля Дата выдачи и Кем выдан', () => {
+      render(<SecondDocArea />, {
+        wrapper: ({ children }: PropsWithChildren) => (
+          <ProviderWrapper initialValues={{ secondDocumentType: 50 }}>{children}</ProviderWrapper>
+        ),
+      })
+      expect(screen.queryByText('Дата выдачи')).not.toBeInTheDocument()
+    })
+
+    it('Для типа документа Пенсионное... отсутствуют поля Дата выдачи и Кем выдан', () => {
+      render(<SecondDocArea />, {
+        wrapper: ({ children }: PropsWithChildren) => (
+          <ProviderWrapper initialValues={{ secondDocumentType: 18 }}>{children}</ProviderWrapper>
+        ),
+      })
+      expect(screen.queryByText('Дата выдачи')).not.toBeInTheDocument()
+    })
+  })
+
   describe('Все поля валидируются', () => {
     beforeEach(() => {
       render(<SecondDocArea />, {
-        wrapper: createWrapper,
+        wrapper: ({ children }: PropsWithChildren) => <ProviderWrapper>{children}</ProviderWrapper>,
       })
       userEvent.click(screen.getByTestId('submit'))
     })
