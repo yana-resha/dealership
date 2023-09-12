@@ -118,6 +118,7 @@ export function useInitialValues<D extends boolean | undefined>(
                 }`,
               }
             : {}
+
           const dealerAdditionalServiceData = isFullCalculator
             ? {
                 [FormFieldNameMap.provider]:
@@ -128,6 +129,9 @@ export function useInitialValues<D extends boolean | undefined>(
                   (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].agent,
                 [FormFieldNameMap.loanTerm]:
                   cur.term ?? (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].loanTerm,
+                [FormFieldNameMap.cascoLimit]: cur.cascoLimit
+                  ? `${cur.cascoLimit}`
+                  : (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].cascoLimit,
                 [FormFieldNameMap.providerTaxValue]: (initialData as FullOrderCalculatorFields)
                   .dealerAdditionalServices[0].providerTaxValue,
                 [FormFieldNameMap.providerTaxPercent]: (initialData as FullOrderCalculatorFields)
@@ -137,7 +141,11 @@ export function useInitialValues<D extends boolean | undefined>(
                 [FormFieldNameMap.agentTaxPercent]: (initialData as FullOrderCalculatorFields)
                   .dealerAdditionalServices[0].agentTaxPercent,
               }
-            : {}
+            : {
+                [FormFieldNameMap.cascoLimit]: cur.cascoLimit
+                  ? `${cur.cascoLimit}`
+                  : (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].cascoLimit,
+              }
 
           switch (cur.bankOptionType) {
             case OptionType.EQUIPMENT: {
@@ -303,7 +311,6 @@ export function useInitialValues<D extends boolean | undefined>(
             documentNumber,
             documentDate,
             isCredit,
-            cascoLimit,
           } = option
 
           const additionalOption: AdditionalOptionsFrontdc = {
@@ -335,7 +342,6 @@ export function useInitialValues<D extends boolean | undefined>(
             docType: documentType,
             docNumber: documentNumber,
             docDate: convertedDateToString(documentDate),
-            cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
           }
           if (additionalOption.type) {
             acc.push(additionalOption)
@@ -588,7 +594,7 @@ export function useInitialValues<D extends boolean | undefined>(
 
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
-    [fullApplicationData, pointOfSale, remapAdditionalOptionsForFullCalculator, dispatch],
+    [fullApplicationData, getCarCountryData, pointOfSale, remapAdditionalOptionsForFullCalculator, dispatch],
   )
 
   const remapApplicationValues = useCallback(

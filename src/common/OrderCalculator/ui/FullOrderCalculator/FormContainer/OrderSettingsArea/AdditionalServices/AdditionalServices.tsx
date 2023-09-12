@@ -18,6 +18,7 @@ type Props = {
   }
   name: ServicesGroupName
   isNecessaryCasco?: boolean
+  isLoadedCreditProducts?: boolean
   isError?: boolean
   errorMessage?: string
   disabled?: boolean
@@ -28,6 +29,7 @@ export function AdditionalServices({
   options,
   name,
   isNecessaryCasco = false,
+  isLoadedCreditProducts = false,
   isError = false,
   errorMessage,
   disabled = false,
@@ -55,6 +57,7 @@ export function AdditionalServices({
                   index={index}
                   parentName={name}
                   isNecessaryCasco={isNecessaryCasco}
+                  isLoadedCreditProducts={isLoadedCreditProducts}
                   isRequisiteEditable={true}
                   productOptions={options.productType}
                   arrayHelpers={arrayHelpers}

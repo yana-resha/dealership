@@ -1,4 +1,6 @@
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import * as Yup from 'yup'
+import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { CAR_PASSPORT_TYPE } from 'common/OrderCalculator/config'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
@@ -14,6 +16,7 @@ import { FieldMessages } from 'shared/constants/fieldMessages'
 import {
   bankDetailsFormValidation,
   requiredBankDetailsFormValidation,
+  setRequiredIfInCredit,
 } from './FormContainer/BankDetails/bankDetailsFormValidation.utils'
 
 function checkForCarCreationDate(value: Date | null | undefined, context: Yup.TestContext) {
@@ -23,6 +26,23 @@ function checkForCarCreationDate(value: Date | null | undefined, context: Yup.Te
   }
 
   return parseInt(carYear, 10) <= value.getFullYear()
+}
+
+type YupBaseSchema<T> = Yup.BaseSchema<T, AnyObject, T>
+export function setRequiredIfNecessaryCasco<T extends YupBaseSchema<string | number | undefined | null>>(
+  schema: T,
+  message?: string,
+) {
+  return schema.when([FormFieldNameMap.productType], {
+    is: (productType: string) => productType === `${OptionID.CASCO}`,
+    then: schema =>
+      schema.test(
+        'isHasNotCascoLimit',
+        message || FieldMessages.required,
+        (value, context) =>
+          !(context.options as InternalOptions)?.from?.[1].value.validationParams.isNecessaryCasco || !!value,
+      ),
+  })
 }
 
 export const fullOrderFormValidationSchema = Yup.object().shape({
@@ -58,26 +78,10 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     Yup.object().shape({
       ...additionalServiceBaseValidation(checkAdditionalEquipmentsLimit),
 
-      [FormFieldNameMap.documentType]: Yup.string()
-        .nullable()
-        .when([FormFieldNameMap.productType], {
-          is: (productType: string) => !!productType,
-          then: schema => schema.required(FieldMessages.required),
-        }),
-      [FormFieldNameMap.documentNumber]: Yup.string().when([FormFieldNameMap.productType], {
-        is: (productType: string) => !!productType,
-        then: schema => schema.required(FieldMessages.required),
-      }),
-      [FormFieldNameMap.documentDate]: Yup.string()
-        .nullable()
-        .when([FormFieldNameMap.productType], {
-          is: (productType: string) => !!productType,
-          then: schema => schema.required(FieldMessages.required),
-        }),
-      [FormFieldNameMap.legalPerson]: Yup.string().when([FormFieldNameMap.productType], {
-        is: (productType: string) => !!productType,
-        then: schema => schema.required(FieldMessages.required),
-      }),
+      [FormFieldNameMap.documentType]: setRequiredIfInCredit(Yup.string().nullable()),
+      [FormFieldNameMap.documentNumber]: setRequiredIfInCredit(Yup.string()),
+      [FormFieldNameMap.documentDate]: setRequiredIfInCredit(Yup.string().nullable()),
+      [FormFieldNameMap.legalPerson]: setRequiredIfInCredit(Yup.string()),
 
       ...bankDetailsFormValidation,
     }),
@@ -87,39 +91,20 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     Yup.object().shape({
       ...additionalServiceBaseValidation(checkDealerAdditionalServicesLimit),
 
-      [FormFieldNameMap.documentType]: Yup.string()
-        .nullable()
-        .when([FormFieldNameMap.productType], {
-          is: (productType: string) => !!productType,
-          then: schema => schema.required(FieldMessages.required),
-        }),
-      [FormFieldNameMap.documentNumber]: Yup.string().when([FormFieldNameMap.productType], {
-        is: (productType: string) => !!productType,
-        then: schema => schema.required(FieldMessages.required),
-      }),
-      [FormFieldNameMap.documentDate]: Yup.string()
-        .nullable()
-        .when([FormFieldNameMap.productType], {
-          is: (productType: string) => !!productType,
-          then: schema => schema.required(FieldMessages.required),
-        }),
-
-      [FormFieldNameMap.provider]: Yup.string().when([FormFieldNameMap.productType], {
-        is: (productType: string) => !!productType,
-        then: schema => schema.required(FieldMessages.required),
-      }),
-      [FormFieldNameMap.agent]: Yup.string().when([FormFieldNameMap.productType], {
-        is: (productType: string) => !!productType,
-        then: schema => schema.required(FieldMessages.required),
-      }),
-      [FormFieldNameMap.loanTerm]: Yup.number().when(
-        [FormFieldNameMap.productType, FormFieldNameMap.isCredit],
-        {
-          is: (productType: string, isCredit: boolean) => !!productType && isCredit,
-          then: schema => schema.required(FieldMessages.required),
-        },
+      [FormFieldNameMap.documentType]: setRequiredIfNecessaryCasco(
+        setRequiredIfInCredit(Yup.string().nullable()),
       ),
+      [FormFieldNameMap.documentNumber]: setRequiredIfNecessaryCasco(setRequiredIfInCredit(Yup.string())),
+      [FormFieldNameMap.documentDate]: setRequiredIfNecessaryCasco(
+        setRequiredIfInCredit(Yup.string().nullable()),
+      ),
+      [FormFieldNameMap.provider]: setRequiredIfNecessaryCasco(Yup.string()),
+      [FormFieldNameMap.agent]: setRequiredIfInCredit(Yup.string()),
+      [FormFieldNameMap.loanTerm]: setRequiredIfNecessaryCasco(setRequiredIfInCredit(Yup.number())),
+
       ...bankDetailsFormValidation,
+
+      [FormFieldNameMap.cascoLimit]: setRequiredIfNecessaryCasco(Yup.string()),
     }),
   ),
 })
