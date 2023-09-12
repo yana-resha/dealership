@@ -1,5 +1,4 @@
-export const MIN_AGE = 21
-export const MAX_AGE = 65
+import { maxAgeForGetCredit, MIN_AGE } from 'shared/config/client.config'
 
 export function clientNameIsCorrect(value: string | undefined) {
   if (value == undefined) {
@@ -31,7 +30,7 @@ export function getMaxBirthDate() {
 
 export function getMinBirthDate() {
   const minBirthDay = new Date()
-  minBirthDay.setFullYear(minBirthDay.getFullYear() - MAX_AGE)
+  minBirthDay.setFullYear(minBirthDay.getFullYear() - maxAgeForGetCredit)
 
   return minBirthDay
 }

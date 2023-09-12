@@ -1,13 +1,13 @@
 import * as Yup from 'yup'
 
-import { FieldMessages } from 'shared/constants/fieldMessages'
 import {
-  clientNameIsCorrect,
   clientNameIsCorrectOptional,
+  clientNameIsCorrect,
   getMaxBirthDate,
   getMinBirthDate,
-  MIN_AGE,
-} from 'shared/utils/clientFormValidation'
+} from 'pages/CreateOrderPage/CreateOrderPage.utils'
+import { MIN_AGE } from 'shared/config/client.config'
+import { FieldMessages } from 'shared/constants/fieldMessages'
 
 const FILL_ONE_OF_FIELDS_MESSAGE = 'Заполните одно поле или более из оставшихся'
 
@@ -28,7 +28,10 @@ export const searchingOrderFormValidationSchema = Yup.object().shape(
         otherwise: schema => schema.required(FILL_ONE_OF_FIELDS_MESSAGE),
       }),
     birthDate: Yup.date()
-      .min(getMinBirthDate(), 'Превышен максимальный возраст')
+      .min(
+        getMinBirthDate(),
+        'Для указанного возраста клиента отсутствуют действующие программы автокредитования',
+      )
       .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`)
       .when(['passport', 'clientName', 'phoneNumber'], {
         is: (passport: string | undefined, clientName: string | undefined, phoneNumber: Date | undefined) =>
@@ -62,7 +65,10 @@ export const orderFormValidationSchema = Yup.object().shape({
   birthDate: Yup.date()
     .nullable()
     .required(FieldMessages.required)
-    .min(getMinBirthDate(), 'Превышен максимальный возраст')
+    .min(
+      getMinBirthDate(),
+      'Для указанного возраста клиента отсутствуют действующие программы автокредитования',
+    )
     .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`),
   phoneNumber: Yup.string().required(FieldMessages.required).min(11, 'Введите номер полностью'),
 })

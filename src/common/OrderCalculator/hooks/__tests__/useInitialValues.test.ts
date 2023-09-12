@@ -21,7 +21,7 @@ const mockedUseMemo = jest.spyOn(React, 'useMemo')
 const mockApplication = fullApplicationData
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
+  useDispatch: () => jest.fn(),
 }))
 
 const mockedUseGetVendorOptions = jest.spyOn(useGetVendorOptionsQueryModule, 'useGetVendorOptionsQuery')

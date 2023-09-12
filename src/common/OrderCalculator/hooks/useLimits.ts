@@ -2,10 +2,13 @@ import { useEffect, useMemo } from 'react'
 
 import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { useField, useFormikContext } from 'formik'
-import { useDispatch } from 'react-redux'
+import { DateTime, Interval } from 'luxon'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
+import { MAX_AGE } from 'shared/config/client.config'
+import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatMoney, formatNumber } from 'shared/lib/utils'
 
 import { formMessages } from '../config'
@@ -58,7 +61,10 @@ function checkIfExceededServicesLimit(carCost: number, criterion: boolean) {
 Первоначальный взнос в % и срок кредита, для стоимости доп. оборудования и  услуг.
 */
 export function useLimits({ vendorCode }: Params) {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const birthDate = useAppSelector(
+    state => state.order.order?.orderData?.application?.applicant?.birthDate || state.order.order?.birthDate,
+  )
   const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
   const [commonErrorsField, , { setValue: setCommonErrors }] = useField<CommonError>(
     FormFieldNameMap.commonError,
@@ -66,12 +72,15 @@ export function useLimits({ vendorCode }: Params) {
   const [validationParamsField, , { setValue: setValidationParams }] = useField<ValidationParams>(
     FormFieldNameMap.validationParams,
   )
+  const [, , { setValue: setCreditProduct }] = useField<string>(FormFieldNameMap.creditProduct)
+  const [, , { setValue: setLoanTerm }] = useField<string>(FormFieldNameMap.loanTerm)
 
   const { values, setFieldTouched } = useFormikContext<OrderCalculatorFields>()
   const {
     carBrand,
     carYear,
     creditProduct,
+    loanTerm,
     additionalEquipments,
     bankAdditionalServices,
     dealerAdditionalServices,
@@ -80,17 +89,62 @@ export function useLimits({ vendorCode }: Params) {
 
   const { data } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
 
-  const carMaxAge = carBrand ? carsData?.cars?.[carBrand]?.maxCarAge ?? 0 : 0
-
   useEffect(() => {
     dispatch(updateOrder({ creditProductsList: data?.products }))
   }, [data, dispatch])
 
-  const creditProducts = useMemo(
-    () => data?.products.map(p => ({ value: p.productId, label: p.productName })) || [],
-    [data?.products],
+  const carMaxAge = carBrand ? carsData?.cars?.[carBrand]?.maxCarAge ?? 0 : 0
+  const durationMaxFromCarAge = carYear
+    ? (carMaxAge - (new Date().getFullYear() - carYear)) * MONTH_OF_YEAR_COUNT
+    : 0
+
+  const durationMaxFromClientAge = useMemo(() => {
+    const clientAge = birthDate
+      ? Math.ceil(
+          Interval.fromDateTimes(DateTime.fromJSDate(new Date(birthDate)), DateTime.now()).toDuration('years')
+            .years,
+        )
+      : undefined
+
+    return clientAge ? (MAX_AGE - clientAge) * MONTH_OF_YEAR_COUNT : 0
+  }, [birthDate])
+
+  const durationMaxFromAge = Math.min(durationMaxFromCarAge, durationMaxFromClientAge)
+
+  const { creditProducts, isValidCreditProduct } = useMemo(
+    () =>
+      (data?.products || []).reduce(
+        (acc, cur) => {
+          if (cur.durationMin && cur.durationMin > durationMaxFromAge) {
+            return acc
+          }
+
+          if (cur.productId === creditProduct) {
+            acc.isValidCreditProduct = true
+          }
+          acc.creditProducts.push({ value: cur.productId, label: cur.productName })
+
+          return acc
+        },
+        {
+          creditProducts: [],
+          isValidCreditProduct: false,
+        } as {
+          creditProducts: { value: string; label: string }[]
+          isValidCreditProduct: boolean
+        },
+      ),
+    [creditProduct, data?.products, durationMaxFromAge],
   )
   const currentProduct = useMemo(() => data?.productsMap?.[creditProduct], [creditProduct, data?.productsMap])
+  // Если creditProduct пришел с Бэка, но по какой-то причине не проходит по сроку, то очищаем поле
+  useEffect(() => {
+    if (data?.products && !isValidCreditProduct && creditProduct) {
+      setCreditProduct('')
+    }
+    // Исключили setCreditProduct что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [creditProduct, currentProduct])
 
   const minInitialPaymentPercent = currentProduct?.downpaymentMin || data?.fullDownpaymentMin
   const maxInitialPaymentPercent = currentProduct?.downpaymentMax || data?.fullDownpaymentMax
@@ -108,16 +162,10 @@ export function useLimits({ vendorCode }: Params) {
       Math.floor((currentProduct?.durationMax || data?.fullDurationMax || 0) / LOAN_TERM_GRADUATION_VALUE) *
       LOAN_TERM_GRADUATION_VALUE
 
-    const durationMaxFromCarAge = carYear
-      ? (carMaxAge - (new Date().getFullYear() - carYear)) * MONTH_OF_YEAR_COUNT
-      : 0
-
-    const durationMax =
-      durationMaxFromProduct <= durationMaxFromCarAge ? durationMaxFromProduct : durationMaxFromCarAge
+    const durationMax = Math.min(durationMaxFromProduct, durationMaxFromAge)
     if (durationMin > durationMax || durationMax <= 0) {
       return []
     }
-
     const scaleLength = (durationMax - durationMin) / LOAN_TERM_GRADUATION_VALUE + 1
     const loanTerms = [...new Array(scaleLength)].map((v, i) => ({
       value: (i + 1) * LOAN_TERM_GRADUATION_VALUE + durationMin - LOAN_TERM_GRADUATION_VALUE,
@@ -125,13 +173,22 @@ export function useLimits({ vendorCode }: Params) {
 
     return loanTerms
   }, [
-    carMaxAge,
-    carYear,
     currentProduct?.durationMax,
     currentProduct?.durationMin,
     data?.fullDurationMax,
     data?.fullDurationMin,
+    durationMaxFromAge,
   ])
+
+  /* Если loanTerm пришел с Бэка, но по какой-то причине не входит в диапазон допустимых сроков,
+  то очищаем поле */
+  useEffect(() => {
+    if (!!loanTerm && loanTerms.length && !loanTerms.some(term => term.value === loanTerm)) {
+      setLoanTerm('')
+    }
+    // Исключили setLoanTerm что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [creditProduct, currentProduct])
 
   /*
   Сформирована на основе минимального и максимального Первоначального взноса

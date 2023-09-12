@@ -4,13 +4,22 @@ import { OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
+import { MockStore } from 'redux-mock-store'
 
 import { initialValueMap } from 'common/OrderCalculator/config'
+import * as useGetCarsListQueryModule from 'common/OrderCalculator/hooks/useGetCarsListQuery'
 import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
 import { prepareCreditProduct } from 'common/OrderCalculator/utils/prepareCreditProductListData'
-import { creditProductListRsData, mockGetVendorOptionsResponse } from 'shared/api/requests/dictionaryDc.mock'
+import { Order } from 'entities/reduxStore/orderSlice'
+import {
+  carBrands,
+  creditProductListRsData,
+  mockGetVendorOptionsResponse,
+} from 'shared/api/requests/dictionaryDc.mock'
+import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { sleep } from 'shared/lib/sleep'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
@@ -18,15 +27,19 @@ import { disableConsole } from 'tests/utils'
 import { OrderCalculator } from '../OrderCalculator'
 import { formFields } from './OrderCalculator.mock'
 
-const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
-
 disableConsole('error')
 
+const createWrapper = ({ store, children }: PropsWithChildren<{ store?: MockStore }>) => (
+  <MockProviders mockStore={store}>{children}</MockProviders>
+)
+
+const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
 const mockedUseGetVendorOptions = jest.spyOn(useGetVendorOptionsQueryModule, 'useGetVendorOptionsQuery')
 const mockedUseGetCreditProductListQuery = jest.spyOn(
   useGetCreditProductListQueryModule,
   'useGetCreditProductListQuery',
 )
+const mockedUseGetCarsListQuery = jest.spyOn(useGetCarsListQueryModule, 'useGetCarsListQuery')
 
 const getCreditProductListData = {
   ...creditProductListRsData,
@@ -67,6 +80,14 @@ describe('OrderCalculator', () => {
           initialValues: initialValueMap,
         } as any),
     )
+    mockedUseGetCarsListQuery.mockImplementation(
+      () =>
+        ({
+          data: { cars: carBrands },
+          isError: false,
+        } as any),
+    )
+    mockedUseAppSelector.mockImplementation(() => fullApplicationData.application?.applicant?.birthDate)
   })
 
   describe('Форма отображается корректно', () => {
@@ -103,6 +124,25 @@ describe('OrderCalculator', () => {
 
     it('Валидируется верное количество обязательных полей', async () => {
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(5)
+    })
+  })
+
+  describe('Валидация ПВ', () => {
+    beforeEach(() => {
+      mockedUseInitialValues.mockImplementation(
+        () =>
+          ({
+            isShouldShowLoading: false,
+            initialValues: {
+              ...initialValueMap,
+              carBrand: carBrands.KIA.brand,
+            },
+          } as any),
+      )
+      render(<OrderCalculator isSubmitLoading={false} onSubmit={fn} onChangeForm={fn} />, {
+        wrapper: createWrapper,
+      })
+      userEvent.click(screen.getByText('Рассчитать'))
     })
 
     it('Ограничения минимума ПВ работает', async () => {
@@ -321,6 +361,7 @@ describe('OrderCalculator', () => {
             isShouldShowLoading: false,
             initialValues: {
               ...initialValueMap,
+              carBrand: carBrands.KIA.brand,
               // Выбран кредитный продукт с cascoFlag=true
               creditProduct: creditProductListRsData.creditProducts?.[0].productId,
             },
