@@ -45,17 +45,13 @@ export const useStyles = makeStyles(theme => ({
       '& svg': {
         width: '23px',
         height: '23px',
-        '& path': {
-          fill: theme.palette.grey[700],
-        },
+        fill: theme.palette.grey[700],
       },
       backgroundColor: 'transparent',
     },
     '&.MuiButton-root:hover': {
       '& svg': {
-        '& path': {
-          fill: theme.palette.primary.main,
-        },
+        fill: theme.palette.primary.main,
       },
       backgroundColor: 'transparent',
     },

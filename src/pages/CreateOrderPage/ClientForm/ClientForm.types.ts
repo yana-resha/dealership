@@ -65,6 +65,9 @@ export interface ClientData {
 
   // Справки о доходах
   incomeConfirmation: boolean
+  /* Поле я вляется аналогом обчного свойства формы touched,
+  но в отличае от него не тригирится при событии onSubmit */
+  isIncomeProofUploaderTouched: boolean
   ndfl2File: FileInfo | null
   ndfl3File: FileInfo | null
   bankStatementFile: FileInfo | null

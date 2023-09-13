@@ -59,6 +59,7 @@ export const configInitialValues: ClientData = {
 
   // Справки о доходах
   incomeConfirmation: false,
+  isIncomeProofUploaderTouched: false,
   ndfl2File: null,
   ndfl3File: null,
   bankStatementFile: null,

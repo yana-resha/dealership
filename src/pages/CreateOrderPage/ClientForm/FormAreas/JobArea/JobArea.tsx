@@ -11,6 +11,7 @@ import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
 
 import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { useOnScreen } from 'shared/hooks/useOnScreen'
 import { maskInn, maskNoRestrictions, maskCommonPhoneNumber } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
@@ -32,15 +33,16 @@ export const DADATA_EMPLOYER_OPTIONS_LIMIT = 20
 export function JobArea() {
   const classes = useStyles()
   const [jobDisabled, setJobDisabled] = useState(false)
-  const { values, setFieldValue } = useFormikContext<ClientData>()
   const [isEmplAddressDialogVisible, setIsEmplAddressDialogVisible] = useState(false)
+
+  const { values, setFieldValue } = useFormikContext<ClientData>()
   const {
     occupation,
     employerAddress,
     employerAddressString,
     emplNotKladr,
     employerName,
-    incomeConfirmation,
+    isIncomeProofUploaderTouched,
   } = values
 
   const { mutate: fetchOrganizationSuggestions, data } = useGetOrganizationSuggestions()
@@ -136,22 +138,22 @@ export function JobArea() {
   // Блок работы со скролом поля occupation - прокручиваем до этого поля,
   // если оно незаполнено и пользователь пытается подтвердить доход.
   const [isWasScrolled, setWasScrolled] = useState(false)
-  const occupationFieldRef = useRef<HTMLDivElement | undefined>()
-  const isIntersecting = useOnScreen(occupationFieldRef)
+  const jobAreaTitleRef = useRef<HTMLDivElement | undefined>()
+  const isIntersecting = useOnScreen(jobAreaTitleRef)
   useEffect(() => {
     // Без isWasScrolled в условии scrollIntoView будет всегда срабатывать при прокрутке.
-    if (incomeConfirmation && !occupation && !isIntersecting && !isWasScrolled) {
-      occupationFieldRef.current?.scrollIntoView()
+    if (!occupation && !isIntersecting && !isWasScrolled && isIncomeProofUploaderTouched) {
+      jobAreaTitleRef.current?.scrollIntoView()
       // Потому запоминаем, что мы один раз уже прокурутили-показали поле occupation и больше не нужно.
       setWasScrolled(true)
     }
-  }, [incomeConfirmation, isIntersecting, occupation, isWasScrolled])
+  }, [isIntersecting, occupation, isWasScrolled, isIncomeProofUploaderTouched])
   useEffect(() => {
-    if (!incomeConfirmation) {
+    if (!isIncomeProofUploaderTouched) {
       // Сбрасываем значение isWasScrolled, чтобы в следующий раз снова  прокурутить-показать поле occupation
       setWasScrolled(false)
     }
-  }, [incomeConfirmation, isIntersecting, occupation, isWasScrolled])
+  }, [isIntersecting, occupation, isWasScrolled, isIncomeProofUploaderTouched])
   //////
 
   useEffect(() => {
@@ -175,13 +177,15 @@ export function JobArea() {
   }, [occupation, setFieldValue])
 
   return (
-    <Box className={classes.gridContainer}>
-      <Box gridColumn="1 / -1" minWidth="min-content">
+    /* marginTop: '-20px' у родителя и  paddingTop: 20 у первого потомка необходимы,
+    чтобы увеличить размер потомка, не увеличивая размер контейнера. Это необходимо,
+    чтобы при автоскроле заголовок (первый контейнер) не уперался в верхнюю часть окна*/
+    <Box className={classes.gridContainer} style={{ marginTop: '-20px' }}>
+      <Box gridColumn="1 / -1" minWidth="min-content" ref={jobAreaTitleRef} style={{ paddingTop: 20 }}>
         <Typography className={classes.areaLabel}>Работа</Typography>
       </Box>
 
       <SelectInputFormik
-        ref={occupationFieldRef}
         name="occupation"
         label="Должность/Вид занятости"
         placeholder="-"
