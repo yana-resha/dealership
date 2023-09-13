@@ -76,6 +76,33 @@ export const maskPassport = (value: string, unmasked?: boolean) => {
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
+export const maskInternationalPassport = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '00 0000000',
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskPensionCertificate = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '000-000-000 00',
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskINN = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '000000000000',
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
 export const maskCommonPhoneNumber = (
   number: string,
   unmasked?: boolean,
@@ -228,6 +255,15 @@ export const maskElectronicСarPassportId = (value: string, unmasked?: boolean) 
 export const maskFolderName = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: /^[^\\/):*?"<>|+]+$/,
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
+export const maskDriverLicenseIssuedCode = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: '0000',
   })
   masked.resolve(`${value}`)
 

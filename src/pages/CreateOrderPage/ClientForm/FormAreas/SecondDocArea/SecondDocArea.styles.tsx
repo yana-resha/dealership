@@ -14,4 +14,7 @@ export default makeStyles(theme => ({
       lineHeight: theme.spacing(4),
     },
   },
+  dateInputContainer: {
+    minWidth: 170,
+  },
 }))

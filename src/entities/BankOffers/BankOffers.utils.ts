@@ -21,6 +21,7 @@ export const prepareRow = (row: CalculatedProduct) => {
     row.amountWithoutPercent !== undefined ? row.amountWithoutPercent.toString() : '',
     options,
   )
+  const totalSum = formatNumber(row.totalSum !== undefined ? row.totalSum.toString() : '', options)
   const currentRate = formatNumber(row.currentRate !== undefined ? (row.currentRate * 100).toString() : '', {
     digits: 2,
   })
@@ -34,6 +35,7 @@ export const prepareRow = (row: CalculatedProduct) => {
     currentRate,
     overpayment,
     amountWithoutPercent,
+    totalSum,
   }
 }
 
