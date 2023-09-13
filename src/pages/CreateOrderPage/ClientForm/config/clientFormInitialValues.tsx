@@ -161,7 +161,7 @@ export const UPLOADED_DOCUMENTS = {
     documentType: DocumentType.TAX_DECLARATION,
   } as Documents,
   bankStatementFile: {
-    documentLabel: 'Выписка из банка',
+    documentLabel: 'Прочие документы',
     documentName: 'bankStatementFile',
     documentType: DocumentType.CERTIFICATE_FREE_FORM,
   } as Documents,

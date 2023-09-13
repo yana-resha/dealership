@@ -63,7 +63,7 @@ describe('IncomeProofUploadAreaTest', () => {
 
     it('Отображается секция для загрузки Выписки из банка', () => {
       userEvent.click(screen.getByText('Загрузить документы, подтверждающие доход'))
-      expect(screen.getByText('Выписка из банка')).toBeInTheDocument()
+      expect(screen.getByText('Прочие документы')).toBeInTheDocument()
     })
   })
 
@@ -99,7 +99,7 @@ describe('IncomeProofUploadAreaTest', () => {
       userEvent.click(screen.getByText('Загрузить документы, подтверждающие доход'))
       expect(
         await screen.findAllByText(
-          'Необходимо загрузить подтверждающие документы - 2НДФЛ или Выписка из банка',
+          'Необходимо загрузить подтверждающие документы - 2НДФЛ или Прочие документы',
         ),
       ).toHaveLength(2)
     })

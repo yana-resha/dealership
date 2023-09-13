@@ -82,7 +82,7 @@ function isIncomeProofUploadedCorrectly(value: string | undefined, context: Yup.
     case OccupationType.SELF_EMPLOYED:
       if (!ndfl2File && !bankStatementFile) {
         return context.createError({
-          message: 'Необходимо загрузить подтверждающие документы - 2НДФЛ или Выписка из банка',
+          message: 'Необходимо загрузить подтверждающие документы - 2НДФЛ или Прочие документы',
         })
       }
       break
