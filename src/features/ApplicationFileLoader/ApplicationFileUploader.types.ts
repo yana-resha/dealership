@@ -5,8 +5,10 @@ export enum DocumentUploadStatus {
   Local = 'local',
   /** документ загружается */
   Progress = 'progress',
+  /** документ отправлен, но Бэк еще не подтвердил его загрузку (асинхронное подтверждение) */
+  Sended = 'sended',
   /** документ загружен */
-  Upload = 'upload',
+  Uploaded = 'uploaded',
   /** ошибка загрузки файла */
   Error = 'error',
 }

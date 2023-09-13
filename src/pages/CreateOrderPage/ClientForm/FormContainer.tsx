@@ -21,10 +21,25 @@ interface Props {
   isDraftLoading: boolean
   saveDraftDisabled: boolean
   disabledButtons: boolean
+  isSameVendor: boolean
+  isReuploadedQuestionnaire: boolean
+  setReuploadedQuestionnaire: React.Dispatch<React.SetStateAction<boolean>>
+  isAllowedUploadQuestionnaire: boolean
+  onUploadQuestionnaire: (() => void) | undefined
 }
 
 export function FormContainer(props: Props) {
-  const { getOrderId, isDraftLoading, disabledButtons, saveDraftDisabled } = props
+  const {
+    getOrderId,
+    isDraftLoading,
+    disabledButtons,
+    saveDraftDisabled,
+    isSameVendor,
+    isReuploadedQuestionnaire,
+    setReuploadedQuestionnaire,
+    isAllowedUploadQuestionnaire,
+    onUploadQuestionnaire,
+  } = props
   const classes = useStyles()
   const { values, handleSubmit, setFieldValue, isValid } = useFormikContext<ClientData>()
   const [isShouldSubmit, setShouldSubmit] = useState(false)
@@ -49,6 +64,13 @@ export function FormContainer(props: Props) {
 
   const onGetOrderId = useCallback(() => getOrderId(values), [getOrderId, values])
 
+  // Передаем информацию о совпадении ДЦ для валидации
+  useEffect(() => {
+    setFieldValue('isSameVendor', isSameVendor)
+    // setFieldValue удален из зависимостей, чтобы избежать ререндера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSameVendor])
+
   useEffect(() => {
     if (isShouldSubmit) {
       setShouldSubmit(false)
@@ -64,7 +86,13 @@ export function FormContainer(props: Props) {
         <SecondDocArea />
         <JobArea />
         <IncomesArea />
-        <QuestionnaireUploadArea />
+        <QuestionnaireUploadArea
+          isSameVendor={isSameVendor}
+          isReuploadedQuestionnaire={isReuploadedQuestionnaire}
+          setReuploadedQuestionnaire={setReuploadedQuestionnaire}
+          isAllowedUploadQuestionnaire={isAllowedUploadQuestionnaire}
+          onUploadDocument={onUploadQuestionnaire}
+        />
 
         <Box className={classes.buttonsArea}>
           <FraudDialog />

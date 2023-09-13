@@ -16,16 +16,15 @@ import { useUploadDocument } from './hooks/useUploadDocument'
 
 type UploaderProps = {
   uploaderConfig: UploaderConfig
-
   suggest?: string
   loadingMessage?: string
   motivateMessage?: string
-
   /** Если хотим чтобы форма не только выводила файл, но и могла изменять и выгружать его на бэк.
    * Меняет внешний вид компонента */
   onUploadDocument?: (file: File, documentName: string, status: FileInfo['status']) => void
   onDeleteDocument?: (documentName: string) => void
   onError?: (documentName: string) => void
+  isAllowedUploadToServer?: boolean
 }
 
 /** Позволяет загружать и выгружать файлы по заявке */
@@ -35,15 +34,14 @@ const Uploader: React.FC<UploaderProps> = props => {
     suggest,
     loadingMessage,
     motivateMessage,
-    onError,
     onUploadDocument,
     onDeleteDocument,
+    onError,
+    isAllowedUploadToServer = true,
   } = props
   const { documentLabel, documentName, documentFile } = uploaderConfig || {}
   const isShowInput = !!onUploadDocument
-  const isLoading =
-    documentFile?.status === DocumentUploadStatus.Local ||
-    documentFile?.status === DocumentUploadStatus.Progress
+  const isLoading = documentFile?.status === DocumentUploadStatus.Progress
   const isError = !!uploaderConfig.documentError || documentFile?.status === DocumentUploadStatus.Error
   const errorMessage = uploaderConfig.documentError ?? 'Не удалось загрузить файл'
 
@@ -78,15 +76,11 @@ const Uploader: React.FC<UploaderProps> = props => {
     if (!isShowInput) {
       return
     }
-
     const { file, status } = documentFile || {}
-    if (file && status === DocumentUploadStatus.Local) {
+    if (file && status === DocumentUploadStatus.Local && isAllowedUploadToServer) {
       sendFile()
     }
-
-    // Требуется подписка исключительно на изменение documentFile
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [documentFile])
+  }, [documentFile, isAllowedUploadToServer, isShowInput, sendFile])
 
   if (!isShowInput) {
     if (!documentFile?.file) {

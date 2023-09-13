@@ -107,7 +107,7 @@ export const EXPECTED_DATA = {
       documentType: DocumentType.TWO_NDFL,
       name: '2НДФЛ',
     },
-    status: 'upload',
+    status: 'uploaded',
   },
   isFormComplete: false,
 }

@@ -58,7 +58,7 @@ export function DocumentsArea({ status }: Props) {
     (file: FileInfo['file'], documentName: string, status: FileInfo['status']) => {
       setFileQuestionnaire({ file, status })
       const filteredScans = scans.filter(scan => scan.type !== DocumentType.CONSENT_FORM)
-      if (status === DocumentUploadStatus.Upload) {
+      if (status === DocumentUploadStatus.Uploaded) {
         dispatch(
           updateApplication({
             scans: [
@@ -88,7 +88,7 @@ export function DocumentsArea({ status }: Props) {
           documentType: DocumentType.CONSENT_FORM,
           name: questionnaireScan.name,
         },
-        status: DocumentUploadStatus.Upload,
+        status: DocumentUploadStatus.Uploaded,
       })
     }
   }, [applicationId, questionnaireScan])

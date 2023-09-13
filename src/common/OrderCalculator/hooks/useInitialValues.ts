@@ -487,14 +487,11 @@ export function useInitialValues<D extends boolean | undefined>(
         term: parseInt(loanTerm.toString(), 10),
         additionalOptions: remapAdditionalOptionsForSmallCalculator(values),
       }
-      const newVendor: VendorFrontdc = {
-        ...pointOfSale,
-      }
+
       const updatedApplication = {
         ...application,
         loanCar: newLoanCar,
         loanData: newLoanData,
-        vendor: newVendor,
         /* Если попали на короткий калькулятор, то выйти из него можно с anketaType=0 или anketaType=1,
         в зависимости от полноты данных, даже если до этого в заявке был anketaType=2.
         Потому тут изначально ставим 0, а на этапе сохранения выбираем 0 или 1 */
@@ -502,7 +499,7 @@ export function useInitialValues<D extends boolean | undefined>(
       }
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
-    [fullApplicationData, getCarCountryData, remapAdditionalOptionsForSmallCalculator, pointOfSale, dispatch],
+    [fullApplicationData, getCarCountryData, remapAdditionalOptionsForSmallCalculator, dispatch],
   )
 
   const remapApplicationValuesForFullCalculator = useCallback(
@@ -555,6 +552,9 @@ export function useInitialValues<D extends boolean | undefined>(
       }
       const newVendor: VendorFrontdc = {
         ...pointOfSale,
+        /* Не нужно на этапе калькулятора передвать в этот объект остальные данные из pointOfSale,
+        т.к. из-за этого на этапе анкеты будет не ясно, что заявка была заведена под другим вендором.
+        Инфо о текущем вендоре будет передано в заявку только на этапе ее сохранения (черновик или скоринг) */
         vendorCode: legalPerson,
         vendorBankDetails: {
           accountRequisite: {

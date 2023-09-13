@@ -50,13 +50,14 @@ const useUploadDocument = (params: UseUploadDocumentParams) => {
         file,
         documentType,
       })
+      onUploadDocument?.(file, documentName, DocumentUploadStatus.Sended)
 
       // Опрашиваем бэк о статусе загрузки файлов
       const uploadedDocuments = await checkApplicationDocumentsList(dcAppId, [documentType])
       if (!uploadedDocuments.length) {
         throw new Error('Failed to upload the document')
       }
-      onUploadDocument?.(file, documentName, DocumentUploadStatus.Upload)
+      onUploadDocument?.(file, documentName, DocumentUploadStatus.Uploaded)
     } catch (err) {
       onError?.(documentName)
       onUploadDocument?.(file, documentName, DocumentUploadStatus.Error)
