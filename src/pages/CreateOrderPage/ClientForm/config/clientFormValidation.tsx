@@ -183,7 +183,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
       const { mobileNumber, employerPhone } = (context.options as InternalOptions)?.from?.[0].value || {}
 
-      return value !== mobileNumber && value !== employerPhone
+      return !value || (value !== mobileNumber && value !== employerPhone)
     })
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation),
@@ -247,7 +247,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
       const { mobileNumber, additionalNumber } = (context.options as InternalOptions)?.from?.[0].value || {}
 
-      return value !== mobileNumber && value !== additionalNumber
+      return !value || (value !== mobileNumber && value !== additionalNumber)
     })
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation),
