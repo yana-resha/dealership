@@ -15,7 +15,6 @@ const useStyles = makeStyles(theme => ({
     '&.MuiAvatar-root': {
       width: 32,
       height: 32,
-      marginRight: theme.spacing(1),
       backgroundColor: 'transparent',
     },
   },
@@ -27,12 +26,21 @@ const useStyles = makeStyles(theme => ({
       display: 'flex',
       alignItems: 'center',
       textDecoration: 'none',
+      gap: theme.spacing(1),
       cursor: 'pointer',
       width: 'fit-content',
       '&:hover': {
         textDecoration: 'underline',
       },
     },
+  },
+  loaderContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 32,
+    height: 32,
+    margin: 'auto',
   },
 }))
 
@@ -121,7 +129,9 @@ export const FileDownloader = ({
               />
             </Avatar>
           ) : (
-            <CircularProgressWheel size="medium" />
+            <Box className={styles.loaderContainer}>
+              <CircularProgressWheel size="small" />
+            </Box>
           )}
 
           <SberTypography className={styles.text} sberautoVariant="body3" component="p">
@@ -130,13 +140,19 @@ export const FileDownloader = ({
         </Link>
       ) : (
         <Link href="#" onClick={handleDownload} className={styles.fileLink}>
-          <Avatar variant="square" className={styles.avatar}>
-            <img width="100%" height="100%" src={documentIcon} />
-          </Avatar>
+          {isLoading ? (
+            <Box className={styles.loaderContainer}>
+              <CircularProgressWheel size="small" />
+            </Box>
+          ) : (
+            <Avatar variant="square" className={styles.avatar}>
+              <img width="100%" height="100%" src={documentIcon} />
+            </Avatar>
+          )}
+
           <SberTypography className={styles.text} sberautoVariant="body3" component="p">
             {file ? fileName : message}
           </SberTypography>
-          {isLoading && <CircularProgressWheel size="medium" />}
         </Link>
       )}
 

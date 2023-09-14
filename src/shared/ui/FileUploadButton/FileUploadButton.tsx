@@ -11,6 +11,7 @@ import {
   DEFAULT_MAX_FILE_SIZE_MB,
   defaultMaxFileSizeBite,
 } from '../../config/uploadFile.config'
+import { CircularProgressWheel } from '../CircularProgressWheel'
 import { ModalDialog } from '../ModalDialog/ModalDialog'
 import SberTypography from '../SberTypography/SberTypography'
 
@@ -35,6 +36,7 @@ type Props = {
   multiple?: boolean
   allowedFileTypes?: string
   maxFileSizeMb?: number
+  isUploading?: boolean
 }
 
 const FileUploadButton = ({
@@ -44,6 +46,7 @@ const FileUploadButton = ({
   multiple,
   allowedFileTypes,
   maxFileSizeMb,
+  isUploading = false,
 }: Props) => {
   const styles = useStyles()
   const [isVisible, setIsVisible] = useState(false)
@@ -78,7 +81,7 @@ const FileUploadButton = ({
     <Box>
       <Button
         classes={{ root: styles.root, startIcon: styles.startIcon }}
-        startIcon={icon ?? <AttachIcon />}
+        startIcon={isUploading ? <CircularProgressWheel size="small" /> : icon ?? <AttachIcon />}
         component="label"
       >
         <input
