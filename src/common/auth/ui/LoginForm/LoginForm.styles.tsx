@@ -37,7 +37,7 @@ export default makeStyles(theme => ({
 
     '&.MuiButton-root': {
       borderRadius: 12 * theme.shape.borderRadius,
-
+      fontSize: 16,
       background: theme.palette.sber.main,
 
       '&:hover': {

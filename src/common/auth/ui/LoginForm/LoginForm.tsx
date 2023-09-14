@@ -4,6 +4,7 @@ import { Avatar, Box, Button, Collapse, Typography } from '@mui/material'
 import { useSnackbar } from 'notistack'
 
 import { ReactComponent as AvatarLogo } from 'assets/icons/avatar.svg'
+import { ReactComponent as MonochromeSberIcon } from 'assets/icons/monochromeSberIcon.svg'
 import { appConfig } from 'config'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import SberTypography from 'shared/ui/SberTypography'
@@ -47,6 +48,7 @@ export function LoginForm() {
         href={authLink}
         disabled={isLoading || !!error}
         data-testid="loginButton"
+        startIcon={<MonochromeSberIcon />}
       >
         {!isLoading && !!authLink ? 'Войти' : <CircularProgressWheel size="small" />}
       </Button>
