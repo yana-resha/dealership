@@ -27,6 +27,9 @@ const ALLOWED_FILE_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/pdf',
   'application/rtf',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/csv',
   'text/plain',
 ].join(',')
 
