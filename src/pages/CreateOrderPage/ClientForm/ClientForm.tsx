@@ -1,16 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { Box } from '@mui/material'
 import {
-  SendApplicationToScoringRequest,
-  GetFullApplicationResponse,
   SaveLoanApplicationDraftResponse,
+  ApplicationFrontdc,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { Formik, FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { clearOrder, setAppId } from 'entities/reduxStore/orderSlice'
 import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'
 import {
@@ -25,7 +23,7 @@ import { useStyles } from './ClientForm.styles'
 import { ClientData, SubmitAction } from './ClientForm.types'
 import { clientFormValidationSchema } from './config/clientFormValidation'
 import { FormContainer } from './FormContainer'
-import { useGetDraftApplicationData } from './hooks/useGetDraftApplicationData'
+import { useConfirmationForm } from './hooks/useConfirmationForm'
 import { useInitialValues } from './hooks/useInitialValues'
 
 type Props = {
@@ -39,15 +37,31 @@ export function ClientForm({ formRef, onMount }: Props) {
   const dispatch = useDispatch()
 
   const location = useLocation()
-  const { vendorCode } = getPointOfSaleFromCookies()
   const state = location.state as CreateOrderPageState
-  const saveDraftDisabled = state && state.saveDraftDisabled != undefined ? state.saveDraftDisabled : false
+  const saveDraftDisabled = state && state.saveDraftDisabled !== undefined ? state.saveDraftDisabled : false
 
-  const [actionText, setActionText] = useState('')
-  const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false)
-  const confirmedAction = useRef<() => void>()
-  const { remapApplicationValues, isShouldShowLoading, applicationVendorCode, initialValues, dcAppId } =
-    useInitialValues()
+  const {
+    remapApplicationValues,
+    setAnketaType,
+    updateOrderData,
+    isShouldShowLoading,
+    initialValues,
+    dcAppId,
+  } = useInitialValues()
+
+  const {
+    isSameVendor,
+    actionText,
+    handleQuestionnaireUploadRef,
+    confirmedActionRef,
+    isConfirmationModalVisible,
+    isAllowedUploadQuestionnaire,
+    isReuploadedQuestionnaire,
+    setReuploadedQuestionnaire,
+    confirmActionWrapper,
+    closeConfirmationModal,
+  } = useConfirmationForm(formRef)
+
   const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation(
     (dcAppId: string) => dcAppId && dispatch(setAppId({ dcAppId })),
   )
@@ -58,55 +72,26 @@ export function ClientForm({ formRef, onMount }: Props) {
       navigate(appRoutePaths.orderList)
     },
   })
-  const getDraftApplicationData = useGetDraftApplicationData()
+
   const disabledButtons = isDraftLoading
-  const { unit } = getPointOfSaleFromCookies()
 
-  const closeConfirmationDialog = useCallback(() => {
-    setConfirmationModalVisible(false)
-  }, [])
+  const handleSubmit = useCallback(
+    (application: ApplicationFrontdc) => {
+      const newApplication = setAnketaType(application, true)
 
-  const showConfirmationModalDialog = useCallback((actionForConfirmation: () => void, actionText: string) => {
-    confirmedAction.current = actionForConfirmation
-    setActionText(actionText)
-    setConfirmationModalVisible(true)
-  }, [])
-
-  const prepareApplicationForScoring = useCallback(
-    (application: GetFullApplicationResponse) => {
-      const draftApplication = getDraftApplicationData(application, true)
-      const applicationForScoring: SendApplicationToScoringRequest = {
+      const applicationForScoring = {
         application: {
-          ...draftApplication,
+          ...newApplication,
           appType: 'CARLOANAPPLICATIONDC',
-          unit: unit,
         },
       }
 
-      return applicationForScoring
-    },
-    [getDraftApplicationData, unit],
-  )
-
-  const onSubmit = useCallback(
-    (application: GetFullApplicationResponse) => {
-      const applicationForScoring = prepareApplicationForScoring(application)
-      if (vendorCode !== applicationVendorCode) {
-        showConfirmationModalDialog(
-          () => sendToScore(applicationForScoring),
-          'Заявка будет отправлена на скоринг под ДЦ:',
-        )
-      } else {
+      confirmActionWrapper(() => {
+        updateOrderData(newApplication)
         sendToScore(applicationForScoring)
-      }
+      }, 'Заявка будет отправлена на скоринг под ДЦ:')
     },
-    [
-      applicationVendorCode,
-      prepareApplicationForScoring,
-      sendToScore,
-      showConfirmationModalDialog,
-      vendorCode,
-    ],
+    [sendToScore, setAnketaType, confirmActionWrapper, updateOrderData],
   )
 
   const goToOrderPage = useCallback(
@@ -122,69 +107,37 @@ export function ClientForm({ formRef, onMount }: Props) {
   )
 
   const saveApplicationDraft = useCallback(
-    (application: GetFullApplicationResponse) => {
-      console.log('ClientForm.saveApplicationDraft values:', application)
-      if (vendorCode !== applicationVendorCode) {
-        showConfirmationModalDialog(
-          () =>
-            saveDraft(
-              getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
-            ).then(goToOrderPage),
-          'Заявка будет сохранена под ДЦ:',
-        )
-      } else {
-        saveDraft(
-          getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
-        ).then(goToOrderPage)
-      }
+    (application: ApplicationFrontdc) => {
+      const newApplication = setAnketaType(application, formRef.current?.values?.isFormComplete ?? false)
+
+      confirmActionWrapper(() => {
+        updateOrderData(newApplication)
+        saveDraft(newApplication).then(goToOrderPage)
+      }, 'Заявка будет сохранена под ДЦ:')
     },
-    [
-      vendorCode,
-      applicationVendorCode,
-      showConfirmationModalDialog,
-      saveDraft,
-      getDraftApplicationData,
-      formRef,
-      goToOrderPage,
-    ],
+    [formRef, goToOrderPage, saveDraft, setAnketaType, confirmActionWrapper, updateOrderData],
   )
 
   const saveDraftAndPrint = useCallback(
-    (application: GetFullApplicationResponse) => {
+    (application: ApplicationFrontdc) => {
       // TODO Доделать когда появится ручка формирования печатной заявки
       if (dcAppId) {
         console.log('Print application')
       } else {
-        if (vendorCode !== applicationVendorCode) {
-          showConfirmationModalDialog(
-            () =>
-              saveDraft(
-                getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
-              ).then(() => {
-                console.log('application saved')
-                console.log('Print application')
-              }),
-            'Заявка будет сохранена под ДЦ:',
-          )
-        } else {
-          saveDraft(
-            getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
-          ).then(() => {
+        const newApplication = setAnketaType(application, formRef.current?.values?.isFormComplete ?? false)
+        if (!application) {
+          return
+        }
+        confirmActionWrapper(() => {
+          updateOrderData(newApplication)
+          saveDraft(newApplication).then(() => {
             console.log('application saved')
             console.log('Print application')
           })
-        }
+        }, 'Заявка будет сохранена под ДЦ:')
       }
     },
-    [
-      applicationVendorCode,
-      dcAppId,
-      getDraftApplicationData,
-      saveDraft,
-      showConfirmationModalDialog,
-      vendorCode,
-      formRef,
-    ],
+    [dcAppId, formRef, saveDraft, setAnketaType, confirmActionWrapper, updateOrderData],
   )
 
   /** Сохраняем заявку чтобы сформировать ID заявки */
@@ -195,17 +148,16 @@ export function ClientForm({ formRef, onMount }: Props) {
       }
 
       const application = remapApplicationValues(orderForm)
+
       if (!application) {
         return
       }
+      const newApplication = setAnketaType(application, formRef.current?.values?.isFormComplete ?? false)
+      updateOrderData(newApplication)
 
-      return (
-        await saveDraft(
-          getDraftApplicationData(application, formRef.current?.values?.isFormComplete ?? false),
-        )
-      ).dcAppId
+      return (await saveDraft(newApplication)).dcAppId
     },
-    [dcAppId, remapApplicationValues, saveDraft, getDraftApplicationData, formRef],
+    [dcAppId, formRef, remapApplicationValues, saveDraft, setAnketaType, updateOrderData],
   )
 
   const getSubmitAction = useCallback(
@@ -213,29 +165,35 @@ export function ClientForm({ formRef, onMount }: Props) {
       if (!formRef.current) {
         return
       }
-
-      const updatedApplication = remapApplicationValues(values)
-      if (!updatedApplication) {
+      const application = remapApplicationValues(values)
+      if (!application) {
         return
       }
 
       switch (formRef.current.values.submitAction) {
         case SubmitAction.Draft:
-          saveApplicationDraft(updatedApplication)
+          saveApplicationDraft(application)
           break
         case SubmitAction.Save:
           if (saveDraftDisabled) {
-            onSubmit(updatedApplication)
+            handleSubmit(application)
           } else {
-            saveApplicationDraft(updatedApplication)
+            saveApplicationDraft(application)
           }
           break
         case SubmitAction.Print:
-          saveDraftAndPrint(updatedApplication)
+          saveDraftAndPrint(application)
           break
       }
     },
-    [formRef, onSubmit, remapApplicationValues, saveApplicationDraft, saveDraftAndPrint, saveDraftDisabled],
+    [
+      formRef,
+      handleSubmit,
+      remapApplicationValues,
+      saveApplicationDraft,
+      saveDraftAndPrint,
+      saveDraftDisabled,
+    ],
   )
 
   useEffect(() => {
@@ -262,13 +220,18 @@ export function ClientForm({ formRef, onMount }: Props) {
               isDraftLoading={isDraftLoading}
               disabledButtons={disabledButtons}
               saveDraftDisabled={saveDraftDisabled}
+              isSameVendor={isSameVendor}
+              isReuploadedQuestionnaire={isReuploadedQuestionnaire}
+              setReuploadedQuestionnaire={setReuploadedQuestionnaire}
+              isAllowedUploadQuestionnaire={isAllowedUploadQuestionnaire}
+              onUploadQuestionnaire={handleQuestionnaireUploadRef.current}
             />
           </Formik>
           <DcConfirmationModal
             actionText={actionText}
             isVisible={isConfirmationModalVisible}
-            onClose={closeConfirmationDialog}
-            confirmedAction={confirmedAction.current}
+            onClose={closeConfirmationModal}
+            confirmedAction={confirmedActionRef.current}
           />
         </>
       )}

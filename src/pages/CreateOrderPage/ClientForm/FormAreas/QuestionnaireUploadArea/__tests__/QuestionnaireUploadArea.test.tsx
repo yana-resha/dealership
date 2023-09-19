@@ -40,9 +40,18 @@ disableConsole('error')
 describe('QuestionnaireUploadAreaTest', () => {
   describe('Все элементы отображаются на форме', () => {
     beforeEach(() => {
-      render(<QuestionnaireUploadArea />, {
-        wrapper: createWrapper,
-      })
+      render(
+        <QuestionnaireUploadArea
+          isSameVendor={true}
+          isReuploadedQuestionnaire={false}
+          setReuploadedQuestionnaire={jest.fn()}
+          isAllowedUploadQuestionnaire={true}
+          onUploadDocument={jest.fn()}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
     })
 
     it('Заголовок блока присутствует на форме', () => {
@@ -60,9 +69,18 @@ describe('QuestionnaireUploadAreaTest', () => {
 
   describe('Все поля валидируется', () => {
     beforeEach(() => {
-      render(<QuestionnaireUploadArea />, {
-        wrapper: createWrapper,
-      })
+      render(
+        <QuestionnaireUploadArea
+          isSameVendor={true}
+          isReuploadedQuestionnaire={false}
+          setReuploadedQuestionnaire={jest.fn()}
+          isAllowedUploadQuestionnaire={true}
+          onUploadDocument={jest.fn()}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
       userEvent.click(screen.getByTestId('submit'))
     })
 

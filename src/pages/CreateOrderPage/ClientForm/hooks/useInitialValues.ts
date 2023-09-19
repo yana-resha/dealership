@@ -6,15 +6,18 @@ import {
   ApplicantFrontdc,
   ApplicationFrontdc,
   PhoneType,
-  GetFullApplicationResponse,
   DocumentType,
+  VendorFrontdc,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
 import { DateTime, Interval } from 'luxon'
 import { useDispatch } from 'react-redux'
 
+import { AnketaType } from 'entities/application/application.utils'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { DocumentUploadStatus } from 'features/ApplicationFileLoader'
+import { useGetUserQuery } from 'shared/api/requests/authdc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
@@ -31,8 +34,11 @@ import { transformPhoneForRequest } from '../utils/transformPhoneForRequest'
 
 export function useInitialValues() {
   const dispatch = useDispatch()
-
   const initialOrder = useAppSelector(state => state.order.order)
+
+  const { data: user } = useGetUserQuery()
+  const pointOfSale = getPointOfSaleFromCookies()
+
   const initialValues = makeClientForm(initialOrder)
 
   const fullApplicationData = initialOrder?.orderData
@@ -192,7 +198,7 @@ export function useInitialValues() {
   }, [applicant?.employment?.currentWorkExperience, createdDate, initialValues.employmentDate])
 
   const remapApplicationValues = useCallback(
-    (values: ClientData): GetFullApplicationResponse | undefined => {
+    (values: ClientData): ApplicationFrontdc | undefined => {
       const {
         clientName,
         clientFormerName,
@@ -249,6 +255,13 @@ export function useInitialValues() {
         middleName: previousClientMiddleName,
       } = getSplitedName(clientFormerName)
       const actualLivingAddress = regAddrIsLivingAddr ? registrationAddress : livingAddress
+
+      // Форматируем значения для loanCar
+      const preparedLoanCar = application?.loanCar ? { ...application.loanCar } : undefined
+      if (preparedLoanCar && preparedLoanCar.mileage === '') {
+        // mileage не должен быть пустой строкой
+        preparedLoanCar.mileage = '0'
+      }
 
       let incomeDocumentType: null | DocumentType = null
       if (bankStatementFile) {
@@ -343,17 +356,57 @@ export function useInitialValues() {
         },
       }
 
-      const updatedApplication = {
-        ...application,
-        applicant: newApplicant,
-        createdDate: newCreatedDate,
+      const newVendor: VendorFrontdc = {
+        ...application?.vendor,
+        ...pointOfSale,
       }
 
-      dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
+      const updatedApplication = {
+        ...application,
+        dcAppId: application?.dcAppId,
+        unit: pointOfSale.unit,
+        loanCar: preparedLoanCar,
+        applicant: newApplicant,
+        createdDate: newCreatedDate,
+        employees: {
+          tabNumActual: user?.employeeId,
+          fullNameCreated: getFullName(user?.firstName, user?.lastName),
+        },
+        specialMark: application?.specialMark,
+        vendor: newVendor,
+      }
 
-      return { ...fullApplicationData, application: updatedApplication }
+      return updatedApplication
     },
-    [createdDate, dcAppId, dispatch, fullApplicationData],
+    [
+      createdDate,
+      dcAppId,
+      fullApplicationData,
+      pointOfSale,
+      user?.employeeId,
+      user?.firstName,
+      user?.lastName,
+    ],
+  )
+
+  const setAnketaType = useCallback(
+    (application: ApplicationFrontdc, isFormValid: boolean) => ({
+      ...application,
+      anketaType:
+        application?.anketaType === AnketaType.Full
+          ? AnketaType.Full
+          : isFormValid
+          ? AnketaType.Complete
+          : AnketaType.Incomplete,
+    }),
+    [],
+  )
+  /* Обновление заявке в стор вынесено из remapApplicationValues отдельно, т.к. должно применяться
+  только при сохранении заявки, которое можно отменить, а remapApplicationValues вызывается раньше */
+  const updateOrderData = useCallback(
+    (application: ApplicationFrontdc) =>
+      dispatch(updateOrder({ orderData: { ...fullApplicationData, application } })),
+    [dispatch, fullApplicationData],
   )
 
   const makeDocumentTypeFile = (expectedType: DocumentType) => {
@@ -365,7 +418,7 @@ export function useInitialValues() {
 
     return {
       file: { dcAppId, documentType: currentScan.type, name: currentScan.name },
-      status: DocumentUploadStatus.Upload,
+      status: DocumentUploadStatus.Uploaded,
     }
   }
 
@@ -429,8 +482,9 @@ export function useInitialValues() {
 
   return {
     remapApplicationValues,
+    setAnketaType,
+    updateOrderData,
     isShouldShowLoading: false,
-    applicationVendorCode: fullApplicationData?.application?.vendor?.vendorCode,
     initialValues: initialValuesClientData,
     dcAppId,
   }

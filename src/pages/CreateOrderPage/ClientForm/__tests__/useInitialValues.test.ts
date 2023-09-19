@@ -2,6 +2,8 @@ import React from 'react'
 
 import { renderHook } from '@testing-library/react'
 
+import * as authdcModule from 'shared/api/requests/authdc'
+import { mockedUser } from 'shared/api/requests/authdc.mock'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { disableConsole } from 'tests/utils'
@@ -12,6 +14,7 @@ import { EXPECTED_DATA, EXPECTED_EMPTY_DATA } from './useInitialValues.mock'
 disableConsole('error')
 
 const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
+const mockedUseGetUserQuery = jest.spyOn(authdcModule, 'useGetUserQuery')
 const mockedUseMemo = jest.spyOn(React, 'useMemo')
 const mockApplication = fullApplicationData
 jest.mock('react-redux', () => ({
@@ -22,6 +25,7 @@ jest.mock('react-redux', () => ({
 describe('useInitialValues', () => {
   beforeEach(() => {
     mockedUseMemo.mockImplementation(fn => fn())
+    mockedUseGetUserQuery.mockImplementation(() => ({ data: mockedUser } as any))
   })
 
   describe('Преобразование данных работает корректно', () => {

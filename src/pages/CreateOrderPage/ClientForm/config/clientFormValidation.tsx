@@ -261,12 +261,14 @@ export const clientFormValidationSchema = Yup.object().shape({
     is: (occupation: number | null) => isJobDisabled(occupation),
     otherwise: schema => setRequiredIfSave(schema),
   }),
-  questionnaireFile: setRequiredIfSave(
-    Yup.object()
-      .nullable()
-      .test('badUpload', 'Ошибка при выгрузке файла', questionnaireFile =>
-        fileUploadStatusNotError(questionnaireFile as unknown as FileInfo | null),
-      ),
-    'Необходимо загрузить анкету',
-  ),
+  questionnaireFile: Yup.object()
+    .nullable()
+    .test('badUpload', 'Ошибка при выгрузке файла', questionnaireFile =>
+      fileUploadStatusNotError(questionnaireFile as unknown as FileInfo | null),
+    )
+    .when(['submitAction', 'isSameVendor'], {
+      is: (submitAction: string, isSameVendor: boolean) =>
+        submitAction === SubmitAction.Save || !isSameVendor,
+      then: schema => schema.required('Необходимо загрузить анкету'),
+    }),
 })

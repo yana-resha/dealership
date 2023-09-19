@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
@@ -10,31 +10,50 @@ import { ClientData } from '../../ClientForm.types'
 import { UPLOADED_DOCUMENTS } from '../../config/clientFormInitialValues'
 import { useStyles } from './QuestionnaireUploadArea.styles'
 
-const FIELD_NAME = 'questionnaireFile'
+export const QUESTIONNAIRE_FIELD_NAME = 'questionnaireFile'
 
-export const QuestionnaireUploadArea = () => {
+interface Props {
+  isSameVendor: boolean
+  isReuploadedQuestionnaire: boolean
+  setReuploadedQuestionnaire: React.Dispatch<React.SetStateAction<boolean>>
+  isAllowedUploadQuestionnaire: boolean
+  onUploadDocument: (() => void) | undefined
+}
+
+export const QuestionnaireUploadArea = ({
+  isSameVendor,
+  isReuploadedQuestionnaire,
+  setReuploadedQuestionnaire,
+  isAllowedUploadQuestionnaire,
+  onUploadDocument,
+}: Props) => {
   const classes = useStyles()
 
-  const [field, meta] = useField(FIELD_NAME)
-  const { value } = field
+  const [{ value }, meta] = useField<FileInfo | null>(QUESTIONNAIRE_FIELD_NAME)
   const { setFieldValue, setErrors } = useFormikContext<ClientData>()
 
   /** Фиксируем ошибку при выгрузке файла */
-  const onUploadError = useCallback(
+  const handleErrorUpload = useCallback(
     (documentName: string) => {
       setErrors({ [documentName]: 'Ошибка загрузки файла' })
     },
     [setErrors],
   )
 
-  const onUploadDocument = useCallback(
+  const handleDocumentUpload = useCallback(
     (file: FileInfo['file'], documentName: string, status: FileInfo['status']) => {
       setFieldValue(documentName, { file, status })
       if (status === DocumentUploadStatus.Error) {
-        onUploadError(documentName)
+        handleErrorUpload(documentName)
+      }
+      if (status === DocumentUploadStatus.Local) {
+        setReuploadedQuestionnaire(true)
+      }
+      if (status === DocumentUploadStatus.Sended) {
+        onUploadDocument?.()
       }
     },
-    [onUploadError, setFieldValue],
+    [handleErrorUpload, onUploadDocument, setFieldValue, setReuploadedQuestionnaire],
   )
 
   const onDeleteDocument = useCallback(
@@ -45,8 +64,14 @@ export const QuestionnaireUploadArea = () => {
     [setErrors, setFieldValue],
   )
 
+  useEffect(() => {
+    if (!isSameVendor && !isReuploadedQuestionnaire) {
+      setFieldValue(QUESTIONNAIRE_FIELD_NAME, null)
+    }
+  }, [isReuploadedQuestionnaire, isSameVendor, setFieldValue])
+
   const uploaderConfig: UploaderConfig = {
-    ...UPLOADED_DOCUMENTS[FIELD_NAME],
+    ...UPLOADED_DOCUMENTS[QUESTIONNAIRE_FIELD_NAME],
     documentFile: value,
     documentError: meta.error,
   }
@@ -59,9 +84,10 @@ export const QuestionnaireUploadArea = () => {
           suggest={`Загрузите или перетащите сюда анкету подписанную клиентом в jpg, png, pdf и не более ${DEFAULT_MAX_FILE_SIZE_MB} мб.`}
           loadingMessage="Анкета загружается"
           motivateMessage="Загрузить анкету"
-          onUploadDocument={onUploadDocument}
+          onUploadDocument={handleDocumentUpload}
           onDeleteDocument={onDeleteDocument}
-          onError={onUploadError}
+          onError={handleErrorUpload}
+          isAllowedUploadToServer={isAllowedUploadQuestionnaire}
         />
       </Box>
     </Box>
