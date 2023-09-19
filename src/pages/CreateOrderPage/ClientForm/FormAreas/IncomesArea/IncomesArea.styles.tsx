@@ -37,8 +37,23 @@ export default makeStyles(theme => ({
 
   docError: {
     display: 'flex',
-    flexDirection: 'column',
     color: theme.palette.error.main,
     gap: theme.spacing(2),
+  },
+
+  cancelButton: {
+    '&.MuiButton-root': {
+      '& svg': {
+        width: '23px',
+        height: '23px',
+        fill: theme.palette.error.main,
+      },
+      backgroundColor: 'transparent',
+    },
+    '&.MuiButton-root:hover': {
+      '& svg': {
+        opacity: '0.85',
+      },
+    },
   },
 }))

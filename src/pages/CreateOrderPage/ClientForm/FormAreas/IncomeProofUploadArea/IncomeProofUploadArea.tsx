@@ -21,13 +21,19 @@ export const IncomeProofUploadArea = () => {
   const classes = useStyles()
   const [isVisible, setIsVisible] = useState(false)
   const { setFieldValue, values, setErrors, errors } = useFormikContext<ClientData>()
-  const { occupation, ndfl2File, ndfl3File, bankStatementFile } = values
+
+  const { occupation, ndfl2File, ndfl3File, bankStatementFile, isIncomeProofUploaderTouched } = values
   const [, meta] = useField('incomeProofUploadValidator')
   const isError = meta && meta.touched && meta.error
 
   const openUploadDialog = useCallback(() => {
-    setIsVisible(true)
-  }, [setIsVisible])
+    if (occupation) {
+      setIsVisible(true)
+    }
+    if (!isIncomeProofUploaderTouched) {
+      setFieldValue('isIncomeProofUploaderTouched', true)
+    }
+  }, [isIncomeProofUploaderTouched, occupation, setFieldValue])
 
   const closeUploadDialog = useCallback(() => {
     setIsVisible(false)

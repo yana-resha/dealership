@@ -43,7 +43,7 @@ describe('IncomeProofUploadAreaTest', () => {
   describe('Все элементы отображаются на форме', () => {
     beforeEach(() => {
       render(<IncomeProofUploadArea />, {
-        wrapper: createWrapper(),
+        wrapper: createWrapper({ occupation: 1 }),
       })
     })
 
@@ -61,11 +61,6 @@ describe('IncomeProofUploadAreaTest', () => {
       expect(screen.getByText('2НДФЛ')).toBeInTheDocument()
     })
 
-    it('Отображается секция для загрузки 3НДФЛ', () => {
-      userEvent.click(screen.getByText('Загрузить документы, подтверждающие доход'))
-      expect(screen.getByText('3НДФЛ')).toBeInTheDocument()
-    })
-
     it('Отображается секция для загрузки Выписки из банка', () => {
       userEvent.click(screen.getByText('Загрузить документы, подтверждающие доход'))
       expect(screen.getByText('Выписка из банка')).toBeInTheDocument()
@@ -79,6 +74,7 @@ describe('IncomeProofUploadAreaTest', () => {
       })
       userEvent.click(screen.getByTestId('submit'))
       userEvent.click(screen.getByText('Загрузить документы, подтверждающие доход'))
+      expect(screen.getByText('3НДФЛ')).toBeInTheDocument()
       expect(
         await screen.findAllByText('Необходимо загрузить подтверждающие документы (3НДФЛ обязателен)'),
       ).toHaveLength(2)

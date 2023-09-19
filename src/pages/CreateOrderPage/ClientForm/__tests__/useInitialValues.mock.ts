@@ -42,6 +42,7 @@ export const EXPECTED_DATA = {
   expenses: '12005.2',
   familyIncome: '44000.82',
   incomeConfirmation: false,
+  isIncomeProofUploaderTouched: false,
   incomeProofUploadValidator: '',
   issuedBy: 'МВД',
   livingAddress: {
@@ -160,6 +161,7 @@ export const EXPECTED_EMPTY_DATA = {
 
   // Справки о доходах
   incomeConfirmation: false,
+  isIncomeProofUploaderTouched: false,
   ndfl2File: null,
   ndfl3File: null,
   bankStatementFile: null,

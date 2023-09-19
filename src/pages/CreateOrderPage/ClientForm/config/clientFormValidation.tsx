@@ -226,8 +226,9 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: (secondDocumentType: number | null) => secondDocumentType !== ApplicantDocsType.INN,
       then: schema => setRequiredIfSave(schema),
     }),
-  occupation: setRequiredIfSave(Yup.number().nullable()).when('incomeConfirmation', {
-    is: (incomeConfirmation: boolean) => incomeConfirmation,
+  occupation: setRequiredIfSave(Yup.number().nullable()).when('isIncomeProofUploaderTouched', {
+    is: (isIncomeProofUploaderTouched: boolean, submitAction: string) =>
+      isIncomeProofUploaderTouched && (submitAction === SubmitAction.Save || !submitAction),
     then: schema => schema.test('isHasNotOccupation', '', value => !!value),
   }),
   employmentDate: Yup.date()
