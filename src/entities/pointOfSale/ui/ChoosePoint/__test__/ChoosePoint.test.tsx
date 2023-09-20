@@ -70,8 +70,8 @@ describe('ChoosePoint', () => {
       expect(screen.getByPlaceholderText('ТТ или адрес')).toBeInTheDocument()
     })
 
-    it('Отображается кнопка Войти', () => {
-      expect(screen.getByText('Войти')).toBeInTheDocument()
+    it('Отображается кнопка Продолжить', () => {
+      expect(screen.getByText('Продолжить')).toBeInTheDocument()
     })
   })
 
@@ -94,8 +94,8 @@ describe('ChoosePoint', () => {
       expect(screen.getByTestId('choosePointIconButton')).toBeVisible()
     })
 
-    it('Не отображается кнопка Войти', async () => {
-      expect(await screen.queryByText('Войти')).not.toBeInTheDocument()
+    it('Не отображается кнопка Продолжить', async () => {
+      expect(await screen.queryByText('Продолжить')).not.toBeInTheDocument()
     })
   })
 
@@ -186,7 +186,7 @@ describe('ChoosePoint', () => {
     })
   })
 
-  describe('При нажатии кнопки "Войти" видим корректную модалку', () => {
+  describe('При нажатии кнопки "Продолжить" видим корректную модалку', () => {
     beforeEach(() => {
       mockedUseGetVendorsListQuery.mockImplementation(() => ({
         data: mockResponse,
@@ -203,7 +203,7 @@ describe('ChoosePoint', () => {
       const option = await screen.findByRole('option')
       expect(option).not.toBeNull()
       userEvent.click(option)
-      userEvent.click(screen.getByText('Войти'))
+      userEvent.click(screen.getByText('Продолжить'))
       expect(screen.getByText('Вы выбрали точку:')).toBeVisible()
       expect(screen.getByText('Сармат 2002852 Ханты-Мансийск Зябликова 4')).toBeVisible()
       expect(screen.getByText('Все верно?')).toBeVisible()
@@ -230,7 +230,7 @@ describe('ChoosePoint', () => {
       const option = await screen.findByRole('option')
       expect(option).not.toBeNull()
       userEvent.click(option)
-      userEvent.click(screen.getByText('Войти'))
+      userEvent.click(screen.getByText('Продолжить'))
       userEvent.click(screen.getByText('Да'))
       expect(mockedSavePointOfSaleToCookies).toBeCalledTimes(1)
     })
@@ -255,7 +255,7 @@ describe('ChoosePoint', () => {
       const option = await screen.findByRole('option')
       expect(option).not.toBeNull()
       userEvent.click(option)
-      userEvent.click(screen.getByText('Войти'))
+      userEvent.click(screen.getByText('Продолжить'))
       userEvent.click(screen.getByText('Да'))
       expect(successFn).toBeCalledTimes(1)
     })
@@ -278,7 +278,7 @@ describe('ChoosePoint', () => {
       const option = await screen.findByRole('option')
       expect(option).not.toBeNull()
       userEvent.click(option)
-      userEvent.click(screen.getByText('Войти'))
+      userEvent.click(screen.getByText('Продолжить'))
       userEvent.click(screen.getByText('Нет'))
       expect(mockedSavePointOfSaleToCookies).toBeCalledTimes(0)
       expect(screen.getByPlaceholderText('ТТ или адрес')).toHaveTextContent('')
@@ -296,12 +296,12 @@ describe('ChoosePoint', () => {
     })
 
     it('Выводится сообщение об ошибке', () => {
-      userEvent.click(screen.getByText('Войти'))
+      userEvent.click(screen.getByText('Продолжить'))
       expect(screen.getByText('Необходимо выбрать автосалон'))
     })
 
     it('Функция сохранения в Cookies не вызывается', () => {
-      userEvent.click(screen.getByText('Войти'))
+      userEvent.click(screen.getByText('Продолжить'))
       expect(mockedSavePointOfSaleToCookies).toBeCalledTimes(0)
     })
   })

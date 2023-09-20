@@ -167,7 +167,7 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
           onClick={validatePointOfSale}
           disabled={!!error}
         >
-          Войти
+          Продолжить
         </Button>
       )}
 
