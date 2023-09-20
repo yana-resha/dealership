@@ -7,10 +7,8 @@ describe('prepareCars', () => {
       { brand: 'Fiat', models: ['Ducato', 'Punto', '500'], maxCarAge: 20, autoCategory: 'A' },
     ]
     const expectedValue = {
-      cars: {
-        BMW: { brand: 'BMW', models: ['1 series', '3 series'], maxCarAge: 10, autoCategory: 'A' },
-        Fiat: { brand: 'Fiat', models: ['Ducato', 'Punto', '500'], maxCarAge: 20, autoCategory: 'A' },
-      },
+      BMW: { brand: 'BMW', models: ['1 series', '3 series'], maxCarAge: 10, autoCategory: 'A' },
+      Fiat: { brand: 'Fiat', models: ['Ducato', 'Punto', '500'], maxCarAge: 20, autoCategory: 'A' },
     }
     expect(prepareCars(initialValue)).toEqual(expectedValue)
   })
@@ -23,7 +21,7 @@ describe('prepareCars', () => {
       { brand: 'KIA', models: ['Picanto', 'Rio', 'Ceed'], maxCarAge: 10 },
     ]
     const expectedValue = {
-      cars: { KIA: { brand: 'KIA', models: ['Picanto', 'Rio', 'Ceed'], maxCarAge: 10 } },
+      KIA: { brand: 'KIA', models: ['Picanto', 'Rio', 'Ceed'], maxCarAge: 10 },
     }
     expect(prepareCars(initialValue)).toEqual(expectedValue)
   })

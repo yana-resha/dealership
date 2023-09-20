@@ -7,7 +7,7 @@ import { act } from 'react-dom/test-utils'
 import { MockStore } from 'redux-mock-store'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
-import * as useGetCarsListQueryModule from 'common/OrderCalculator/hooks/useGetCarsListQuery'
+import * as useCarSectionModule from 'common/OrderCalculator/hooks/useCarSection'
 import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
@@ -39,7 +39,7 @@ const currentDateString = `3112${currentDate.getFullYear()}`
 
 const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
 const mockedUseGetVendorOptions = jest.spyOn(useGetVendorOptionsQueryModule, 'useGetVendorOptionsQuery')
-const mockedUseGetCarsListQuery = jest.spyOn(useGetCarsListQueryModule, 'useGetCarsListQuery')
+const mockedUseCarSection = jest.spyOn(useCarSectionModule, 'useCarSection')
 const mockedUseGetCreditProductListQuery = jest.spyOn(
   useGetCreditProductListQueryModule,
   'useGetCreditProductListQuery',
@@ -79,13 +79,7 @@ describe('FullOrderCalculator', () => {
           isError: false,
         } as any),
     )
-    mockedUseGetCarsListQuery.mockImplementation(
-      () =>
-        ({
-          data: { cars: carBrands },
-          isError: false,
-        } as any),
-    )
+    mockedUseCarSection.mockImplementation(() => ({ cars: carBrands }))
     mockedUseInitialValues.mockImplementation(
       () =>
         ({

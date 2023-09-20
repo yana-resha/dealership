@@ -2,11 +2,9 @@ import { useEffect, useMemo } from 'react'
 
 import { useField } from 'formik'
 
-import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-
 import { MIN_LOAN_YEAR_TERM, getCarYears } from '../config'
 import { FormFieldNameMap } from '../types'
-import { useGetCarsListQuery } from './useGetCarsListQuery'
+import { useCarSection } from './useCarSection'
 
 // Обрезаем массив годом выпуска по максимальному возрасту авто
 function getTrimmedСarYears(carYears: { value: number }[], carMaxAge: number | undefined) {
@@ -31,14 +29,13 @@ function getTrimmedСarYears(carYears: { value: number }[], carMaxAge: number | 
 }
 
 export function useCarYears() {
-  const { vendorCode } = getPointOfSaleFromCookies()
-  const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
+  const { cars } = useCarSection()
 
   const [carConditionField] = useField<string | null>(FormFieldNameMap.carCondition)
   const [carBrandField] = useField<string | null>(FormFieldNameMap.carBrand)
   const [carYearField, , { setValue: setCarYear }] = useField<number | undefined>(FormFieldNameMap.carYear)
 
-  const carMaxAge = carsData?.cars?.[carBrandField.value ?? '']?.maxCarAge
+  const carMaxAge = cars[carBrandField.value ?? '']?.maxCarAge
   const carYears = useMemo(() => {
     const carYears = getCarYears(!!carConditionField.value)
     const trimmedСarYears = getTrimmedСarYears(carYears, carMaxAge)

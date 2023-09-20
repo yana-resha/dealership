@@ -21,7 +21,7 @@ import {
   ValidationParams,
 } from '../types'
 import { RoundOption, getMinMaxValueFromPercent } from '../utils/getValueFromPercent'
-import { useGetCarsListQuery } from './useGetCarsListQuery'
+import { useCarSection } from './useCarSection'
 import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 
 const LOAN_TERM_GRADUATION_VALUE = 12
@@ -65,7 +65,6 @@ export function useLimits({ vendorCode }: Params) {
   const birthDate = useAppSelector(
     state => state.order.order?.orderData?.application?.applicant?.birthDate || state.order.order?.birthDate,
   )
-  const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
   const [commonErrorsField, , { setValue: setCommonErrors }] = useField<CommonError>(
     FormFieldNameMap.commonError,
   )
@@ -88,12 +87,13 @@ export function useLimits({ vendorCode }: Params) {
   const carCost = parseFloat(values.carCost)
 
   const { data, isLoading, isSuccess } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
+  const { cars } = useCarSection()
 
   useEffect(() => {
     dispatch(updateOrder({ creditProductsList: data?.products }))
   }, [data, dispatch])
 
-  const carMaxAge = carBrand ? carsData?.cars?.[carBrand]?.maxCarAge ?? 0 : 0
+  const carMaxAge = carBrand ? cars[carBrand]?.maxCarAge ?? 0 : 0
   const durationMaxFromCarAge = carYear
     ? (carMaxAge - (new Date().getFullYear() - carYear)) * MONTH_OF_YEAR_COUNT
     : 0
