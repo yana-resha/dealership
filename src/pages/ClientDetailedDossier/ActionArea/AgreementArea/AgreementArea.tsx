@@ -285,11 +285,12 @@ export function AgreementArea({
       {preparedStatus === PreparedStatus.formation && (
         <Box>
           {isDocsLoading ? (
-            <FileDownloader
-              file={undefined}
-              index={0}
-              loadingMessage="Идет формирование договора. Это может занять 2-5 мин."
-            />
+            <Box className={classes.loadingMessageContainer}>
+              <CircularProgressWheel size="small" />
+              <SberTypography className={classes.loadingMessage} sberautoVariant="body3" component="p">
+                Идет формирование договора. Это может занять 2-5 мин.
+              </SberTypography>
+            </Box>
           ) : (
             <Box className={classes.documentsBlock}>
               {agreementDocs.map((document, index) => (

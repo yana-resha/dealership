@@ -68,4 +68,14 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
+
+  loadingMessageContainer: {
+    display: 'flex',
+    gap: theme.spacing(2),
+    alignItems: 'center',
+  },
+
+  loadingMessage: {
+    color: theme.palette.primary.main,
+  },
 }))

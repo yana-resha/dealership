@@ -36,8 +36,8 @@ type Props = {
 }
 
 enum WheelSize {
-  small = 30,
-  medium = 36,
+  small = 24,
+  medium = 32,
   large = 40,
   extraLarge = 64,
 }

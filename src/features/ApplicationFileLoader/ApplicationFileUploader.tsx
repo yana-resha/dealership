@@ -3,7 +3,6 @@ import { memo, useCallback, useEffect, useMemo } from 'react'
 import { Box, FormHelperText } from '@mui/material'
 import { Stack } from '@mui/system'
 
-import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { DragAndDropWrapper } from 'shared/ui/DragAndDropWrapper'
 import { FileDownloader } from 'shared/ui/FileDownloader'
 import { FileUploadButton } from 'shared/ui/FileUploadButton'
@@ -122,7 +121,7 @@ const Uploader: React.FC<UploaderProps> = props => {
 
           <Stack direction="row">
             <Box gridColumn="1 / -1" className={classes.item} display="flex" alignItems="center">
-              {documentFile?.file ? (
+              {documentFile?.file && !isLoading ? (
                 <FileDownloader
                   file={documentFile?.file}
                   loadingMessage={loadingMessage}
@@ -131,10 +130,13 @@ const Uploader: React.FC<UploaderProps> = props => {
                   onDownloadFile={downloadFile}
                 />
               ) : (
-                <FileUploadButton buttonText={motivateMessage} onChange={handleUpload} />
+                <FileUploadButton
+                  buttonText={motivateMessage}
+                  onChange={handleUpload}
+                  isUploading={isLoading}
+                />
               )}
             </Box>
-            {isLoading && <CircularProgressWheel size="small" />}
           </Stack>
         </DragAndDropWrapper>
 
