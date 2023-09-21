@@ -1,15 +1,13 @@
-import { FC } from 'react'
-
 import throttle from 'lodash/throttle'
 
 import { appConfig } from 'config'
 import { getUserSessionId } from 'shared/lib/getUserSessionId'
 
-import { authToken } from '../token'
+import { Service, getErrorMessage } from '../errors'
 import { Options } from './types'
 
 type RefreshMethod = () => Promise<any>
-type LogoutMethod = () => Promise<void> | void
+type LogoutMethod = (errorMessage?: string) => Promise<void> | void
 
 type FetchError = {
   success: false
@@ -37,6 +35,10 @@ function checkIsAuthError(error?: CustomFetchError) {
   const { code, status } = error || {}
 
   return (!!code && ['Unauthorized', 'Unauthenticated'].includes(code)) || status === 401
+}
+
+function getServiceFromUrl(url: string) {
+  return url.split('/')[3]
 }
 
 let instance: Rest
@@ -71,29 +73,25 @@ class Rest {
 
   /** Рефрешим токены */
   refresh = async (attempt = 0) => {
-    if (!authToken.jwt.get()) {
-      throw makeError('Unauthorized', 401, 'Token is empty')
-    }
-
     if (!this.isRefreshing) {
       this.setIsRefreshing(true)
-
       try {
-        await this.refreshMethod?.()
+        const res = await this.refreshMethod?.()
+        this.setIsRefreshing(false)
+
+        return res
       } catch (err) {
         const error = err as unknown as CustomFetchError
-
         const isAuthError = checkIsAuthError(error)
-
         if (isAuthError || attempt <= 5) {
-          throttle(() => this.logoutMethod?.(), 1500)()
+          console.log('refresh_error', error)
+          throttle(() => this.logoutMethod?.(getErrorMessage(Service.Authdc, error.code)), 1500)()
         } else {
           await this.refresh(attempt + 1)
 
           return
         }
       }
-
       this.setIsRefreshing(false)
     }
   }
@@ -119,16 +117,9 @@ class Rest {
     options: Options<RequestType> = {},
     isRepeated?: boolean,
   ): Promise<ResponseType> => {
-    const {
-      headers: additionalHeaders,
-      isResponseBlob = false,
-      data,
-      withCredentials = true,
-      method = 'POST',
-      ...opt
-    } = options
+    const { headers: additionalHeaders, isResponseBlob = false, data, method = 'POST', ...opt } = options
 
-    if (!url.includes('refreshAuthByToken')) {
+    if (!url.includes('refreshSession')) {
       await this.waitingRefreshed()
     }
 
@@ -140,13 +131,10 @@ class Rest {
     })
     const userSessionId = getUserSessionId()
     if (userSessionId) {
-      // headers.append('X-Session-Id', userSessionId)
+      headers.append('X-Session-Id', userSessionId)
     }
     if (appConfig.dochubApiHeader) {
       headers.append('X-App', appConfig.dochubApiHeader)
-    }
-    if (withCredentials) {
-      headers.append('Authorization', `Bearer ${authToken.jwt.get()}`)
     }
     if (isDataFormdata) {
       headers.delete('Content-Type')
@@ -168,6 +156,7 @@ class Rest {
       body,
       headers,
       method,
+      credentials: 'include',
       ...opt,
     })
       .then(async response => {
@@ -190,7 +179,6 @@ class Rest {
             throw makeError(response.statusText, response.status, `blob parser error, info: ${err}`)
           }
         }
-
         try {
           return (await response.json()) as ResponseType
         } catch (err) {
@@ -198,18 +186,15 @@ class Rest {
         }
       })
       .catch(async (error: CustomFetchError) => {
-        console.error('fetch error: ', url, JSON.stringify(error))
         if (
           checkIsAuthError(error) &&
           !isRepeated &&
-          // Если упал метод refreshAuthByToken, то он не должен тригерить повторный запуск рефреша
-          !url.includes('refreshAuthByToken')
+          // Если упал метод refreshSession, то он не должен тригерить повторный запуск рефреша
+          !url.includes('refreshSession')
         ) {
-          await this.refresh()
+          const refreshRes = await this.refresh()
           await this.waitingRefreshed()
-
-          // Если после рефреша есть токен, значит рефрешнулись успешно
-          if (authToken.jwt.get()) {
+          if (refreshRes?.success) {
             /** Запускаем запрос повторно, помечаем что он повторный,
              * если опять упадет по авторизации то выкинет в ошибку */
             this.request(url, options, true)
@@ -217,6 +202,10 @@ class Rest {
             throw error
           }
         } else {
+          if (isRepeated && checkIsAuthError(error)) {
+            const errorMessage = getErrorMessage(getServiceFromUrl(url) as Service, error.code)
+            this.logoutMethod?.(errorMessage)
+          }
           throw error
         }
       })

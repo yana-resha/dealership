@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { getToken } from 'shared/api/requests/authdc'
-import { authToken } from 'shared/api/token'
+import { Service, getErrorMessage } from 'shared/api/errors'
+import { createSession } from 'shared/api/requests/authdc'
 import { sleep } from 'shared/lib/sleep'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
@@ -26,25 +26,16 @@ export const useCheckAuthRedirect = (onReject: (text: string) => void) => {
 
         setSearchParams(new URLSearchParams(''))
 
-        const data = await getToken({ authCode: code, state })
-        if (!data.accessJwt || !data.refreshToken) {
+        const res = await createSession({ authCode: code, state })
+        if (!res.success) {
           throw new Error('Invalid response data')
         }
-
-        authToken.jwt.save(data.accessJwt)
-        authToken.refresh.save(data.refreshToken)
 
         // Делаем небольшую паузу, что бы у пользователя перед глазами не мерцал экран
         await sleep(1500)
         navigate(appRoutePaths.vendorList)
-      } catch (err) {
-        const makeError = (error: unknown): { message: string } => ({
-          message: 'Ошибка авторизации. Не удалось авторизоваться, попробуйте еще раз',
-        })
-
-        const error = makeError(err)
-
-        onReject(error.message)
+      } catch (err: any) {
+        onReject(getErrorMessage(Service.Authdc, err?.code))
       } finally {
         setIsLoading(false)
       }

@@ -7,7 +7,7 @@ import { MockProviders } from 'tests/mocks'
 import * as useLogoutHooks from '../../../hooks/useLogout'
 import { AuthProvider } from '../AuthProvider'
 
-// Создаем мок-объекты для Rest, refreshAuthByToken и useLogout
+// Создаем мок-объекты для Rest и useLogout
 jest.mock('shared/api/client')
 jest.mock('../../../hooks/useLogout')
 
@@ -21,16 +21,13 @@ jest.mock('notistack', () => ({
 
 describe('AuthProvider', () => {
   const useLogoutMock = jest.spyOn(useLogoutHooks, 'useLogout')
-  const onLogoutMock = jest.fn()
-
-  const refreshAuthByTokenMock = jest.spyOn(authdcApi, 'refreshAuthByToken')
-
+  const logoutMock = jest.fn()
+  const refreshSessionMock = jest.spyOn(authdcApi, 'refreshSession')
   beforeEach(() => {
-    // Устанавливаем возвращаемое значение для refreshAuthByToken
-    useLogoutMock.mockImplementation(() => ({ onLogout: onLogoutMock }))
+    // Устанавливаем возвращаемое значение для refreshSessionMock
+    useLogoutMock.mockImplementation(() => ({ logout: logoutMock }))
     jest.clearAllMocks()
   })
-
   it('должен настроить клиент Rest с правильной функцией обновления токена', async () => {
     render(
       <MockProviders>
@@ -39,10 +36,8 @@ describe('AuthProvider', () => {
         </AuthProvider>
       </MockProviders>,
     )
-
     expect(Rest.setRefresh).toHaveBeenCalledTimes(1)
   })
-
   it('должен настроить клиент Rest с правильной функцией logout-а', () => {
     render(
       <MockProviders>
@@ -51,10 +46,8 @@ describe('AuthProvider', () => {
         </AuthProvider>
       </MockProviders>,
     )
-
     expect(Rest.setLogout).toHaveBeenCalledTimes(1)
   })
-
   it('должен настроить клиент Rest с правильной функцией logout-а', () => {
     render(
       <MockProviders>
@@ -63,8 +56,7 @@ describe('AuthProvider', () => {
         </AuthProvider>
       </MockProviders>,
     )
-
     expect(Rest.setRefresh).toHaveBeenCalledTimes(1)
-    expect(Rest.setRefresh).toHaveBeenCalledWith(refreshAuthByTokenMock)
+    expect(Rest.setRefresh).toHaveBeenCalledWith(refreshSessionMock)
   })
 })

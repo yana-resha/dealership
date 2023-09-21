@@ -17,7 +17,7 @@
     "@mui/styles": "5.10.16",
     "@mui/x-date-pickers": "6.2.1",
     "@reduxjs/toolkit": "1.9.1",
-    "@sberauto/authdc-proto": "1.0.6",
+    "@sberauto/authdc-proto": "1.0.8",
     "@sberauto/authsberteamid-proto": "1.0.0",
     "@sberauto/loanapplifecycledc-proto": "0.33.4",
     "@sberauto/dictionarydc-proto": "1.0.2",

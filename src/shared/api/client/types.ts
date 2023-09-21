@@ -30,5 +30,4 @@ export interface Options<T> {
   sendSessionId?: boolean
   isResponseBlob?: boolean
   isReadOnly?: boolean
-  withCredentials?: boolean
 }
