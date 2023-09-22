@@ -213,18 +213,48 @@ export const clientFormValidationSchema = Yup.object().shape({
   expenses: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   relatedToPublic: setRequiredIfSave(Yup.number().nullable()),
   secondDocumentType: setRequiredIfSave(Yup.number().nullable()),
-  secondDocumentNumber: setRequiredIfSave(Yup.string()),
+  secondDocumentNumber: setRequiredIfSave(
+    Yup.string()
+      .when('secondDocumentType', {
+        is: (secondDocumentType: number | null) =>
+          secondDocumentType === ApplicantDocsType.INTERNATIONALPASSPORTFORRFCITIZENS,
+        then: schema => schema.min(9, 'Введите серию и номер полностью'),
+      })
+      .when('secondDocumentType', {
+        is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.DRIVERLICENSE,
+        then: schema => schema.min(10, 'Введите серию и номер полностью'),
+      })
+      .when('secondDocumentType', {
+        is: (secondDocumentType: number | null) =>
+          secondDocumentType === ApplicantDocsType.PENSIONCERTIFICATE,
+        then: schema => schema.min(11, 'Введите номер полностью'),
+      })
+      .when('secondDocumentType', {
+        is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.INN,
+        then: schema => schema.min(12, 'Введите номер полностью'),
+      }),
+  ),
   secondDocumentDate: Yup.date()
     .nullable()
     .when('secondDocumentType', {
-      is: (secondDocumentType: number | null) => secondDocumentType !== ApplicantDocsType.INN,
+      is: (secondDocumentType: number | null) =>
+        secondDocumentType !== ApplicantDocsType.INN &&
+        secondDocumentType !== ApplicantDocsType.PENSIONCERTIFICATE,
       then: schema => setRequiredIfSave(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
     }),
   secondDocumentIssuedBy: Yup.string()
     .nullable()
     .when('secondDocumentType', {
-      is: (secondDocumentType: number | null) => secondDocumentType !== ApplicantDocsType.INN,
+      is: (secondDocumentType: number | null) =>
+        secondDocumentType !== ApplicantDocsType.INN &&
+        secondDocumentType !== ApplicantDocsType.PENSIONCERTIFICATE,
       then: schema => setRequiredIfSave(schema),
+    }),
+  secondDocumentIssuedCode: Yup.string()
+    .nullable()
+    .when('secondDocumentType', {
+      is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.DRIVERLICENSE,
+      then: schema => setRequiredIfSave(schema.min(4, 'Введите код полностью')),
     }),
   occupation: setRequiredIfSave(Yup.number().nullable()).when('isIncomeProofUploaderTouched', {
     is: (isIncomeProofUploaderTouched: boolean, submitAction: string) =>
