@@ -441,8 +441,9 @@ export function useInitialValues<D extends boolean | undefined>(
   )
 
   const getCarCountryData = useCallback(
-    (carBrand: string | null) => {
-      const currentCarBrand = carsData?.cars?.[carBrand ?? '']
+    (carBrand: string | null, carCondition: number) => {
+      const cars = (carCondition ? carsData?.newCars : carsData?.usedCars) || {}
+      const currentCarBrand = cars[carBrand ?? '']
 
       return {
         mark: getCountryMark(currentCarBrand?.madeIn),
@@ -451,7 +452,7 @@ export function useInitialValues<D extends boolean | undefined>(
         category: currentCarBrand?.autoCategory,
       }
     },
-    [carsData?.cars],
+    [carsData?.newCars, carsData?.usedCars],
   )
 
   const remapApplicationValuesForSmallCalculator = useCallback(
@@ -478,7 +479,7 @@ export function useInitialValues<D extends boolean | undefined>(
         mileage: carMileage,
         model: carModel ?? undefined,
         autoCreateYear: carYear,
-        ...getCarCountryData(carBrand),
+        ...getCarCountryData(carBrand, carCondition),
       }
       const newLoanData: LoanDataFrontdc = {
         productId: creditProduct,
@@ -548,7 +549,7 @@ export function useInitialValues<D extends boolean | undefined>(
         carBody: carIdType === 0 ? carId : undefined,
         dkpNumber: salesContractId,
         dkpDate: convertedDateToString(salesContractDate),
-        ...getCarCountryData(carBrand),
+        ...getCarCountryData(carBrand, carCondition),
       }
       const newVendor: VendorFrontdc = {
         ...pointOfSale,

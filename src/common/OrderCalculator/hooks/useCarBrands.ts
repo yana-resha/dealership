@@ -2,23 +2,21 @@ import { useEffect, useMemo } from 'react'
 
 import { useField, useFormikContext } from 'formik'
 
-import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { usePrevious } from 'shared/hooks/usePrevious'
 
 import { FormFieldNameMap } from '../types'
-import { useGetCarsListQuery } from './useGetCarsListQuery'
+import { useCarSection } from './useCarSection'
 
 export function useCarBrands() {
   const { setFieldValue } = useFormikContext()
-  const { vendorCode } = getPointOfSaleFromCookies()
-  const { data } = useGetCarsListQuery({ vendorCode })
+  const { cars } = useCarSection()
 
   const [carBrandField] = useField<string | null>(FormFieldNameMap.carBrand)
   const prevCarBrandValue = usePrevious(carBrandField.value)
-  const carBrands = useMemo(() => Object.keys(data?.cars || {}), [data?.cars])
+  const carBrands = useMemo(() => Object.keys(cars), [cars])
   const carModels = useMemo(
-    () => data?.cars?.[carBrandField.value ?? '']?.models || [],
-    [carBrandField.value, data?.cars],
+    () => (carBrandField.value && cars[carBrandField.value]?.models ? cars[carBrandField.value].models : []),
+    [carBrandField.value, cars],
   )
 
   useEffect(() => {

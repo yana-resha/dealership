@@ -7,7 +7,7 @@ import { act } from 'react-dom/test-utils'
 import { MockStore } from 'redux-mock-store'
 
 import { initialValueMap } from 'common/OrderCalculator/config'
-import * as useGetCarsListQueryModule from 'common/OrderCalculator/hooks/useGetCarsListQuery'
+import * as useCarSectionModule from 'common/OrderCalculator/hooks/useCarSection'
 import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
@@ -39,7 +39,7 @@ const mockedUseGetCreditProductListQuery = jest.spyOn(
   useGetCreditProductListQueryModule,
   'useGetCreditProductListQuery',
 )
-const mockedUseGetCarsListQuery = jest.spyOn(useGetCarsListQueryModule, 'useGetCarsListQuery')
+const mockedUseCarSection = jest.spyOn(useCarSectionModule, 'useCarSection')
 
 const getCreditProductListData = {
   ...creditProductListRsData,
@@ -80,13 +80,7 @@ describe('OrderCalculator', () => {
           initialValues: initialValueMap,
         } as any),
     )
-    mockedUseGetCarsListQuery.mockImplementation(
-      () =>
-        ({
-          data: { cars: carBrands },
-          isError: false,
-        } as any),
-    )
+    mockedUseCarSection.mockImplementation(() => ({ cars: carBrands }))
     mockedUseAppSelector.mockImplementation(() => fullApplicationData.application?.applicant?.birthDate)
   })
 

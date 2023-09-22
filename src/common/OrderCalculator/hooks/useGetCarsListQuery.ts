@@ -9,7 +9,8 @@ import { getCarsList } from 'shared/api/requests/dictionaryDc.api'
 import { NormalizedCar, prepareCars } from '../utils/prepareCars'
 
 type NormalizedCars = {
-  cars: Record<string, NormalizedCar>
+  newCars: Record<string, NormalizedCar>
+  usedCars: Record<string, NormalizedCar>
 }
 
 export const useGetCarsListQuery = (
@@ -26,7 +27,7 @@ export const useGetCarsListQuery = (
   return useQuery(['getCarsList'], () => getCarsList(params), {
     retry: false,
     cacheTime: Infinity,
-    select: res => prepareCars(res.cars),
+    select: res => ({ newCars: prepareCars(res.newCars), usedCars: prepareCars(res.usedCars) }),
     onError,
     ...options,
   })

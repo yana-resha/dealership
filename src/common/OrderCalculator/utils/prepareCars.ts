@@ -6,15 +6,11 @@ export interface NormalizedCar extends Car {
   maxCarAge: number
 }
 
-export const prepareCars = (initialCars: Car[] | null | undefined) => {
-  const cars =
-    initialCars?.reduce<Record<string, NormalizedCar>>((acc, cur) => {
-      if (!cur.brand || !cur.models || !cur.maxCarAge) {
-        return acc
-      }
+export const prepareCars = (initialCars: Car[] | null | undefined) =>
+  initialCars?.reduce<Record<string, NormalizedCar>>((acc, cur) => {
+    if (!cur.brand || !cur.models || !cur.maxCarAge) {
+      return acc
+    }
 
-      return { ...acc, [cur.brand]: cur as NormalizedCar }
-    }, {}) || {}
-
-  return { cars }
-}
+    return { ...acc, [cur.brand]: cur as NormalizedCar }
+  }, {}) || {}
