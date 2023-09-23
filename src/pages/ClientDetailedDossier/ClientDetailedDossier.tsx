@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Box, Button } from '@mui/material'
 import {
   ApplicantDocsType,
+  OptionType,
   SendApplicationToScoringRequest,
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
@@ -69,17 +70,16 @@ export function ClientDetailedDossier() {
       vendorInfo: compact([application?.vendor?.vendorName, application?.vendor?.address]).join(', '),
       carBrand: application?.loanCar?.brand || '',
       carModel: application?.loanCar?.model || '',
+      autoPrice: application?.loanCar?.autoPrice,
       creditAmount: application?.loanData?.amount,
       monthlyPayment: application?.loanData?.monthlyPayment,
       downPayment: application?.loanData?.downpayment,
-      // переводим baseRate (0...1) в проценты
-      rate: application?.loanData?.productRates?.baseRate
-        ? application?.loanData?.productRates?.baseRate * 100
-        : undefined,
+      rate: application?.loanData?.productRates?.baseRate,
       productName: application?.loanData?.productName || '',
       term: application?.loanData?.term,
       additionalOptions: application?.loanData?.additionalOptions || [],
       overpayment: application?.loanData?.overpayment,
+      incomeProduct: application?.loanData?.incomeProduct ?? false,
     }),
     [
       application?.status,
@@ -88,6 +88,7 @@ export function ClientDetailedDossier() {
       application?.vendor?.address,
       application?.loanCar?.brand,
       application?.loanCar?.model,
+      application?.loanCar?.autoPrice,
       application?.loanData?.amount,
       application?.loanData?.monthlyPayment,
       application?.loanData?.downpayment,
@@ -96,6 +97,7 @@ export function ClientDetailedDossier() {
       application?.loanData?.term,
       application?.loanData?.additionalOptions,
       application?.loanData?.overpayment,
+      application?.loanData?.incomeProduct,
     ],
   )
 

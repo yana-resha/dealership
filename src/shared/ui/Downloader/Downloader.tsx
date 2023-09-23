@@ -9,9 +9,14 @@ import useStyles from './Downloader.styles'
 
 type DownloaderIconProps = {
   onDownloadFile: () => Promise<File | undefined>
+  gridColumn?: string
 }
 
-export function Downloader({ onDownloadFile, children }: React.PropsWithChildren<DownloaderIconProps>) {
+export function Downloader({
+  onDownloadFile,
+  gridColumn,
+  children,
+}: React.PropsWithChildren<DownloaderIconProps>) {
   const styles = useStyles()
   const { enqueueSnackbar } = useSnackbar()
 
@@ -49,7 +54,7 @@ export function Downloader({ onDownloadFile, children }: React.PropsWithChildren
   const preview = file ? URL.createObjectURL(file) : undefined
 
   return (
-    <Box data-testid="downloaderIcon" display="flex" alignItems="center">
+    <Box data-testid="downloaderIcon" display="flex" alignItems="center" gridColumn={gridColumn}>
       {file ? (
         <Link
           data-testid="downloaderLink"
