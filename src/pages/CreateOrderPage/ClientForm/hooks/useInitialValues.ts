@@ -144,13 +144,6 @@ export function useInitialValues() {
       ? registrationAddressString === livingAddressString
       : initialValues.regAddrIsLivingAddr
 
-  const relatedToPublic =
-    typeof applicant?.publicPerson === 'boolean'
-      ? applicant?.publicPerson
-        ? 1
-        : 0
-      : initialValues.relatedToPublic
-
   const { mobileNumber, additionalNumber, employerPhone } = useMemo(
     () =>
       (applicant?.phones || []).reduce(
@@ -289,7 +282,7 @@ export function useInitialValues() {
         birthPlace: birthPlace,
         sex,
         email: email,
-        publicPerson: relatedToPublic === 1,
+        publicPerson: relatedToPublic ?? undefined,
         documents: compact([
           {
             ...transformDocsForRequest(
@@ -458,7 +451,7 @@ export function useInitialValues() {
 
           familyIncome: `${applicant?.income?.familyIncome ?? initialValues.familyIncome}`,
           expenses: `${applicant?.income?.expenses ?? initialValues.expenses}`,
-          relatedToPublic: relatedToPublic,
+          relatedToPublic: applicant?.publicPerson ?? initialValues.relatedToPublic,
           secondDocumentType: secondDocument.type ?? initialValues.secondDocumentType,
           secondDocumentNumber:
             (secondDocument.series || '') + (secondDocument.number || '') ||

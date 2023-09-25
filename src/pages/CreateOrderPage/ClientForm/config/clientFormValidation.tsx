@@ -212,7 +212,7 @@ export const clientFormValidationSchema = Yup.object().shape({
       then: schema => setRequiredIfSave(schema),
     }),
   expenses: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
-  relatedToPublic: setRequiredIfSave(Yup.number().nullable()),
+  relatedToPublic: setRequiredIfSave(Yup.boolean().nullable()),
   secondDocumentType: setRequiredIfSave(Yup.number().nullable()),
   secondDocumentNumber: setRequiredIfSave(
     Yup.string()
