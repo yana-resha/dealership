@@ -21,7 +21,7 @@ interface Props {
   isDraftLoading: boolean
   saveDraftDisabled: boolean
   disabledButtons: boolean
-  isSameVendor: boolean
+  isDifferentVendor: boolean
   isReuploadedQuestionnaire: boolean
   setReuploadedQuestionnaire: React.Dispatch<React.SetStateAction<boolean>>
   isAllowedUploadQuestionnaire: boolean
@@ -34,7 +34,7 @@ export function FormContainer(props: Props) {
     isDraftLoading,
     disabledButtons,
     saveDraftDisabled,
-    isSameVendor,
+    isDifferentVendor,
     isReuploadedQuestionnaire,
     setReuploadedQuestionnaire,
     isAllowedUploadQuestionnaire,
@@ -66,10 +66,10 @@ export function FormContainer(props: Props) {
 
   // Передаем информацию о совпадении ДЦ для валидации
   useEffect(() => {
-    setFieldValue('isSameVendor', isSameVendor)
+    setFieldValue('isDifferentVendor', isDifferentVendor)
     // setFieldValue удален из зависимостей, чтобы избежать ререндера
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSameVendor])
+  }, [isDifferentVendor])
 
   useEffect(() => {
     if (isShouldSubmit) {
@@ -87,7 +87,7 @@ export function FormContainer(props: Props) {
         <JobArea />
         <IncomesArea />
         <QuestionnaireUploadArea
-          isSameVendor={isSameVendor}
+          isDifferentVendor={isDifferentVendor}
           isReuploadedQuestionnaire={isReuploadedQuestionnaire}
           setReuploadedQuestionnaire={setReuploadedQuestionnaire}
           isAllowedUploadQuestionnaire={isAllowedUploadQuestionnaire}

@@ -13,7 +13,7 @@ import { useStyles } from './QuestionnaireUploadArea.styles'
 export const QUESTIONNAIRE_FIELD_NAME = 'questionnaireFile'
 
 interface Props {
-  isSameVendor: boolean
+  isDifferentVendor: boolean
   isReuploadedQuestionnaire: boolean
   setReuploadedQuestionnaire: React.Dispatch<React.SetStateAction<boolean>>
   isAllowedUploadQuestionnaire: boolean
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export const QuestionnaireUploadArea = ({
-  isSameVendor,
+  isDifferentVendor,
   isReuploadedQuestionnaire,
   setReuploadedQuestionnaire,
   isAllowedUploadQuestionnaire,
@@ -65,10 +65,10 @@ export const QuestionnaireUploadArea = ({
   )
 
   useEffect(() => {
-    if (!isSameVendor && !isReuploadedQuestionnaire) {
+    if (isDifferentVendor && !isReuploadedQuestionnaire) {
       setFieldValue(QUESTIONNAIRE_FIELD_NAME, null)
     }
-  }, [isReuploadedQuestionnaire, isSameVendor, setFieldValue])
+  }, [isReuploadedQuestionnaire, isDifferentVendor, setFieldValue])
 
   const uploaderConfig: UploaderConfig = {
     ...UPLOADED_DOCUMENTS[QUESTIONNAIRE_FIELD_NAME],

@@ -50,7 +50,7 @@ export function ClientForm({ formRef, onMount }: Props) {
   } = useInitialValues()
 
   const {
-    isSameVendor,
+    isDifferentVendor,
     actionText,
     handleQuestionnaireUploadRef,
     confirmedActionRef,
@@ -220,7 +220,7 @@ export function ClientForm({ formRef, onMount }: Props) {
               isDraftLoading={isDraftLoading}
               disabledButtons={disabledButtons}
               saveDraftDisabled={saveDraftDisabled}
-              isSameVendor={isSameVendor}
+              isDifferentVendor={isDifferentVendor}
               isReuploadedQuestionnaire={isReuploadedQuestionnaire}
               setReuploadedQuestionnaire={setReuploadedQuestionnaire}
               isAllowedUploadQuestionnaire={isAllowedUploadQuestionnaire}

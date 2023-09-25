@@ -42,7 +42,7 @@ describe('QuestionnaireUploadAreaTest', () => {
     beforeEach(() => {
       render(
         <QuestionnaireUploadArea
-          isSameVendor={true}
+          isDifferentVendor={false}
           isReuploadedQuestionnaire={false}
           setReuploadedQuestionnaire={jest.fn()}
           isAllowedUploadQuestionnaire={true}
@@ -71,7 +71,7 @@ describe('QuestionnaireUploadAreaTest', () => {
     beforeEach(() => {
       render(
         <QuestionnaireUploadArea
-          isSameVendor={true}
+          isDifferentVendor={false}
           isReuploadedQuestionnaire={false}
           setReuploadedQuestionnaire={jest.fn()}
           isAllowedUploadQuestionnaire={true}

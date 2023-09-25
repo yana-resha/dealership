@@ -38,7 +38,7 @@ export interface ClientData {
   clientName: string
   hasNameChanged: boolean
   clientFormerName: string
-  numOfChildren: string
+  numOfChildren: number | null
   familyStatus: number | null
   passport: string
   birthDate: Date | null
