@@ -79,7 +79,9 @@ const Uploader: React.FC<UploaderProps> = props => {
     if (file && status === DocumentUploadStatus.Local && isAllowedUploadToServer) {
       sendFile()
     }
-  }, [documentFile, isAllowedUploadToServer, isShowInput, sendFile])
+    // Удален sendFile - вызывал бесконечный ререндер из-за своей зависимости onGetOrderId
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentFile, isAllowedUploadToServer, isShowInput])
 
   if (!isShowInput) {
     if (!documentFile?.file) {

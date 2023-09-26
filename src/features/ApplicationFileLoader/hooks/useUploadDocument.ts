@@ -1,13 +1,8 @@
-import { useCallback, useEffect, useRef } from 'react'
-
-import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
+import { useCallback } from 'react'
 
 import { useApplicationContext } from 'entities/application/ApplicationProvider'
 import { useCheckDocumentsList } from 'features/ApplicationFileLoader/hooks/useCheckDocumentsList'
-import {
-  useGetApplicationDocumentsListMutation,
-  useUploadDocumentMutation,
-} from 'shared/api/requests/loanAppLifeCycleDc'
+import { useUploadDocumentMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 
 import { FileInfo, UploaderConfig, DocumentUploadStatus } from '../ApplicationFileUploader.types'
 import { checkIsFile } from '../utils/checkIsFile'
