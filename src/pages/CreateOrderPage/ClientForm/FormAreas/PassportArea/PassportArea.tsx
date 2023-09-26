@@ -171,41 +171,15 @@ export function PassportArea() {
       )}
       {hasNameChanged && <Box gridColumn="span 4" />}
 
-      <MaskedInputFormik
-        name="passport"
-        label="Серия и номер паспорта"
-        placeholder="-"
-        mask={maskPassport}
-        gridColumn="span 3"
-        disabled
-      />
-
-      <DateInputFormik name="passportDate" label="Дата выдачи" gridColumn="span 3" />
-
-      <AutocompleteInputFormik
-        name="divisionCode"
-        label="Код подразделения"
-        placeholder="-"
-        options={divisionCodeSuggestions}
-        isCustomValueAllowed
-        mask={maskDivisionCode}
-        gridColumn="span 3"
-      />
-
       <SelectInputFormik name="sex" label="Пол" placeholder="-" options={SEX_VALUES} gridColumn="span 3" />
-
-      <Box gridColumn="span 4" />
-
-      <DateInputFormik name="birthDate" label="Дата рождения" gridColumn="span 4" disabled />
-
+      <DateInputFormik name="birthDate" label="Дата рождения" gridColumn="span 3" disabled />
       <MaskedInputFormik
         name="birthPlace"
         label="Место рождения"
         placeholder="-"
         mask={maskCyrillicAndDigits}
-        gridColumn="span 8"
+        gridColumn="span 6"
       />
-
       <Box gridColumn="span 4" />
 
       <AutocompleteInputFormik
@@ -217,7 +191,26 @@ export function PassportArea() {
         mask={maskCyrillicAndDigits}
         gridColumn="span 12"
       />
+      <Box gridColumn="span 4" />
 
+      <DateInputFormik name="passportDate" label="Дата выдачи" gridColumn="span 4" />
+      <AutocompleteInputFormik
+        name="divisionCode"
+        label="Код подразделения"
+        placeholder="-"
+        options={divisionCodeSuggestions}
+        isCustomValueAllowed
+        mask={maskDivisionCode}
+        gridColumn="span 4"
+      />
+      <MaskedInputFormik
+        name="passport"
+        label="Серия и номер паспорта"
+        placeholder="-"
+        mask={maskPassport}
+        gridColumn="span 4"
+        disabled
+      />
       <Box gridColumn="span 4" />
 
       <SelectInputFormik
@@ -232,7 +225,7 @@ export function PassportArea() {
         label="Семейное положение"
         placeholder="-"
         options={FAMILY_STATUS_VALUES}
-        gridColumn="span 6"
+        gridColumn="span 5"
       />
       <Box gridColumn="span 7" />
       {regNotKladr ? (
