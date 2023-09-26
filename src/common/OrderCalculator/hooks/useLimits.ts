@@ -35,9 +35,9 @@ type Params = {
   vendorCode: string | undefined
 }
 
-function getServicesTotalCost(services: OrderCalculatorAdditionalService[]) {
+function getServicesTotalCost(services: OrderCalculatorAdditionalService[], onlyCredit = false) {
   return services.reduce((acc, cur) => {
-    if (typeof cur.productType !== 'number' || !cur.productCost) {
+    if (typeof cur.productType !== 'number' || !cur.productCost || (onlyCredit && !cur.isCredit)) {
       return acc
     }
     const productCost = parseFloat(cur.productCost)
@@ -146,10 +146,19 @@ export function useLimits({ vendorCode }: Params) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creditProduct, currentProduct])
 
+  const onlyCreditAdditionalEquipmentsCost = getServicesTotalCost(additionalEquipments, true)
   const minInitialPaymentPercent = currentProduct?.downpaymentMin || data?.fullDownpaymentMin
   const maxInitialPaymentPercent = currentProduct?.downpaymentMax || data?.fullDownpaymentMax
-  const minInitialPayment = getMinMaxValueFromPercent(minInitialPaymentPercent, carCost, RoundOption.min)
-  const maxInitialPayment = getMinMaxValueFromPercent(maxInitialPaymentPercent, carCost, RoundOption.max)
+  const minInitialPayment = getMinMaxValueFromPercent(
+    minInitialPaymentPercent,
+    carCost + onlyCreditAdditionalEquipmentsCost,
+    RoundOption.min,
+  )
+  const maxInitialPayment = getMinMaxValueFromPercent(
+    maxInitialPaymentPercent,
+    carCost + onlyCreditAdditionalEquipmentsCost,
+    RoundOption.max,
+  )
   /*
   Сформирован на основе минимального и максимального срока кредита
   массив допустимых значений для поля Срок кредита. Просто возвращается компоненту.
@@ -210,7 +219,7 @@ export function useLimits({ vendorCode }: Params) {
     return ''
   }, [maxInitialPaymentPercent, minInitialPaymentPercent])
 
-  // То же для процентного ПВ
+  // То же для ПВ в абсолютных единицах
   const initialPaymentHelperText = useMemo(() => {
     if (minInitialPayment && maxInitialPayment) {
       return `от ${formatNumber(minInitialPayment)} до ${formatMoney(maxInitialPayment)}`
