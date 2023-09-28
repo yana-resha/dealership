@@ -156,7 +156,8 @@ export const clientFormValidationSchema = Yup.object().shape({
     then: schema =>
       setRequiredIfSave(schema).test('nameIsCorrect', 'Введите корректное ФИО', clientNameIsCorrect),
   }),
-  numOfChildren: setRequiredIfSave(Yup.number()).max(20, 'Введено слишком большое значение'),
+
+  numOfChildren: setRequiredIfSave(Yup.number().nullable()),
   familyStatus: setRequiredIfSave(Yup.number().nullable()),
   passport: Yup.string().required('Поле обязательно для заполнения').min(10, 'Введите данные полностью'),
   birthDate: Yup.date()
@@ -296,9 +297,9 @@ export const clientFormValidationSchema = Yup.object().shape({
     .test('badUpload', 'Ошибка при выгрузке файла', questionnaireFile =>
       fileUploadStatusNotError(questionnaireFile as unknown as FileInfo | null),
     )
-    .when(['submitAction', 'isSameVendor'], {
-      is: (submitAction: string, isSameVendor: boolean) =>
-        submitAction === SubmitAction.Save || !isSameVendor,
+    .when(['submitAction', 'isDifferentVendor'], {
+      is: (submitAction: string, isDifferentVendor: boolean) =>
+        submitAction === SubmitAction.Save || isDifferentVendor,
       then: schema => schema.required('Необходимо загрузить анкету'),
     }),
 })

@@ -26,6 +26,7 @@ import { ClientData } from '../../ClientForm.types'
 import {
   FAMILY_STATUS_VALUES,
   SEX_VALUES,
+  childrenCounts,
   configAddressInitialValues,
 } from '../../config/clientFormInitialValues'
 import { prepareAddress } from '../../utils/prepareAddress'
@@ -219,11 +220,11 @@ export function PassportArea() {
 
       <Box gridColumn="span 4" />
 
-      <MaskedInputFormik
+      <SelectInputFormik
         name="numOfChildren"
         label="Количество детей"
         placeholder="-"
-        mask={maskDigitsOnly}
+        options={childrenCounts}
         gridColumn="span 3"
       />
       <SelectInputFormik

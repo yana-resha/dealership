@@ -14,13 +14,13 @@ export function useConfirmationForm(formRef: React.RefObject<FormikProps<ClientD
   const applicationVendorCode = useAppSelector(
     state => state.order.order?.orderData?.application?.vendor?.vendorCode,
   )
-  const isSameVendor = vendorCode === applicationVendorCode
+  const isDifferentVendor = !!applicationVendorCode && vendorCode !== applicationVendorCode
 
   const handleQuestionnaireUploadRef = useRef<() => void>()
   const confirmedActionRef = useRef<() => void>()
   const [actionText, setActionText] = useState('')
   const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false)
-  const [isAllowedUploadQuestionnaire, setAllowedUploadQuestionnaire] = useState(isSameVendor)
+  const [isAllowedUploadQuestionnaire, setAllowedUploadQuestionnaire] = useState(!isDifferentVendor)
   const [isReuploadedQuestionnaire, setReuploadedQuestionnaire] = useState(false)
 
   const checkQuestionnaireUploading = useCallback(
@@ -45,7 +45,7 @@ export function useConfirmationForm(formRef: React.RefObject<FormikProps<ClientD
 
   const confirmActionWrapper = useCallback(
     (actionForConfirmation: () => void, actionText: string) => {
-      if (!isSameVendor) {
+      if (isDifferentVendor) {
         checkQuestionnaireUploading(actionForConfirmation)
         setActionText(actionText)
         setConfirmationModalVisible(true)
@@ -53,7 +53,7 @@ export function useConfirmationForm(formRef: React.RefObject<FormikProps<ClientD
         actionForConfirmation()
       }
     },
-    [checkQuestionnaireUploading, isSameVendor],
+    [checkQuestionnaireUploading, isDifferentVendor],
   )
 
   const closeConfirmationModal = useCallback(() => {
@@ -61,7 +61,7 @@ export function useConfirmationForm(formRef: React.RefObject<FormikProps<ClientD
   }, [])
 
   return {
-    isSameVendor,
+    isDifferentVendor,
     actionText,
     handleQuestionnaireUploadRef,
     confirmedActionRef,
