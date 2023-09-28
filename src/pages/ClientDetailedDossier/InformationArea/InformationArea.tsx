@@ -7,7 +7,10 @@ import { useParams } from 'react-router-dom'
 
 import { ReactComponent as DownloadIcon } from 'assets/icons/download.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
-import { useGetShareFormMutation } from 'shared/api/requests/loanAppLifeCycleDc'
+import {
+  useGetPreliminaryPaymentScheduleFormMutation,
+  useGetShareFormMutation,
+} from 'shared/api/requests/loanAppLifeCycleDc'
 import { formatMoney, formatTerm } from 'shared/lib/utils'
 import { Downloader } from 'shared/ui/Downloader'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
@@ -23,6 +26,7 @@ type Props = {
   vendorInfo: string
   carBrand: string
   carModel: string
+  autoPrice: number | undefined
   creditAmount: number | undefined
   monthlyPayment: number | undefined
   downPayment: number | undefined
@@ -31,12 +35,14 @@ type Props = {
   term: number | undefined
   additionalOptions: AdditionalOptionsFrontdc[]
   overpayment: number | undefined
+  incomeProduct: boolean
 }
 
 export function InformationArea({
   statusCode,
   vendorCode,
   vendorInfo,
+  autoPrice,
   carBrand,
   carModel,
   creditAmount,
@@ -47,13 +53,23 @@ export function InformationArea({
   term,
   additionalOptions,
   overpayment,
+  incomeProduct,
 }: Props) {
   const classes = useStyles()
   const { applicationId = '' } = useParams()
 
   const { mutateAsync: getShareFormMutate } = useGetShareFormMutation({ dcAppId: applicationId })
+  const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
+    useGetPreliminaryPaymentScheduleFormMutation()
 
-  const { additionalEquipment, dealerServices, bankServices, productSum } = useMemo(
+  const {
+    additionalEquipment,
+    dealerServices,
+    bankServices,
+    servicesInCreditPrice,
+    equipmentInCreditPrice,
+    productSum,
+  } = useMemo(
     () =>
       additionalOptions.reduce(
         (acc, cur) => {
@@ -69,9 +85,15 @@ export function InformationArea({
               break
             case OptionType.EQUIPMENT:
               acc.additionalEquipment.push(additionalOptionInfo)
+              if (cur.price && cur.inCreditFlag) {
+                acc.servicesInCreditPrice = acc.servicesInCreditPrice + cur.price
+              }
               break
             case OptionType.DEALER:
               acc.dealerServices.push(additionalOptionInfo)
+              if (cur.price && cur.inCreditFlag) {
+                acc.equipmentInCreditPrice = acc.equipmentInCreditPrice + cur.price
+              }
               break
           }
 
@@ -85,6 +107,8 @@ export function InformationArea({
           additionalEquipment: [] as AdditionalOptionInfo[],
           dealerServices: [] as AdditionalOptionInfo[],
           bankServices: [] as AdditionalOptionInfo[],
+          servicesInCreditPrice: 0,
+          equipmentInCreditPrice: 0,
           productSum: 0,
         },
       ),
@@ -105,6 +129,37 @@ export function InformationArea({
       return new File([blob], 'Письмо об одобрении', { type: 'application/pdf' })
     }
   }, [getShareFormMutate])
+
+  const handlePaymentScheduleClick = useCallback(async () => {
+    const blob = await getPreliminaryPaymentScheduleFormMutate({
+      productName: productName,
+      incomeFlag: incomeProduct,
+      autoPrice: autoPrice,
+      rate,
+      downpayment: downPayment,
+      monthlyPayment,
+      term,
+      overpayment,
+      servicesInCreditPrice,
+      equipmentInCreditPrice,
+    })
+
+    if (blob) {
+      return new File([blob], 'График платежей', { type: 'application/pdf' })
+    }
+  }, [
+    autoPrice,
+    downPayment,
+    equipmentInCreditPrice,
+    getPreliminaryPaymentScheduleFormMutate,
+    incomeProduct,
+    monthlyPayment,
+    overpayment,
+    productName,
+    rate,
+    servicesInCreditPrice,
+    term,
+  ])
 
   return (
     <Box className={classes.blockContainer}>
@@ -146,20 +201,23 @@ export function InformationArea({
       <InfoText label="Платеж">{monthlyPayment ? formatMoney(monthlyPayment) : ''}</InfoText>
       <InfoText label="ПВ">{downPayment ? formatMoney(downPayment) : ''}</InfoText>
       <InfoText label="Переплата">{formatMoney(overpayment)}</InfoText>
-      <InfoText label="% ставка">{rate || ''}%</InfoText>
+      {/* переводим baseRate (0...1) в проценты */}
+      <InfoText label="% ставка">{rate ? parseFloat((rate * 100).toFixed(2)) : ''}%</InfoText>
       <Box className={classes.infoTextContainer} gridColumn="span 2">
         <InfoText label="Кредитный продукт">{productName}</InfoText>
       </Box>
       <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
       <InfoText label="Срок кредита">{term ? formatTerm(term) : ''}</InfoText>
-      {/* {showGraphicButton && (
-        <Box className={classes.textButtonContainer} gridColumn="span 2">
-          <ScheduleIcon />
-          <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
-            График платежей
-          </SberTypography>
-        </Box>
-      )} */}
+      {showGraphicButton && (
+        <Downloader onDownloadFile={handlePaymentScheduleClick} gridColumn="span 2">
+          <Box className={classes.textButtonContainer}>
+            <ScheduleIcon />
+            <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
+              График платежей
+            </SberTypography>
+          </Box>
+        </Downloader>
+      )}
 
       <AdditionalOptionList title="Дополнительное оборудование" options={additionalEquipment} />
       <AdditionalOptionList title="Дополнительные услуги дилера" options={dealerServices} />
