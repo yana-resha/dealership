@@ -5,7 +5,6 @@ export default makeStyles(theme => ({
     gap: '24px',
     display: 'grid',
     gridTemplateColumns: 'repeat(16, minmax(0, 1fr))',
-    transition: theme.transitions.create([]),
   },
 
   areaLabel: {

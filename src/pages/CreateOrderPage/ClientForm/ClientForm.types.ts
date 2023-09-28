@@ -61,7 +61,7 @@ export interface ClientData {
   additionalIncome: string
   familyIncome: string
   expenses: string
-  relatedToPublic: number | null
+  relatedToPublic: boolean | null
 
   // Справки о доходах
   incomeConfirmation: boolean

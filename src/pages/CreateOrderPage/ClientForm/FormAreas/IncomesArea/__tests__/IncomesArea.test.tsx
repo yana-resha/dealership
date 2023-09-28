@@ -42,7 +42,7 @@ const mockedIncomeAreaFields = {
   incomeConfirmation: false,
   familyIncome: '',
   expenses: '',
-  relatedToPublic: '',
+  relatedToPublic: null,
   submitAction: SubmitAction.Save,
   familyStatus: MaritalStatus.MARRIED,
 }

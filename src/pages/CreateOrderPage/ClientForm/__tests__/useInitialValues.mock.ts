@@ -90,7 +90,7 @@ export const EXPECTED_DATA = {
   },
   registrationAddressString:
     '410055 77 Москва 55 Усть-Курдюмский 77 Москва 45 Курдюм 34 Севастопольская 17 ж 5 174 ',
-  relatedToPublic: 1,
+  relatedToPublic: true,
   secondDocumentDate: new Date('2023-12-15T00:00:00.000Z'),
   secondDocumentIssuedBy: 'МВД',
   secondDocumentIssuedCode: '123-456',

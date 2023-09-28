@@ -118,18 +118,11 @@ export function IncomesArea() {
         mask={maskDigitsOnly}
         gridColumn="span 4"
       />
-      <Box gridColumn="span 8" />
-      <SelectInputFormik
+      <SwitchInputFormik
         name="relatedToPublic"
-        label="Принадлежность клиента к категории публичных лиц"
-        placeholder="-"
-        options={[
-          { label: 'Нет', value: 0 },
-          { label: 'Да', value: 1 },
-        ]}
-        gridColumn="span 7"
+        label="Клиент принадлежит к категории публичных лиц"
+        gridColumn="1/9"
       />
-      <Box gridColumn="span 9" />
     </Box>
   )
 }
