@@ -8,6 +8,7 @@ import {
   PhoneType,
   DocumentType,
   VendorFrontdc,
+  OccupationType,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
 import { DateTime, Interval } from 'luxon'
@@ -308,7 +309,12 @@ export function useInitialValues() {
           livingAddress
             ? addressTransformForRequest(actualLivingAddress, AddressType.ACTUAL_RESIDENCE)
             : undefined,
-          employerAddress ? addressTransformForRequest(employerAddress, AddressType.WORKPLACE) : undefined,
+          // Если клиент не работает или персионер, то объект employerAddress не должен попадать на скоринг
+          employerAddress &&
+          occupation !== OccupationType.UNEMPLOYED &&
+          occupation !== OccupationType.PENSIONER
+            ? addressTransformForRequest(employerAddress, AddressType.WORKPLACE)
+            : undefined,
         ]),
         phones: compact([
           mobileNumber ? transformPhoneForRequest(mobileNumber, PhoneType.MOBILE) : undefined,
@@ -406,7 +412,7 @@ export function useInitialValues() {
     const currentScan = fullApplicationData?.application?.scans?.find(scan => scan.type === expectedType)
 
     if (!currentScan?.type || !dcAppId) {
-      return undefined
+      return null
     }
 
     return {
