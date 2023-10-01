@@ -13,7 +13,6 @@ const env = <T extends string>(key: string): T => {
 export const appConfig = {
   appUrl: env('REACT_APP_APP_URL'),
   apiUrl: env('REACT_APP_API_URL'),
-  apixUrl: env('REACT_APP_APIX_URL'),
   sberTeamIdUrl: env('REACT_APP_SBER_TEAM_ID_URL'),
   dochubApiHeader: env('REACT_APP_DOCHUB_API_HEADER'),
   env: env<'dev' | 'stage' | 'prod'>('REACT_APP_ENVIRONMENT'),
