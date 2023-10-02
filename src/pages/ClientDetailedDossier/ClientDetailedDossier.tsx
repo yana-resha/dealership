@@ -3,7 +3,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { Box, Button } from '@mui/material'
 import {
   ApplicantDocsType,
-  OptionType,
   SendApplicationToScoringRequest,
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
@@ -65,7 +64,7 @@ export function ClientDetailedDossier() {
 
   const appInfo = useMemo(
     () => ({
-      statusCode: application?.status || StatusCode.ERROR,
+      statusCode: application?.status ?? StatusCode.ERROR,
       vendorCode: application?.vendor?.vendorCode,
       vendorInfo: compact([application?.vendor?.vendorName, application?.vendor?.address]).join(', '),
       carBrand: application?.loanCar?.brand || '',
@@ -171,6 +170,7 @@ export function ClientDetailedDossier() {
                   />
                   <Box className={classes.dossierContainer}>
                     <InformationArea {...appInfo} />
+
                     <DocumentsArea
                       status={
                         application.status || application.status === StatusCode.INITIAL
@@ -178,6 +178,7 @@ export function ClientDetailedDossier() {
                           : StatusCode.ERROR
                       }
                     />
+
                     <ActionArea
                       application={application}
                       moratoryEndDate={fullApplicationData?.moratoryEndDate}

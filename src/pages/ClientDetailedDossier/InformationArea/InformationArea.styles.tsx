@@ -23,15 +23,15 @@ export const useStyles = makeStyles(theme => ({
     userSelect: 'none',
   },
 
+  warningTextContainer: {
+    color: theme.palette.error.main,
+  },
+
   textButton: {
     '&:hover': {
       '&.MuiTypography-root': {
         textDecoration: 'underline',
       },
     },
-  },
-
-  warningTextContainer: {
-    color: theme.palette.error.main,
   },
 }))

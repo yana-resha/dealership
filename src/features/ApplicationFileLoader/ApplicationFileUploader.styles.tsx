@@ -18,7 +18,6 @@ export default makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(2),
-    marginTop: theme.spacing(2),
   },
 
   sectionInfo: {

@@ -14,10 +14,7 @@ export const useStyles = makeStyles(theme => ({
   dossierContainer: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(4),
-    padding: theme.spacing(3),
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: 4 * theme.shape.borderRadius,
+    gap: theme.spacing(2),
   },
 
   circular: {

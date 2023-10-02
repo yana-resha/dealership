@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom'
 
 import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { FileInfo, UploaderConfig, DocumentUploadStatus } from 'features/ApplicationFileLoader'
-// TODO DCB-754 : Разрешить эту зависимость, нельзя что бы feature импортировались в нижележащий слой entities
 import { Uploader } from 'features/ApplicationFileLoader/ApplicationFileUploader'
 import { UPLOADED_DOCUMENTS } from 'pages/CreateOrderPage/ClientForm/config/clientFormInitialValues'
 import { RequiredScan } from 'shared/api/requests/loanAppLifeCycleDc'
@@ -17,6 +16,7 @@ import SberTypography from 'shared/ui/SberTypography'
 
 import { PreparedStatus, getStatus } from '../../../entities/application/application.utils'
 import { agreementDocTypes } from '../config'
+import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
 import { useStyles } from './DocumentsArea.styles'
 
 type Props = {
@@ -101,28 +101,30 @@ export function DocumentsArea({ status }: Props) {
   }
 
   return (
-    <Box className={classes.blockContainer}>
-      <SberTypography sberautoVariant="h5" component="p">
-        Документы
-      </SberTypography>
+    <DossierAreaContainer>
+      <Box className={classes.blockContainer}>
+        <SberTypography sberautoVariant="h5" component="p">
+          Документы
+        </SberTypography>
 
-      <Uploader
-        uploaderConfig={uploaderConfig}
-        loadingMessage="Анкета загружается"
-        motivateMessage="Загрузить анкету"
-        onUploadDocument={uploadQuestionnaire}
-        onDeleteDocument={deleteQuestionnaire}
-      />
+        <Uploader
+          uploaderConfig={uploaderConfig}
+          loadingMessage="Анкета загружается"
+          motivateMessage="Загрузить анкету"
+          onUploadDocument={uploadQuestionnaire}
+          onDeleteDocument={deleteQuestionnaire}
+        />
 
-      {showDownloadLoanAgreement && (
-        <Box gridColumn="1 / -1">
-          <Box className={classes.documentsBlock}>
-            {agreementDocs.map((document, index) => (
-              <FileDownloader key={index} file={document} index={index} loadingMessage="Файл загружается" />
-            ))}
+        {showDownloadLoanAgreement && (
+          <Box gridColumn="1 / -1">
+            <Box className={classes.documentsBlock}>
+              {agreementDocs.map((document, index) => (
+                <FileDownloader key={index} file={document} index={index} loadingMessage="Файл загружается" />
+              ))}
+            </Box>
           </Box>
-        </Box>
-      )}
-    </Box>
+        )}
+      </Box>
+    </DossierAreaContainer>
   )
 }
