@@ -358,6 +358,7 @@ export function useInitialValues() {
       const newVendor: VendorFrontdc = {
         ...application?.vendor,
         ...pointOfSale,
+        unit: undefined,
       }
 
       const updatedApplication = {
