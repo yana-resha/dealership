@@ -283,7 +283,7 @@ export function useInitialValues() {
         birthPlace: birthPlace,
         sex,
         email: email,
-        publicPerson: relatedToPublic ?? undefined,
+        publicPerson: relatedToPublic,
         documents: compact([
           {
             ...transformDocsForRequest(
