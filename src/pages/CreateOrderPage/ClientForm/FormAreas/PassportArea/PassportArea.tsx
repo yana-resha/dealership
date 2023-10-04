@@ -182,17 +182,6 @@ export function PassportArea() {
       />
       <Box gridColumn="span 4" />
 
-      <AutocompleteInputFormik
-        name="issuedBy"
-        label="Кем выдан"
-        placeholder="-"
-        options={issuedBySuggestions}
-        isCustomValueAllowed
-        mask={maskCyrillicAndDigits}
-        gridColumn="span 12"
-      />
-      <Box gridColumn="span 4" />
-
       <DateInputFormik name="passportDate" label="Дата выдачи" gridColumn="span 4" />
       <AutocompleteInputFormik
         name="divisionCode"
@@ -210,6 +199,17 @@ export function PassportArea() {
         mask={maskPassport}
         gridColumn="span 4"
         disabled
+      />
+      <Box gridColumn="span 4" />
+
+      <AutocompleteInputFormik
+        name="issuedBy"
+        label="Кем выдан"
+        placeholder="-"
+        options={issuedBySuggestions}
+        isCustomValueAllowed
+        mask={maskCyrillicAndDigits}
+        gridColumn="span 12"
       />
       <Box gridColumn="span 4" />
 
