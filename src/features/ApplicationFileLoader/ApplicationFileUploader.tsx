@@ -21,23 +21,24 @@ type UploaderProps = {
   /** Если хотим чтобы форма не только выводила файл, но и могла изменять и выгружать его на бэк.
    * Меняет внешний вид компонента */
   onUploadDocument?: (file: File, documentName: string, status: FileInfo['status']) => void
-  onDeleteDocument?: (documentName: string) => void
+  onRemoveDocument?: (documentName: string) => void
   onError?: (documentName: string) => void
   isAllowedUploadToServer?: boolean
+  isDisabledRemove?: boolean
 }
 
 /** Позволяет загружать и выгружать файлы по заявке */
-const Uploader: React.FC<UploaderProps> = props => {
-  const {
-    uploaderConfig,
-    suggest,
-    loadingMessage,
-    motivateMessage,
-    onUploadDocument,
-    onDeleteDocument,
-    onError,
-    isAllowedUploadToServer = true,
-  } = props
+const Uploader: React.FC<UploaderProps> = ({
+  uploaderConfig,
+  suggest,
+  loadingMessage,
+  motivateMessage,
+  onUploadDocument,
+  onRemoveDocument,
+  onError,
+  isAllowedUploadToServer = true,
+  isDisabledRemove = false,
+}) => {
   const { documentLabel, documentName, documentFile } = uploaderConfig || {}
   const isShowInput = !!onUploadDocument
   const isLoading = documentFile?.status === DocumentUploadStatus.Progress
@@ -60,14 +61,14 @@ const Uploader: React.FC<UploaderProps> = props => {
     [documentName, onUploadDocument],
   )
 
-  const handleDelete = useMemo(
+  const handleRemove = useMemo(
     () =>
-      onDeleteDocument
+      onRemoveDocument && !isDisabledRemove
         ? () => {
-            onDeleteDocument?.(documentName)
+            onRemoveDocument(documentName)
           }
         : undefined,
-    [documentName, onDeleteDocument],
+    [documentName, isDisabledRemove, onRemoveDocument],
   )
 
   useEffect(() => {
@@ -99,7 +100,7 @@ const Uploader: React.FC<UploaderProps> = props => {
             file={documentFile?.file}
             loadingMessage={loadingMessage}
             index={0}
-            onClickDelete={handleDelete}
+            onClickRemove={handleRemove}
             onDownloadFile={downloadFile}
           />
         </Box>
@@ -128,7 +129,7 @@ const Uploader: React.FC<UploaderProps> = props => {
                   file={documentFile?.file}
                   loadingMessage={loadingMessage}
                   index={0}
-                  onClickDelete={handleDelete}
+                  onClickRemove={handleRemove}
                   onDownloadFile={downloadFile}
                 />
               ) : (

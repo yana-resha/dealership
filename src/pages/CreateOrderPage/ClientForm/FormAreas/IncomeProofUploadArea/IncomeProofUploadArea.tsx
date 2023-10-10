@@ -138,7 +138,7 @@ export const IncomeProofUploadArea = () => {
         <Uploader
           key={uploaderConfig.documentLabel}
           uploaderConfig={uploaderConfig}
-          onDeleteDocument={handleDeleteDocument}
+          onRemoveDocument={handleDeleteDocument}
         />
       ))}
       {isError && <FormHelperText error>{meta.error}</FormHelperText>}
@@ -153,7 +153,7 @@ export const IncomeProofUploadArea = () => {
               loadingMessage="Документ загружается"
               motivateMessage="Загрузить документ"
               onUploadDocument={handleUploadDocument}
-              onDeleteDocument={handleDeleteDocument}
+              onRemoveDocument={handleDeleteDocument}
               onError={handleUploadError}
             />
           </React.Fragment>
