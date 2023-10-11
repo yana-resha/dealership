@@ -20,6 +20,7 @@ import { appRoutePaths } from 'shared/navigation/routerPath'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { AnketaType, getStatus, PreparedStatus } from '../../../entities/application/application.utils'
+import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
 import { DcConfirmationModal } from '../EditConfirmationModal/DcConfirmationModal'
 import { useStyles } from './ActionArea.styles'
 import { AgreementArea } from './AgreementArea/AgreementArea'
@@ -51,17 +52,7 @@ export function ActionArea(props: Props) {
     setIsEditRequisitesMode,
   } = props
   const preparedStatus = getStatus(status)
-  const showActionsStatuses = [
-    PreparedStatus.initial,
-    PreparedStatus.approved,
-    PreparedStatus.canceled,
-    PreparedStatus.canceledDeal,
-    PreparedStatus.error,
-    PreparedStatus.finallyApproved,
-    PreparedStatus.formation,
-    PreparedStatus.signed,
-    PreparedStatus.financed,
-  ]
+
   const [isVisibleModal, setVisibleModal] = useState(false)
   const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false)
   const confirmedAction = useRef<() => void>()
@@ -289,13 +280,18 @@ export function ActionArea(props: Props) {
   ])
 
   return (
-    <Box className={classes.blockContainer}>
-      {showActionsStatuses.includes(preparedStatus) && (
-        <SberTypography gridColumn="span 6" sberautoVariant="h5" component="p">
-          Действие
-        </SberTypography>
+    <>
+      {!!shownBlock && (
+        <DossierAreaContainer>
+          <Box className={classes.blockContainer}>
+            <SberTypography gridColumn="span 6" sberautoVariant="h5" component="p">
+              Действие
+            </SberTypography>
+            {shownBlock}
+          </Box>
+        </DossierAreaContainer>
       )}
-      {shownBlock}
+
       <DcConfirmationModal
         actionText="Заявка будет заведена под:"
         isVisible={isConfirmationModalVisible}
@@ -303,6 +299,6 @@ export function ActionArea(props: Props) {
         confirmedAction={confirmedAction.current}
       />
       <NoMatchesModal isVisible={isVisibleModal} onClose={closeModal} />
-    </Box>
+    </>
   )
 }

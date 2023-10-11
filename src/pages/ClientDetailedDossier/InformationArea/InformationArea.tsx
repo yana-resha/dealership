@@ -17,7 +17,9 @@ import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { getStatus, PreparedStatus } from '../../../entities/application/application.utils'
+import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
 import { AdditionalOptionInfo, AdditionalOptionList } from './AdditionalOptionInfo/AdditionalOptionList'
+import { ApplicationWarning } from './ApplicationWarning/ApplicationWarning'
 import { useStyles } from './InformationArea.styles'
 
 type Props = {
@@ -162,66 +164,66 @@ export function InformationArea({
   ])
 
   return (
-    <Box className={classes.blockContainer}>
-      <SberTypography gridColumn="span 6" sberautoVariant="h5" component="p">
-        Информация
-      </SberTypography>
-      {(status === PreparedStatus.approved || status === PreparedStatus.finallyApproved) && (
-        <Downloader onDownloadFile={handleShareClick}>
-          <Box className={classes.textButtonContainer}>
-            <DownloadIcon />
-            <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
-              Скачать
-            </SberTypography>
+    <>
+      <DossierAreaContainer>
+        <Box className={classes.blockContainer}>
+          <SberTypography gridColumn="span 6" sberautoVariant="h5" component="p">
+            Информация
+          </SberTypography>
+
+          {(status === PreparedStatus.approved || status === PreparedStatus.finallyApproved) && (
+            <Downloader onDownloadFile={handleShareClick}>
+              <Box className={classes.textButtonContainer}>
+                <DownloadIcon />
+                <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
+                  Скачать
+                </SberTypography>
+              </Box>
+            </Downloader>
+          )}
+          <ApplicationWarning statusCode={statusCode} />
+
+          <Box className={classes.infoTextContainer} gridColumn="span 7">
+            <InfoText label="ДЦ">
+              {vendorCode && <SberTypography component="span">{vendorCode}&nbsp;</SberTypography>}
+              {vendorInfo}
+            </InfoText>
           </Box>
-        </Downloader>
-      )}
-      {statusCode === StatusCode.NEED_REFORMATION && (
-        <Box className={cx(classes.textButtonContainer, classes.warningTextContainer)} gridColumn="1/-1">
-          Данные индивидуальных условий кредитования могли устареть. Требуется переформировать печатные формы.
-        </Box>
-      )}
-      {statusCode === StatusCode.CLIENT_REJECTED && (
-        <Box className={cx(classes.textButtonContainer, classes.warningTextContainer)} gridColumn="1/-1">
-          Клиенту необходимо обратиться в отделение банка для актуализации данных.
-        </Box>
-      )}
-      <Box className={classes.infoTextContainer} gridColumn="span 7">
-        <InfoText label="ДЦ">
-          {vendorCode && <SberTypography component="span">{vendorCode}&nbsp;</SberTypography>}
-          {vendorInfo}
-        </InfoText>
-      </Box>
-      <Box className={classes.infoTextContainer} gridColumn="span 2">
-        <InfoText label="Марка / модель">
-          {carBrand} {carModel}
-        </InfoText>
-      </Box>
-      <InfoText label="Сумма кредита">{creditAmount ? formatMoney(creditAmount) : ''}</InfoText>
-      <InfoText label="Платеж">{monthlyPayment ? formatMoney(monthlyPayment) : ''}</InfoText>
-      <InfoText label="ПВ">{downPayment ? formatMoney(downPayment) : ''}</InfoText>
-      <InfoText label="Переплата">{formatMoney(overpayment)}</InfoText>
-      {/* переводим baseRate (0...1) в проценты */}
-      <InfoText label="% ставка">{rate ? parseFloat((rate * 100).toFixed(2)) : ''}%</InfoText>
-      <Box className={classes.infoTextContainer} gridColumn="span 2">
-        <InfoText label="Кредитный продукт">{productName}</InfoText>
-      </Box>
-      <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
-      <InfoText label="Срок кредита">{term ? formatTerm(term) : ''}</InfoText>
-      {showGraphicButton && (
-        <Downloader onDownloadFile={handlePaymentScheduleClick} gridColumn="span 2">
-          <Box className={classes.textButtonContainer}>
-            <ScheduleIcon />
-            <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
-              График платежей
-            </SberTypography>
+
+          <Box className={classes.infoTextContainer} gridColumn="span 2">
+            <InfoText label="Марка / модель">
+              {carBrand} {carModel}
+            </InfoText>
           </Box>
-        </Downloader>
-      )}
+
+          <InfoText label="Сумма кредита">{creditAmount ? formatMoney(creditAmount) : ''}</InfoText>
+          <InfoText label="Платеж">{monthlyPayment ? formatMoney(monthlyPayment) : ''}</InfoText>
+          <InfoText label="ПВ">{downPayment ? formatMoney(downPayment) : ''}</InfoText>
+          <InfoText label="Переплата">{formatMoney(overpayment)}</InfoText>
+          {/* переводим baseRate (0...1) в проценты */}
+          <InfoText label="% ставка">{rate ? parseFloat((rate * 100).toFixed(2)) : ''}%</InfoText>
+          <Box className={classes.infoTextContainer} gridColumn="span 2">
+            <InfoText label="Кредитный продукт">{productName}</InfoText>
+          </Box>
+          <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
+          <InfoText label="Срок кредита">{term ? formatTerm(term) : ''}</InfoText>
+
+          {showGraphicButton && (
+            <Downloader onDownloadFile={handlePaymentScheduleClick} gridColumn="span 2">
+              <Box className={classes.textButtonContainer}>
+                <ScheduleIcon />
+                <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
+                  График платежей
+                </SberTypography>
+              </Box>
+            </Downloader>
+          )}
+        </Box>
+      </DossierAreaContainer>
 
       <AdditionalOptionList title="Дополнительное оборудование" options={additionalEquipment} />
       <AdditionalOptionList title="Дополнительные услуги дилера" options={dealerServices} />
       <AdditionalOptionList title="Дополнительные услуги банка" options={bankServices} />
-    </Box>
+    </>
   )
 }
