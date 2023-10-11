@@ -45,7 +45,7 @@ export function AdditionalServiceItem({
 }: Props) {
   const classes = useStyles()
 
-  const { namePrefix, removeItem, addItem } = useAdditionalServices({
+  const { namePrefix, isLastItem, removeItem, addItem } = useAdditionalServices({
     parentName,
     index,
     arrayLength,
@@ -118,8 +118,8 @@ export function AdditionalServiceItem({
 
       {!isError && (
         <Box className={classes.btnContainer} gridColumn="span 1">
+          {isLastItem && <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />}
           <CloseSquareBtn onClick={removeItem} />
-          <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />
         </Box>
       )}
     </Box>

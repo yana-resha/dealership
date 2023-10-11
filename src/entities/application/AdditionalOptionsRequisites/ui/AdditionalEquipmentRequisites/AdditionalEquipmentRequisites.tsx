@@ -36,7 +36,7 @@ type Props = {
     label: string
   }[]
   arrayHelpers?: ArrayHelpers
-  arrayLength?: number
+  arrayLength: number
   equipmentItem: FullInitialAdditionalEquipments
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
 }
@@ -57,7 +57,7 @@ export function AdditionalEquipmentRequisites({
   const [isCustomFields, setCustomFields] = useState(false)
   const { requisites, isRequisitesFetched } = useRequisitesContext()
 
-  const { namePrefix, removeItem, addItem } = useAdditionalServices({
+  const { namePrefix, isLastItem, removeItem, addItem } = useAdditionalServices({
     parentName,
     index,
     arrayLength,
@@ -213,8 +213,8 @@ export function AdditionalEquipmentRequisites({
       />
       {isRequisiteEditable && (
         <Box className={classes.btnContainer} gridColumn="span 3">
+          {isLastItem && <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />}
           <CloseSquareBtn onClick={removeItem} />
-          <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />
         </Box>
       )}
 

@@ -16,9 +16,7 @@ export const useStyles = makeStyles(theme => ({
   root: {
     '&.MuiButton-root:hover': {
       '& svg': {
-        '& path': {
-          fill: theme.palette.primary.main,
-        },
+        fill: theme.palette.primary.main,
       },
       backgroundColor: 'transparent',
       color: theme.palette.primary.main,
@@ -28,9 +26,7 @@ export const useStyles = makeStyles(theme => ({
   rootActive: {
     '&.MuiButton-root': {
       '& svg': {
-        '& path': {
-          fill: theme.palette.status.processed,
-        },
+        fill: theme.palette.status.processed,
       },
       backgroundColor: 'transparent',
       color: theme.palette.status.processed,

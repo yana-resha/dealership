@@ -201,8 +201,11 @@ export function useInitialValues<D extends boolean | undefined>(
 
   const calculatorValuesPart = isFullCalculator
     ? {
-        [FormFieldNameMap.carPassportType]:
-          loanCar?.ptsNumber?.length === 10 ? CAR_PASSPORT_TYPE[1].value : CAR_PASSPORT_TYPE[0].value,
+        [FormFieldNameMap.carPassportType]: loanCar?.ptsNumber
+          ? loanCar.ptsNumber.length === 10
+            ? CAR_PASSPORT_TYPE[1].value
+            : CAR_PASSPORT_TYPE[0].value
+          : (initialData as FullOrderCalculatorFields).carPassportType,
         [FormFieldNameMap.carPassportId]:
           loanCar?.ptsNumber ?? (initialData as FullOrderCalculatorFields).carPassportId,
         [FormFieldNameMap.carPassportCreationDate]: loanCar?.ptsDate

@@ -130,6 +130,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
           isRequisiteEditable={false}
           parentName={ServicesGroupName.additionalEquipments}
           equipmentItem={mockedAdditionalEquipmentFields.additionalEquipments[0]}
+          arrayLength={1}
         />,
         {
           wrapper: createWrapper,
@@ -204,6 +205,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
           isRequisiteEditable={false}
           parentName={ServicesGroupName.additionalEquipments}
           equipmentItem={mockedAdditionalEquipmentFields.additionalEquipments[0]}
+          arrayLength={1}
         />,
         {
           wrapper: createWrapper,

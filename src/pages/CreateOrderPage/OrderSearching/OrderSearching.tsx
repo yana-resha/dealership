@@ -26,6 +26,7 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
   const isOrderExist = useAppSelector(slIsOrderExist)
 
   const [isVisibleModal, setVisibleModal] = useState(false)
+  const [isCreatingFormTouched, setCreatingFormTouched] = useState(false)
   const [isVisibleNewOrderForm, setIsVisibleNewOrderForm] = useState(() => isOrderExist)
   /** Данные для формы поиска */
   const [initialOrderData, setInitialOrderData] = useState<OrderData | undefined>(() => storageOrder)
@@ -58,7 +59,7 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
         refetch()
       })
     },
-    [dispatch, refetch],
+    [dispatch, refetch, remove],
   )
 
   const onCreateOrder = useCallback(
@@ -100,9 +101,15 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
     [checkIfSberClient],
   )
 
-  const onHideCreateForm = useCallback(() => {
-    // скрываем форму создания заявки если в форме поиска были изменены данные
+  const handleCreatingFormChange = useCallback(() => {
+    // скрываем форму создания заявки если в форме поиска были изменены данные, скрываем предупреждения
     setIsVisibleNewOrderForm(false)
+    setCreatingFormTouched(false)
+  }, [])
+
+  const handleSearchingFormChange = useCallback(() => {
+    // скрываем скрываем предупреждения если в форме создания новой заявки начался ввод данных
+    setCreatingFormTouched(true)
   }, [])
 
   useEffect(() => {
@@ -118,10 +125,12 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
   return (
     <>
       <OrderForm
-        onSubmit={findOrders}
+        isShowWarning={isShowNewForm && !isCreatingFormTouched}
         initialData={initialOrderData}
         isLoading={isLoadingFindApplicationsQuery}
-        onChange={onHideCreateForm}
+        onSubmit={findOrders}
+        onChange={handleCreatingFormChange}
+        isDisabledSubmit={isShowNewForm}
       />
 
       {isLoadingFindApplicationsQuery ? (
@@ -135,9 +144,10 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
           {isShowNewForm && (
             <OrderForm
               isNewOrder
-              onSubmit={checkClient}
               initialData={initialOrderData}
               isLoading={checkIfSberClient.isLoading}
+              onSubmit={checkClient}
+              onChange={handleSearchingFormChange}
             />
           )}
 

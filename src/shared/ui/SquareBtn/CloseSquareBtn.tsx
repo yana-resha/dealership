@@ -1,3 +1,4 @@
+import { ReactComponent as CartIcon } from 'assets/icons/cart.svg'
 import { ReactComponent as CloseIcon } from 'assets/icons/close.svg'
 
 import { SquareBtn } from './SquareBtn'
@@ -12,7 +13,7 @@ export const CloseSquareBtn = ({ onClick }: Props) => {
 
   return (
     <SquareBtn onClick={onClick} testId="closeSquareBtn">
-      <CloseIcon className={classes.btnIcon} />
+      <CartIcon className={classes.btnIcon} />
     </SquareBtn>
   )
 }

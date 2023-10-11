@@ -109,6 +109,7 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
             placeholder="-"
             mask={carPassportTypeField.value ? maskElectronicСarPassportId : maskСarPassportId}
             gridColumn="span 1"
+            disabled={carPassportTypeField.value === null}
           />
           <DateInputFormik
             name={FormFieldNameMap.carPassportCreationDate}

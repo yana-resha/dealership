@@ -335,10 +335,10 @@ describe('OrderCalculator', () => {
       expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
 
       await waitFor(() => userEvent.click(screen.getAllByTestId('addingSquareBtn')[0]))
-      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(4)
+      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
       await sleep(100)
       await waitFor(() => userEvent.click(screen.getAllByTestId('addingSquareBtn')[0]))
-      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(5)
+      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
 
       userEvent.click(screen.getAllByTestId('closeSquareBtn')[0])
       userEvent.click(screen.getAllByTestId('closeSquareBtn')[0])

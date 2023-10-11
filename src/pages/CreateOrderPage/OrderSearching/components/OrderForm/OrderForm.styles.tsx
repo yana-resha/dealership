@@ -55,9 +55,22 @@ export const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(8),
   },
 
-  buttonsContainer: {
+  headerContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: theme.spacing(3),
+  },
+
+  warningContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    color: theme.palette.status.processed,
+
+    '& svg': {
+      fill: theme.palette.status.processed,
+    },
   },
 
   button: {

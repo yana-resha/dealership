@@ -26,144 +26,6 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
 
-const mockedRequisites: PreparedAdditionalOptionForFinancingMap = {
-  optionType: 1,
-  optionId: 25,
-  vendorsWithBroker: [
-    {
-      vendorCode: '2002703288',
-      vendorName: 'Парини',
-      tax: 0.13,
-      brokers: [
-        {
-          brokerCode: '111',
-          brokerName: 'Тест1',
-          tax: 0.13,
-          requisites: [
-            {
-              bankName: 'Тинькофф',
-              bik: '044525974',
-              accountCorrNumber: '23298374562932784',
-              ogrn: '',
-              kpp: '24356243562',
-              inn: '34573457',
-              accounts: ['2387945697'],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  vendorsWithBrokerMap: {
-    2002703288: {
-      vendorCode: '2002703288',
-      vendorName: 'Тест3',
-      tax: 0.13,
-      brokers: [
-        {
-          brokerCode: '111',
-          brokerName: 'Тест1',
-          tax: 0.13,
-          requisites: [
-            {
-              bankName: 'Тинькофф',
-              bik: '044525974',
-              accountCorrNumber: '23298374562932784',
-              ogrn: '',
-              kpp: '24356243562',
-              inn: '34573457',
-              accounts: ['2387945697'],
-            },
-            {
-              bankName: 'Сбер',
-              bik: '044525225',
-              accountCorrNumber: '92384765203475602',
-              ogrn: '',
-              kpp: '23462346',
-              inn: '34573457',
-              accounts: ['1793845697', '2374569834', '2374659837', '2378456987'],
-            },
-            {
-              bankName: 'Альфа',
-              bik: '044525593',
-              accountCorrNumber: '23984765892374569',
-              ogrn: '',
-              kpp: '23462346',
-              inn: '3457345',
-              accounts: ['1378456987', '2783465972'],
-            },
-          ],
-        },
-      ],
-      brokersMap: {
-        111: {
-          brokerCode: '111',
-          brokerName: 'Тест1',
-          tax: 0.13,
-          requisites: [
-            {
-              bankName: 'Тинькофф',
-              bik: '044525974',
-              accountCorrNumber: '23298374562932784',
-              ogrn: '',
-              kpp: '24356243562',
-              inn: '34573457',
-              accounts: ['2387945697'],
-            },
-            {
-              bankName: 'Сбер',
-              bik: '044525225',
-              accountCorrNumber: '92384765203475602',
-              ogrn: '',
-              kpp: '23462346',
-              inn: '34573457',
-              accounts: ['1793845697', '2374569834', '2374659837', '2378456987'],
-            },
-            {
-              bankName: 'Альфа',
-              bik: '044525593',
-              accountCorrNumber: '23984765892374569',
-              ogrn: '',
-              kpp: '23462346',
-              inn: '3457345',
-              accounts: ['1378456987', '2783465972'],
-            },
-          ],
-          requisitesMap: {
-            Тинькофф: {
-              bankName: 'Тинькофф',
-              bik: '044525974',
-              accountCorrNumber: '23298374562932784',
-              ogrn: '',
-              kpp: '24356243562',
-              inn: '34573457',
-              accounts: ['2387945697'],
-            },
-            Сбер: {
-              bankName: 'Сбер',
-              bik: '044525225',
-              accountCorrNumber: '92384765203475602',
-              ogrn: '',
-              kpp: '23462346',
-              inn: '34573457',
-              accounts: ['1793845697', '2374569834', '2374659837', '2378456987'],
-            },
-            Альфа: {
-              bankName: 'Альфа',
-              bik: '044525593',
-              accountCorrNumber: '23984765892374569',
-              ogrn: '',
-              kpp: '23462346',
-              inn: '3457345',
-              accounts: ['1378456987', '2783465972'],
-            },
-          },
-        },
-      },
-    },
-  },
-}
-
 const mockedDealerServicesFields = {
   dealerAdditionalServices: [
     {
@@ -217,6 +79,7 @@ describe('DealerServicesRequisitesTest', () => {
       render(
         <DealerServicesRequisites
           index={0}
+          arrayLength={1}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.dealerAdditionalServices}
           servicesItem={mockedDealerServicesFields.dealerAdditionalServices[0]}
@@ -306,6 +169,7 @@ describe('DealerServicesRequisitesTest', () => {
       render(
         <DealerServicesRequisites
           index={0}
+          arrayLength={1}
           isRequisiteEditable={false}
           parentName={ServicesGroupName.dealerAdditionalServices}
           servicesItem={mockedDealerServicesFields.dealerAdditionalServices[0]}

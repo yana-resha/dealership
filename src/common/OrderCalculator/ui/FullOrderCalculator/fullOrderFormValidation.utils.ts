@@ -48,7 +48,7 @@ export function setRequiredIfNecessaryCasco<T extends YupBaseSchema<string | num
 export const fullOrderFormValidationSchema = Yup.object().shape({
   ...baseFormValidation,
 
-  [FormFieldNameMap.carPassportType]: Yup.number().required(FieldMessages.required),
+  [FormFieldNameMap.carPassportType]: Yup.number().nullable().required(FieldMessages.required),
   [FormFieldNameMap.carPassportId]: Yup.string()
     .required(FieldMessages.required)
     .when([FormFieldNameMap.carPassportType], {
@@ -61,7 +61,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     .required(FieldMessages.required)
     .test('', 'Дата выдачи ПТС не может превышать дату выпуска автомобиля', checkForCarCreationDate),
 
-  [FormFieldNameMap.carIdType]: Yup.string().required(FieldMessages.required),
+  [FormFieldNameMap.carIdType]: Yup.string().nullable().required(FieldMessages.required),
   [FormFieldNameMap.carId]: Yup.string()
     .required(FieldMessages.required)
     .min(17, FieldMessages.enterFullData),
