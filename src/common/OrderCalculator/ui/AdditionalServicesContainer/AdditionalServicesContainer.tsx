@@ -5,6 +5,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
 
 import useStyles from './AdditionalServicesContainer.styles'
+import { AdditionalServicesContainerProvider } from './AdditionalServicesContainerProvider'
 
 const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка при получении данных. Перезагрузите страницу'
 
@@ -29,6 +30,9 @@ export const AdditionalServicesContainer = React.memo(
     const [expanded, setExpanded] = useState(isInitialExpanded)
 
     const changeExpanded = useCallback(() => setExpanded(prev => !prev), [])
+    const closeAccordion = useCallback(() => {
+      setExpanded(false)
+    }, [])
 
     return (
       <Accordion
@@ -50,7 +54,9 @@ export const AdditionalServicesContainer = React.memo(
             )}
           </Box>
         </AccordionSummary>
-        <AccordionDetails>{children}</AccordionDetails>
+        <AdditionalServicesContainerProvider closeAccordion={closeAccordion}>
+          <AccordionDetails>{children}</AccordionDetails>
+        </AdditionalServicesContainerProvider>
       </Accordion>
     )
   },

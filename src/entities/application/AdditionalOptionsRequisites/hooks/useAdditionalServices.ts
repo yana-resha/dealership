@@ -7,6 +7,7 @@ import {
   FullInitialAdditionalService,
   OrderCalculatorAdditionalService,
 } from 'common/OrderCalculator/types'
+import { useAdditionalServicesContainerContext } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainerProvider'
 
 import { ChangingIdsOption } from '../../../../common/OrderCalculator/constants'
 
@@ -16,7 +17,7 @@ type Params = {
   parentName: string
   index: number
   arrayHelpers?: ArrayHelpers
-  arrayLength?: number
+  arrayLength: number
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
   initialValues:
     | OrderCalculatorAdditionalService
@@ -51,6 +52,10 @@ export function useAdditionalServices({
   initialValues,
 }: Params) {
   const namePrefix = `${parentName}[${index}].`
+  const isLastItem = index === arrayLength - 1
+
+  const { closeAccordion } = useAdditionalServicesContainerContext()
+
   const removeItem = useCallback(() => {
     if (arrayLength && arrayHelpers && changeIds) {
       if (arrayLength > MIN_ITEMS_LENGTH) {
@@ -60,8 +65,11 @@ export function useAdditionalServices({
         arrayHelpers.replace(index, initialValues)
         changeIds(index, ChangingIdsOption.clear, MIN_ITEMS_LENGTH)
       }
+      if (arrayLength === 1) {
+        closeAccordion()
+      }
     }
-  }, [arrayHelpers, arrayLength, changeIds, index, initialValues])
+  }, [arrayHelpers, arrayLength, changeIds, closeAccordion, index, initialValues])
 
   const addItem = useCallback(() => {
     if (arrayHelpers && changeIds) {
@@ -70,5 +78,5 @@ export function useAdditionalServices({
     }
   }, [arrayHelpers, changeIds, index, initialValues])
 
-  return { namePrefix, removeItem, addItem }
+  return { namePrefix, isLastItem, removeItem, addItem }
 }

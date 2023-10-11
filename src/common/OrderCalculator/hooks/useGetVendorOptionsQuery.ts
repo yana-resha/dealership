@@ -8,6 +8,7 @@ import keyBy from 'lodash/keyBy'
 import { UseQueryOptions, useQuery } from 'react-query'
 
 import { getVendorOptionsList } from 'shared/api/requests/dictionaryDc.api'
+import { compareStrings } from 'shared/utils/compareStrings'
 
 type NonNullableAdditionalOption = Omit<AdditionalOption, 'optionType' | 'optionName' | 'optionId'> & {
   optionType: OptionType
@@ -33,14 +34,14 @@ export const useGetVendorOptionsQuery = (
     cacheTime: Infinity,
     ...options,
     select: res => {
-      /** Часть справочников хранится на фронте, но потом будет перенесена на бэк
-       * Для унификации логики смешиваем эти справочники */
-      const additionalOptions = (res.additionalOptions || []).filter(
-        (option): option is NonNullableAdditionalOption =>
-          typeof option.optionType !== undefined &&
-          !!option.optionName &&
-          typeof option.optionId !== undefined,
-      )
+      const additionalOptions = (res.additionalOptions || [])
+        .filter(
+          (option): option is NonNullableAdditionalOption =>
+            typeof option.optionType !== undefined &&
+            !!option.optionName &&
+            typeof option.optionId !== undefined,
+        )
+        .sort((a, b) => compareStrings(a.optionName, b.optionName))
 
       const additionalOptionsMap: Record<number, NonNullableAdditionalOption> = keyBy(
         additionalOptions,

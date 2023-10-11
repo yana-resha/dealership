@@ -14,24 +14,11 @@ import {
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { FileUploadButton } from 'shared/ui/FileUploadButton'
 
+import { allowedFileTypes } from '../Catalog.config'
 import { useStyles } from './CatalogHeader.styles'
 import { NameDialog } from './NameDialog/NameDialog'
 
 const MAX_FILE_SIZE_MB = 20
-const ALLOWED_FILE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/heic',
-  'image/bmp',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/pdf',
-  'application/rtf',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'text/csv',
-  'text/plain',
-].join(',')
 
 interface CatalogHeaderProps {
   currentFolderId: number
@@ -115,7 +102,7 @@ export function CatalogHeader({ currentFolderId, onBack }: CatalogHeaderProps) {
             onChange={handleUpload}
             icon={<UploadingFile />}
             buttonText="Загрузить файл"
-            allowedFileTypes={ALLOWED_FILE_TYPES}
+            allowedFileTypes={allowedFileTypes}
             maxFileSizeMb={MAX_FILE_SIZE_MB}
           />
         </Box>

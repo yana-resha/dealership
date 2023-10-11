@@ -20,5 +20,7 @@ export default makeStyles(theme => ({
 
   rotatedIcon: {
     transform: 'rotate(45deg)',
+    width: '14px',
+    height: '14px',
   },
 }))

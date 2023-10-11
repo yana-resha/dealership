@@ -8,11 +8,15 @@ import { DateTime } from 'luxon'
 import { ReactComponent as CartIcon } from 'assets/icons/cart.svg'
 import { ReactComponent as FileIcon } from 'assets/icons/file.svg'
 import { ReactComponent as FolderIcon } from 'assets/icons/folder.svg'
+import { ReactComponent as ImageFileIcon } from 'assets/icons/imageFile.svg'
+import { ReactComponent as TableFileIcon } from 'assets/icons/tableFile.svg'
+import { ReactComponent as TextFileIcon } from 'assets/icons/textFile.svg'
 import { Role } from 'shared/api/requests/authdc'
 import { RequiredCatalog, useDownloadFileMutation } from 'shared/api/requests/fileStorageDc.api'
 import { DEFAULT_FILE_NAME } from 'shared/config/uploadFile.config'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
+import { imageExtensions, tableExtensions, textExtensions } from '../Catalog.config'
 import useStyles from './CatalogTable.styles'
 
 type Props = {
@@ -29,6 +33,23 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
   const { mutateAsync: downloadFileMutate } = useDownloadFileMutation()
 
   const isFile = data.type === ObjectType.FILE
+
+  const icon = useMemo(() => {
+    if (imageExtensions.includes(data.extension || '')) {
+      return <ImageFileIcon data-testid="fileIcon" />
+    }
+    if (textExtensions.includes(data.extension || '')) {
+      return <TextFileIcon data-testid="fileIcon" />
+    }
+    if (tableExtensions.includes(data.extension || '')) {
+      return <TableFileIcon data-testid="fileIcon" />
+    }
+    if (isFile) {
+      return <FileIcon data-testid="fileIcon" />
+    }
+
+    return <FolderIcon data-testid="folderIcon" />
+  }, [data.extension, isFile])
 
   const date = useMemo(() => {
     if (!data.downloadDate) {
@@ -72,9 +93,7 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
   return (
     <TableRow key={data.name} className={styles.bodyRow}>
       <TableCell align="left" className={cx(styles.bodyCell, styles.iconCell)} onClick={handleItemClick}>
-        <Box className={styles.iconContainer}>
-          {isFile ? <FileIcon data-testid="fileIcon" /> : <FolderIcon data-testid="folderIcon" />}
-        </Box>
+        <Box className={styles.iconContainer}>{icon}</Box>
       </TableCell>
       <TableCell align="left" className={styles.bodyCell} onClick={handleItemClick}>
         <Box className={styles.nameContainer}>{data.name || 'Без имени'}</Box>

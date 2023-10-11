@@ -147,10 +147,10 @@ export interface FullOrderCalculatorFields
       | ServicesGroupName.dealerAdditionalServices
       | ServicesGroupName.bankAdditionalServices
     > {
-  [FormFieldNameMap.carPassportType]: number
+  [FormFieldNameMap.carPassportType]: null
   [FormFieldNameMap.carPassportId]: string
   [FormFieldNameMap.carPassportCreationDate]: Date | null
-  [FormFieldNameMap.carIdType]: number
+  [FormFieldNameMap.carIdType]: null
   [FormFieldNameMap.carId]: string
   [FormFieldNameMap.salesContractId]: string
   [FormFieldNameMap.salesContractDate]: Date | null

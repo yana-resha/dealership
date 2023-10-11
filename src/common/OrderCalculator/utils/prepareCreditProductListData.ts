@@ -1,12 +1,17 @@
 import { CreditProduct } from '@sberauto/dictionarydc-proto/public'
 
+import { compareStrings } from 'shared/utils/compareStrings'
+
 export type RequiredProduct = Omit<CreditProduct, 'productId' | 'productName'> &
   Required<Pick<CreditProduct, 'productId' | 'productName'>>
 
 export type ProductsMap = Record<string, RequiredProduct>
 
-export const prepareCreditProduct = (initialProducts: CreditProduct[] | null | undefined) =>
-  initialProducts?.reduce<{ products: RequiredProduct[]; productsMap: ProductsMap }>(
+export const prepareCreditProduct = (initialProducts: CreditProduct[] | null | undefined) => {
+  const { products, productsMap } = initialProducts?.reduce<{
+    products: RequiredProduct[]
+    productsMap: ProductsMap
+  }>(
     (acc, cur) => {
       if (!cur.productId || !cur.productName) {
         return acc
@@ -21,3 +26,6 @@ export const prepareCreditProduct = (initialProducts: CreditProduct[] | null | u
     },
     { products: [], productsMap: {} },
   ) || { products: [], productsMap: {} }
+
+  return { products: products.sort((a, b) => compareStrings(a.productName, b.productName)), productsMap }
+}

@@ -137,10 +137,10 @@ export const initialValueMap: OrderCalculatorFields = {
 
 export const fullInitialValueMap: FullOrderCalculatorFields = {
   ...initialValueMap,
-  [FormFieldNameMap.carPassportType]: CAR_PASSPORT_TYPE[0].value,
+  [FormFieldNameMap.carPassportType]: null,
   [FormFieldNameMap.carPassportId]: '',
   [FormFieldNameMap.carPassportCreationDate]: null,
-  [FormFieldNameMap.carIdType]: INITIAL_CAR_ID_TYPE[0].value,
+  [FormFieldNameMap.carIdType]: null,
   [FormFieldNameMap.carId]: '',
   [FormFieldNameMap.salesContractId]: '',
   [FormFieldNameMap.salesContractDate]: null,
