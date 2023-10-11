@@ -1,7 +1,9 @@
 import React from 'react'
 
+import { AddressType, OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { renderHook } from '@testing-library/react'
 
+import * as getPointOfSaleFromCookiesModule from 'entities/pointOfSale/utils/getPointOfSaleFromCookies'
 import * as authdcModule from 'shared/api/requests/authdc'
 import { mockedUser } from 'shared/api/requests/authdc.mock'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
@@ -15,6 +17,10 @@ disableConsole('error')
 
 const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
 const mockedUseGetUserQuery = jest.spyOn(authdcModule, 'useGetUserQuery')
+const mockedGetPointOfSaleFromCookies = jest.spyOn(
+  getPointOfSaleFromCookiesModule,
+  'getPointOfSaleFromCookies',
+)
 const mockedUseMemo = jest.spyOn(React, 'useMemo')
 const mockApplication = fullApplicationData
 jest.mock('react-redux', () => ({
@@ -26,6 +32,7 @@ describe('useInitialValues', () => {
   beforeEach(() => {
     mockedUseMemo.mockImplementation(fn => fn())
     mockedUseGetUserQuery.mockImplementation(() => ({ data: mockedUser } as any))
+    mockedGetPointOfSaleFromCookies.mockImplementation(() => ({ unit: 'unit' }))
   })
 
   describe('Преобразование данных работает корректно', () => {
@@ -39,6 +46,37 @@ describe('useInitialValues', () => {
       mockedUseAppSelector.mockImplementation(() => ({ orderData: undefined }))
       const result = renderHook(() => useInitialValues())
       expect(result.result.current.initialValues).toEqual(EXPECTED_EMPTY_DATA)
+    })
+  })
+
+  describe('Преобразование данных при сохранении работает корректно', () => {
+    it('Преобразовывает данные из формы для запроса', () => {
+      mockedUseAppSelector.mockImplementation(() => ({ orderData: mockApplication }))
+      const result = renderHook(() => useInitialValues())
+      expect(result.result.current.remapApplicationValues(EXPECTED_DATA)).toEqual(mockApplication.application)
+    })
+
+    it('Если тип занятости Безработный, то объект адреса работы не отправляется', () => {
+      mockedUseAppSelector.mockImplementation(() => ({ orderData: mockApplication }))
+      const result = renderHook(() => useInitialValues())
+      expect(
+        result.result.current.remapApplicationValues({
+          ...EXPECTED_DATA,
+          occupation: OccupationType.UNEMPLOYED,
+        }),
+      ).toEqual({
+        ...mockApplication.application,
+        applicant: {
+          ...mockApplication.application?.applicant,
+          employment: {
+            ...mockApplication.application?.applicant?.employment,
+            occupation: OccupationType.UNEMPLOYED,
+          },
+          addresses: mockApplication.application?.applicant?.addresses?.filter(
+            addres => addres.type !== AddressType.WORKPLACE,
+          ),
+        },
+      })
     })
   })
 })

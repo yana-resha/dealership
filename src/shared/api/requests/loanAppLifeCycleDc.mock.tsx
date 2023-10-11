@@ -18,8 +18,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
     unit: 'unit',
     createdDate: '2023-06-08T07:44:00.355Z',
     applicant: {
-      type: 'MainDebitor',
-      category: 0,
+      // type: 'MainDebitor',
       lastName: 'Иванов',
       firstName: 'Иван',
       middleName: 'Иванович',
@@ -91,7 +90,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           houseExt: '5',
           unit: 'ж',
           unitNum: '174',
-          office: '15',
+          office: undefined,
         },
         {
           type: 2,
@@ -111,7 +110,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           houseExt: '5',
           unit: 'ж',
           unitNum: '174',
-          office: '15',
+          office: undefined,
         },
         {
           type: 4,
@@ -130,7 +129,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           house: '17',
           houseExt: '5',
           unit: 'ж',
-          unitNum: '174',
+          unitNum: undefined,
           office: '15',
         },
       ],
@@ -141,7 +140,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
         inn: '123123123',
       },
       income: {
-        incomeVerify: false,
+        incomeVerify: true,
         incomeDocumentType: DocumentType.TWO_NDFL,
         basicIncome: 1000.45,
         addIncome: 1000.47,
@@ -149,6 +148,10 @@ export const fullApplicationData: GetFullApplicationResponse = {
         familyIncome: 44000.82,
         expenses: 12005.2,
       },
+    },
+    employees: {
+      tabNumActual: undefined,
+      fullNameCreated: '',
     },
     loanCar: {
       isCarNew: true,

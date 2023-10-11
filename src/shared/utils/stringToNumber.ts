@@ -1,5 +1,5 @@
 export const stringToNumber = (num: string) => {
-  const preparedNum = parseInt(num.replace(/ /g, ''), 10)
+  const preparedNum = parseFloat(num.replace(/ /g, ''))
 
   return preparedNum ? preparedNum : undefined
 }

@@ -1,8 +1,10 @@
 import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { SubmitAction } from '../ClientForm.types'
+import { DocumentUploadStatus } from 'features/ApplicationFileLoader'
 
-export const EXPECTED_DATA = {
+import { ClientData, SubmitAction } from '../ClientForm.types'
+
+export const EXPECTED_DATA: ClientData = {
   additionalIncome: '1000.47',
   additionalNumber: '79033800013',
   averageIncome: '1000.45',
@@ -41,7 +43,7 @@ export const EXPECTED_DATA = {
   employmentDate: new Date('2021-09-08T07:44:00.355Z'),
   expenses: '12005.2',
   familyIncome: '44000.82',
-  incomeConfirmation: false,
+  incomeConfirmation: true,
   isIncomeProofUploaderTouched: false,
   incomeProofUploadValidator: '',
   issuedBy: 'МВД',
@@ -97,17 +99,17 @@ export const EXPECTED_DATA = {
   secondDocumentNumber: '1234123456',
   secondDocumentType: 15,
   sex: 0,
-  submitAction: 'save',
-  bankStatementFile: undefined,
-  questionnaireFile: undefined,
-  ndfl3File: undefined,
+  submitAction: SubmitAction.Save,
+  bankStatementFile: null,
+  questionnaireFile: null,
+  ndfl3File: null,
   ndfl2File: {
     file: {
       dcAppId: '544545',
       documentType: DocumentType.TWO_NDFL,
       name: '2НДФЛ',
     },
-    status: 'uploaded',
+    status: DocumentUploadStatus.Uploaded,
   },
   isFormComplete: false,
 }
