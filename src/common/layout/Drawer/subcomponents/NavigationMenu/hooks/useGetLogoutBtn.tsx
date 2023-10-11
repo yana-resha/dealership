@@ -13,14 +13,14 @@ type UseGetLogoutBtnProps = {
 export const useGetLogoutBtn = (props: UseGetLogoutBtnProps): MenuItem | null => {
   const { authType } = props
 
-  const { onLogout } = useLogout()
+  const { logout } = useLogout()
 
   if (authType != 'no_auth') {
     return {
       label: 'Выйти',
       icon: () => <LogoutIcon />,
       path: appRoutePaths.auth,
-      onCallback: onLogout,
+      onCallback: logout,
     }
   }
 

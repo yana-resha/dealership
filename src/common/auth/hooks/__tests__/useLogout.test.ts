@@ -4,8 +4,9 @@ import Cookies from 'js-cookie'
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
 import * as orderSlice from 'entities/reduxStore/orderSlice'
 import * as userSlice from 'entities/user/model/userSlice'
-import { COOKIE_JWT_TOKEN, COOKIE_REFRESH_TOKEN } from 'shared/api/token'
-import { MockProviders } from 'tests/mocks'
+import { AUTH_COOKIE } from 'shared/api/helpers/authCookie'
+import * as authdcModule from 'shared/api/requests/authdc'
+import { MockProviders, StoreProviderMock } from 'tests/mocks'
 
 import { useLogout } from '../useLogout'
 
@@ -21,26 +22,24 @@ jest.mock('shared/hooks/store/useAppDispatch', () => ({ useAppDispatch: () => (p
 
 jest.mock('js-cookie', () => ({
   remove: jest.fn(),
-  get: jest.fn(() => 'token'),
+  get: () => 'true',
 }))
 
-describe('useLogout', () => {
-  const mockRemoveUserInfo = jest.spyOn(userSlice, 'removeUserInfo')
-  const mockClearOrder = jest.spyOn(orderSlice, 'clearOrder')
+const mockRemoveUserInfo = jest.spyOn(userSlice, 'removeUserInfo')
+const mockClearOrder = jest.spyOn(orderSlice, 'clearOrder')
+const mockDeleteSession = jest.spyOn(authdcModule, 'deleteSession')
 
+describe('useLogout', () => {
   it('токены авторизации и точки продаж пользователя удаляется из cookie при выходе из системы', () => {
     const { result } = renderHook(() => useLogout(), { wrapper: MockProviders })
-
     act(() => {
-      result.current.onLogout()
+      result.current.logout()
     })
-
     expect(mockRemoveUserInfo).toHaveBeenCalled()
     expect(mockClearOrder).toHaveBeenCalled()
-
-    expect(Cookies.remove).toBeCalledTimes(3)
-    expect(Cookies.remove).toHaveBeenNthCalledWith(1, COOKIE_JWT_TOKEN)
-    expect(Cookies.remove).toHaveBeenNthCalledWith(2, COOKIE_REFRESH_TOKEN)
-    expect(Cookies.remove).toHaveBeenNthCalledWith(3, COOKIE_POINT_OF_SALE)
+    expect(Cookies.remove).toBeCalledTimes(2)
+    expect(Cookies.remove).toHaveBeenNthCalledWith(1, COOKIE_POINT_OF_SALE)
+    expect(Cookies.remove).toHaveBeenNthCalledWith(2, AUTH_COOKIE)
+    expect(mockDeleteSession).toHaveBeenCalled()
   })
 })

@@ -1,15 +1,33 @@
-import { createAuthDc, GetTokenRequest, GetUserRequest, GetUserResponse } from '@sberauto/authdc-proto/public'
+import {
+  createAuthDc,
+  CreateSessionRequest,
+  GetUserRequest,
+  GetUserResponse,
+} from '@sberauto/authdc-proto/public'
 import { useQuery } from 'react-query'
 
 import { appConfig } from 'config'
 
 import { Rest } from '../client'
-import { authToken } from '../token'
+import { setAuthCookie } from '../helpers/authCookie'
 
 const authDcApi = createAuthDc(`${appConfig.apiUrl}/authdc`, Rest.request)
 
-export const getToken = (params: GetTokenRequest) =>
-  authDcApi.getToken({ data: params }).then(response => response.data ?? {})
+export const createSession = (params: CreateSessionRequest) =>
+  authDcApi.createSession({ data: params }).then(res => {
+    setAuthCookie()
+
+    return res
+  })
+
+export const refreshSession = () =>
+  authDcApi.refreshSession().then(res => {
+    setAuthCookie()
+
+    return res
+  })
+
+export const deleteSession = () => authDcApi.deleteSession()
 
 export enum Role {
   FrontdcCreditExpert = 'frontdc_credit_expert',
@@ -29,19 +47,4 @@ const prepareUser = (data: GetUserResponse): PreparedUser => {
 }
 export const getUser = (params: GetUserRequest) =>
   authDcApi.getUser({ data: params }).then(res => (res.data ? prepareUser(res.data) : res.data ?? {}))
-
-export const refreshAuthByToken = () =>
-  authDcApi
-    .refreshAuthByToken({ data: { refreshToken: authToken.refresh.get() ?? undefined } })
-    .then(response => {
-      if (!response.data.accessJwt || !response.data.refreshToken) {
-        throw new Error('Invalid response data')
-      }
-
-      authToken.jwt.save(response.data.accessJwt)
-      authToken.refresh.save(response.data.refreshToken)
-
-      return response.data ?? {}
-    })
-
 export const useGetUserQuery = () => useQuery(['getUser'], () => getUser({}), {})

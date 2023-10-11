@@ -20,7 +20,7 @@ export function PointOfSaleAuth() {
   const classes = useStyles({ animationDuration: ANIMATION_DURATION })
   const [isAllowedAnimation, setAllowedAnimation] = useState(true)
 
-  const { onLogout } = useLogout()
+  const { logout } = useLogout()
 
   const { data } = useGetUserQuery()
 
@@ -32,7 +32,7 @@ export function PointOfSaleAuth() {
 
   return (
     <Box className={classes.pointOfSaleFormContainer}>
-      <IconButton className={classes.backArrow} onClick={() => onLogout()} data-testid="backButton">
+      <IconButton className={classes.backArrow} onClick={() => logout()} data-testid="backButton">
         <KeyboardArrowLeft />
       </IconButton>
 

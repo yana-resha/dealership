@@ -1,19 +1,19 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 
 import Cookies from 'js-cookie'
 import { useSnackbar, VariantType } from 'notistack'
-import { useQuery, useQueryClient } from 'react-query'
+import { useQueryClient } from 'react-query'
 
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
 import { clearOrder } from 'entities/reduxStore/orderSlice'
 import { removeUserInfo } from 'entities/user/model/userSlice'
-import { getStateAndNonce } from 'shared/api/requests/authsberteamid'
-import { authToken } from 'shared/api/token'
+import { checkIsAuth, removeAuthCookie } from 'shared/api/helpers/authCookie'
+import { deleteSession } from 'shared/api/requests/authdc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 
 import { useAuthContext } from '../ui/AuthProvider'
 
-export const useLogout = (parentlogoutUrl?: string) => {
+export const useLogout = () => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logoutUrl } = useAuthContext()
@@ -21,31 +21,39 @@ export const useLogout = (parentlogoutUrl?: string) => {
   const { enqueueSnackbar } = useSnackbar()
 
   const redirectToLogoutUrl = useCallback(() => {
-    const url = logoutUrl || parentlogoutUrl
+    const url = logoutUrl
     if (url) {
       window.location.assign(url)
     }
-  }, [logoutUrl, parentlogoutUrl])
+  }, [logoutUrl])
 
-  const onLogout = useCallback(
-    (message?: { text: string; variant?: VariantType }) => {
-      const isTokens = authToken.jwt.get() && authToken.refresh.get()
+  const logout = useCallback(
+    (errorMessage?: string) => {
+      const isAuth = checkIsAuth()
+
+      // Так как AUTH_COOKIE мы удаляем только тут, то если его нет, то можно с уверенностью утверждать,
+      // что onLogout уже был вызван
+      if (!isAuth) {
+        return
+      }
 
       // Чистим данные стора
       dispatch(removeUserInfo())
       dispatch(clearOrder())
 
-      // Чистим куки
-      authToken.jwt.delete()
-      authToken.refresh.delete()
-      Cookies.remove(COOKIE_POINT_OF_SALE)
-
-      //Чистим кеш
+      // Чистим кеш
       queryClient.invalidateQueries()
 
-      if (isTokens) {
-        if (message?.text) {
-          enqueueSnackbar(message.text, { variant: message.variant ?? 'error' })
+      // Чистим куки
+      Cookies.remove(COOKIE_POINT_OF_SALE)
+      removeAuthCookie()
+
+      deleteSession()
+      redirectToLogoutUrl()
+
+      if (isAuth) {
+        if (errorMessage) {
+          enqueueSnackbar(errorMessage, { variant: 'error' })
           setTimeout(redirectToLogoutUrl, 1000)
         }
       } else {
@@ -55,5 +63,5 @@ export const useLogout = (parentlogoutUrl?: string) => {
     [dispatch, enqueueSnackbar, queryClient, redirectToLogoutUrl],
   )
 
-  return { onLogout }
+  return { logout }
 }
