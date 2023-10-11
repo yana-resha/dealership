@@ -5,7 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { PreparedAdditionalEquipmentForFinancingMap } from 'entities/application/AdditionalOptionsRequisites/hooks/useRequisitesForFinancingQuery'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
@@ -25,58 +25,6 @@ jest.mock('shared/ui/SelectInput/SelectInput', () => ({
 jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
-
-const mockedRequisites: PreparedAdditionalEquipmentForFinancingMap = {
-  optionId: 1,
-  optionType: 2,
-  vendorsWithoutBroker: [
-    {
-      vendorCode: '2002703288',
-      vendorName: 'Парини',
-      tax: 0.13,
-      requisites: [
-        {
-          bankName: 'Тинькофф',
-          bik: '044525974',
-          accountCorrNumber: '23298374562932784',
-          ogrn: '',
-          kpp: '24356243562',
-          inn: '34573457',
-          accounts: ['2387945697'],
-        },
-      ],
-    },
-  ],
-  vendorsWithoutBrokerMap: {
-    2002703288: {
-      vendorCode: '2002703288',
-      vendorName: 'Тест3',
-      tax: 0.13,
-      requisites: [
-        {
-          bankName: 'Тинькофф',
-          bik: '044525974',
-          accountCorrNumber: '23298374562932784',
-          ogrn: '',
-          kpp: '24356243562',
-          inn: '34573457',
-          accounts: ['2387945697'],
-        },
-      ],
-      requisitesMap: {
-        Тинькофф: {
-          bankName: 'Тинькофф',
-          bik: '044525974',
-          accountCorrNumber: '23298374562932784',
-          ogrn: '',
-          kpp: '24356243562',
-          inn: '34573457',
-          accounts: ['2387945697'],
-        },
-      },
-    },
-  },
-}
 
 const mockedAdditionalEquipmentFields = {
   additionalEquipments: [

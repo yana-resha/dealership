@@ -2,11 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 import { Form, useFormikContext } from 'formik'
+import isEqual from 'lodash/isEqual'
 
 import { ApplicationProvider } from 'entities/application/ApplicationProvider'
 import { FraudDialog } from 'entities/SpecialMark'
+import { usePrevious } from 'shared/hooks/usePrevious'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
+import { useOrderContext } from '../Calculator/OrderContext'
 import { useStyles } from './ClientForm.styles'
 import { ClientData, SubmitAction } from './ClientForm.types'
 import { CommunicationArea } from './FormAreas/CommunicationArea/CommunicationArea'
@@ -26,22 +29,24 @@ interface Props {
   setReuploadedQuestionnaire: React.Dispatch<React.SetStateAction<boolean>>
   isAllowedUploadQuestionnaire: boolean
   onUploadQuestionnaire: (() => void) | undefined
+  saveValuesToStore: (values: ClientData) => void
 }
 
-export function FormContainer(props: Props) {
-  const {
-    getOrderId,
-    isDraftLoading,
-    disabledButtons,
-    saveDraftDisabled,
-    isDifferentVendor,
-    isReuploadedQuestionnaire,
-    setReuploadedQuestionnaire,
-    isAllowedUploadQuestionnaire,
-    onUploadQuestionnaire,
-  } = props
+export function FormContainer({
+  getOrderId,
+  isDraftLoading,
+  disabledButtons,
+  saveDraftDisabled,
+  isDifferentVendor,
+  isReuploadedQuestionnaire,
+  setReuploadedQuestionnaire,
+  isAllowedUploadQuestionnaire,
+  onUploadQuestionnaire,
+  saveValuesToStore,
+}: Props) {
   const classes = useStyles()
   const { values, handleSubmit, setFieldValue, isValid } = useFormikContext<ClientData>()
+  const { onChangeForm } = useOrderContext()
   const [isShouldSubmit, setShouldSubmit] = useState(false)
 
   const handleDraftClick = useCallback(() => {
@@ -77,6 +82,13 @@ export function FormContainer(props: Props) {
       handleSubmit()
     }
   }, [handleSubmit, isShouldSubmit])
+
+  const prevValues = usePrevious(values)
+  useEffect(() => {
+    if (!isEqual(values, prevValues)) {
+      onChangeForm(() => saveValuesToStore(values))
+    }
+  }, [onChangeForm, prevValues, saveValuesToStore, values])
 
   return (
     <ApplicationProvider onGetOrderId={onGetOrderId}>

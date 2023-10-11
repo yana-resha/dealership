@@ -1,7 +1,7 @@
 import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { DocType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 
 export enum FormFieldNameMap {
   carCondition = 'carCondition', //Состояние

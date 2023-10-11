@@ -409,6 +409,17 @@ export function useInitialValues() {
     [dispatch, fullApplicationData],
   )
 
+  const saveValuesToStore = useCallback(
+    (values: ClientData) => {
+      const application = remapApplicationValues(values)
+      if (!application) {
+        return
+      }
+      updateOrderData(application)
+    },
+    [remapApplicationValues, updateOrderData],
+  )
+
   const makeDocumentTypeFile = (expectedType: DocumentType) => {
     const currentScan = fullApplicationData?.application?.scans?.find(scan => scan.type === expectedType)
 
@@ -484,6 +495,7 @@ export function useInitialValues() {
     remapApplicationValues,
     setAnketaType,
     updateOrderData,
+    saveValuesToStore,
     isShouldShowLoading: false,
     initialValues: initialValuesClientData,
     dcAppId,

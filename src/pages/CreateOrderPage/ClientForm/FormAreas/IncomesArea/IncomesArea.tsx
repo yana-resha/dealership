@@ -76,13 +76,15 @@ export function IncomesArea() {
       />
       <Box gridColumn="span 8">
         <CustomTooltip arrow title={<span>Подтверждение среднемесячного дохода</span>}>
-          <SwitchInputFormik
-            name="incomeConfirmation"
-            label="Подтверждение"
-            centered
-            disabled={incomeProduct}
-            afterChange={handleSwitch}
-          />
+          <Box className={classes.incomeConfirmationContainer}>
+            <SwitchInputFormik
+              name="incomeConfirmation"
+              label="Подтверждение"
+              centered
+              disabled={incomeProduct}
+              afterChange={handleSwitch}
+            />
+          </Box>
         </CustomTooltip>
       </Box>
 

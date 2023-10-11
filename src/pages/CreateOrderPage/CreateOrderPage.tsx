@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Box, Step, StepIcon, StepLabel, Stepper, Typography } from '@mui/material'
-import { FormikProps } from 'formik'
+import { Box, Button, Step, StepIcon, StepLabel, Stepper, Typography } from '@mui/material'
+import cx from 'classnames'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Calculator } from 'common/OrderCalculator/ui/Calculator/Calculator'
-import { OrderContext } from 'common/OrderCalculator/ui/OrderContext'
-import { updateOrder } from 'entities/reduxStore/orderSlice'
+import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
+import { clearOrder, updateOrder } from 'entities/reduxStore/orderSlice'
+import { Calculator } from 'pages/CreateOrderPage/Calculator/Calculator'
+import { OrderContext } from 'pages/CreateOrderPage/Calculator/OrderContext'
 import { appRoutes } from 'shared/navigation/routerPath'
+import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 
 import { useAppSelector } from '../../shared/hooks/store/useAppSelector'
 import { ClientForm } from './ClientForm'
-import { ClientData } from './ClientForm/ClientForm.types'
-import { useInitialValues } from './ClientForm/hooks/useInitialValues'
 import { useStyles } from './CreateOrderPage.styles'
 import { OrderSearching } from './OrderSearching'
 
@@ -23,21 +23,18 @@ enum StepKey {
   ClientForm = 'clientForm',
 }
 
-const steps = [
-  // {
-  //   label: StepKey.OrderSearchingForm,
-  //   title: 'Проверка клиента',
-  //   pageTitle: 'Заявка на кредит',
-  // },
+const STEPS = [
+  {
+    label: StepKey.OrderSearchingForm,
+    title: 'Проверка клиента',
+  },
   {
     label: StepKey.OrderSettings,
     title: 'Параметры кредита',
-    pageTitle: 'Заявка на кредит',
   },
   {
     label: StepKey.ClientForm,
     title: 'Анкета клиента',
-    pageTitle: 'Персональные данные',
   },
 ]
 
@@ -53,40 +50,47 @@ export function CreateOrderPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const initialOrder = useAppSelector(state => state.order.order)
-  const { remapApplicationValues } = useInitialValues()
+  const isSkippedClientData = useAppSelector(state => state.order.order?.isSkippedClientData)
 
+  // Если locationState определено, значит на страницу попали из существующей заявки
   const locationState = location.state as CreateOrderPageState
+  const isNewOrder = !locationState
+  const title = isNewOrder
+    ? 'Заявка на кредит'
+    : locationState.isFullCalculator
+    ? 'Дополнение заявки на кредит'
+    : 'Редактирование заявки на кредит'
+
+  const steps = useMemo(() => (isNewOrder ? STEPS : STEPS.slice(1)), [isNewOrder])
 
   const [currentStepIdx, setCurrentStepIdx] = useState(initialOrder?.currentStep ?? 0)
   const [isEnabledLastStep, setEnabledLastStep] = useState(false)
-  const [isEnabledSearchOrder, setEnabledSearchOrder] = useState(!locationState)
 
-  const changeEnabledSearchOrder = useCallback(() => {
-    setEnabledSearchOrder(false)
-    navigate(location.pathname, {
-      state: { ...locationState, currentStep: currentStepIdx },
-      replace: true,
-    })
-  }, [currentStepIdx, location.pathname, locationState, navigate])
+  const saveValueToStoreRef = useRef<() => void>(() => {})
 
-  const formRef = useRef<FormikProps<ClientData>>(null)
+  const currentStep = useMemo(() => steps[currentStepIdx], [currentStepIdx, steps])
 
-  const currentStep = useMemo(() => steps[currentStepIdx], [currentStepIdx])
+  const handleStepChange = (stepIdx: number) => () => {
+    if ((isEnabledLastStep && stepIdx === steps.length - 1) || currentStepIdx > stepIdx) {
+      saveValueToStoreRef.current()
+      setCurrentStepIdx(stepIdx)
+    }
+  }
+  const isActiveLastStep = (idx: number) => isEnabledLastStep && idx === steps.length - 1
+  const checkIsDisabledStep = (idx: number) => !(isActiveLastStep(idx) || currentStepIdx >= idx)
 
-  const handleStepChange = useCallback(
-    (stepIdx: number) => () => {
-      if ((isEnabledLastStep && stepIdx === steps.length - 1) || currentStepIdx > stepIdx) {
-        if (formRef.current) {
-          remapApplicationValues(formRef.current.values)
-        }
-        setCurrentStepIdx(stepIdx)
-      }
-    },
-    [currentStepIdx, isEnabledLastStep, remapApplicationValues],
-  )
   const nextStep = useCallback(() => {
-    setCurrentStepIdx(prevIdx => (currentStepIdx < steps.length - 1 ? prevIdx + 1 : prevIdx))
-  }, [currentStepIdx])
+    if (!isSkippedClientData) {
+      scrollContainerRef.current?.parentElement?.scroll({ top: 0 })
+      setCurrentStepIdx(prevIdx => (currentStepIdx < steps.length - 1 ? prevIdx + 1 : prevIdx))
+    }
+  }, [currentStepIdx, isSkippedClientData, steps.length])
+
+  const skipStep = useCallback(() => {
+    dispatch(updateOrder({ isSkippedClientData: true }))
+
+    nextStep()
+  }, [dispatch, nextStep])
 
   const handleApplicationOpen = (applicationId: string) => {
     navigate(appRoutes.order(applicationId))
@@ -95,55 +99,90 @@ export function CreateOrderPage() {
   const enableLastStep = useCallback(() => setEnabledLastStep(true), [])
   const disableLastStep = useCallback(() => setEnabledLastStep(false), [])
 
+  const handleOrderSearchingMount = useCallback(() => {
+    dispatch(updateOrder({ isSkippedClientData: false }))
+    disableLastStep()
+  }, [disableLastStep, dispatch])
+
+  const handleFormChange = useCallback((saveValuesToStore: () => void) => {
+    saveValueToStoreRef.current = saveValuesToStore
+  }, [])
+
+  const handleCalculatorFormChange = useCallback(
+    (saveValuesToStore: () => void) => {
+      handleFormChange(saveValuesToStore)
+      disableLastStep()
+    },
+    [disableLastStep, handleFormChange],
+  )
+
+  useEffect(() => {
+    if (isNewOrder) {
+      dispatch(clearOrder())
+    }
+  }, [dispatch, isNewOrder])
+
   useEffect(() => {
     dispatch(updateOrder({ currentStep: currentStepIdx }))
-  }, [currentStepIdx, dispatch])
+  }, [currentStepIdx, dispatch, isSkippedClientData])
 
-  const isActiveLastStep = (idx: number) => isEnabledLastStep && idx === steps.length - 1
-
-  const scrolContainerRef = useRef<HTMLDivElement | null>(null)
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
 
   return (
-    <div className={classes.page} data-testid="dealershipPage" ref={scrolContainerRef}>
-      <OrderContext scrolContainer={scrolContainerRef.current?.parentElement ?? null}>
-        <Box className={classes.loaderContainer}>
-          <Typography className={classes.pageTitle}>{currentStep.pageTitle}</Typography>
+    <div className={classes.page} data-testid="dealershipPage" ref={scrollContainerRef}>
+      <Box className={classes.loaderContainer}>
+        <Typography className={classes.pageTitle}>{title}</Typography>
 
-          {isEnabledSearchOrder ? (
-            <OrderSearching
-              nextStep={changeEnabledSearchOrder}
-              onApplicationOpen={handleApplicationOpen}
-              onMount={disableLastStep}
-            />
-          ) : (
-            <>
-              <Stepper activeStep={currentStepIdx} className={classes.stepContainer}>
-                {steps.map((step, idx) => (
-                  <Step
-                    key={step.label}
-                    className={classes.step}
-                    onClick={handleStepChange(idx)}
-                    disabled={!(isActiveLastStep(idx) || currentStepIdx >= idx)}
-                    active={isActiveLastStep(idx) || currentStepIdx >= idx}
+        <Box className={classes.stepContainer}>
+          <Stepper activeStep={currentStepIdx}>
+            {steps.map((step, idx) => (
+              <Step
+                key={step.label}
+                className={cx(classes.step, { [classes.currentStep]: currentStepIdx === idx })}
+                onClick={handleStepChange(idx)}
+                disabled={checkIsDisabledStep(idx)}
+                active={isActiveLastStep(idx) || currentStepIdx >= idx}
+              >
+                <CustomTooltip
+                  key={step.label}
+                  arrow
+                  title={checkIsDisabledStep(idx) ? 'Для продолжения заполните данные предыдущего шага' : ''}
+                >
+                  <StepLabel
+                    StepIconComponent={props => <StepIcon {...props} icon={props.icon} completed={false} />}
                   >
-                    <StepLabel
-                      StepIconComponent={props => <StepIcon {...props} icon={props.icon} completed={false} />}
-                    >
-                      {step.title}
-                    </StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
-              {currentStep.label === StepKey.OrderSettings && (
-                <Calculator nextStep={nextStep} onChangeForm={disableLastStep} />
-              )}
-              {currentStep.label === StepKey.ClientForm && (
-                <ClientForm formRef={formRef} onMount={enableLastStep} />
-              )}
-            </>
+                    {step.title}
+                  </StepLabel>
+                </CustomTooltip>
+              </Step>
+            ))}
+          </Stepper>
+
+          {currentStep.label === StepKey.OrderSearchingForm && (
+            <Button
+              className={classes.skipBtn}
+              type="button"
+              variant="outlined"
+              endIcon={<KeyboardArrowLeft className={classes.skipBtnIcon} />}
+              onClick={skipStep}
+            >
+              Пропустить
+            </Button>
           )}
         </Box>
-      </OrderContext>
+
+        <OrderContext onChangeForm={handleFormChange} onChangeCalculatorForm={handleCalculatorFormChange}>
+          {currentStep.label === StepKey.OrderSearchingForm && (
+            <OrderSearching
+              nextStep={nextStep}
+              onApplicationOpen={handleApplicationOpen}
+              onMount={handleOrderSearchingMount}
+            />
+          )}
+          {currentStep.label === StepKey.OrderSettings && <Calculator nextStep={nextStep} />}
+          {currentStep.label === StepKey.ClientForm && <ClientForm onMount={enableLastStep} />}
+        </OrderContext>
+      </Box>
     </div>
   )
 }

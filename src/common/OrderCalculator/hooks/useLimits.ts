@@ -4,9 +4,9 @@ import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { useField, useFormikContext } from 'formik'
 import { DateTime, Interval } from 'luxon'
 
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
-import { MAX_AGE } from 'shared/config/client.config'
+import { MAX_AGE, MIN_AGE } from 'shared/config/client.config'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatMoney, formatNumber } from 'shared/lib/utils'
@@ -65,6 +65,8 @@ export function useLimits({ vendorCode }: Params) {
   const birthDate = useAppSelector(
     state => state.order.order?.orderData?.application?.applicant?.birthDate || state.order.order?.birthDate,
   )
+  const isSkippedClientData = useAppSelector(state => state.order.order?.isSkippedClientData)
+
   const [commonErrorsField, , { setValue: setCommonErrors }] = useField<CommonError>(
     FormFieldNameMap.commonError,
   )
@@ -104,10 +106,12 @@ export function useLimits({ vendorCode }: Params) {
           Interval.fromDateTimes(DateTime.fromJSDate(new Date(birthDate)), DateTime.now()).toDuration('years')
             .years,
         )
+      : isSkippedClientData
+      ? MIN_AGE
       : undefined
 
     return clientAge ? (MAX_AGE - clientAge) * MONTH_OF_YEAR_COUNT : 0
-  }, [birthDate])
+  }, [birthDate, isSkippedClientData])
 
   const durationMaxFromAge = Math.min(durationMaxFromCarAge, durationMaxFromClientAge)
 

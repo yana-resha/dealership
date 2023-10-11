@@ -178,48 +178,6 @@ describe('OrderSearching', () => {
     })
   })
 
-  it('Удаляем данные из стора при поиске заявок', async () => {
-    mockedUseFindApplications.mockImplementation(() => ({
-      isSuccess: true,
-      isLoading: false,
-      data: undefined,
-      refetch: mockRefetch,
-      remove: jest.fn(),
-    }))
-
-    jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(false))
-
-    const mockClearOrder = jest.spyOn(orderSlice, 'clearOrder')
-
-    render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
-      wrapper: createWrapper,
-    })
-
-    expect(screen.getByTestId('orderForm')).toBeInTheDocument()
-
-    const orderForm = screen.getByTestId('orderForm')
-
-    const passportInput = orderForm.querySelector('#passport')!
-    userEvent.type(passportInput, '1234123123')
-    const clientNameInput = orderForm.querySelector('#clientName')!
-    userEvent.type(clientNameInput, 'ЦЦ ЦЦ ЦЦ')
-    const birthDateInput = orderForm.querySelector('#birthDate')!
-    userEvent.type(birthDateInput, '01011990')
-    const phoneNumberInput = orderForm.querySelector('#phoneNumber')!
-
-    await act(async () => {
-      userEvent.type(phoneNumberInput, '001231234')
-    })
-    const findOrderBtn = screen.getByText('Найти')
-
-    await act(async () => {
-      userEvent.click(findOrderBtn)
-    })
-
-    expect(mockClearOrder).toHaveBeenCalled()
-    expect(mockRefetch).toHaveBeenCalled()
-  })
-
   it('Если на форме НЕ изменились данные, то при создании заявки, заявка в сторе НЕ перезаписывается', async () => {
     const mockStateWithData = {
       order: {
@@ -265,7 +223,7 @@ describe('OrderSearching', () => {
     expect(nextStep).toHaveBeenCalled()
   })
 
-  it('Если на форме изменились данные, то при создании заявки, заявка записывается в стор', async () => {
+  it('Если на форме изменились данные, то при создании заявки, заявка обновляется в стор', async () => {
     const mockStateWithoutData = {
       order: {
         order: undefined,
@@ -281,7 +239,7 @@ describe('OrderSearching', () => {
     }))
 
     jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(true))
-    const mockSetOrder = jest.spyOn(orderSlice, 'setOrder')
+    const mockUpdateOrder = jest.spyOn(orderSlice, 'updateOrder')
 
     render(<OrderSearching nextStep={nextStep} onApplicationOpen={onApplicationOpen} onMount={onMount} />, {
       wrapper: ({ children }: PropsWithChildren) => (
@@ -318,7 +276,7 @@ describe('OrderSearching', () => {
       userEvent.click(createOrderBtn)
     })
 
-    expect(mockSetOrder).toHaveBeenCalled()
+    expect(mockUpdateOrder).toHaveBeenCalled()
     expect(nextStep).toHaveBeenCalled()
   })
 })

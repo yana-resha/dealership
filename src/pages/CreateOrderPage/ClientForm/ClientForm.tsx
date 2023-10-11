@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { Box } from '@mui/material'
 import {
@@ -27,11 +27,10 @@ import { useConfirmationForm } from './hooks/useConfirmationForm'
 import { useInitialValues } from './hooks/useInitialValues'
 
 type Props = {
-  formRef: React.RefObject<FormikProps<ClientData>>
   onMount: () => void
 }
 
-export function ClientForm({ formRef, onMount }: Props) {
+export function ClientForm({ onMount }: Props) {
   const classes = useStyles()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -39,11 +38,13 @@ export function ClientForm({ formRef, onMount }: Props) {
   const location = useLocation()
   const state = location.state as CreateOrderPageState
   const saveDraftDisabled = state && state.saveDraftDisabled !== undefined ? state.saveDraftDisabled : false
+  const formRef = useRef<FormikProps<ClientData>>(null)
 
   const {
     remapApplicationValues,
     setAnketaType,
     updateOrderData,
+    saveValuesToStore,
     isShouldShowLoading,
     initialValues,
     dcAppId,
@@ -225,6 +226,7 @@ export function ClientForm({ formRef, onMount }: Props) {
               setReuploadedQuestionnaire={setReuploadedQuestionnaire}
               isAllowedUploadQuestionnaire={isAllowedUploadQuestionnaire}
               onUploadQuestionnaire={handleQuestionnaireUploadRef.current}
+              saveValuesToStore={saveValuesToStore}
             />
           </Formik>
           <DcConfirmationModal

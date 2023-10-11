@@ -47,7 +47,7 @@ disableConsole('error')
 describe('ClientFormTest', () => {
   describe('Форма отображается корректно', () => {
     beforeEach(() => {
-      render(<ClientForm formRef={formRef} onMount={jest.fn} />, { wrapper: createWrapper })
+      render(<ClientForm onMount={jest.fn} />, { wrapper: createWrapper })
     })
 
     it('Отображается блок "Паспортные данные"', () => {

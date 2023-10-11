@@ -1,5 +1,7 @@
 import { makeStyles } from '@mui/styles'
 
+const STEP_ICON_SIZE = 40
+
 export const useStyles = makeStyles(theme => ({
   page: {
     display: 'flex',
@@ -33,8 +35,11 @@ export const useStyles = makeStyles(theme => ({
   },
 
   stepContainer: {
-    alignSelf: 'flex-start',
+    display: 'flex',
+    alignItems: 'center',
     marginBottom: theme.spacing(4),
+    justifyContent: 'space-between',
+    width: '100%',
   },
 
   step: {
@@ -44,15 +49,45 @@ export const useStyles = makeStyles(theme => ({
       padding: 0,
       marginRight: theme.spacing(4),
     },
+
     '& .MuiStepLabel-iconContainer': {
       paddingRight: theme.spacing(2),
     },
-    '& .MuiSvgIcon-root': {
-      width: '40px',
-      height: '40px',
+
+    '& .MuiSvgIcon-root, .MuiStepLabel-iconContainer.Mui-active .MuiSvgIcon-root': {
+      boxSizing: 'border-box',
+      width: STEP_ICON_SIZE,
+      height: STEP_ICON_SIZE,
+      color: theme.palette.colors.white,
+      border: `2px solid ${theme.palette.primary.main}`,
+      borderRadius: STEP_ICON_SIZE,
+      '& .MuiStepIcon-text': {
+        fill: theme.palette.primary.main,
+      },
     },
-    '& .MuiStepLabel-iconContainer.Mui-completed .MuiSvgIcon-root': {
-      color: theme.palette.sber.main,
+  },
+
+  currentStep: {
+    '& .MuiSvgIcon-root, .MuiStepLabel-iconContainer.Mui-active .MuiSvgIcon-root': {
+      color: theme.palette.primary.main,
+      border: 'none',
+      '& .MuiStepIcon-text': {
+        fill: theme.palette.colors.white,
+      },
     },
+  },
+
+  skipBtn: {
+    height: '48px',
+    width: '189px',
+    '&.MuiButton-root': {
+      borderRadius: 12 * theme.shape.borderRadius,
+      marginRight: theme.spacing(3),
+    },
+  },
+
+  skipBtnIcon: {
+    fill: theme.palette.primary.main,
+    transform: 'rotate(180deg)',
   },
 }))

@@ -8,7 +8,7 @@ export default makeStyles(theme => ({
   },
 
   submitBtn: {
-    height: '48px',
+    height: '48px!important',
     width: '189px',
     '&.MuiButton-root': {
       borderRadius: 12 * theme.shape.borderRadius,

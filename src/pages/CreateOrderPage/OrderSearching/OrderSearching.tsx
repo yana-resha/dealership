@@ -1,11 +1,10 @@
-/* eslint-disable no-constant-condition */
 import { useCallback, useEffect, useState } from 'react'
 
 import { Skeleton } from '@mui/material'
 
 import { useFindApplicationsQuery } from 'common/findApplication/findApplications'
 import { ApplicationTable } from 'entities/application/ApplicationTable/ApplicationTable'
-import { clearOrder, setOrder } from 'entities/reduxStore/orderSlice'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { OrderData, OrderForm } from 'pages/CreateOrderPage/OrderSearching/components/OrderForm'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
@@ -48,8 +47,6 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
   const findOrders = useCallback(
     (data: OrderData) => {
       remove()
-      // Если менеджер начал искать заявку, значит считаем что со старой он уже не работает
-      dispatch(clearOrder())
       // Показываем форму создания заявки после нажатия на кнопку "Найти"
       setIsVisibleNewOrderForm(true)
 
@@ -59,7 +56,7 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
         refetch()
       })
     },
-    [dispatch, refetch, remove],
+    [refetch, remove],
   )
 
   const onCreateOrder = useCallback(
@@ -75,7 +72,7 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
       if (isClient && orderData) {
         /** Проверяем изменились ли данные на форме после перехода на нее
          * Если на этом шаге не изменились, то не обновляем данные заявки.
-         * Иначе перезаписываем данные по заявке */
+         * Иначе обновляем данные по заявке */
         const isDataChange = !Object.keys(orderData).reduce((prev, currKey) => {
           const key = currKey as keyof OrderData
 
@@ -83,7 +80,8 @@ export function OrderSearching({ nextStep, onApplicationOpen, onMount }: Props) 
         }, true)
 
         if (isDataChange) {
-          dispatch(setOrder(orderData))
+          // Не перезаписываем, а дополняем заявку, т.к. юзер мог ранее посетить и заполнить шаг 2
+          dispatch(updateOrder(orderData))
         }
 
         nextStep()

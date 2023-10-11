@@ -74,7 +74,7 @@ export const useStyles = makeStyles(theme => ({
   },
 
   button: {
-    height: '48px',
+    height: '48px!important',
     width: '189px',
     '&.MuiButton-root': {
       borderRadius: 12 * theme.shape.borderRadius,
