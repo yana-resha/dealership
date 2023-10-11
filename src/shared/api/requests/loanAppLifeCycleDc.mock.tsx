@@ -338,7 +338,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
       riskCode: '202/e',
       netCode: '200223',
       address: 'Г Счастья ул радости дом 7',
-      unit: 'unit',
       vendorBankDetails: {
         accountRequisite: {
           accountNumber: '40702810038000017240',
