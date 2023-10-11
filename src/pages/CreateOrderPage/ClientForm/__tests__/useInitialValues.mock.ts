@@ -159,7 +159,7 @@ export const EXPECTED_EMPTY_DATA = {
   additionalIncome: '',
   familyIncome: '',
   expenses: '',
-  relatedToPublic: null,
+  relatedToPublic: false,
 
   // Справки о доходах
   incomeConfirmation: false,

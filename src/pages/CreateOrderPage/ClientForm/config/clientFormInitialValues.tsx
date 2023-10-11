@@ -55,7 +55,7 @@ export const configInitialValues: ClientData = {
   additionalIncome: '',
   familyIncome: '',
   expenses: '',
-  relatedToPublic: null,
+  relatedToPublic: false,
 
   // Справки о доходах
   incomeConfirmation: false,
