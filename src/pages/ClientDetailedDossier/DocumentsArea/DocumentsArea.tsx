@@ -48,10 +48,17 @@ export function DocumentsArea({ status }: Props) {
   const [fileQuestionnaire, setFileQuestionnaire] = useState<FileInfo | undefined>()
 
   const preparedStatus = getStatus(status)
-  const showDownloadLoanAgreement = [
+  const isShowDownloadLoanAgreement = [
+    PreparedStatus.signed,
     PreparedStatus.authorized,
     PreparedStatus.financed,
+  ].includes(preparedStatus)
+  const isDisabledRemove = [
+    PreparedStatus.formation,
     PreparedStatus.signed,
+    PreparedStatus.authorized,
+    PreparedStatus.financed,
+    PreparedStatus.issueError,
   ].includes(preparedStatus)
 
   const uploadQuestionnaire = useCallback(
@@ -75,7 +82,7 @@ export function DocumentsArea({ status }: Props) {
     [dispatch, scans],
   )
 
-  const deleteQuestionnaire = useCallback(() => {
+  const removeQuestionnaire = useCallback(() => {
     setFileQuestionnaire(undefined)
     dispatch(updateApplication({ scans: scans.filter(scan => scan.type !== DocumentType.CONSENT_FORM) }))
   }, [dispatch, scans])
@@ -112,10 +119,11 @@ export function DocumentsArea({ status }: Props) {
           loadingMessage="Анкета загружается"
           motivateMessage="Загрузить анкету"
           onUploadDocument={uploadQuestionnaire}
-          onDeleteDocument={deleteQuestionnaire}
+          onRemoveDocument={removeQuestionnaire}
+          isDisabledRemove={isDisabledRemove}
         />
 
-        {showDownloadLoanAgreement && (
+        {isShowDownloadLoanAgreement && (
           <Box gridColumn="1 / -1">
             <Box className={classes.documentsBlock}>
               {agreementDocs.map((document, index) => (

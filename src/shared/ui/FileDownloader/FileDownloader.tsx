@@ -59,7 +59,7 @@ type FileDownloaderProps = {
   index: number
   loadingMessage?: string
   onClick?: () => void
-  onClickDelete?: (index: number) => void
+  onClickRemove?: (index: number) => void
   onDownloadFile?: (metadata: FileMetadata) => Promise<File>
 }
 
@@ -68,7 +68,7 @@ export const FileDownloader = ({
   index,
   onClick,
   loadingMessage,
-  onClickDelete,
+  onClickRemove,
   onDownloadFile,
 }: FileDownloaderProps) => {
   const styles = useStyles()
@@ -101,11 +101,11 @@ export const FileDownloader = ({
     }
   }
 
-  const deleteFile = useCallback(() => {
-    if (onClickDelete) {
-      onClickDelete(index)
+  const removeFile = useCallback(() => {
+    if (onClickRemove) {
+      onClickRemove(index)
     }
-  }, [onClickDelete, index])
+  }, [onClickRemove, index])
 
   const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
   const message = loadingMessage ? loadingMessage : 'Файл загружается...'
@@ -156,8 +156,8 @@ export const FileDownloader = ({
         </Link>
       )}
 
-      {onClickDelete && (
-        <IconButton data-testid="deleteFileButton" size="small" onClick={deleteFile}>
+      {onClickRemove && (
+        <IconButton data-testid="deleteFileButton" size="small" onClick={removeFile}>
           <Close />
         </IconButton>
       )}

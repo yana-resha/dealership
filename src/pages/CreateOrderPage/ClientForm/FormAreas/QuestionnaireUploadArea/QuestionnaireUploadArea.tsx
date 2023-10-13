@@ -85,7 +85,7 @@ export const QuestionnaireUploadArea = ({
           loadingMessage="Анкета загружается"
           motivateMessage="Загрузить анкету"
           onUploadDocument={handleDocumentUpload}
-          onDeleteDocument={onDeleteDocument}
+          onRemoveDocument={onDeleteDocument}
           onError={handleErrorUpload}
           isAllowedUploadToServer={isAllowedUploadQuestionnaire}
         />
