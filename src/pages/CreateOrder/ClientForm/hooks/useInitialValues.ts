@@ -343,7 +343,7 @@ export function useInitialValues() {
               ? parseInt(
                   Interval.fromDateTimes(
                     DateTime.fromJSDate(employmentDate),
-                    DateTime.fromISO(newCreatedDate),
+                    DateTime.fromJSDate(new Date(newCreatedDate)),
                   )
                     .toDuration(['months'])
                     .toFormat('MM'),
