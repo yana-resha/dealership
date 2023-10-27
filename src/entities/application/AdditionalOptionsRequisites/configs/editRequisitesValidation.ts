@@ -19,7 +19,7 @@ const dealerServiceValidationSchema = Yup.object().shape({
 const additionalEquipmentValidationSchema = Yup.object().shape({
   productType: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   productCost: Yup.string().required(MANDATORY_FIELD_MESSAGE),
-  legalPerson: Yup.string().required(MANDATORY_FIELD_MESSAGE),
+  legalPersonCode: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   beneficiaryBank: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   bankAccountNumber: Yup.string().required(MANDATORY_FIELD_MESSAGE).min(20, FIELD_NOT_COMPLETED),
   bankIdentificationCode: Yup.string().required(MANDATORY_FIELD_MESSAGE).min(9, FIELD_NOT_COMPLETED),
@@ -28,7 +28,7 @@ const additionalEquipmentValidationSchema = Yup.object().shape({
 })
 
 export const editRequisitesValidationSchema = Yup.object().shape({
-  legalPerson: Yup.string().required(MANDATORY_FIELD_MESSAGE),
+  legalPersonCode: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   loanAmount: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   bankIdentificationCode: Yup.string().required(MANDATORY_FIELD_MESSAGE).min(9, FIELD_NOT_COMPLETED),
   beneficiaryBank: Yup.string().required(MANDATORY_FIELD_MESSAGE),

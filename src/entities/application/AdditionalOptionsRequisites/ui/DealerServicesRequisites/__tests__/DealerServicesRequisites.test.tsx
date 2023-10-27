@@ -31,9 +31,10 @@ const mockedDealerServicesFields = {
     {
       optionType: 'dealerServices',
       productType: null,
-      legalPerson: '',
       provider: '',
+      providerName: undefined,
       agent: '',
+      agentName: undefined,
       productCost: '0',
       loanTerm: 0,
       bankIdentificationCode: '',

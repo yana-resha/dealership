@@ -219,12 +219,12 @@ describe('FullOrderCalculator', () => {
       )
       await act(async () =>
         userEvent.click(
-          await screen.findByText(mockGetVendorOptionsResponse?.additionalOptions?.[0]?.optionName as string),
+          await screen.findByText(mockGetVendorOptionsResponse?.additionalOptions?.[2]?.optionName as string),
         ),
       )
       expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(16)
       await act(() => userEvent.click(screen.getAllByText('В кредит')[1]))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(24)
 
       // await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[2]))
       // expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
@@ -385,9 +385,9 @@ describe('FullOrderCalculator', () => {
         'dealerAdditionalServices[0].productCost',
       )!
       await act(() => userEvent.type(dealerAdditionalServicesCostField, 'test'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(24)
       await act(() => userEvent.type(dealerAdditionalServicesCostField, '12'))
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(22)
+      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(23)
     })
 
     //Тесты выключены, пока отключен ручной ввод

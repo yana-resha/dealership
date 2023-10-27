@@ -5,7 +5,6 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
-import { PreparedVendorWithoutBrokerMap } from 'entities/application/AdditionalOptionsRequisites/hooks/useRequisitesForFinancingQuery'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
@@ -25,36 +24,8 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
 
-const mockedRequisites: PreparedVendorWithoutBrokerMap = {
-  vendorCode: '2002703288',
-  vendorName: 'Парини',
-  tax: 0.13,
-  requisites: [
-    {
-      bankName: 'Тинькофф',
-      bik: '044525974',
-      accountCorrNumber: '23298374562932784',
-      ogrn: '',
-      kpp: '24356243562',
-      inn: '34573457',
-      accounts: ['2387945697'],
-    },
-  ],
-  requisitesMap: {
-    Тинькофф: {
-      bankName: 'Тинькофф',
-      bik: '044525974',
-      accountCorrNumber: '23298374562932784',
-      ogrn: '',
-      kpp: '24356243562',
-      inn: '34573457',
-      accounts: ['2387945697'],
-    },
-  },
-}
-
 const mockedDealerCenterFields = {
-  legalPerson: '',
+  legalPersonCode: '',
   loanAmount: '',
   bankIdentificationCode: '',
   beneficiaryBank: '',
@@ -89,7 +60,7 @@ describe('DealerCenterRequisitesTest', () => {
     })
 
     it('Отображается поле "Юридическое лицо"', () => {
-      expect(screen.getByTestId('legalPerson')).toBeInTheDocument()
+      expect(screen.getByTestId('legalPersonCode')).toBeInTheDocument()
     })
 
     it('Отображается поле "Сумма кредита"', () => {
@@ -145,7 +116,7 @@ describe('DealerCenterRequisitesTest', () => {
     })
 
     it('Валидируется поле "Юридическое лицо"', async () => {
-      expect(await screen.findByTestId('legalPersonErrorMessage')).toBeInTheDocument()
+      expect(await screen.findByTestId('legalPersonCodeErrorMessage')).toBeInTheDocument()
     })
 
     it('Валидируется поле "Банк получатель"', async () => {

@@ -24,7 +24,8 @@ export enum FormFieldNameMap {
   carId = 'carId', //Номер кузова/VIN
   salesContractId = 'salesContractId', //Номер ДКП
   salesContractDate = 'salesContractDate', //Дата ДКП
-  legalPerson = 'legalPerson', //Юридическое лицо
+  legalPersonCode = 'legalPersonCode', //Юридическое лицо (код или id)
+  legalPersonName = 'legalPersonName', // Название юридического лица
   loanAmount = 'loanAmount', //Сумма кредита
   taxValue = 'taxValue', //НДС вендора
   taxPercent = 'taxPercent', //НДС вендора в %
@@ -40,8 +41,10 @@ export enum FormFieldNameMap {
   bankIdentificationCode = 'bankIdentificationCode', //БИК
   correspondentAccount = 'correspondentAccount', //Корреспондентский счет
   taxation = 'taxation', //Налог
-  provider = 'provider', //Страховая компания или поставщик
-  agent = 'agent', //Агент получатель
+  provider = 'provider', //Страховая компания или поставщик (code или id)
+  providerName = 'providerName', //Страховая компания или поставщик (название)
+  agent = 'agent', //Агент получатель (code или id)
+  agentName = 'agentName', //Агент получатель (название)
   isCustomFields = 'isCustomFields', //Ручной ввод
   commonError = 'commonError',
   isExceededServicesTotalLimit = 'isExceededServicesTotalLimit',
@@ -87,7 +90,8 @@ export interface FullInitialAdditionalEquipments
   extends OrderCalculatorAdditionalService,
     OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
-  [FormFieldNameMap.legalPerson]: string
+  [FormFieldNameMap.legalPersonCode]: string
+  [FormFieldNameMap.legalPersonName]: string | undefined
   [FormFieldNameMap.taxValue]: number | null
   [FormFieldNameMap.taxPercent]: number | null
 }
@@ -97,10 +101,10 @@ export interface FullInitialAdditionalService
     OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
   [FormFieldNameMap.provider]: string
+  [FormFieldNameMap.providerName]: string | undefined
   [FormFieldNameMap.agent]: string
+  [FormFieldNameMap.agentName]: string | undefined
   [FormFieldNameMap.loanTerm]: number | undefined
-  [FormFieldNameMap.providerTaxValue]: number | null
-  [FormFieldNameMap.providerTaxPercent]: number | null
   [FormFieldNameMap.agentTaxValue]: number | null
   [FormFieldNameMap.agentTaxPercent]: number | null
 }
@@ -154,7 +158,8 @@ export interface FullOrderCalculatorFields
   [FormFieldNameMap.carId]: string
   [FormFieldNameMap.salesContractId]: string
   [FormFieldNameMap.salesContractDate]: Date | null
-  [FormFieldNameMap.legalPerson]: string
+  [FormFieldNameMap.legalPersonCode]: string
+  [FormFieldNameMap.legalPersonName]: string | undefined
   [FormFieldNameMap.loanAmount]: string
   [FormFieldNameMap.taxValue]: number | null
   [FormFieldNameMap.taxPercent]: number | null

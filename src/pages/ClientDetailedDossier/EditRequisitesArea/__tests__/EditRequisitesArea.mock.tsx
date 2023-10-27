@@ -35,7 +35,7 @@ export interface Requisites {
 export interface AdditionalOptions {
   bankOptionType: number
   productType: any
-  legalPerson: string
+  legalPersonCode: string
   provider: string
   agent: string
   productCost: number
@@ -285,7 +285,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.DEALER,
         productType: 'Название продукта',
-        legalPerson: '',
+        legalPersonCode: '',
         provider: 'РосГосСтрах',
         agent: 'Почта Банк',
         productCost: 400000,
@@ -302,7 +302,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.EQUIPMENT,
         productType: 'Коврики',
-        legalPerson: 'Arex',
+        legalPersonCode: 'Arex',
         provider: '',
         agent: '',
         productCost: 10000,
@@ -319,7 +319,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.EQUIPMENT,
         productType: 'Сигнализация',
-        legalPerson: 'САРМАТ',
+        legalPersonCode: 'САРМАТ',
         provider: '',
         agent: '',
         productCost: 15000,
@@ -409,7 +409,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.DEALER,
         productType: 'Перекраска',
-        legalPerson: '',
+        legalPersonCode: '',
         provider: 'РосГосСтрах',
         agent: 'Райффайзен Банк',
         productCost: 400000,
@@ -426,7 +426,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.EQUIPMENT,
         productType: 'Коврики',
-        legalPerson: 'Arex',
+        legalPersonCode: 'Arex',
         provider: '',
         agent: '',
         productCost: 10000,
@@ -468,7 +468,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.DEALER,
         productType: 'Перекраска',
-        legalPerson: '',
+        legalPersonCode: '',
         provider: 'РосГосСтрах',
         agent: 'Райффайзен Банк',
         productCost: 400000,
@@ -582,7 +582,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.DEALER,
         productType: 'Перекраска',
-        legalPerson: '',
+        legalPersonCode: '',
         provider: 'РосГосСтрах',
         agent: 'Райффайзен Банк',
         productCost: 400000,
@@ -599,7 +599,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.DEALER,
         productType: 'Тонирование стекол',
-        legalPerson: '',
+        legalPersonCode: '',
         provider: 'Ингосстрах',
         agent: 'ЛокоБанк',
         productCost: 550000,
@@ -616,7 +616,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.EQUIPMENT,
         productType: 'Коврики',
-        legalPerson: 'САРМАТ',
+        legalPersonCode: 'САРМАТ',
         provider: '',
         agent: '',
         productCost: 10000,
@@ -633,7 +633,7 @@ const mockClientDossier: ClientDossier[] = [
       {
         bankOptionType: OptionType.EQUIPMENT,
         productType: 'Сигнализация',
-        legalPerson: 'Arex',
+        legalPersonCode: 'Arex',
         provider: '',
         agent: '',
         productCost: 15000,

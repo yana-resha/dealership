@@ -1,4 +1,3 @@
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import * as Yup from 'yup'
 import { AnyObject } from 'yup/lib/types'
 

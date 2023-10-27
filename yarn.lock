@@ -2222,10 +2222,10 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
-"@sberauto/dictionarydc-proto@1.0.2":
-  version "1.0.2"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dictionarydc-proto/-/dictionarydc-proto-1.0.2.tgz#b2da378d0b540c8cab118908d5e60917218fe1d9"
-  integrity sha512-i4ZkahZKxIrTl+VN3WoypAtIVfK00IC3VQs3hyNz0PVY1TKgotUIVteM7JMhK8qAO4OltHUBcEiRs5naPMGnxQ==
+"@sberauto/dictionarydc-proto@1.1.6":
+  version "1.1.6"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dictionarydc-proto/-/dictionarydc-proto-1.1.6.tgz#320af32f216ac5e31dc1143dc65346537c11e1d1"
+  integrity sha512-VQFEkLyn/5cJUxc8aQVRoJHqqR7xB0vcLHFoST+5FdhgW0tdqxmQFESwplGOfpCQHfdBs8zLpYU2Oavi1yG5tg==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
@@ -2245,10 +2245,10 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
-"@sberauto/loanapplifecycledc-proto@0.33.4":
-  version "0.33.4"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.33.4.tgz#20c02373db3344c6c9378da4acba0e60010adee6"
-  integrity sha512-u1QABRBSsC5OcxqohquU8KkqRd1s9FSaol/JyIdT3IrxcHPOhHhdmDltIAI/AmmiOvKOS4mWIWqfo189rUpxeA==
+"@sberauto/loanapplifecycledc-proto@1.1.7":
+  version "1.1.7"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-1.1.7.tgz#f9d8513bb448c4fad4814f25666c1f320ca10a47"
+  integrity sha512-LPUSe18lXaPoxi7RLSQhDXo+DXvqK6MIVkFsvxaPlUIxVV+geGYrBjJXCiPoeIebmiumC6YRUxYVF0iBsa2n7A==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
