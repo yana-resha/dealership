@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
-import { NoMatchesModal } from 'pages/CreateOrderPage/OrderSearching/components/NoMatchesModal/NoMatchesModal'
+import { NoMatchesModal } from 'pages/CreateOrder/OrderSearching/components/NoMatchesModal/NoMatchesModal'
 import { checkIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
@@ -103,7 +103,7 @@ export function ActionArea(props: Props) {
 
   const editApplicationWithInitialStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator: false },
+      state: { isExistingApplication: true, isFullCalculator: false },
     })
   }, [navigate])
 
@@ -111,19 +111,19 @@ export function ActionArea(props: Props) {
     const isFullCalculator =
       application.vendor?.vendorCode === vendorCode && application.anketaType === 2 ? true : false
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator, saveDraftDisabled: true },
+      state: { isExistingApplication: true, isFullCalculator, saveDraftDisabled: true },
     })
   }, [application.vendor?.vendorCode, vendorCode, application.anketaType, navigate])
 
   const editApplicationWithApprovedStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator: false, saveDraftDisabled: true },
+      state: { isExistingApplication: true, isFullCalculator: false, saveDraftDisabled: true },
     })
   }, [navigate])
 
   const extendApplicationWithApprovedStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator: true, saveDraftDisabled: true },
+      state: { isExistingApplication: true, isFullCalculator: true, saveDraftDisabled: true },
     })
   }, [navigate])
 
@@ -147,7 +147,7 @@ export function ActionArea(props: Props) {
     if (response.isClient) {
       deleteLoanDataFromApplication()
       navigate(appRoutePaths.createOrder, {
-        state: { isFullCalculator: false },
+        state: { isExistingApplication: true, isFullCalculator: false },
       })
     } else {
       openModal()

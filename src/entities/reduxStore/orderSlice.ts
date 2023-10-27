@@ -4,9 +4,14 @@ import merge from 'lodash/merge'
 
 import { RequiredProduct } from '../../common/OrderCalculator/utils/prepareCreditProductListData'
 
+interface FillingProgress {
+  isFilledElementaryClientData?: boolean
+  isFilledLoanData?: boolean
+}
+
 export type Order = {
   currentStep?: number
-  isSkippedClientData?: boolean
+  fillingProgress?: FillingProgress
   passportSeries?: string
   passportNumber?: string
   lastName?: string
@@ -46,6 +51,15 @@ const orderSlice = createSlice({
         },
       }
     },
+    updateFillingProgress: (state, action: PayloadAction<FillingProgress>) => {
+      state.order = {
+        ...(state.order || {}),
+        fillingProgress: {
+          ...state.order?.fillingProgress,
+          ...action.payload,
+        },
+      }
+    },
     clearOrder: state => {
       state.order = undefined
     },
@@ -60,5 +74,6 @@ const orderSlice = createSlice({
   },
 })
 
-export const { updateOrder, setOrder, clearOrder, setAppId, updateApplication } = orderSlice.actions
+export const { updateOrder, setOrder, clearOrder, setAppId, updateApplication, updateFillingProgress } =
+  orderSlice.actions
 export default orderSlice

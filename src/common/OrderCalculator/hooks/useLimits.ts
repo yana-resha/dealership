@@ -65,7 +65,9 @@ export function useLimits({ vendorCode }: Params) {
   const birthDate = useAppSelector(
     state => state.order.order?.orderData?.application?.applicant?.birthDate || state.order.order?.birthDate,
   )
-  const isSkippedClientData = useAppSelector(state => state.order.order?.isSkippedClientData)
+  const isFilledElementaryClientData = useAppSelector(
+    state => state.order.order?.fillingProgress?.isFilledElementaryClientData,
+  )
 
   const [commonErrorsField, , { setValue: setCommonErrors }] = useField<CommonError>(
     FormFieldNameMap.commonError,
@@ -106,12 +108,12 @@ export function useLimits({ vendorCode }: Params) {
           Interval.fromDateTimes(DateTime.fromJSDate(new Date(birthDate)), DateTime.now()).toDuration('years')
             .years,
         )
-      : isSkippedClientData
+      : !isFilledElementaryClientData
       ? MIN_AGE
       : undefined
 
     return clientAge ? (MAX_AGE - clientAge) * MONTH_OF_YEAR_COUNT : 0
-  }, [birthDate, isSkippedClientData])
+  }, [birthDate, isFilledElementaryClientData])
 
   const durationMaxFromAge = Math.min(durationMaxFromCarAge, durationMaxFromClientAge)
 

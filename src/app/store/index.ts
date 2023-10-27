@@ -6,7 +6,7 @@ import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync
 
 import { tabsSlice } from 'entities/tabManagement'
 import { userSlice } from 'entities/user'
-import { orderSlice } from 'pages/CreateOrderPage'
+import { orderSlice } from 'pages/CreateOrder'
 
 // Настройки для сохранения редьюсера в локалСторадж
 const persistTabsConfig = {

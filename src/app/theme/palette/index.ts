@@ -1,6 +1,7 @@
 export const WHITE = '#FFF'
 export const BLACK = '#000'
 
+export const DARK_GRAY = '#767F88' // Светло-серый
 export const GRAY_NORMAL = '#9CA8B4' // Серый
 export const LIGHT_GRAY = '#E0E0E0' // Светло-серый
 
