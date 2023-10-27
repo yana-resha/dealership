@@ -9,7 +9,7 @@ export const CustomTooltip = React.memo((props: React.PropsWithChildren<TooltipP
 
   return (
     <Tooltip {...props} classes={{ tooltip: styles.tooltip, arrow: styles.tooltipArrow }}>
-      <div className={styles.childrenContainer}>{props.children}</div>
+      {props.children}
     </Tooltip>
   )
 })

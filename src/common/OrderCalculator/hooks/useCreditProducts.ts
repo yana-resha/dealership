@@ -14,14 +14,12 @@ interface UseCreditProductParams<T> {
   shouldFetchProductsOnStart: boolean
   formFields: CreditProductParams
   initialValueMap: T
-  onChangeForm: () => void
 }
 
 export function useCreditProducts<T extends FullOrderCalculatorFields | OrderCalculatorFields>({
   shouldFetchProductsOnStart,
   formFields,
   initialValueMap,
-  onChangeForm,
 }: UseCreditProductParams<T>) {
   const { values, setValues } = useFormikContext<T>()
   const { vendorCode } = getPointOfSaleFromCookies()
@@ -68,22 +66,6 @@ export function useCreditProducts<T extends FullOrderCalculatorFields | OrderCal
       setShouldShowOrderSettings(false)
     }
   }, [isChangedBaseValues])
-
-  const prevValues = usePrevious({
-    ...values,
-    initialPaymentPercent: undefined,
-    validationParams: {},
-    commonError: {},
-  })
-  useEffect(() => {
-    // initialPaymentPercent присвоено значение undefined, чтобы игнорировать это поле при сравнении,
-    // т.к. в common/OrderCalculator/hooks/useLimits.ts при монтировании этому полю присваивается значение,
-    // что приводит к изменению формы, хотя по факту ее значение никто не менял.
-    const newValues = { ...values, initialPaymentPercent: undefined, validationParams: {}, commonError: {} }
-    if (!isEqual(newValues, prevValues)) {
-      onChangeForm()
-    }
-  }, [onChangeForm, prevValues, values])
 
   return {
     isLoading,

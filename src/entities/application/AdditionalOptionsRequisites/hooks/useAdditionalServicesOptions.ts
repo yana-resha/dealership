@@ -2,13 +2,10 @@ import { useMemo } from 'react'
 
 import { OptionID } from '@sberauto/dictionarydc-proto/public'
 
-export interface AdditionalServiceItem {
+import { ServicesGroupName } from '../configs/additionalOptionsRequisites.config'
+
+interface AdditionalServiceItem {
   productType: OptionID | null
-}
-export enum ServicesGroupName {
-  additionalEquipments = 'additionalEquipments',
-  dealerAdditionalServices = 'dealerAdditionalServices',
-  bankAdditionalServices = 'bankAdditionalServices',
 }
 
 type Values = {

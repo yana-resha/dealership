@@ -14,11 +14,4 @@ export default makeStyles(theme => ({
   tooltipArrow: {
     color: theme.palette.background.default + '!important',
   },
-
-  childrenContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 'min-content',
-  },
 }))

@@ -55,4 +55,11 @@ export default makeStyles(theme => ({
       },
     },
   },
+
+  incomeConfirmationContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 'min-content',
+  },
 }))

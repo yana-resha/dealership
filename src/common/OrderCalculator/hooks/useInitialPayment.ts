@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useField, useFormikContext } from 'formik'
 import debounce from 'lodash/debounce'
 
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { usePrevious } from 'shared/hooks/usePrevious'
 
 import { FormFieldNameMap, OrderCalculatorAdditionalService } from '../types'

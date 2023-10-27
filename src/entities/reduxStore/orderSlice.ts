@@ -6,6 +6,7 @@ import { RequiredProduct } from '../../common/OrderCalculator/utils/prepareCredi
 
 export type Order = {
   currentStep?: number
+  isSkippedClientData?: boolean
   passportSeries?: string
   passportNumber?: string
   lastName?: string

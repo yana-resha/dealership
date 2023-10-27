@@ -7,7 +7,6 @@ import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 
 import { editRequisitesValidationSchema } from '../../../entities/application/AdditionalOptionsRequisites/configs/editRequisitesValidation'
-import { ServicesGroupName } from '../../../entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import {
   AdditionalEquipmentRequisites,
   DealerCenterRequisites,
