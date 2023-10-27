@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import AnnouncementIcon from '@mui/icons-material/Announcement'
+import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined'
 import cx from 'classnames'
 
 import { ReactComponent as HelpdeskIcon } from 'assets/icons/helpdesk.svg'
@@ -37,6 +38,16 @@ export const useGetItems = ({ authType }: UseGetItemsProps): MenuItem[] => {
               <OrderListIcon className={cx(styles.icon, { [styles.selectedIcon]: isSelected })} />
             ),
             path: appRoutePaths.orderList,
+          },
+          {
+            label: 'Калькулятор',
+            icon: ({ isSelected }) => (
+              <CalculateOutlinedIcon
+                className={cx(styles.icon, { [styles.selectedIcon]: isSelected })}
+                viewBox="3 3 18 18"
+              />
+            ),
+            path: appRoutePaths.calculator,
           },
           {
             label: 'Документы',

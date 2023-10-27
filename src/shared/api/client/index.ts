@@ -84,7 +84,6 @@ class Rest {
         const error = err as unknown as CustomFetchError
         const isAuthError = checkIsAuthError(error)
         if (isAuthError || attempt <= 5) {
-          console.log('refresh_error', error)
           throttle(() => this.logoutMethod?.(getErrorMessage(Service.Authdc, error.code)), 1500)()
         } else {
           await this.refresh(attempt + 1)

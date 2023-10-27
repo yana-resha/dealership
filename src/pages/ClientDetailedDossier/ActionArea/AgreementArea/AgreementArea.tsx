@@ -258,7 +258,7 @@ export function AgreementArea({
   const editApplicationWithFinallyApprovedStatus = useCallback(() => {
     const isFullCalculator = application.vendor?.vendorCode === vendorCode
     navigate(appRoutePaths.createOrder, {
-      state: { isFullCalculator, saveDraftDisabled: true },
+      state: { isExistingApplication: true, isFullCalculator, saveDraftDisabled: true },
     })
   }, [application.vendor?.vendorCode, vendorCode, navigate])
 

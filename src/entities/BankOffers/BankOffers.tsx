@@ -6,7 +6,6 @@ import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { useGetPreliminaryPaymentScheduleFormMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 import { Downloader } from 'shared/ui/Downloader'
 
 import { BANK_OFFERS_TABLE_HEADERS, TableCellKey, TableCellType } from './BankOffers.config'
@@ -22,7 +21,6 @@ type Props = {
 export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
   const classes = useStyles()
   const autoPrice = useAppSelector(state => state.order.order?.orderData?.application?.loanCar?.autoPrice)
-  const isSkippedClientData = useAppSelector(state => state.order.order?.isSkippedClientData)
 
   const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
     useGetPreliminaryPaymentScheduleFormMutation()
@@ -68,32 +66,26 @@ export const BankOffers = forwardRef(({ data, onRowClick }: Props, ref) => {
             data.map(row => (
               <TableRow key={row.productId} className={classes.bodyRow}>
                 {getCellsChildren(row).map(cell => (
-                  <CustomTooltip
+                  <TableCell
                     key={cell.name}
-                    arrow
-                    title={isSkippedClientData ? 'Для продолжения заполните данные пропущенного шага' : ''}
+                    align="left"
+                    className={classes.bodyCell}
+                    onClick={cell.type === TableCellType.Icon ? () => null : () => onRowClick(row)}
                   >
-                    <TableCell
-                      key={cell.name}
-                      align="left"
-                      className={classes.bodyCell}
-                      onClick={cell.type === TableCellType.Icon ? () => null : () => onRowClick(row)}
-                    >
-                      <>
-                        {cell.type === TableCellType.Icon && cell.name === TableCellKey.IncomeFlag && (
-                          <ButtonsCell />
-                        )}
+                    <>
+                      {cell.type === TableCellType.Icon && cell.name === TableCellKey.IncomeFlag && (
+                        <ButtonsCell />
+                      )}
 
-                        {cell.type === TableCellType.Icon && cell.name === TableCellKey.Attachment && (
-                          <Downloader onDownloadFile={async () => await handleAttachmentClick(row)}>
-                            <ScheduleIcon />
-                          </Downloader>
-                        )}
+                      {cell.type === TableCellType.Icon && cell.name === TableCellKey.Attachment && (
+                        <Downloader onDownloadFile={async () => await handleAttachmentClick(row)}>
+                          <ScheduleIcon />
+                        </Downloader>
+                      )}
 
-                        {cell.type !== TableCellType.Icon && cell.value}
-                      </>
-                    </TableCell>
-                  </CustomTooltip>
+                      {cell.type !== TableCellType.Icon && cell.value}
+                    </>
+                  </TableCell>
                 ))}
               </TableRow>
             ))}

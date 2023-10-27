@@ -4,8 +4,8 @@ export const appRoutes = {
   vendorList: () => '/vendorlist',
   createOrder: () => '/create_order',
   orderList: () => '/order_list',
+  calculator: () => '/calculator',
   order: (applicationId = '') => `/order_list/${applicationId}`,
-  fullOrderSettings: () => '/full_order_settings',
   documentStorage: () => '/document_storage',
   helpdesk: () => '/helpdesk',
 }
@@ -16,7 +16,7 @@ export const appRoutePaths = {
   vendorList: appRoutes.vendorList(),
   createOrder: appRoutes.createOrder(),
   orderList: appRoutes.orderList(),
-  fullOrderSettings: appRoutes.fullOrderSettings(),
+  calculator: appRoutes.calculator(),
   order: appRoutes.order(':applicationId'),
   documentStorage: appRoutes.documentStorage(),
   helpdesk: appRoutes.helpdesk(),

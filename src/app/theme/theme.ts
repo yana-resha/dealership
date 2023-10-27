@@ -3,12 +3,12 @@ import { Theme } from '@mui/material/styles'
 
 import {
   BLACK,
+  DARK_GRAY,
   DARK_NORMAL,
   GRAY_NORMAL,
   LIGHT_GRAY,
   PRIMARY_DARK,
   PRIMARY_MAIN,
-  RED_DEEP,
   WHITE,
 } from './palette'
 
@@ -205,6 +205,9 @@ export const theme = createTheme({
       blueGray: '#ECF1FA',
       white: WHITE,
     },
+    icon: {
+      main: DARK_GRAY,
+    },
   },
 })
 
@@ -214,6 +217,7 @@ declare module '@mui/material/styles' {
     sber: Palette['primary']
     colors: Palette['primary']
     status: Palette['primary']
+    icon: Palette['primary']
   }
 
   interface PaletteOptions {
@@ -239,6 +243,10 @@ declare module '@mui/material/styles' {
       authorized: React.CSSProperties['color']
       financed: React.CSSProperties['color']
       error: React.CSSProperties['color']
+    }
+
+    icon: {
+      main: React.CSSProperties['color']
     }
   }
 
