@@ -3,6 +3,7 @@ import React from 'react'
 import { Box, Divider } from '@mui/material'
 import { FieldArray, useField } from 'formik'
 
+import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
@@ -43,6 +44,8 @@ export function AdditionalServices({
   return (
     <AdditionalServicesContainer
       title={title}
+      name={name}
+      initialValues={FULL_INITIAL_ADDITIONAL_SERVICE}
       disabled={disabled}
       isError={isError}
       errorMessage={errorMessage}

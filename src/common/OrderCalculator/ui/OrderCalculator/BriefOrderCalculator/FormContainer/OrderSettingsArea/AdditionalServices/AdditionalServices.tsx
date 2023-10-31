@@ -1,9 +1,14 @@
-import { Box } from '@mui/material'
-import { FieldArray, useField } from 'formik'
+import { useEffect } from 'react'
 
+import { Box } from '@mui/material'
+import { FieldArray, useField, useFormikContext } from 'formik'
+
+import { INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
+import { OrderCalculatorAdditionalService } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { usePrevious } from 'shared/hooks/usePrevious'
 
 import { AdditionalServiceItem } from './AdditionalServiceItem/AdditionalServiceItem'
 import useStyles from './AdditionalServices.styles'
@@ -30,13 +35,29 @@ export function AdditionalServices({
   disabled = false,
 }: Props) {
   const classes = useStyles()
-  const [field] = useField(name)
+  const [field, , { setValue: setServices }] = useField<OrderCalculatorAdditionalService[]>(name)
   const { ids, changeIds } = useAdditionalServiceIds()
+
   const isInitialExpanded = !!field.value.length && !!field.value[0].productType
+
+  const { submitCount } = useFormikContext()
+  const prevSubmitCount = usePrevious(submitCount)
+
+  useEffect(() => {
+    if (prevSubmitCount === submitCount) {
+      return
+    }
+    const newValue = field.value.filter(
+      (value: OrderCalculatorAdditionalService) => value.productType && value.productCost,
+    )
+    setServices(newValue.length ? newValue : [INITIAL_ADDITIONAL_SERVICE])
+  }, [field.name, field.value, prevSubmitCount, setServices, submitCount])
 
   return (
     <AdditionalServicesContainer
       title={title}
+      name={name}
+      initialValues={INITIAL_ADDITIONAL_SERVICE}
       disabled={disabled}
       isError={isError}
       errorMessage={errorMessage}
@@ -45,7 +66,7 @@ export function AdditionalServices({
       <FieldArray name={name}>
         {arrayHelpers => (
           <Box minWidth="min-content" className={classes.itemsContainer}>
-            {field.value.map((v: any, i: number, arr: any[]) => (
+            {field.value.map((v, i, arr) => (
               <AdditionalServiceItem
                 key={ids[i]}
                 options={options}
