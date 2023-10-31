@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react'
 
 import Box from '@mui/material/Box'
 import { AdditionalOptionsFrontdc, OptionType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
 import { ReactComponent as DownloadIcon } from 'assets/icons/download.svg'
@@ -11,7 +10,7 @@ import {
   useGetPreliminaryPaymentScheduleFormMutation,
   useGetShareFormMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
-import { formatMoney, formatTerm } from 'shared/lib/utils'
+import { formatMoney, formatNumber, formatTerm } from 'shared/lib/utils'
 import { Downloader } from 'shared/ui/Downloader'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'

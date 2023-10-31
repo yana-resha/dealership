@@ -8,21 +8,18 @@ export const prepareRow = (row: CalculatedProduct) => {
   const options = {
     digits: 0,
   }
-  const downpayment = formatNumber(row.downpayment !== undefined ? row.downpayment.toString() : '', options)
+  const downpayment = formatNumber(row.downpayment !== undefined ? row.downpayment : '', options)
   const term = `${row.term} мес`
-  const monthlyPayment = formatNumber(
-    row.monthlyPayment !== undefined ? row.monthlyPayment.toString() : '',
-    options,
-  )
+  const monthlyPayment = formatNumber(row.monthlyPayment !== undefined ? row.monthlyPayment : '', options)
 
-  const lastPayment = formatNumber(row.lastPayment !== undefined ? row.lastPayment.toString() : '', options)
-  const overpayment = formatNumber(row.overpayment !== undefined ? row.overpayment.toString() : '', options)
+  const lastPayment = formatNumber(row.lastPayment !== undefined ? row.lastPayment : '', options)
+  const overpayment = formatNumber(row.overpayment !== undefined ? row.overpayment : '', options)
   const amountWithoutPercent = formatNumber(
-    row.amountWithoutPercent !== undefined ? row.amountWithoutPercent.toString() : '',
+    row.amountWithoutPercent !== undefined ? row.amountWithoutPercent : '',
     options,
   )
-  const totalSum = formatNumber(row.totalSum !== undefined ? row.totalSum.toString() : '', options)
-  const currentRate = formatNumber(row.currentRate !== undefined ? (row.currentRate * 100).toString() : '', {
+  const totalSum = formatNumber(row.totalSum !== undefined ? row.totalSum : '', options)
+  const currentRate = formatNumber(row.currentRate !== undefined ? row.currentRate * 100 : '', {
     digits: 2,
   })
 
