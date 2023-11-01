@@ -36,5 +36,19 @@ export const useStyles = makeStyles(theme => ({
     '&.MuiDrawer-docked': {
       height: '100%',
     },
+
+    animationName: '$navigationMenu',
+    animationDuration: '1.5s',
+  },
+
+  '@keyframes navigationMenu': {
+    from: {
+      marginLeft: '-100%',
+      opacity: 0,
+    },
+    to: {
+      marginLeft: 0,
+      opacity: 1,
+    },
   },
 }))
