@@ -17,7 +17,7 @@ import {
   FormFieldNameMap,
   FormMessages,
   OrderCalculatorAdditionalService,
-  OrderCalculatorFields,
+  BriefOrderCalculatorFields,
   ValidationParams,
 } from '../types'
 import { RoundOption, getMinMaxValueFromPercent } from '../utils/getValueFromPercent'
@@ -78,7 +78,7 @@ export function useLimits({ vendorCode }: Params) {
   const [, , { setValue: setCreditProduct }] = useField<string>(FormFieldNameMap.creditProduct)
   const [, , { setValue: setLoanTerm }] = useField<string>(FormFieldNameMap.loanTerm)
 
-  const { values, setFieldTouched } = useFormikContext<OrderCalculatorFields>()
+  const { values, setFieldTouched } = useFormikContext<BriefOrderCalculatorFields>()
   const {
     carBrand,
     carYear,

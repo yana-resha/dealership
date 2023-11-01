@@ -37,10 +37,11 @@ export function useOrderSettings(nextStep: () => void) {
   )
 
   const calculateCredit = useCallback(
-    async (data: CalculateCreditRequest) => {
+    async (data: CalculateCreditRequest, onSuccess: () => void) => {
       const res = await mutateAsync(data)
       if (res && res.products) {
         setBankOffers(res.products)
+        onSuccess()
       }
     },
     [mutateAsync],
@@ -103,10 +104,6 @@ export function useOrderSettings(nextStep: () => void) {
         overpayment: bankOffer.overpayment,
       }
       dispatch(updateFillingProgress({ isFilledLoanData: true }))
-      // dispatch(
-      //   updateOrder({ orderData: { ...orderData, application: { ...orderData?.application, loanData } } }),
-      // )
-
       dispatch(updateApplication({ loanData }))
 
       nextStep()

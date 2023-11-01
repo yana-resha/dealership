@@ -13,7 +13,7 @@ import {
   FormFieldNameMap,
   FullOrderCalculatorFields,
   OrderCalculatorAdditionalService,
-  OrderCalculatorFields,
+  BriefOrderCalculatorFields,
 } from '../types'
 import { ProductsMap } from './prepareCreditProductListData'
 
@@ -56,7 +56,7 @@ const getAdditionalOptionsPriceInCredit = (options: AdditionalOptionCalculateCre
   options.reduce((acc: number, element) => acc + (element.inCreditFlag ? element.price || 0 : 0), 0)
 
 export const mapValuesForCalculateCreditRequest = (
-  values: OrderCalculatorFields | FullOrderCalculatorFields,
+  values: BriefOrderCalculatorFields | FullOrderCalculatorFields,
   vendorOptionsMap: Record<OptionID, VendorOptionProto>,
   productsMap?: ProductsMap,
 ): CalculateCreditRequest => {

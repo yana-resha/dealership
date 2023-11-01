@@ -5,16 +5,18 @@ import isEqual from 'lodash/isEqual'
 
 import { usePrevious } from 'shared/hooks/usePrevious'
 
-import { FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
+import { FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
 
 interface UseCreditProductParams<T> {
   remapApplicationValues: (values: T) => void
   onChangeForm: (saveValuesToStoreCb: () => void) => void
+  enableFormSubmit: () => void
 }
 
-export function useFormChanging<T extends FullOrderCalculatorFields | OrderCalculatorFields>({
+export function useFormChanging<T extends FullOrderCalculatorFields | BriefOrderCalculatorFields>({
   remapApplicationValues,
   onChangeForm,
+  enableFormSubmit,
 }: UseCreditProductParams<T>) {
   const { values } = useFormikContext<T>()
 
@@ -31,6 +33,7 @@ export function useFormChanging<T extends FullOrderCalculatorFields | OrderCalcu
     const newValues = { ...values, initialPaymentPercent: undefined, validationParams: {}, commonError: {} }
     if (!isEqual(newValues, prevValues)) {
       onChangeForm(() => remapApplicationValues(newValues))
+      enableFormSubmit()
     }
-  }, [onChangeForm, prevValues, remapApplicationValues, values])
+  }, [enableFormSubmit, onChangeForm, prevValues, remapApplicationValues, values])
 }

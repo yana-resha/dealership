@@ -6,12 +6,12 @@ import { useQuery } from 'react-query'
 
 import { getCreditProductList } from 'shared/api/requests/dictionaryDc.api'
 
-import { FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
+import { FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
 import { prepareCreditProduct } from '../utils/prepareCreditProductListData'
 
 type Params = {
   vendorCode: string | undefined
-  values: OrderCalculatorFields | FullOrderCalculatorFields
+  values: BriefOrderCalculatorFields | FullOrderCalculatorFields
   enabled?: boolean
 }
 
