@@ -1,9 +1,15 @@
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import * as Yup from 'yup'
-import { InternalOptions } from 'yup/lib/types'
+import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { FieldMessages } from 'shared/constants/fieldMessages'
 
-import { CommonError, FormFieldNameMap } from '../types'
+import {
+  CommonError,
+  FormFieldNameMap,
+  FullOrderCalculatorFields,
+  BriefOrderCalculatorFields,
+} from '../types'
 
 export function checkAdditionalEquipmentsLimit(commonError: CommonError) {
   return !commonError.isExceededServicesTotalLimit && !commonError.isExceededAdditionalEquipmentsLimit
@@ -28,6 +34,50 @@ export const additionalServiceBaseValidation = (checkFn: (commonError: CommonErr
       ),
   }),
 })
+
+type YupBaseSchema<T> = Yup.BaseSchema<T, AnyObject, T>
+export function setRequiredIfNecessaryCasco<T extends YupBaseSchema<string | number | undefined | null>>(
+  schema: T,
+  message?: string,
+) {
+  return schema.when([FormFieldNameMap.productType], {
+    is: (productType: string) => productType === `${OptionID.CASCO}`,
+    then: schema =>
+      schema.test(
+        'isHasNotCascoLimit',
+        message || FieldMessages.required,
+        (value, context) =>
+          !(context.options as InternalOptions)?.from?.[1].value.validationParams.isNecessaryCasco || !!value,
+      ),
+  })
+}
+
+export function checkIsLowCascoLimit<T extends YupBaseSchema<string | undefined>>(
+  schema: T,
+  message?: string,
+) {
+  return setRequiredIfNecessaryCasco(
+    schema.test(
+      'isLowCascoLimit',
+      message || 'Сумма покрытия должна быть больше или равна сумме залога',
+      (value, context) => {
+        if (!value) {
+          return true
+        }
+        const { carCost, additionalEquipments = [] } =
+          ((context.options as InternalOptions)?.from?.[1].value as
+            | BriefOrderCalculatorFields
+            | FullOrderCalculatorFields) || {}
+        const additionalEquipmentsPrice = additionalEquipments.reduce(
+          (acc, cur) => (cur.productType ? acc + parseFloat(cur.productCost || '0') : acc),
+          0,
+        )
+
+        return parseInt(value, 10) >= parseInt(carCost, 10) + additionalEquipmentsPrice
+      },
+    ),
+  )
+}
 
 export const baseFormValidation = {
   [FormFieldNameMap.carCondition]: Yup.number().required(FieldMessages.required),

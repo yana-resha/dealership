@@ -1,6 +1,5 @@
 import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import * as Yup from 'yup'
-import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { CAR_PASSPORT_TYPE } from 'common/OrderCalculator/config'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
@@ -9,6 +8,8 @@ import {
   baseFormValidation,
   checkAdditionalEquipmentsLimit,
   checkDealerAdditionalServicesLimit,
+  checkIsLowCascoLimit,
+  setRequiredIfNecessaryCasco,
 } from 'common/OrderCalculator/utils/baseFormValidation'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { FieldMessages } from 'shared/constants/fieldMessages'
@@ -26,23 +27,6 @@ function checkForCarCreationDate(value: Date | null | undefined, context: Yup.Te
   }
 
   return parseInt(carYear, 10) <= value.getFullYear()
-}
-
-type YupBaseSchema<T> = Yup.BaseSchema<T, AnyObject, T>
-export function setRequiredIfNecessaryCasco<T extends YupBaseSchema<string | number | undefined | null>>(
-  schema: T,
-  message?: string,
-) {
-  return schema.when([FormFieldNameMap.productType], {
-    is: (productType: string) => productType === `${OptionID.CASCO}`,
-    then: schema =>
-      schema.test(
-        'isHasNotCascoLimit',
-        message || FieldMessages.required,
-        (value, context) =>
-          !(context.options as InternalOptions)?.from?.[1].value.validationParams.isNecessaryCasco || !!value,
-      ),
-  })
 }
 
 export const fullOrderFormValidationSchema = Yup.object().shape({
@@ -109,7 +93,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
 
       ...bankDetailsFormValidation,
 
-      [FormFieldNameMap.cascoLimit]: setRequiredIfNecessaryCasco(Yup.string()),
+      [FormFieldNameMap.cascoLimit]: checkIsLowCascoLimit(Yup.string()),
     }),
   ),
 })
