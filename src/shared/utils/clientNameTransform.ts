@@ -6,7 +6,7 @@ export function getFullName(firstName?: string, lastName?: string, middleName?: 
   return compact(nameArr).join(' ')
 }
 
-export function getSplitedName(clientName?: string) {
+export function getSplittedName(clientName?: string) {
   if (!clientName?.trim?.()) {
     return {}
   }

@@ -2,7 +2,7 @@ import { IsClientRequest } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime } from 'luxon'
 
 import { maskMobilePhoneNumber } from 'shared/masks/InputMasks'
-import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
+import { getFullName, getSplittedName } from 'shared/utils/clientNameTransform'
 
 import { OrderFormData } from '../OrderForm.types'
 
@@ -11,7 +11,7 @@ export const prepareData = (data: OrderFormData): IsClientRequest => {
   const passportSeries = data.passport ? data.passport.slice(0, 4) : undefined
   const passportNumber = data.passport ? data.passport.slice(4, data.passport.length) : undefined
 
-  const { lastName, firstName, middleName } = getSplitedName(data.clientName)
+  const { lastName, firstName, middleName } = getSplittedName(data.clientName)
 
   const birthDate =
     data.birthDate instanceof Date

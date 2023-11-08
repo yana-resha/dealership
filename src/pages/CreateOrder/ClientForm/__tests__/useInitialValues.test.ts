@@ -28,7 +28,7 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }))
 
-describe('useInitialValues', () => {
+describe('useClientFormInitialValues', () => {
   beforeEach(() => {
     mockedUseMemo.mockImplementation(fn => fn())
     mockedUseGetUserQuery.mockImplementation(() => ({ data: mockedUser } as any))
