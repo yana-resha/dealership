@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { FileInfo, UploaderConfig, DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { Uploader } from 'features/ApplicationFileLoader/ApplicationFileUploader'
+import { useDownloadDocument } from 'features/ApplicationFileLoader/hooks/useDownloadDocument'
 import { UPLOADED_DOCUMENTS } from 'pages/CreateOrder/ClientForm/config/clientFormInitialValues'
 import { RequiredScan } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
@@ -29,6 +30,9 @@ export function DocumentsArea({ status }: Props) {
   const dispatch = useAppDispatch()
 
   const scans = useAppSelector(state => state.order.order?.orderData?.application?.scans || [])
+
+  const { downloadFile } = useDownloadDocument()
+
   const questionnaireScan = useMemo(
     () => scans.find(scan => scan.type === DocumentType.CONSENT_FORM),
     [scans],
@@ -127,7 +131,13 @@ export function DocumentsArea({ status }: Props) {
           <Box gridColumn="1 / -1">
             <Box className={classes.documentsBlock}>
               {agreementDocs.map((document, index) => (
-                <FileDownloader key={index} file={document} index={index} loadingMessage="Файл загружается" />
+                <FileDownloader
+                  key={index}
+                  file={document}
+                  index={index}
+                  loadingMessage="Файл загружается"
+                  onDownloadFile={downloadFile}
+                />
               ))}
             </Box>
           </Box>
