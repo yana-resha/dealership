@@ -1,11 +1,13 @@
 import * as Yup from 'yup'
 
+import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import {
   additionalServiceBaseValidation,
   baseFormValidation,
   checkAdditionalEquipmentsLimit,
   checkBankAdditionalServicesLimit,
   checkDealerAdditionalServicesLimit,
+  checkIsLowCascoLimit,
 } from 'common/OrderCalculator/utils/baseFormValidation'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 
@@ -20,6 +22,7 @@ export const briefOrderFormValidationSchema = Yup.object({
   [ServicesGroupName.dealerAdditionalServices]: Yup.array().of(
     Yup.object().shape({
       ...additionalServiceBaseValidation(checkDealerAdditionalServicesLimit),
+      [FormFieldNameMap.cascoLimit]: checkIsLowCascoLimit(Yup.string()),
     }),
   ),
   [ServicesGroupName.bankAdditionalServices]: Yup.array().of(

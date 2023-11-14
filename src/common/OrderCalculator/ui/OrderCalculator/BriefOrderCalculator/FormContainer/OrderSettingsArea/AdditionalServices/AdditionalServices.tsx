@@ -47,9 +47,7 @@ export function AdditionalServices({
     if (prevSubmitCount === submitCount) {
       return
     }
-    const newValue = field.value.filter(
-      (value: OrderCalculatorAdditionalService) => value.productType && value.productCost,
-    )
+    const newValue = field.value.filter((value: OrderCalculatorAdditionalService) => value.productType)
     setServices(newValue.length ? newValue : [INITIAL_ADDITIONAL_SERVICE])
   }, [field.name, field.value, prevSubmitCount, setServices, submitCount])
 
