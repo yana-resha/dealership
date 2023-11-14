@@ -5,11 +5,10 @@ import { useFormikContext } from 'formik'
 
 import { ReactComponent as CloseIcon } from 'assets/icons/cancel.svg'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { maskDigitsOnly } from 'shared/masks/InputMasks'
+import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
-import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 
 import { ClientData } from '../../ClientForm.types'
@@ -64,14 +63,14 @@ export function IncomesArea() {
         name="averageIncome"
         label="Среднемесячный доход"
         placeholder="-"
-        mask={maskDigitsOnly}
+        mask={maskOnlyDigitsWithSeparator}
         gridColumn="span 4"
       />
       <MaskedInputFormik
         name="additionalIncome"
         label="Дополнительный личный доход"
         placeholder="-"
-        mask={maskDigitsOnly}
+        mask={maskOnlyDigitsWithSeparator}
         gridColumn="span 4"
       />
       <Box gridColumn="span 8">
@@ -110,14 +109,14 @@ export function IncomesArea() {
         name="familyIncome"
         label="Доход семьи без дохода заявит."
         placeholder="-"
-        mask={maskDigitsOnly}
+        mask={maskOnlyDigitsWithSeparator}
         gridColumn="span 4"
       />
       <MaskedInputFormik
         name="expenses"
         label="Общие расходы"
         placeholder="-"
-        mask={maskDigitsOnly}
+        mask={maskOnlyDigitsWithSeparator}
         gridColumn="span 4"
       />
       <SwitchInputFormik
