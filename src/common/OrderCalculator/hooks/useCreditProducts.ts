@@ -7,7 +7,7 @@ import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { usePrevious } from 'shared/hooks/usePrevious'
 
 import { CREDIT_PRODUCT_PARAMS_FIELDS } from '../config'
-import { CreditProductParams, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
+import { CreditProductParams, FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
 import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 
 interface UseCreditProductParams<T> {
@@ -16,7 +16,7 @@ interface UseCreditProductParams<T> {
   initialValueMap: T
 }
 
-export function useCreditProducts<T extends FullOrderCalculatorFields | OrderCalculatorFields>({
+export function useCreditProducts<T extends FullOrderCalculatorFields | BriefOrderCalculatorFields>({
   shouldFetchProductsOnStart,
   formFields,
   initialValueMap,

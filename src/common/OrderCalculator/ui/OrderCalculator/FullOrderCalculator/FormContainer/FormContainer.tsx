@@ -22,6 +22,8 @@ type Props = {
   shouldFetchProductsOnStart: boolean
   onChangeForm: (saveValuesToStoreCb: () => void) => void
   remapApplicationValues: (values: FullOrderCalculatorFields) => void
+  isDisabledFormSubmit: boolean
+  enableFormSubmit: () => void
 }
 
 export function FormContainer({
@@ -29,6 +31,8 @@ export function FormContainer({
   shouldFetchProductsOnStart,
   onChangeForm,
   remapApplicationValues,
+  isDisabledFormSubmit,
+  enableFormSubmit,
 }: Props) {
   const { values } = useFormikContext<FullOrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
@@ -125,7 +129,7 @@ export function FormContainer({
     formFields,
     initialValueMap: fullInitialValueMap,
   })
-  useFormChanging({ remapApplicationValues, onChangeForm })
+  useFormChanging({ remapApplicationValues, onChangeForm, enableFormSubmit })
 
   return (
     <Form>
@@ -137,7 +141,7 @@ export function FormContainer({
         />
         <OrderSettingsArea
           disabled={!shouldShowOrderSettings}
-          disabledSubmit={isRequisitesQueryLoading}
+          disabledSubmit={isRequisitesQueryLoading || isDisabledFormSubmit}
           isSubmitLoading={isSubmitLoading}
         />
       </RequisitesContextProvider>

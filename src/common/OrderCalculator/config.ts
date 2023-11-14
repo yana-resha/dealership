@@ -8,7 +8,7 @@ import {
   FullInitialAdditionalService,
   FullOrderCalculatorFields,
   InitialBankDetailsValue,
-  OrderCalculatorFields,
+  BriefOrderCalculatorFields,
   ValidationParams,
   OrderCalculatorAdditionalServiceDocInfo,
   AutoCategory,
@@ -118,7 +118,7 @@ const INITIAL_VALIDATION_PARAMS: ValidationParams = {}
 
 const initialCarCondition = CAR_CONDITIONS[0].value
 
-export const initialValueMap: OrderCalculatorFields = {
+export const initialValueMap: BriefOrderCalculatorFields = {
   [FormFieldNameMap.carCondition]: initialCarCondition,
   [FormFieldNameMap.carBrand]: null,
   [FormFieldNameMap.carModel]: null,

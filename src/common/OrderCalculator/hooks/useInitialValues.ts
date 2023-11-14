@@ -20,12 +20,17 @@ import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
 import { AUTO_TYPE_MAP, CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
-import { AutoCategory, FormFieldNameMap, FullOrderCalculatorFields, OrderCalculatorFields } from '../types'
+import {
+  AutoCategory,
+  FormFieldNameMap,
+  FullOrderCalculatorFields,
+  BriefOrderCalculatorFields,
+} from '../types'
 import { getCountryMark } from '../utils/getCountryMark'
 import { useGetCarsListQuery } from './useGetCarsListQuery'
 import { useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
-type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : OrderCalculatorFields
+type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : BriefOrderCalculatorFields
 
 export function useInitialValues<D extends boolean | undefined>(
   initialData: CalculatorFields<D>,
@@ -235,7 +240,7 @@ export function useInitialValues<D extends boolean | undefined>(
     : {}
 
   const remapAdditionalOptionsForSmallCalculator = useCallback(
-    (values: OrderCalculatorFields) => {
+    (values: BriefOrderCalculatorFields) => {
       const { additionalEquipments, dealerAdditionalServices } = values
       const additionalOptionsFromCalculator = [additionalEquipments, dealerAdditionalServices]
       const additionalOptionsForApplication: AdditionalOptionsFrontdc[] = []
@@ -442,7 +447,7 @@ export function useInitialValues<D extends boolean | undefined>(
   )
 
   const remapApplicationValuesForSmallCalculator = useCallback(
-    (values: OrderCalculatorFields) => {
+    (values: BriefOrderCalculatorFields) => {
       const {
         carCost,
         carModel,
@@ -588,11 +593,11 @@ export function useInitialValues<D extends boolean | undefined>(
   )
 
   const remapApplicationValues = useCallback(
-    (values: OrderCalculatorFields | FullOrderCalculatorFields) => {
+    (values: BriefOrderCalculatorFields | FullOrderCalculatorFields) => {
       if (isFullCalculator) {
         remapApplicationValuesForFullCalculator(values as FullOrderCalculatorFields)
       } else {
-        remapApplicationValuesForSmallCalculator(values as OrderCalculatorFields)
+        remapApplicationValuesForSmallCalculator(values as BriefOrderCalculatorFields)
       }
     },
     [isFullCalculator, remapApplicationValuesForSmallCalculator, remapApplicationValuesForFullCalculator],

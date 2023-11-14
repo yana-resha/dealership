@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { useLocation } from 'react-router-dom'
 
-import { useOrderSettings } from 'common/OrderCalculator/utils/useOrderSettings'
+import { useOrderSettings } from 'common/OrderCalculator/hooks/useOrderSettings'
 import { BankOffers } from 'entities/BankOffers'
 import { CreateOrderPageState } from 'pages/CreateOrder/CreateOrder'
 import SberTypography from 'shared/ui/SberTypography'

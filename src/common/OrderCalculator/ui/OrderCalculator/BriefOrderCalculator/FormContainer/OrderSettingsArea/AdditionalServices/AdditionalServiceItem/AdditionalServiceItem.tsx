@@ -5,7 +5,7 @@ import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
 import { INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
-import { FormFieldNameMap, OrderCalculatorFields } from 'common/OrderCalculator/types'
+import { FormFieldNameMap, BriefOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { useAdditionalServices } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServices'
 import { useAdditionalServicesOptions } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
@@ -52,7 +52,7 @@ export function AdditionalServiceItem({
     initialValues: INITIAL_ADDITIONAL_SERVICE,
   })
   const [productTypeField] = useField<OptionID>(namePrefix + FormFieldNameMap.productType)
-  const { values, submitCount } = useFormikContext<OrderCalculatorFields>()
+  const { values, submitCount } = useFormikContext<BriefOrderCalculatorFields>()
 
   const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
     values,

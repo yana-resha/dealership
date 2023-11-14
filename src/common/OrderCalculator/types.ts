@@ -125,7 +125,7 @@ export interface ValidationParams {
   isNecessaryCasco?: boolean
 }
 
-export interface OrderCalculatorFields {
+export interface BriefOrderCalculatorFields {
   [FormFieldNameMap.carCondition]: number
   [FormFieldNameMap.carBrand]: string | null
   [FormFieldNameMap.carModel]: string | null
@@ -146,7 +146,7 @@ export interface OrderCalculatorFields {
 export interface FullOrderCalculatorFields
   extends InitialBankDetailsValue,
     Omit<
-      OrderCalculatorFields,
+      BriefOrderCalculatorFields,
       | ServicesGroupName.additionalEquipments
       | ServicesGroupName.dealerAdditionalServices
       | ServicesGroupName.bankAdditionalServices
@@ -178,7 +178,7 @@ export type FormMessages = {
 
 export type CreditProductParams = Partial<
   Pick<
-    OrderCalculatorFields,
+    BriefOrderCalculatorFields,
     | FormFieldNameMap.carCondition
     | FormFieldNameMap.carBrand
     | FormFieldNameMap.carModel

@@ -23,9 +23,10 @@ import useStyles from './OrderSettingsArea.styles'
 type Props = {
   disabled: boolean
   isSubmitLoading: boolean
+  isDisabledSubmit: boolean
 }
 
-export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
+export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit }: Props) {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
 
@@ -151,7 +152,12 @@ export function OrderSettingsArea({ disabled, isSubmitLoading }: Props) {
           </Box>
         )}
 
-        <AreaFooter btnTitle="Рассчитать" btnType="submit" isLoadingBtn={isSubmitLoading}>
+        <AreaFooter
+          btnTitle="Рассчитать"
+          btnType="submit"
+          isLoadingBtn={isSubmitLoading}
+          disabled={isDisabledSubmit}
+        >
           <FraudDialog />
         </AreaFooter>
       </Box>
