@@ -3,6 +3,7 @@ import React from 'react'
 import { Box, Divider } from '@mui/material'
 import { FieldArray, useField } from 'formik'
 
+import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
@@ -31,6 +32,8 @@ export function AdditionalEquipment({ disabled = false, options, isError, errorM
   return (
     <AdditionalServicesContainer
       title="Дополнительное оборудование"
+      name={ServicesGroupName.additionalEquipments}
+      initialValues={FULL_INITIAL_ADDITIONAL_EQUIPMENTS}
       disabled={disabled}
       isError={isError}
       errorMessage={errorMessage}

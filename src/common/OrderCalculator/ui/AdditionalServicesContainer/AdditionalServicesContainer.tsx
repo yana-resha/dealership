@@ -1,16 +1,29 @@
-import React, { PropsWithChildren, useCallback, useState } from 'react'
+import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material'
+import { useField, useFormikContext } from 'formik'
 
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
+import {
+  FullInitialAdditionalEquipments,
+  FullInitialAdditionalService,
+  OrderCalculatorAdditionalService,
+} from 'common/OrderCalculator/types'
+import { usePrevious } from 'shared/hooks/usePrevious'
 
 import useStyles from './AdditionalServicesContainer.styles'
 import { AdditionalServicesContainerProvider } from './AdditionalServicesContainerProvider'
 
 const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка при получении данных. Перезагрузите страницу'
 
+type AdditionalService =
+  | OrderCalculatorAdditionalService
+  | FullInitialAdditionalService
+  | FullInitialAdditionalEquipments
 type Props = {
   title: string
+  name: string
+  initialValues: AdditionalService
   disabled?: boolean
   isError?: boolean
   errorMessage?: string
@@ -19,6 +32,8 @@ type Props = {
 export const AdditionalServicesContainer = React.memo(
   ({
     title,
+    name,
+    initialValues,
     disabled = false,
     isError = false,
     errorMessage,
@@ -33,6 +48,19 @@ export const AdditionalServicesContainer = React.memo(
     const closeAccordion = useCallback(() => {
       setExpanded(false)
     }, [])
+
+    const [field, , { setValue: setServices }] = useField<AdditionalService[]>(name)
+    const { submitCount } = useFormikContext()
+    const prevSubmitCount = usePrevious(submitCount)
+
+    useEffect(() => {
+      if (prevSubmitCount === submitCount) {
+        return
+      }
+      const newValue = field.value.filter((value: AdditionalService) => value.productType)
+      setServices(newValue.length ? newValue : [initialValues])
+      !newValue.length && closeAccordion()
+    }, [closeAccordion, field.name, field.value, initialValues, prevSubmitCount, setServices, submitCount])
 
     return (
       <Accordion
