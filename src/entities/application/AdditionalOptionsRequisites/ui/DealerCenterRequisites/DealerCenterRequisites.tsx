@@ -4,7 +4,6 @@ import { Box } from '@mui/material'
 import { useFormikContext } from 'formik'
 
 import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
-import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -27,10 +26,10 @@ type Props = {
 
 export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   const classes = useStyles()
-  const { vendorName, vendorCode } = getPointOfSaleFromCookies()
   const { requisites, isRequisitesFetched } = useRequisitesContext()
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
   const {
+    legalPersonCode,
     beneficiaryBank,
     taxPresence,
     isCustomFields,
@@ -42,17 +41,29 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   } = values
 
   const legalPersonOptions = useMemo(
-    () => [{ value: vendorCode || '', label: vendorName }],
-    [vendorCode, vendorName],
+    () =>
+      (requisites?.dealerCenterBrokers || []).map(broker => ({
+        value: broker.brokerCode,
+        label: broker.brokerName || '',
+      })),
+    [requisites?.dealerCenterBrokers],
   )
+
+  const currentLegalPerson = useMemo(
+    () => requisites?.dealerCenterBrokersMap[legalPersonCode],
+    [legalPersonCode, requisites?.dealerCenterBrokersMap],
+  )
+
   const banksOptions = useMemo(
-    () => (requisites?.vendorAccounts?.requisites || []).map(r => ({ value: r.bankName })),
-    [requisites?.vendorAccounts?.requisites],
+    () => (currentLegalPerson?.requisites || []).map(r => ({ value: r.bankName })),
+    [currentLegalPerson?.requisites],
   )
+
   const currentBank = useMemo(
-    () => requisites?.vendorAccounts?.requisitesMap[beneficiaryBank],
-    [beneficiaryBank, requisites?.vendorAccounts?.requisitesMap],
+    () => currentLegalPerson?.requisitesMap[beneficiaryBank],
+    [beneficiaryBank, currentLegalPerson?.requisitesMap],
   )
+
   const accountNumberOptions = useMemo(
     () => (currentBank?.accounts || []).map(a => ({ value: a })),
     [currentBank?.accounts],
@@ -106,24 +117,29 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   }, [carCost, initialPayment, priceOfAdditionalOptionsInCredit])
 
   useEffect(() => {
-    if (requisites?.vendorAccounts?.tax) {
-      setFieldValue(namePrefix + 'taxPercent', requisites?.vendorAccounts.tax)
-      setFieldValue(namePrefix + 'taxValue', requisites?.vendorAccounts.tax * parseFloat(loanAmount))
+    setFieldValue(namePrefix + 'legalPersonName', currentLegalPerson?.brokerName)
+    // Исключен setFieldValue, чтобы избежать случайных перерендеров
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLegalPerson?.brokerName, namePrefix])
+
+  useEffect(() => {
+    if (currentLegalPerson?.tax) {
+      setFieldValue(namePrefix + 'taxPercent', currentLegalPerson?.tax)
+      setFieldValue(namePrefix + 'taxValue', currentLegalPerson?.tax * parseFloat(loanAmount))
     } else {
       setFieldValue(namePrefix + 'taxPercent', null)
       setFieldValue(namePrefix + 'taxValue', null)
     }
-  }, [loanAmount, namePrefix, setFieldValue, requisites?.vendorAccounts?.tax])
+  }, [currentLegalPerson?.tax, loanAmount, namePrefix, setFieldValue])
 
   return (
     <Box className={classes.editingAreaContainer}>
       <SelectInputFormik
-        name={namePrefix + 'legalPerson'}
+        name={namePrefix + 'legalPersonCode'}
         label="Юридическое лицо"
         placeholder="-"
         options={legalPersonOptions}
         gridColumn="span 6"
-        disabled
       />
       <MaskedInputFormik
         name={namePrefix + 'loanAmount'}

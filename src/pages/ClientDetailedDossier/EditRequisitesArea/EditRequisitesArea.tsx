@@ -17,7 +17,7 @@ import { useStyles } from './EditRequisitesArea.styles'
 import { useInitialValues } from './useInitialValues'
 
 export interface DossierRequisites {
-  legalPerson: string
+  legalPersonCode: string
   loanAmount: string
   isCustomFields: boolean
   bankIdentificationCode: string

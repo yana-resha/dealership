@@ -71,7 +71,7 @@ export function DealerServicesRequisites({
 }: Props) {
   const classes = useStyles()
 
-  const { values, setFieldValue, submitCount } = useFormikContext<FullOrderCalculatorFields>()
+  const { values, setFieldValue, submitCount, errors } = useFormikContext<FullOrderCalculatorFields>()
   const { provider, agent, beneficiaryBank, taxPresence, productCost, productType, cascoLimit, isCredit } =
     servicesItem
   const [isCustomFields, setCustomFields] = useState(false)
@@ -95,32 +95,37 @@ export function DealerServicesRequisites({
   })
 
   const optionRequisite = useMemo(
-    () => requisites?.dealerOptionsMap?.[servicesItem.productType ?? ''],
-    [requisites?.dealerOptionsMap, servicesItem.productType],
+    () => requisites?.dealerOptionsMap?.[productType ?? ''],
+    [requisites?.dealerOptionsMap, productType],
   )
 
-  const vendorOptions = useMemo(
+  const providerOptions = useMemo(
     () =>
-      (optionRequisite?.vendorsWithBroker || []).map(v => ({
-        value: v.vendorCode,
-        label: v.vendorName,
+      (optionRequisite?.providerBrokers || []).map(v => ({
+        value: v.providerCode,
+        label: v.providerName,
       })),
-    [optionRequisite?.vendorsWithBroker],
+    [optionRequisite?.providerBrokers],
   )
-  const currentVendor = useMemo(
-    () => optionRequisite?.vendorsWithBrokerMap[provider],
-    [optionRequisite?.vendorsWithBrokerMap, provider],
+
+  const currentProvider = useMemo(
+    () => optionRequisite?.providerBrokersMap[provider],
+    [optionRequisite?.providerBrokersMap, provider],
   )
 
   const brokerOptions = useMemo(
     () =>
-      (currentVendor?.brokers || []).map(v => ({
+      (currentProvider?.brokers || []).map(v => ({
         value: v.brokerCode,
         label: v.brokerName,
       })),
-    [currentVendor?.brokers],
+    [currentProvider?.brokers],
   )
-  const currentBroker = useMemo(() => currentVendor?.brokersMap[agent], [agent, currentVendor?.brokersMap])
+
+  const currentBroker = useMemo(
+    () => currentProvider?.brokersMap[agent],
+    [agent, currentProvider?.brokersMap],
+  )
 
   const banksOptions = useMemo(
     () =>
@@ -129,6 +134,7 @@ export function DealerServicesRequisites({
       })),
     [currentBroker?.requisites],
   )
+
   const currentBank = useMemo(
     () => currentBroker?.requisitesMap[beneficiaryBank],
     [beneficiaryBank, currentBroker?.requisitesMap],
@@ -162,35 +168,42 @@ export function DealerServicesRequisites({
 
   useEffect(() => {
     if (!isCustomFields && isRequisitesFetched) {
-      setFieldValue(namePrefix + 'provider', currentVendor?.vendorCode ? currentVendor?.vendorCode : '')
+      setFieldValue(
+        namePrefix + 'provider',
+        currentProvider?.providerCode ? currentProvider?.providerCode : '',
+      )
     }
-  }, [currentVendor?.vendorCode, isCustomFields, namePrefix, isRequisitesFetched, setFieldValue])
+  }, [currentProvider?.providerCode, isCustomFields, isRequisitesFetched, namePrefix, setFieldValue])
+
+  useEffect(() => {
+    setFieldValue(namePrefix + 'providerName', currentProvider?.providerName)
+    // Исключен setFieldValue, чтобы избежать случайных перерендеров
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentProvider?.providerName, namePrefix])
+
+  useEffect(() => {
+    setFieldValue(namePrefix + 'agentName', currentBroker?.brokerName)
+    // Исключен setFieldValue, чтобы избежать случайных перерендеров
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentBroker?.brokerName, namePrefix])
 
   useEffect(() => {
     if (!isCustomFields && isRequisitesFetched) {
       setFieldValue(
         namePrefix + 'beneficiaryBank',
-        currentBroker?.requisites?.find(r => r.bankName === beneficiaryBank)?.bankName || '',
+        currentBroker?.requisitesMap?.[beneficiaryBank]?.bankName || '',
       )
     }
   }, [
     beneficiaryBank,
-    currentBroker?.requisites,
+    currentBroker?.requisitesMap,
     isCustomFields,
-    namePrefix,
     isRequisitesFetched,
+    namePrefix,
     setFieldValue,
   ])
 
   useEffect(() => {
-    if (currentVendor?.tax) {
-      setFieldValue(namePrefix + 'providerTaxPercent', currentVendor.tax)
-      setFieldValue(namePrefix + 'providerTaxValue', currentVendor.tax * parseInt(productCost || '0', 10))
-    } else {
-      setFieldValue(namePrefix + 'providerTaxPercent', null)
-      setFieldValue(namePrefix + 'providerTaxValue', null)
-    }
-
     if (currentBroker?.tax) {
       setFieldValue(namePrefix + 'agentTaxPercent', currentBroker.tax)
       setFieldValue(namePrefix + 'agentTaxValue', currentBroker.tax * parseInt(productCost || '0', 10))
@@ -198,12 +211,11 @@ export function DealerServicesRequisites({
       setFieldValue(namePrefix + 'agentTaxPercent', null)
       setFieldValue(namePrefix + 'agentTaxValue', null)
     }
-  }, [currentBroker?.tax, currentVendor?.tax, namePrefix, productCost, setFieldValue])
+  }, [currentBroker?.tax, namePrefix, productCost, setFieldValue])
 
+  const isCascoProductType = productType === OptionID.CASCO
   const isShouldShowCascoLimitField =
-    isNecessaryCasco &&
-    parentName === ServicesGroupName.dealerAdditionalServices &&
-    productType === OptionID.CASCO
+    isNecessaryCasco && parentName === ServicesGroupName.dealerAdditionalServices && isCascoProductType
 
   const [, cascoLimitMeta, { setTouched: setCascoLimitTouched }] = useField<string>(`${namePrefix}cascoLimit`)
   useEffect(() => {
@@ -232,14 +244,17 @@ export function DealerServicesRequisites({
     setFieldValue(namePrefix + 'taxPresence', undefined)
     setFieldValue(namePrefix + 'taxation', undefined)
 
-    if (!isShouldShowCascoLimitField) {
+    if (!isCascoProductType) {
       setFieldValue(namePrefix + 'provider', '')
+    }
+
+    if (!isShouldShowCascoLimitField) {
       setFieldValue(namePrefix + 'loanTerm', undefined)
       setFieldValue(namePrefix + 'documentType', null)
       setFieldValue(namePrefix + 'documentNumber', '')
       setFieldValue(namePrefix + 'documentDate', null)
     }
-  }, [isCredit, isShouldShowCascoLimitField, namePrefix, setFieldValue])
+  }, [isCascoProductType, isCredit, isShouldShowCascoLimitField, namePrefix, setFieldValue])
 
   return (
     <Box className={classes.editingAreaContainer}>
@@ -262,17 +277,17 @@ export function DealerServicesRequisites({
         />
       )}
 
-      {(isCredit || isShouldShowCascoLimitField) && (
+      {(isCredit || isCascoProductType) && (
         <SelectInputFormik
           name={`${namePrefix}provider`}
           label="Страховая компания или поставщик"
           placeholder="-"
-          options={vendorOptions}
+          options={providerOptions}
           gridColumn="span 6"
         />
       )}
 
-      {!isCredit && !isShouldShowCascoLimitField && (
+      {!isCredit && !isCascoProductType && (
         <MaskedInputFormik
           name={namePrefix + FormFieldNameMap.productCost}
           label="Стоимость"
@@ -285,7 +300,7 @@ export function DealerServicesRequisites({
       <SwitchInputFormik
         name={`${namePrefix}isCredit`}
         label="В кредит"
-        gridColumn={isCredit || isShouldShowCascoLimitField ? 'span 2' : 'span 3'}
+        gridColumn={isCredit || isCascoProductType ? 'span 2' : 'span 3'}
         centered
         disabled={!isRequisiteEditable}
       />
@@ -293,37 +308,42 @@ export function DealerServicesRequisites({
       {isRequisiteEditable && (
         <Box
           className={classes.btnContainer}
-          gridColumn={isCredit || isShouldShowCascoLimitField ? 'span 1' : 'span 3'}
+          gridColumn={isCredit || isCascoProductType ? 'span 1' : 'span 3'}
         >
           {isLastItem && <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />}
           <CloseSquareBtn onClick={removeItem} />
         </Box>
       )}
 
-      {!isCredit && isShouldShowCascoLimitField && (
+      {!isCredit && isCascoProductType && (
         <>
-          <SelectInputFormik
-            name={`${namePrefix}loanTerm`}
-            label="Срок"
-            placeholder="-"
-            options={terms}
-            gridColumn="1/4"
-          />
+          {isShouldShowCascoLimitField && (
+            <SelectInputFormik
+              name={`${namePrefix}loanTerm`}
+              label="Срок"
+              placeholder="-"
+              options={terms}
+              gridColumn="span 3"
+            />
+          )}
           <MaskedInputFormik
             name={namePrefix + FormFieldNameMap.productCost}
             label="Стоимость"
             placeholder="-"
             mask={maskOnlyDigitsWithSeparator}
-            gridColumn="4/7"
+            gridColumn="span 3"
           />
-          <MaskedInputFormik
-            name={`${namePrefix}cascoLimit`}
-            label="Сумма покрытия КАСКО"
-            placeholder="-"
-            mask={maskOnlyDigitsWithSeparator}
-            gridColumn="7/11"
-            disabled={!isRequisiteEditable}
-          />
+
+          {isShouldShowCascoLimitField && (
+            <MaskedInputFormik
+              name={`${namePrefix}cascoLimit`}
+              label="Сумма покрытия КАСКО"
+              placeholder="-"
+              mask={maskOnlyDigitsWithSeparator}
+              gridColumn="span 4"
+              disabled={!isRequisiteEditable}
+            />
+          )}
         </>
       )}
 

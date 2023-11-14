@@ -140,7 +140,7 @@ export const mockGetVendorOptionsResponse: GetVendorOptionsListResponse = {
       optionName: 'Комплект для обработки автомобиля',
     },
     {
-      optionId: OptionID.ANTINOISE_ANTICORRSION,
+      optionId: OptionID.ANTINOISE_ANTICORROSION,
       optionType: OptionType.EQUIPMENT,
       optionName: 'Обработка антишум, антикоррозия, полировка',
     },

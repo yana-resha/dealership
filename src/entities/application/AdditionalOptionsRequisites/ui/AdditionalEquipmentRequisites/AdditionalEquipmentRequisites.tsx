@@ -53,7 +53,7 @@ export function AdditionalEquipmentRequisites({
 }: Props) {
   const classes = useStyles()
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
-  const { legalPerson, beneficiaryBank, taxPresence, productCost, isCredit } = equipmentItem
+  const { productType, legalPersonCode, beneficiaryBank, taxPresence, productCost, isCredit } = equipmentItem
   const [isCustomFields, setCustomFields] = useState(false)
   const { requisites, isRequisitesFetched } = useRequisitesContext()
 
@@ -74,33 +74,39 @@ export function AdditionalEquipmentRequisites({
   })
 
   const optionRequisite = useMemo(
-    () => requisites?.additionalEquipmentsMap?.[equipmentItem.productType ?? ''],
-    [equipmentItem.productType, requisites?.additionalEquipmentsMap],
+    () => requisites?.additionalEquipmentsMap?.[productType ?? ''],
+    [requisites?.additionalEquipmentsMap, productType],
   )
 
-  const vendorOptions = useMemo(
-    () =>
-      (optionRequisite?.vendorsWithoutBroker || []).map(v => ({
-        value: v.vendorCode,
-        label: v.vendorName,
-      })),
-    [optionRequisite?.vendorsWithoutBroker],
+  const currentProvider = useMemo(
+    () => optionRequisite?.providerBrokersMap && Object.values(optionRequisite?.providerBrokersMap)[0],
+    [optionRequisite?.providerBrokersMap],
   )
-  const currentVendor = useMemo(
-    () => optionRequisite?.vendorsWithoutBrokerMap[legalPerson],
-    [legalPerson, optionRequisite?.vendorsWithoutBrokerMap],
+
+  const brokerOptions = useMemo(
+    () =>
+      (currentProvider?.brokers || []).map(v => ({
+        value: v.brokerCode,
+        label: v.brokerName,
+      })),
+    [currentProvider?.brokers],
+  )
+
+  const currentBroker = useMemo(
+    () => currentProvider?.brokersMap?.[legalPersonCode],
+    [currentProvider?.brokersMap, legalPersonCode],
   )
 
   const banksOptions = useMemo(
     () =>
-      (currentVendor?.requisites || []).map(r => ({
+      (currentBroker?.requisites || []).map(r => ({
         value: r.bankName,
       })),
-    [currentVendor?.requisites],
+    [currentBroker?.requisites],
   )
   const currentBank = useMemo(
-    () => currentVendor?.requisitesMap[beneficiaryBank],
-    [beneficiaryBank, currentVendor?.requisitesMap],
+    () => currentBroker?.requisitesMap[beneficiaryBank],
+    [beneficiaryBank, currentBroker?.requisitesMap],
   )
 
   const accountNumberOptions = useMemo(
@@ -131,20 +137,27 @@ export function AdditionalEquipmentRequisites({
 
   useEffect(() => {
     if (!isCustomFields && isRequisitesFetched) {
-      setFieldValue(namePrefix + 'legalPerson', currentVendor?.vendorCode ? currentVendor?.vendorCode : '')
+      setFieldValue(
+        namePrefix + 'legalPersonCode',
+        currentBroker?.brokerCode ? currentBroker?.brokerCode : '',
+      )
     }
-  }, [currentVendor?.vendorCode, isCustomFields, isRequisitesFetched, namePrefix, setFieldValue])
+  }, [currentBroker?.brokerCode, isCustomFields, isRequisitesFetched, namePrefix, setFieldValue])
+
+  useEffect(() => {
+    setFieldValue(namePrefix + 'legalPersonName', currentBroker?.brokerName)
+  }, [currentBroker?.brokerName, namePrefix, setFieldValue])
 
   useEffect(() => {
     if (!isCustomFields && isRequisitesFetched) {
       setFieldValue(
         namePrefix + 'beneficiaryBank',
-        currentVendor?.requisites?.find(r => r.bankName === beneficiaryBank)?.bankName || '',
+        currentBroker?.requisites?.find(r => r.bankName === beneficiaryBank)?.bankName || '',
       )
     }
   }, [
     beneficiaryBank,
-    currentVendor?.requisites,
+    currentBroker?.requisites,
     isCustomFields,
     isRequisitesFetched,
     namePrefix,
@@ -152,18 +165,18 @@ export function AdditionalEquipmentRequisites({
   ])
 
   useEffect(() => {
-    if (currentVendor?.tax) {
-      setFieldValue(namePrefix + 'taxPercent', currentVendor.tax)
-      setFieldValue(namePrefix + 'taxValue', currentVendor.tax * parseInt(productCost || '0', 10))
+    if (currentBroker?.tax) {
+      setFieldValue(namePrefix + 'taxPercent', currentBroker.tax)
+      setFieldValue(namePrefix + 'taxValue', currentBroker.tax * parseInt(productCost || '0', 10))
     } else {
       setFieldValue(namePrefix + 'taxPercent', null)
       setFieldValue(namePrefix + 'taxValue', null)
     }
-  }, [currentVendor?.tax, namePrefix, productCost, setFieldValue])
+  }, [currentBroker?.tax, namePrefix, productCost, setFieldValue])
 
   useEffect(() => {
     if (!isCredit) {
-      setFieldValue(namePrefix + 'legalPerson', '')
+      setFieldValue(namePrefix + 'legalPersonCode', '')
       setFieldValue(namePrefix + 'documentType', null)
       setFieldValue(namePrefix + 'documentNumber', '')
       setFieldValue(namePrefix + 'documentDate', null)
@@ -221,10 +234,10 @@ export function AdditionalEquipmentRequisites({
       {isCredit && (
         <>
           <SelectInputFormik
-            name={`${namePrefix}legalPerson`}
+            name={`${namePrefix}legalPersonCode`}
             label="Юридическое лицо"
             placeholder="-"
-            options={vendorOptions}
+            options={brokerOptions}
             gridColumn="span 6"
           />
           <Box gridColumn="span 9" />

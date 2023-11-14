@@ -5,7 +5,7 @@ import { OptionType } from '@sberauto/dictionarydc-proto/public'
 import { AdditionalOptions, getMockedClientDossier } from './__tests__/EditRequisitesArea.mock'
 
 export interface DossierRequisites {
-  legalPerson: string
+  legalPersonCode: string
   loanAmount: string
   isCustomFields: boolean
   bankIdentificationCode: string
@@ -39,7 +39,7 @@ export function useInitialValues(applicationId: string) {
   )
 
   return {
-    legalPerson: creditLegalEntity,
+    legalPersonCode: creditLegalEntity,
     loanAmount: creditSum.toString(),
     isCustomFields: false,
     bankIdentificationCode: '',

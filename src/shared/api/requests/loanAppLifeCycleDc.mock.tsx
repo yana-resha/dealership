@@ -18,7 +18,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
     unit: 'unit',
     createdDate: '2023-06-08T07:44:00.355Z',
     applicant: {
-      // type: 'MainDebitor',
       lastName: 'Иванов',
       firstName: 'Иван',
       middleName: 'Иванович',
@@ -28,7 +27,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
       birthDate: '2000-01-01',
       birthPlace: 'Саратов',
       sex: 0,
-      // citizenship?: string,
       email: 'mail@mail.ru',
       marital: 1,
       children: 5,
@@ -338,19 +336,23 @@ export const fullApplicationData: GetFullApplicationResponse = {
       riskCode: '202/e',
       netCode: '200223',
       address: 'Г Счастья ул радости дом 7',
-      vendorBankDetails: {
-        accountRequisite: {
-          accountNumber: '40702810038000017240',
-          accountCorrNumber: '40702810038000017249',
-          inn: '12345678901',
-          kpp: '12345678',
-          ogrn: '1234567890123456789011',
-          bic: '646494331',
-          bank: 'Сбербанк',
+      broker: {
+        vendorCode: '2000000',
+        vendorName: 'Юр лицо Сармата',
+        taxInfo: {
+          amount: 18,
         },
-      },
-      taxInfo: {
-        amount: 18,
+        requisites: {
+          accountRequisite: {
+            accountNumber: '40702810038000017240',
+            accountCorrNumber: '40702810038000017249',
+            inn: '12345678901',
+            kpp: '12345678',
+            ogrn: '1234567890123456789011',
+            bic: '646494331',
+            bank: 'Сбербанк',
+          },
+        },
       },
     },
 

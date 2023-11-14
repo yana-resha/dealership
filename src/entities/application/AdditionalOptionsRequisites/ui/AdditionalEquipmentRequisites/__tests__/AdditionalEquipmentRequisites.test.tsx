@@ -6,7 +6,6 @@ import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
-import { PreparedAdditionalEquipmentForFinancingMap } from 'entities/application/AdditionalOptionsRequisites/hooks/useRequisitesForFinancingQuery'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
@@ -31,9 +30,8 @@ const mockedAdditionalEquipmentFields = {
     {
       optionType: 'additionalEquipment',
       productType: null,
-      legalPerson: '',
-      provider: '',
-      agent: '',
+      legalPersonCode: '',
+      legalPersonName: undefined,
       productCost: '0',
       loanTerm: 0,
       bankIdentificationCode: '',
@@ -99,7 +97,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     })
 
     it('Отображается поле "Юридическое лицо"', () => {
-      expect(screen.getByTestId('additionalEquipments[0].legalPerson')).toBeInTheDocument()
+      expect(screen.getByTestId('additionalEquipments[0].legalPersonCode')).toBeInTheDocument()
     })
 
     it('Отображается поле "Банк получатель"', () => {
@@ -173,7 +171,9 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     })
 
     it('Валидируется поле "Юридическое лицо"', async () => {
-      expect(await screen.findByTestId('additionalEquipments[0].legalPersonErrorMessage')).toBeInTheDocument()
+      expect(
+        await screen.findByTestId('additionalEquipments[0].legalPersonCodeErrorMessage'),
+      ).toBeInTheDocument()
     })
 
     //Тесты отключены, пока выключен ручной ввод

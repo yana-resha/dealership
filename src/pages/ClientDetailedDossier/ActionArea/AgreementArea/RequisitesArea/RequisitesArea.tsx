@@ -92,6 +92,10 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
     additionalEquipmentConfirmation,
     dealerServicesConfirmation,
     bankServicesConfirmation,
+    setFinancingEnabled,
+    additionalEquipment.length,
+    dealerServices.length,
+    bankServices.length,
   ])
 
   return (
@@ -107,10 +111,10 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
           <InfoText label="Юридическое лицо">{application.vendor?.vendorName || ''}</InfoText>
           <InfoText label="Сумма кредита">{formatMoney(application?.loanData?.amount)}</InfoText>
           <InfoText label="Банк получатель">
-            {application.vendor?.vendorBankDetails?.accountRequisite?.bank || ''}
+            {application.vendor?.broker?.requisites?.accountRequisite?.bank || ''}
           </InfoText>
           <InfoText label="Расчетный счет">
-            {application.vendor?.vendorBankDetails?.accountRequisite?.accountNumber || ''}
+            {application.vendor?.broker?.requisites?.accountRequisite?.accountNumber || ''}
           </InfoText>
         </Box>
         <Divider />
