@@ -47,21 +47,6 @@ export function useOrderSettings(nextStep: () => void) {
     [mutateAsync],
   )
 
-  const calculateAmountWithoutOptions = useCallback(
-    (baseRate: number | undefined, term: number | undefined, downpayment: number | undefined) => {
-      const carCost = orderData?.application?.loanCar?.autoPrice
-      if (!!carCost && !!downpayment && !!term && !!baseRate) {
-        const rate = baseRate / 12
-        // Расчет ежемесячного платежа без учета доп. услуг
-        const monthlyPayment = ((carCost - downpayment) * rate) / (1 - Math.pow(1 + rate, -term))
-
-        // Сумма кредита с переплатой без учета доп. услуг
-        return parseFloat((monthlyPayment * term).toFixed(2))
-      }
-    },
-    [orderData?.application?.loanCar?.autoPrice],
-  )
-
   const handleCreditProductClick = useCallback(
     (bankOffer: CalculatedProduct) => {
       const creditProduct = creditProductsList?.find(product => product.productId === bankOffer.productId)
@@ -85,11 +70,7 @@ export function useOrderSettings(nextStep: () => void) {
         downpayment: bankOffer?.downpayment,
         term: bankOffer?.term,
         amount: bankOffer?.totalSum,
-        amountWithoutOptions: calculateAmountWithoutOptions(
-          creditProduct?.baseRate,
-          bankOffer?.term,
-          bankOffer?.downpayment,
-        ),
+        amountWithoutOptions: bankOffer?.amountWithoutOptions,
         cascoInProduct: bankOffer?.cascoFlag,
         incomeProduct: bankOffer?.incomeFlag,
         productRates: {
@@ -108,7 +89,7 @@ export function useOrderSettings(nextStep: () => void) {
 
       nextStep()
     },
-    [calculateAmountWithoutOptions, creditProductsList, dispatch, nextStep, orderData],
+    [creditProductsList, dispatch, nextStep, orderData],
   )
 
   useEffect(() => {

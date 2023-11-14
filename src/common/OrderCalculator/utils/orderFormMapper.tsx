@@ -84,13 +84,6 @@ export const mapValuesForCalculateCreditRequest = (
     productName: productsMap?.[values[FormFieldNameMap.creditProduct]]?.productName,
     downpayment: parseInt(values[FormFieldNameMap.initialPayment], 10),
     term: parseInt(values[FormFieldNameMap.loanTerm].toString(), 10),
-    amountWithOptions:
-      parseInt(values[FormFieldNameMap.carCost] ?? 0, 10) +
-      getAdditionalOptionsPriceInCredit(additionalOptions) -
-      parseInt(values[FormFieldNameMap.initialPayment] ?? 0, 10),
-    amountWithoutOptions:
-      parseInt(values[FormFieldNameMap.carCost] ?? 0, 10) -
-      parseInt(values[FormFieldNameMap.initialPayment] ?? 0, 10),
     additionalOptions: additionalOptions,
     loanCar: loanCar,
   }

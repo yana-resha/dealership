@@ -572,7 +572,6 @@ export function useInitialValues<D extends boolean | undefined>(
         downpayment: parseInt(initialPayment, 10),
         downpaymentInPercent: parseFloat(initialPaymentPercent),
         term: parseInt(loanTerm.toString(), 10),
-        amountWithoutOptions: parseInt(carCost, 10) - parseInt(initialPayment, 10),
         amount: !isNaN(parseInt(loanAmount, 10)) ? parseInt(loanAmount, 10) : 0,
         additionalOptions: remapAdditionalOptionsForFullCalculator(values),
       }

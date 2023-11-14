@@ -20,7 +20,7 @@
     "@sberauto/authdc-proto": "1.0.11",
     "@sberauto/authsberteamid-proto": "1.0.0",
     "@sberauto/loanapplifecycledc-proto": "1.1.7",
-    "@sberauto/dictionarydc-proto": "1.1.6",
+    "@sberauto/dictionarydc-proto": "1.2.0",
     "@sberauto/dadata-proto": "0.0.2",
     "@sberauto/filestoragedc-proto": "0.2.6",
     "camelcase-keys": "8.0.2",
