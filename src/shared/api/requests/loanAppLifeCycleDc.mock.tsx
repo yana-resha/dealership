@@ -142,14 +142,13 @@ export const fullApplicationData: GetFullApplicationResponse = {
         incomeDocumentType: DocumentType.TWO_NDFL,
         basicIncome: 1000.45,
         addIncome: 1000.47,
-        // acceptedIncome?: number,
         familyIncome: 44000.82,
         expenses: 12005.2,
       },
     },
     employees: {
-      tabNumActual: undefined,
-      fullNameCreated: '',
+      fioActual: 'Иванов Иван Иванович',
+      tabNumActual: 'employee№1',
     },
     loanCar: {
       isCarNew: true,
@@ -193,7 +192,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
         rateOldGrnty: 2.55,
         rateNonGrnty: 7.55,
         rateDiscountCpi: 1.35,
-        // rateChangeCasco?: number,
       },
       incomeProduct: true,
       amount: 12121.33,
@@ -334,6 +332,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       vendorType: 'true',
       vendorRegion: '77',
       riskCode: '202/e',
+      unit: undefined,
       netCode: '200223',
       address: 'Г Счастья ул радости дом 7',
       broker: {

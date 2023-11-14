@@ -21,7 +21,7 @@ import { DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { useGetUserQuery } from 'shared/api/requests/authdc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
-import { getFullName, getSplitedName } from 'shared/utils/clientNameTransform'
+import { getFullName, getSplittedName } from 'shared/utils/clientNameTransform'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
@@ -242,12 +242,12 @@ export function useInitialValues() {
         firstName: clientFirstName,
         lastName: clientLastName,
         middleName: clientMiddleName,
-      } = getSplitedName(clientName)
+      } = getSplittedName(clientName)
       const {
         firstName: previousClientFirstName,
         lastName: previousClientLastName,
         middleName: previousClientMiddleName,
-      } = getSplitedName(clientFormerName)
+      } = getSplittedName(clientFormerName)
       const actualLivingAddress = regAddrIsLivingAddr ? registrationAddress : livingAddress
 
       // Форматируем значения для loanCar
@@ -369,8 +369,8 @@ export function useInitialValues() {
         applicant: newApplicant,
         createdDate: newCreatedDate,
         employees: {
+          fioActual: getFullName(user?.firstName, user?.lastName, user?.middleName),
           tabNumActual: user?.employeeId,
-          fullNameCreated: getFullName(user?.firstName, user?.lastName),
         },
         specialMark: application?.specialMark,
         vendor: newVendor,
@@ -378,15 +378,7 @@ export function useInitialValues() {
 
       return updatedApplication
     },
-    [
-      createdDate,
-      dcAppId,
-      fullApplicationData,
-      pointOfSale,
-      user?.employeeId,
-      user?.firstName,
-      user?.lastName,
-    ],
+    [createdDate, dcAppId, fullApplicationData?.application, pointOfSale, user],
   )
 
   const setAnketaType = useCallback(
