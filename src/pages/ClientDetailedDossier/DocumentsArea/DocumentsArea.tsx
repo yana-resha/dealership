@@ -125,6 +125,7 @@ export function DocumentsArea({ status }: Props) {
           onUploadDocument={uploadQuestionnaire}
           onRemoveDocument={removeQuestionnaire}
           isDisabledRemove={isDisabledRemove}
+          isShowLabel={!isShowDownloadLoanAgreement}
         />
 
         {isShowDownloadLoanAgreement && (

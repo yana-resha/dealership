@@ -25,6 +25,7 @@ type UploaderProps = {
   onError?: (documentName: string) => void
   isAllowedUploadToServer?: boolean
   isDisabledRemove?: boolean
+  isShowLabel?: boolean
 }
 
 /** Позволяет загружать и выгружать файлы по заявке */
@@ -38,6 +39,7 @@ const Uploader: React.FC<UploaderProps> = ({
   onError,
   isAllowedUploadToServer = true,
   isDisabledRemove = false,
+  isShowLabel = false,
 }) => {
   const { documentLabel, documentName, documentFile } = uploaderConfig || {}
   const isShowInput = !!onUploadDocument
@@ -92,9 +94,11 @@ const Uploader: React.FC<UploaderProps> = ({
     return (
       <Box>
         <Box className={classes.documentPreview}>
-          <SberTypography sberautoVariant="body3" component="p">
-            {documentLabel}
-          </SberTypography>
+          {isShowLabel && (
+            <SberTypography sberautoVariant="body3" component="p">
+              {documentLabel}
+            </SberTypography>
+          )}
 
           <FileDownloader
             file={documentFile?.file}
@@ -113,9 +117,11 @@ const Uploader: React.FC<UploaderProps> = ({
     <Box className={classes.documentSection}>
       <>
         <DragAndDropWrapper onChange={handleUpload}>
-          <SberTypography sberautoVariant="h6" component="p">
-            {documentLabel}
-          </SberTypography>
+          {isShowLabel && (
+            <SberTypography sberautoVariant="h6" component="p">
+              {documentLabel}
+            </SberTypography>
+          )}
           {!!suggest && (
             <SberTypography sberautoVariant="body3" component="p" className={classes.sectionInfo}>
               {suggest}

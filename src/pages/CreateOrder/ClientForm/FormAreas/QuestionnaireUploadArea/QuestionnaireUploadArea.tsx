@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
@@ -88,6 +88,7 @@ export const QuestionnaireUploadArea = ({
           onRemoveDocument={onDeleteDocument}
           onError={handleErrorUpload}
           isAllowedUploadToServer={isAllowedUploadQuestionnaire}
+          isShowLabel
         />
       </Box>
     </Box>
