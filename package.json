@@ -25,6 +25,7 @@
     "@sberauto/filestoragedc-proto": "0.2.6",
     "camelcase-keys": "8.0.2",
     "classnames": "2.3.2",
+    "copy-to-clipboard": "3.3.1",
     "formik": "2.2.9",
     "js-cookie": "3.0.1",
     "lodash": "4.17.21",
@@ -43,6 +44,7 @@
     "snakecase-keys": "5.4.4",
     "uuid": "9.0.0",
     "yup": "0.32.11"
+
   },
   "devDependencies": {
     "@sberauto/eslint-plugin": "1.0.1-alpha.2",

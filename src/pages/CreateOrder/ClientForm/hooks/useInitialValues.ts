@@ -18,7 +18,6 @@ import { AnketaType } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { DocumentUploadStatus } from 'features/ApplicationFileLoader'
-import { useGetUserQuery } from 'shared/api/requests/authdc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
 import { getFullName, getSplittedName } from 'shared/utils/clientNameTransform'
@@ -35,9 +34,11 @@ import { transformPhoneForRequest } from '../utils/transformPhoneForRequest'
 
 export function useInitialValues() {
   const dispatch = useDispatch()
-  const initialOrder = useAppSelector(state => state.order.order)
+  const { initialOrder, user } = useAppSelector(state => ({
+    initialOrder: state.order.order,
+    user: state.user.user,
+  }))
 
-  const { data: user } = useGetUserQuery()
   const pointOfSale = getPointOfSaleFromCookies()
 
   const initialValues = makeClientForm(initialOrder)
