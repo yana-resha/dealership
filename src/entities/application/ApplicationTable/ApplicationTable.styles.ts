@@ -11,6 +11,22 @@ export default makeStyles(theme => ({
       textTransform: 'uppercase',
     },
   },
+
+  smallHeaderCell: {
+    '&.MuiTableCell-root': {
+      maxWidth: '50px',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+  },
+
+  alignedCell: {
+    '&.MuiTableCell-root': {
+      textAlign: 'center',
+    },
+  },
+
   headerRow: {
     '& > th:first-child': {
       paddingLeft: theme.spacing(2),
