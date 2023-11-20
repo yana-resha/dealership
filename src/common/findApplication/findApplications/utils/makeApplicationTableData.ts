@@ -44,8 +44,6 @@ export const makeApplicationTableData = (data: Application[]): PreparedTableData
       vendorCode: vendorCode ?? '',
       source: sourceMap[(source || '') as keyof typeof sourceMap] || source || '',
       decisionTerm: typeof decisionTerm === 'number' && decisionTerm >= 0 ? decisionTerm : '-',
-      //NOTE: непонятно что отвечает за иконку уточнить
-      isDC: true,
       status: status ?? StatusCode.ERROR,
     }
   })

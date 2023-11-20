@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from 'react'
-
-import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import {
   Skeleton,
   Table,
@@ -12,16 +9,23 @@ import {
   TableRow,
 } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import cx from 'classnames'
 
 import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
+import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
 import { ApplicationStatus } from '../ApplicationStatus/ApplicationStatus'
-import { applicationHeaders } from './ApplicationTable.config'
+import {
+  ALIGNED_CELL,
+  APPLICATION_HEADERS,
+  ApplicationHeaders,
+  alignedCellIdx,
+} from './ApplicationTable.config'
 import useStyles from './ApplicationTable.styles'
 import { PreparedTableData } from './ApplicationTable.types'
-import { getCellsChildrens } from './ApplicationTable.utils'
+import { getCellsChildren } from './ApplicationTable.utils'
 import { TablePaginationActions } from './TablePaginationActions/TablePaginationActions'
 
 type Props = {
@@ -34,7 +38,7 @@ type Props = {
 
 export const ApplicationTable = (props: Props) => {
   const { data, onClickRow, startPage = 1, isLoading, rowsPerPage: rowsPerPageProp } = props
-  const styles = useStyles()
+  const classes = useStyles()
 
   const {
     tableBodyRef,
@@ -64,11 +68,25 @@ export const ApplicationTable = (props: Props) => {
   return (
     <Table size="small" data-testid="applicationTable" style={{ flexGrow: 1 }}>
       <TableHead>
-        <TableRow className={styles.headerRow}>
-          {applicationHeaders.map(header => (
-            <TableCell align="left" key={header} className={styles.headerCell}>
-              {header}
-            </TableCell>
+        <TableRow className={classes.headerRow}>
+          {APPLICATION_HEADERS.map(header => (
+            <CustomTooltip
+              key={header}
+              arrow
+              title={header}
+              disableHoverListener={header !== ApplicationHeaders.PermitTerm}
+            >
+              <TableCell
+                align="left"
+                key={header}
+                className={cx(classes.headerCell, {
+                  [classes.smallHeaderCell]: header === ApplicationHeaders.PermitTerm,
+                  [classes.alignedCell]: ALIGNED_CELL.includes(header),
+                })}
+              >
+                <>{header}</>
+              </TableCell>
+            </CustomTooltip>
           ))}
         </TableRow>
       </TableHead>
@@ -76,7 +94,7 @@ export const ApplicationTable = (props: Props) => {
       {!data.length && (
         <TableHead>
           <TableRow>
-            <TableCell align="center" colSpan={applicationHeaders.length} className={styles.bodyCell}>
+            <TableCell align="center" colSpan={APPLICATION_HEADERS.length} className={classes.bodyCell}>
               <SberTypography sberautoVariant="body5" component="p">
                 Заявки не найдены
               </SberTypography>
@@ -85,31 +103,31 @@ export const ApplicationTable = (props: Props) => {
         </TableHead>
       )}
 
-      <TableBody className={styles.tableBody} ref={tableBodyRef}>
+      <TableBody className={classes.tableBody} ref={tableBodyRef}>
         {currentRowData.map(row => (
           <TableRow
             key={row.applicationNumber}
-            className={styles.bodyRow}
+            className={classes.bodyRow}
             onClick={() => onClickRow(row.applicationNumber, page)}
           >
-            {getCellsChildrens(row).map(cell => (
-              <TableCell key={cell.name} align="left" className={styles.bodyCell}>
+            {getCellsChildren(row).map((cell, i) => (
+              <TableCell
+                key={cell.name}
+                align="left"
+                className={cx(classes.bodyCell, { [classes.alignedCell]: alignedCellIdx.includes(i) })}
+              >
                 {cell.name === 'status' && <ApplicationStatus status={cell.value as StatusCode} />}
-                {cell.name === 'isDC' && cell.value && <MailOutlineIcon htmlColor="#DADADA" />}
                 {cell.name === 'applicationUpdateDate' &&
                   !!cell.value &&
                   convertedDateToString(new Date(cell.value as string), 'dd.LL.yyyy')}
-                {cell.name !== 'status' &&
-                  cell.name !== 'isDC' &&
-                  cell.name !== 'applicationUpdateDate' &&
-                  cell.value}
+                {cell.name !== 'status' && cell.name !== 'applicationUpdateDate' && cell.value}
               </TableCell>
             ))}
           </TableRow>
         ))}
         {emptyRows > 0 && (
           <TableRow style={{ height: rowHeight * emptyRows }}>
-            <TableCell colSpan={applicationHeaders.length} className={styles.bodyCell} />
+            <TableCell colSpan={APPLICATION_HEADERS.length} className={classes.bodyCell} />
           </TableRow>
         )}
       </TableBody>
@@ -118,14 +136,14 @@ export const ApplicationTable = (props: Props) => {
         <TableFooter>
           <TableRow>
             <TablePagination
-              colSpan={applicationHeaders.length}
+              colSpan={APPLICATION_HEADERS.length}
               count={data.length}
               rowsPerPageOptions={[rowsPerPage]}
               rowsPerPage={rowsPerPage}
               page={page}
               classes={{
-                root: styles.pagination,
-                toolbar: styles.toolbar,
+                root: classes.pagination,
+                toolbar: classes.toolbar,
               }}
               labelDisplayedRows={() => <></>}
               labelRowsPerPage=""

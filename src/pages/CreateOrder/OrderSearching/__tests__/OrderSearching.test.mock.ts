@@ -270,7 +270,6 @@ export const applicationTabledataMock: PreparedTableData[] = [
     applicationUpdateDate: '22.02.2023',
     decisionTerm: 10,
     fullName: 'Терентьев Михаил Павлович',
-    isDC: true,
     source: 'Сбол',
     status: StatusCode.INITIAL,
     vendorCode: '2003023272',
