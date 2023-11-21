@@ -30,14 +30,14 @@ export function Requisite({ additionalOption }: Props) {
     <Box className={classes.requisiteContainer}>
       <Box className={classes.requisiteInfo}>
         <InfoText label={label}>{name || ''}</InfoText>
-        {vendor && <InfoText label="Страховая компания">{vendor?.vendorName}</InfoText>}
-        {broker && <InfoText label="Агент получатель">{broker?.vendorName}</InfoText>}
+        {!!vendor && <InfoText label="Страховая компания">{vendor?.vendorName}</InfoText>}
+        {!!broker && <InfoText label="Агент получатель">{broker?.vendorName}</InfoText>}
         {price !== undefined && <InfoText label="Стоимость">{formatMoney(price)}</InfoText>}
-        {term && <InfoText label="Срок">{term} мес.</InfoText>}
-        {docNumber && <InfoText label="Номер полиса">{docNumber}</InfoText>}
-        {beneficiaryBank && <InfoText label="Получатель">{beneficiaryBank}</InfoText>}
-        {correspondentAccount && <InfoText label="Корреспондентский счёт">{correspondentAccount}</InfoText>}
-        {bankAccountNumber && <InfoText label="Расчетный счет">{bankAccountNumber}</InfoText>}
+        {!!term && <InfoText label="Срок">{term} мес.</InfoText>}
+        {!!docNumber && <InfoText label="Номер полиса">{docNumber}</InfoText>}
+        {!!beneficiaryBank && <InfoText label="Получатель">{beneficiaryBank}</InfoText>}
+        {!!correspondentAccount && <InfoText label="Корреспондентский счёт">{correspondentAccount}</InfoText>}
+        {!!bankAccountNumber && <InfoText label="Расчетный счет">{bankAccountNumber}</InfoText>}
         <InfoText label="НДС">{tax || 'Без НДС'}</InfoText>
       </Box>
     </Box>
