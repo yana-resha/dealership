@@ -6,7 +6,7 @@ import { Catalog } from 'pages/Catalog'
 import { ClientDetailedDossier } from 'pages/ClientDetailedDossier'
 import { CreateOrder } from 'pages/CreateOrder'
 import { DealershipPage } from 'pages/Dealership'
-import { DevelopmentCoverPage } from 'pages/DevelopmentCover'
+import { Helpdesk } from 'pages/Helpdesk'
 import { NotFoundPage } from 'pages/NotFound'
 import { appRoutePaths, defaultRoute } from 'shared/navigation/routerPath'
 
@@ -24,7 +24,7 @@ export function MainRouter(): JSX.Element {
         <Route path={appRoutePaths.calculator} element={<Calculator />} />
         <Route path={appRoutePaths.order} element={<ClientDetailedDossier />} />
         <Route path={appRoutePaths.documentStorage} element={<Catalog />} />
-        <Route path={appRoutePaths.helpdesk} element={<DevelopmentCoverPage />} />
+        <Route path={appRoutePaths.helpdesk} element={<Helpdesk />} />
       </Route>
     </Routes>
   )

@@ -16,7 +16,6 @@ import { EXPECTED_DATA, EXPECTED_EMPTY_DATA } from './useInitialValues.mock'
 disableConsole('error')
 
 const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
-const mockedUseGetUserQuery = jest.spyOn(authdcModule, 'useGetUserQuery')
 const mockedGetPointOfSaleFromCookies = jest.spyOn(
   getPointOfSaleFromCookiesModule,
   'getPointOfSaleFromCookies',
@@ -31,19 +30,18 @@ jest.mock('react-redux', () => ({
 describe('useClientFormInitialValues', () => {
   beforeEach(() => {
     mockedUseMemo.mockImplementation(fn => fn())
-    mockedUseGetUserQuery.mockImplementation(() => ({ data: mockedUser } as any))
     mockedGetPointOfSaleFromCookies.mockImplementation(() => ({ unit: 'unit' }))
   })
 
   describe('Преобразование данных работает корректно', () => {
     it('Заменяет начальное значение на данные из запроса', () => {
-      mockedUseAppSelector.mockImplementation(() => ({ orderData: mockApplication }))
+      mockedUseAppSelector.mockImplementation(() => ({ initialOrder: { orderData: mockApplication } }))
       const result = renderHook(() => useInitialValues())
       expect(result.result.current.initialValues).toEqual(EXPECTED_DATA)
     })
 
     it('При отсутствии данных из запроса отдает начальные данные', () => {
-      mockedUseAppSelector.mockImplementation(() => ({ orderData: undefined }))
+      mockedUseAppSelector.mockImplementation(() => ({ initialOrder: { orderData: undefined } }))
       const result = renderHook(() => useInitialValues())
       expect(result.result.current.initialValues).toEqual(EXPECTED_EMPTY_DATA)
     })
@@ -51,13 +49,19 @@ describe('useClientFormInitialValues', () => {
 
   describe('Преобразование данных при сохранении работает корректно', () => {
     it('Преобразовывает данные из формы для запроса', () => {
-      mockedUseAppSelector.mockImplementation(() => ({ orderData: mockApplication }))
+      mockedUseAppSelector.mockImplementation(() => ({
+        initialOrder: { orderData: mockApplication },
+        user: mockedUser,
+      }))
       const result = renderHook(() => useInitialValues())
       expect(result.result.current.remapApplicationValues(EXPECTED_DATA)).toEqual(mockApplication.application)
     })
 
     it('Если тип занятости Безработный, то объект адреса работы не отправляется', () => {
-      mockedUseAppSelector.mockImplementation(() => ({ orderData: mockApplication }))
+      mockedUseAppSelector.mockImplementation(() => ({
+        initialOrder: { orderData: mockApplication },
+        user: mockedUser,
+      }))
       const result = renderHook(() => useInitialValues())
       expect(
         result.result.current.remapApplicationValues({
