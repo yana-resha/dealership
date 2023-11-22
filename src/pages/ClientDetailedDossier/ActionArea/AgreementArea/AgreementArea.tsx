@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box, Button, Divider } from '@mui/material'
-import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { DocumentType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -79,10 +79,20 @@ export function AgreementArea({
   const agreementAreaRef = useRef<HTMLDivElement | undefined>()
 
   const { vendorCode } = getPointOfSaleFromCookies()
+  const { refetch: refetchGetFullApplication } = useGetFullApplicationQuery(
+    { applicationId },
+    { enabled: false },
+  )
   const { mutateAsync: sendToFinancing, isLoading: isSendLoading } = useSendToFinancingMutation()
   const { mutate: updateApplicationStatus, isLoading: isStatusLoading } = useUpdateApplicationStatusMutation(
     application?.dcAppId ?? '',
-    updateApplicationStatusLocally,
+    (statusCode: StatusCode) => {
+      updateApplicationStatusLocally(statusCode)
+      // требуется обновлять заявку, т.к. меняется количество сканов в ней при шаге назад.
+      if (statusCode === StatusCode.FINALLY_APPROVED) {
+        refetchGetFullApplication()
+      }
+    },
   )
   const { mutateAsync: formContractMutate } = useFormContractMutation({
     dcAppId: application?.dcAppId ?? '',
@@ -309,26 +319,27 @@ export function AgreementArea({
                         label="Подписан"
                         id={'document_' + index}
                         value={docsStatus[index] === 'signed'}
-                        disabled={index === 0 && !rightsAssigned}
+                        disabled={document.documentType === DocumentType.CREDIT_CONTRACT && !rightsAssigned}
                         afterChange={event => updateDocumentStatus(event.target.checked, index)}
                       />
                     )}
                   </Box>
-                  {index === 0 && docsStatus[index] !== DocsStatus.Received && (
-                    <Box className={classes.radioGroup}>
-                      <SberTypography sberautoVariant="body2" component="p">
-                        Согласие на уступку прав
-                      </SberTypography>
-                      <RadioGroupInput
-                        radioValues={[
-                          { radioValue: true, radioLabel: 'Согласен' },
-                          { radioValue: false, radioLabel: 'Не согласен' },
-                        ]}
-                        defaultValue={false}
-                        onChange={changeRightsAssigned}
-                      />
-                    </Box>
-                  )}
+                  {document.documentType === DocumentType.CREDIT_CONTRACT &&
+                    docsStatus[index] !== DocsStatus.Received && (
+                      <Box className={classes.radioGroup}>
+                        <SberTypography sberautoVariant="body2" component="p">
+                          Согласие на уступку прав
+                        </SberTypography>
+                        <RadioGroupInput
+                          radioValues={[
+                            { radioValue: true, radioLabel: 'Согласен' },
+                            { radioValue: false, radioLabel: 'Не согласен' },
+                          ]}
+                          defaultValue={false}
+                          onChange={changeRightsAssigned}
+                        />
+                      </Box>
+                    )}
                   {docsStatus[index] !== DocsStatus.Received && <Divider />}
                 </Box>
               ))}

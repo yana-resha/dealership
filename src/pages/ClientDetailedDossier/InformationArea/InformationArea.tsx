@@ -1,16 +1,22 @@
 import { useCallback, useMemo } from 'react'
 
 import Box from '@mui/material/Box'
-import { AdditionalOptionsFrontdc, OptionType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import {
+  AdditionalOptionsFrontdc,
+  DocumentType,
+  OptionType,
+  Scan,
+  StatusCode,
+} from '@sberauto/loanapplifecycledc-proto/public'
 import { useParams } from 'react-router-dom'
 
 import { ReactComponent as DownloadIcon } from 'assets/icons/download.svg'
-import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import {
+  useDownloadDocumentMutation,
   useGetPreliminaryPaymentScheduleFormMutation,
   useGetShareFormMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
-import { formatMoney, formatNumber, formatTerm } from 'shared/lib/utils'
+import { formatMoney, formatTerm } from 'shared/lib/utils'
 import { Downloader } from 'shared/ui/Downloader'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
@@ -19,6 +25,7 @@ import { getStatus, PreparedStatus } from '../../../entities/application/applica
 import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
 import { AdditionalOptionInfo, AdditionalOptionList } from './AdditionalOptionInfo/AdditionalOptionList'
 import { ApplicationWarning } from './ApplicationWarning/ApplicationWarning'
+import { FeeScheduleBtn } from './FeeScheduleBtn/FeeScheduleBtn'
 import { useStyles } from './InformationArea.styles'
 
 type Props = {
@@ -37,6 +44,7 @@ type Props = {
   additionalOptions: AdditionalOptionsFrontdc[]
   overpayment: number | undefined
   incomeProduct: boolean
+  scans: Scan[]
 }
 
 export function InformationArea({
@@ -55,11 +63,13 @@ export function InformationArea({
   additionalOptions,
   overpayment,
   incomeProduct,
+  scans,
 }: Props) {
   const classes = useStyles()
   const { applicationId = '' } = useParams()
 
   const { mutateAsync: getShareFormMutate } = useGetShareFormMutation({ dcAppId: applicationId })
+  const { mutateAsync: downloadDocument } = useDownloadDocumentMutation()
   const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
     useGetPreliminaryPaymentScheduleFormMutation()
 
@@ -117,12 +127,29 @@ export function InformationArea({
   )
 
   const status = getStatus(statusCode)
-  const showGraphicButton = [
-    PreparedStatus.initial,
-    PreparedStatus.processed,
-    PreparedStatus.approved,
-    PreparedStatus.finallyApproved,
-  ].includes(status)
+  const isHasFeeScheduleInScans = scans.some(scan => scan.type === DocumentType.FEE_SCHEDULE)
+
+  const isShowScheduleBtn =
+    [
+      PreparedStatus.initial,
+      PreparedStatus.processed,
+      PreparedStatus.finallyApproved,
+      PreparedStatus.formation,
+      PreparedStatus.signed,
+      PreparedStatus.authorized,
+      PreparedStatus.financed,
+    ].includes(status) ||
+    // иначе это заявка из уко на пост залог, по ней нет возможности сформировать график
+    // https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1050969954
+    (status === PreparedStatus.approved && !!scans.length)
+
+  const isDisableScheduleBtn =
+    [
+      PreparedStatus.formation,
+      PreparedStatus.signed,
+      PreparedStatus.authorized,
+      PreparedStatus.financed,
+    ].includes(status) && !isHasFeeScheduleInScans
 
   const handleShareClick = useCallback(async () => {
     const blob = await getShareFormMutate()
@@ -131,7 +158,14 @@ export function InformationArea({
     }
   }, [getShareFormMutate])
 
-  const handlePaymentScheduleClick = useCallback(async () => {
+  const handleFeeScheduleClick = useCallback(async () => {
+    const blob = await downloadDocument({ dcAppId: applicationId, documentType: DocumentType.FEE_SCHEDULE })
+    if (blob) {
+      return new File([blob], 'График платежей', { type: 'application/pdf' })
+    }
+  }, [applicationId, downloadDocument])
+
+  const handlePreliminaryFeeScheduleClick = useCallback(async () => {
     const blob = await getPreliminaryPaymentScheduleFormMutate({
       productName: productName,
       incomeFlag: incomeProduct,
@@ -144,7 +178,6 @@ export function InformationArea({
       servicesInCreditPrice,
       equipmentInCreditPrice,
     })
-
     if (blob) {
       return new File([blob], 'График платежей', { type: 'application/pdf' })
     }
@@ -174,7 +207,7 @@ export function InformationArea({
             <Downloader onDownloadFile={handleShareClick}>
               <Box className={classes.textButtonContainer}>
                 <DownloadIcon />
-                <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
+                <SberTypography sberautoVariant="body3" component="p">
                   Скачать
                 </SberTypography>
               </Box>
@@ -207,15 +240,11 @@ export function InformationArea({
           <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
           <InfoText label="Срок кредита">{term ? formatTerm(term) : ''}</InfoText>
 
-          {showGraphicButton && (
-            <Downloader onDownloadFile={handlePaymentScheduleClick} gridColumn="span 2">
-              <Box className={classes.textButtonContainer}>
-                <ScheduleIcon />
-                <SberTypography sberautoVariant="body3" component="p" className={classes.textButton}>
-                  График платежей
-                </SberTypography>
-              </Box>
-            </Downloader>
+          {isShowScheduleBtn && isHasFeeScheduleInScans && (
+            <FeeScheduleBtn onClick={handleFeeScheduleClick} disabled={isDisableScheduleBtn} />
+          )}
+          {isShowScheduleBtn && !isHasFeeScheduleInScans && (
+            <FeeScheduleBtn onClick={handlePreliminaryFeeScheduleClick} disabled={isDisableScheduleBtn} />
           )}
         </Box>
       </DossierAreaContainer>

@@ -18,20 +18,10 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     gap: theme.spacing(2),
     alignSelf: 'center',
-    cursor: 'pointer',
-    color: theme.palette.primary.main,
     userSelect: 'none',
   },
 
   warningTextContainer: {
     color: theme.palette.error.main,
-  },
-
-  textButton: {
-    '&:hover': {
-      '&.MuiTypography-root': {
-        textDecoration: 'underline',
-      },
-    },
   },
 }))
