@@ -28,6 +28,9 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
     () =>
       (application.loanData?.additionalOptions || []).reduce(
         (acc, cur) => {
+          if (!cur.inCreditFlag) {
+            return acc
+          }
           switch (cur.bankOptionType) {
             case OptionType.BANK:
               acc.bankServices.push(cur)
@@ -146,9 +149,11 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SwitchInput label="Проверено" id={`${OptionType.DEALER}`} afterChange={handleChange} />
           </Box>
           {dealerServices.map(option => (
-            <Requisite key={option.name} additionalOption={option} />
+            <Box key={option.name} className={classes.requisiteElement}>
+              <Requisite key={option.name} additionalOption={option} />
+              <Divider />
+            </Box>
           ))}
-          <Divider />
         </Box>
       )}
 
@@ -161,9 +166,11 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SwitchInput label="Проверено" id={`${OptionType.BANK}`} afterChange={handleChange} />
           </Box>
           {bankServices.map(option => (
-            <Requisite key={option.name} additionalOption={option} />
+            <Box key={option.name} className={classes.requisiteElement}>
+              <Requisite key={option.name} additionalOption={option} />
+              <Divider />
+            </Box>
           ))}
-          <Divider />
         </Box>
       )}
       <Button variant="text" className={classes.textButton} onClick={goToEditRequisitesMode} disabled>
