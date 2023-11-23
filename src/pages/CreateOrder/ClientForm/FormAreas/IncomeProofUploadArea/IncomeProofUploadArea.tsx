@@ -139,6 +139,7 @@ export const IncomeProofUploadArea = () => {
           key={uploaderConfig.documentLabel}
           uploaderConfig={uploaderConfig}
           onRemoveDocument={handleDeleteDocument}
+          isShowLabel
         />
       ))}
       {isError && <FormHelperText error>{meta.error}</FormHelperText>}
@@ -155,6 +156,7 @@ export const IncomeProofUploadArea = () => {
               onUploadDocument={handleUploadDocument}
               onRemoveDocument={handleDeleteDocument}
               onError={handleUploadError}
+              isShowLabel
             />
           </React.Fragment>
         ))}
