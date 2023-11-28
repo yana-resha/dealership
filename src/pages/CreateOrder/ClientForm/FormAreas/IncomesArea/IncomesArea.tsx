@@ -34,12 +34,6 @@ export function IncomesArea() {
   )
 
   useEffect(() => {
-    setFieldValue('incomeConfirmation', incomeProduct)
-    // Исключены лишние зависимости, чтобы не было случайного перерендера
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [incomeProduct])
-
-  useEffect(() => {
     if (!incomeConfirmation) {
       setFieldValue('ndfl2File', null)
       setFieldValue('ndfl3File', null)
