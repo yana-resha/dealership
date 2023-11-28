@@ -1,18 +1,18 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { ThemeProviderMock } from 'tests/mocks'
+import { MockProviders } from 'tests/mocks'
 
 import { useGetItems } from '../useGetItems'
 
 describe('useGetItems', () => {
   it('возвращает пустой массив для неавторизованных пользователей', () => {
-    const { result } = renderHook(() => useGetItems({ authType: 'no_auth' }), { wrapper: ThemeProviderMock })
+    const { result } = renderHook(() => useGetItems({ authType: 'no_auth' }), { wrapper: MockProviders })
 
     expect(result.current).toEqual([])
   })
 
   it('возвращает массив элементов меню для авторизованных пользователей', () => {
-    const { result } = renderHook(() => useGetItems({ authType: 'auth' }), { wrapper: ThemeProviderMock })
+    const { result } = renderHook(() => useGetItems({ authType: 'auth' }), { wrapper: MockProviders })
     const expectedMenuItems = [
       {
         label: 'Создать заявку',

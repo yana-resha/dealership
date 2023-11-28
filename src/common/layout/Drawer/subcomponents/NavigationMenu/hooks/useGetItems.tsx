@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
 
-import AnnouncementIcon from '@mui/icons-material/Announcement'
 import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined'
 import cx from 'classnames'
+import { useDispatch } from 'react-redux'
 
 import { ReactComponent as HelpdeskIcon } from 'assets/icons/helpdesk.svg'
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
 import { ReactComponent as OrderListIcon } from 'assets/icons/orderList.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { AuthType } from 'common/auth'
+import { clearOrder } from 'entities/reduxStore/orderSlice'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import useStyles from './menuIcon.styles'
@@ -20,6 +21,7 @@ type UseGetItemsProps = {
 
 export const useGetItems = ({ authType }: UseGetItemsProps): MenuItem[] => {
   const styles = useStyles()
+  const dispatch = useDispatch()
 
   const menuItems = useMemo(() => {
     switch (authType) {
@@ -31,6 +33,7 @@ export const useGetItems = ({ authType }: UseGetItemsProps): MenuItem[] => {
               <OrderCreateIcon className={cx(styles.icon, { [styles.selectedIcon]: isSelected })} />
             ),
             path: appRoutePaths.createOrder,
+            onCallback: () => dispatch(clearOrder()),
           },
           {
             label: 'Текущие заявки',
@@ -71,7 +74,7 @@ export const useGetItems = ({ authType }: UseGetItemsProps): MenuItem[] => {
         return []
       }
     }
-  }, [authType, styles.icon, styles.selectedIcon])
+  }, [authType, dispatch, styles.icon, styles.selectedIcon])
 
   return menuItems
 }

@@ -7,6 +7,7 @@ export const appRoutes = {
   calculator: () => '/calculator',
   order: (applicationId = '') => `/order_list/${applicationId}`,
   documentStorage: () => '/document_storage',
+  documentStorageFolder: (folderId = '') => `/document_storage/${folderId}`,
   helpdesk: () => '/helpdesk',
 }
 
@@ -19,6 +20,7 @@ export const appRoutePaths = {
   calculator: appRoutes.calculator(),
   order: appRoutes.order(':applicationId'),
   documentStorage: appRoutes.documentStorage(),
+  documentStorageFolder: appRoutes.documentStorageFolder(':folderId'),
   helpdesk: appRoutes.helpdesk(),
 }
 export const defaultRoute = appRoutePaths.orderList

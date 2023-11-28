@@ -71,9 +71,22 @@ const orderSlice = createSlice({
 
       state.order = merge(currentOrder, orderWithAppId)
     },
+    setCurrentStep: (state, action: PayloadAction<number>) => {
+      state.order = {
+        ...(state.order || {}),
+        currentStep: action.payload,
+      }
+    },
   },
 })
 
-export const { updateOrder, setOrder, clearOrder, setAppId, updateApplication, updateFillingProgress } =
-  orderSlice.actions
+export const {
+  updateOrder,
+  setOrder,
+  clearOrder,
+  setAppId,
+  updateApplication,
+  updateFillingProgress,
+  setCurrentStep,
+} = orderSlice.actions
 export default orderSlice

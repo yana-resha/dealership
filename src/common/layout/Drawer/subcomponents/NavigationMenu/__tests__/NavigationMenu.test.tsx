@@ -33,6 +33,21 @@ describe('NavigationMenu', () => {
         icon: ({ isSelected }) => <div>Текущие заявки{isSelected}</div>,
         path: '/order_list',
       },
+      {
+        label: 'Калькулятор',
+        icon: ({ isSelected }) => <div>Калькулятор{isSelected}</div>,
+        path: '/calculator',
+      },
+      {
+        label: 'Документы',
+        icon: ({ isSelected }) => <div>Документы{isSelected}</div>,
+        path: '/document_storage',
+      },
+      {
+        label: 'Поддержка',
+        icon: ({ isSelected }) => <div>Поддержка{isSelected}</div>,
+        path: '/helpdesk',
+      },
     ]
 
     mockLogoutItem = {

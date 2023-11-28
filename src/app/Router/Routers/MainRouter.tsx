@@ -24,6 +24,7 @@ export function MainRouter(): JSX.Element {
         <Route path={appRoutePaths.calculator} element={<Calculator />} />
         <Route path={appRoutePaths.order} element={<ClientDetailedDossier />} />
         <Route path={appRoutePaths.documentStorage} element={<Catalog />} />
+        <Route path={appRoutePaths.documentStorageFolder} element={<Catalog />} />
         <Route path={appRoutePaths.helpdesk} element={<Helpdesk />} />
       </Route>
     </Routes>
