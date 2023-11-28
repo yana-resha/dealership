@@ -309,10 +309,12 @@ export function useInitialValues<D extends boolean | undefined>(
               : undefined,
             inCreditFlag: isCredit,
             price: parseInt(productCost, 10),
-            vendor: {
-              vendorCode,
-              vendorName,
-            },
+            vendor: isCredit
+              ? {
+                  vendorCode,
+                  vendorName,
+                }
+              : undefined,
             broker: {
               vendorCode: legalPersonCode,
               vendorName: legalPersonName,
@@ -428,7 +430,7 @@ export function useInitialValues<D extends boolean | undefined>(
 
       return [...additionalEquipmentForApplication, ...additionalDealerServicesForApplication]
     },
-    [vendorOptions?.additionalOptionsMap],
+    [vendorCode, vendorName, vendorOptions?.additionalOptionsMap],
   )
 
   const getCarCountryData = useCallback(
