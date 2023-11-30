@@ -5,15 +5,35 @@ export default makeStyles(theme => ({
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
-    width: 560,
-    height: 'auto',
+    width: '100%',
+    height: '100%',
     boxSizing: 'border-box',
     padding: theme.spacing(3),
-    gap: theme.spacing(3),
-    borderRadius: 4 * theme.shape.borderRadius,
-    boxShadow: `0 4px 16px ${theme.palette.grey[300]}`,
-    backgroundColor: theme.palette.background.default,
+    gap: theme.spacing(5),
+  },
+  closedPointOfSaleFormContainer: {
+    left: '-100%',
+    opacity: 0,
+  },
+
+  closingAnimation: {
+    animationName: '$closing',
+    animationDuration: '1.5s',
+  },
+
+  '@keyframes closing': {
+    from: {
+      position: 'relative',
+      left: 0,
+      opacity: 1,
+    },
+    to: {
+      position: 'relative',
+      left: '-100%',
+      opacity: 0,
+    },
   },
 
   backArrow: {
@@ -24,14 +44,6 @@ export default makeStyles(theme => ({
       width: theme.spacing(3),
       height: theme.spacing(3),
       zIndex: 2000,
-    },
-  },
-
-  avatarContainer: {
-    '&.MuiAvatar-root': {
-      width: '100px',
-      height: '100px',
-      backgroundColor: theme.palette.grey[100],
     },
   },
 
@@ -52,80 +64,16 @@ export default makeStyles(theme => ({
 
   greetingContainer: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    minHeight: 191,
+    justifyContent: 'center',
     width: '100%',
-    flexBasis: '50%',
-    zIndex: 1000,
   },
 
-  imgContainer: {
-    flexShrink: 0,
-    position: 'relative',
-    overflow: 'hidden',
-    width: '50%',
-    height: 191,
-  },
-
-  carImg: ({ animationDuration }: { animationDuration: number }) => ({
-    position: 'absolute',
-    // Нельзя положить в animationCarImg, т.к. стиль animationName не работает с функцией
-    animationDuration: `${animationDuration}ms`,
-  }),
-
-  animationCarImg: {
-    animationName: '$car',
-  },
-
-  '@keyframes car': {
-    from: {
-      left: '-100%',
-      top: '-100%',
-      opacity: 0,
-    },
-    to: {
-      left: 0,
-      top: 0,
-      opacity: 1,
-    },
-  },
-
-  greetingTextContainer: {
-    position: 'relative',
-
-    display: 'flex',
-    alignItems: 'center',
-    overflow: 'hidden',
-    width: '50%',
-    height: '100%',
-  },
-
-  formMessage: ({ animationDuration }: { animationDuration: number }) => ({
+  formMessage: {
     '&.MuiTypography-root': {
       fontWeight: 600,
       fontSize: 22,
       lineHeight: theme.spacing(3),
-    },
-
-    position: 'absolute',
-    width: '100%',
-    // Нельзя положить в animationFormMessage, т.к. стиль animationName не работает с функцией
-    animationDuration: `${animationDuration}ms`,
-  }),
-
-  animationFormMessage: {
-    animationName: '$greetingText',
-  },
-
-  '@keyframes greetingText': {
-    from: {
-      marginTop: '100%',
-      opacity: 0,
-    },
-    to: {
-      marginTop: '0',
-      opacity: 1,
+      textAlign: 'center',
     },
   },
 }))

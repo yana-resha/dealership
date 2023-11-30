@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
 
-import { Avatar, Box, Button, Collapse, Typography } from '@mui/material'
+import { Box, Button, Collapse, Typography } from '@mui/material'
 import { useSnackbar } from 'notistack'
 
-import { ReactComponent as AvatarLogo } from 'assets/icons/avatar.svg'
 import { ReactComponent as MonochromeSberIcon } from 'assets/icons/monochromeSberIcon.svg'
 import { appConfig } from 'config'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
@@ -19,7 +18,6 @@ export function LoginForm() {
   const code = urlParams.get('authCode')
 
   const { enqueueSnackbar } = useSnackbar()
-
   const showError = useCallback(
     (text: string) => enqueueSnackbar(text, { variant: 'error' }),
     [enqueueSnackbar],
@@ -36,11 +34,7 @@ export function LoginForm() {
 
   return (
     <Box className={classes.pointOfSaleFormContainer} data-testid="loginForm">
-      <Avatar className={classes.avatarContainer}>
-        <AvatarLogo />
-      </Avatar>
-
-      <Typography className={classes.formMessage}>Добро пожаловать в Сбербанк!</Typography>
+      <Typography className={classes.formMessage}>Добро пожаловать!</Typography>
 
       <Button
         variant="contained"

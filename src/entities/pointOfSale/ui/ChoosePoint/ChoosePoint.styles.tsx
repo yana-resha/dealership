@@ -1,19 +1,20 @@
 import { makeStyles } from '@mui/styles'
 
 export default makeStyles(theme => ({
-  loginButton: {
-    width: '100%',
-    height: '48px',
-    '&.MuiButton-root': {
-      marginTop: theme.spacing(3),
-      borderRadius: 12 * theme.shape.borderRadius,
-    },
-  },
-
   autocompleteContainer: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
+  },
+
+  loginButton: {
+    alignSelf: 'center',
+    '&.MuiButton-root': {
+      width: '240px',
+      height: '48px',
+      marginTop: theme.spacing(3),
+      borderRadius: 12 * theme.shape.borderRadius,
+    },
   },
 
   errorMessage: {
@@ -23,6 +24,7 @@ export default makeStyles(theme => ({
 
   pointsOfSaleAutocomplete: {
     padding: 0,
+    backgroundColor: theme.palette.background.default,
     '& .MuiAutocomplete-popupIndicator': {
       width: '28px',
       height: '28px',

@@ -1,7 +1,7 @@
 import { GetStateAndNonceResponse } from '@sberauto/authsberteamid-proto/public'
 
 import { appConfig } from 'config'
-import { toSnakecaseKeysData } from 'shared/lib/utils'
+import { toSnakeCaseKeysData } from 'shared/lib/utils'
 
 // Нарочно сделано двойное условие, просто чтобы перечислить все environment от sberTeam.
 // environment 'dev' не важен, т.к. на dev не происходит обращение к sberTeam.
@@ -24,7 +24,7 @@ function encodeGetParams(params: Record<string, string | undefined>) {
 
 /* Формируем ссылку на страницу авторизации TeamID */
 export const getAuthorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: GetStateAndNonceResponse) => {
-  const params = toSnakecaseKeysData({
+  const params = toSnakeCaseKeysData({
     clientId,
     redirectUri,
     responseType: 'code',
@@ -48,7 +48,7 @@ export const getAuthorizeUrl = ({ state, nonce, redirectUri, scope, clientId }: 
 }
 
 export const getLogoutUrl = ({ clientId, redirectUri }: GetStateAndNonceResponse) => {
-  const params = toSnakecaseKeysData({
+  const params = toSnakeCaseKeysData({
     clientId,
     postLogoutRedirectUri: redirectUri,
   })

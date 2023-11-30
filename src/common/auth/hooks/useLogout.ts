@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import Cookies from 'js-cookie'
-import { useSnackbar, VariantType } from 'notistack'
+import { useSnackbar } from 'notistack'
 import { useQueryClient } from 'react-query'
 
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
@@ -10,25 +10,25 @@ import { removeUserInfo } from 'entities/user/model/userSlice'
 import { checkIsAuth, removeAuthCookie } from 'shared/api/helpers/authCookie'
 import { deleteSession } from 'shared/api/requests/authdc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
+import { sleep } from 'shared/lib/sleep'
 
 import { useAuthContext } from '../ui/AuthProvider'
 
-export const useLogout = () => {
+export const useLogout = (beforeRedirectCb?: () => Promise<void>) => {
   const dispatch = useAppDispatch()
   const queryClient = useQueryClient()
   const { logoutUrl } = useAuthContext()
 
   const { enqueueSnackbar } = useSnackbar()
 
-  const redirectToLogoutUrl = useCallback(() => {
-    const url = logoutUrl
-    if (url) {
-      window.location.assign(url)
+  const redirectToLogoutUrl = useCallback(async () => {
+    if (logoutUrl) {
+      window.location.assign(logoutUrl)
     }
   }, [logoutUrl])
 
   const logout = useCallback(
-    (errorMessage?: string) => {
+    async (errorMessage?: string) => {
       const isAuth = checkIsAuth()
 
       // Так как AUTH_COOKIE мы удаляем только тут, то если его нет, то можно с уверенностью утверждать,
@@ -36,7 +36,6 @@ export const useLogout = () => {
       if (!isAuth) {
         return
       }
-
       // Чистим данные стора
       dispatch(removeUserInfo())
       dispatch(clearOrder())
@@ -44,23 +43,27 @@ export const useLogout = () => {
       // Чистим кеш
       queryClient.invalidateQueries()
 
+      if (isAuth && errorMessage) {
+        enqueueSnackbar(errorMessage, { variant: 'error' })
+        if (logoutUrl) {
+          // Нужна задержка, чтобы пользователь успел прочитать сообщение перед редиректом на другой домен
+          await sleep(1000)
+        }
+      }
+      if (beforeRedirectCb) {
+        await beforeRedirectCb()
+      }
+
       // Чистим куки
       Cookies.remove(COOKIE_POINT_OF_SALE)
       removeAuthCookie()
+      // т.к. в прилоджении производится проверка isAuth, то на этом этапе
+      // будет произведен редирект на страницу авторизации
 
       deleteSession()
       redirectToLogoutUrl()
-
-      if (isAuth) {
-        if (errorMessage) {
-          enqueueSnackbar(errorMessage, { variant: 'error' })
-          setTimeout(redirectToLogoutUrl, 1000)
-        }
-      } else {
-        redirectToLogoutUrl()
-      }
     },
-    [dispatch, enqueueSnackbar, queryClient, redirectToLogoutUrl],
+    [beforeRedirectCb, dispatch, enqueueSnackbar, logoutUrl, queryClient, redirectToLogoutUrl],
   )
 
   return { logout }

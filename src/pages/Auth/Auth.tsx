@@ -1,15 +1,10 @@
-import { Paper } from '@mui/material'
-
 import { LoginForm } from 'common/auth'
-
-import { useStyles } from './Auth.styles'
+import { AuthWrapper } from 'entities/AuthWrapper'
 
 export function Auth() {
-  const classes = useStyles()
-
   return (
-    <Paper className={classes.page} data-testid="authPage">
+    <AuthWrapper dataTestId="authPage">
       <LoginForm />
-    </Paper>
+    </AuthWrapper>
   )
 }

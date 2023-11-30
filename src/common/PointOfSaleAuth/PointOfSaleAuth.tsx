@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
 import cx from 'classnames'
 
-import { ReactComponent as Car } from 'assets/icons/car.svg'
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
 import { useLogout } from 'common/auth'
 import { ChoosePoint } from 'entities/pointOfSale'
 import { useGetUserQuery } from 'shared/api/requests/authdc'
+import { sleep } from 'shared/lib/sleep'
 import SberTypography from 'shared/ui/SberTypography'
 
 import useStyles from './PointOfSaleAuth.styles'
@@ -18,38 +17,32 @@ const ANIMATION_DURATION = 1500
 
 export function PointOfSaleAuth() {
   const classes = useStyles({ animationDuration: ANIMATION_DURATION })
-  const [isAllowedAnimation, setAllowedAnimation] = useState(true)
+  const [isEnabledClosingAnimation, setEnabledClosingAnimation] = useState(false)
 
-  const { logout } = useLogout()
+  const { logout } = useLogout(async () => {
+    setEnabledClosingAnimation(true)
+    // время для выполнения анимации выхода
+    await sleep(ANIMATION_DURATION - 500)
+  })
 
   const { data } = useGetUserQuery()
 
-  useEffect(() => {
-    if (data && isAllowedAnimation) {
-      setTimeout(() => setAllowedAnimation(false), ANIMATION_DURATION)
-    }
-  }, [data, isAllowedAnimation])
-
   return (
-    <Box className={classes.pointOfSaleFormContainer}>
+    <Box
+      className={cx(classes.pointOfSaleFormContainer, {
+        [classes.closingAnimation]: isEnabledClosingAnimation,
+        [classes.closedPointOfSaleFormContainer]: isEnabledClosingAnimation,
+      })}
+    >
       <IconButton className={classes.backArrow} onClick={() => logout()} data-testid="backButton">
         <KeyboardArrowLeft />
       </IconButton>
 
       <Box className={classes.greetingContainer}>
         {data && (
-          <>
-            <Box className={classes.imgContainer}>
-              <Car className={cx(classes.carImg, { [classes.animationCarImg]: isAllowedAnimation })} />
-            </Box>
-            <Box className={classes.greetingTextContainer}>
-              <Typography
-                className={cx(classes.formMessage, { [classes.animationFormMessage]: isAllowedAnimation })}
-              >
-                {`👋 Привет, ${data?.lastName} ${data?.firstName}`}
-              </Typography>
-            </Box>
-          </>
+          <SberTypography className={classes.formMessage} component="h1" sberautoVariant="body5">
+            {`Привет, ${data.lastName} ${data.firstName}`}
+          </SberTypography>
         )}
       </Box>
 
