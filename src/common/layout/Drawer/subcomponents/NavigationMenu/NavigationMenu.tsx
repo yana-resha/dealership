@@ -1,12 +1,9 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
 import { Box, Button, ListItemText, Tab, Tabs } from '@mui/material'
-import { useDispatch } from 'react-redux'
 import { useNavigate, useLocation, matchPath } from 'react-router-dom'
 
 import { AuthType } from 'common/auth'
-import { clearOrder } from 'entities/reduxStore/orderSlice'
-import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { MenuItem } from './hooks/types'
 import { useGetItems } from './hooks/useGetItems'
@@ -21,39 +18,28 @@ export function NavigationMenu(props: Props) {
   const { authType } = props
 
   const classes = useStyles()
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
 
   const menuItems = useGetItems({ authType })
   const logoutItems = useGetLogoutBtn({ authType })
 
-  const onClick = useCallback(
+  const handleTabClick = useCallback(
     (item: MenuItem) => {
       item.onCallback?.()
-      if (item.path === appRoutePaths.createOrder) {
-        dispatch(clearOrder())
-      }
       navigate(item.path)
     },
-    [dispatch, navigate],
-  )
-
-  const handleChange = useCallback(
-    (event: React.SyntheticEvent, index: number) => {
-      onClick(menuItems[index])
-    },
-    [menuItems, onClick],
+    [navigate],
   )
 
   const renderLogout = useCallback(
     (item: MenuItem) => (
-      <Button onClick={() => onClick(item)} className={classes.logoutBtn}>
+      <Button onClick={() => handleTabClick(item)} className={classes.logoutBtn}>
         {!!item.icon && item.icon({ isSelected: false })}
         <ListItemText primary={item.label} className={classes.label} />
       </Button>
     ),
-    [classes, onClick],
+    [classes, handleTabClick],
   )
 
   const renderItem = useCallback(
@@ -69,10 +55,11 @@ export function NavigationMenu(props: Props) {
           label={<span className={classes.tabLabel}>{item.label}</span>}
           icon={icon}
           className={classes.tab}
+          onClick={() => handleTabClick(menuItems[index])}
         />
       )
     },
-    [classes, location.pathname],
+    [classes.tab, classes.tabLabel, location.pathname, menuItems, handleTabClick],
   )
 
   const value = Math.max(
@@ -83,13 +70,7 @@ export function NavigationMenu(props: Props) {
   return (
     <>
       {!!menuItems.length && (
-        <Tabs
-          orientation="vertical"
-          variant="scrollable"
-          value={value}
-          onChange={handleChange}
-          className={classes.tabs}
-        >
+        <Tabs orientation="vertical" variant="scrollable" value={value} className={classes.tabs}>
           {menuItems.map(renderItem)}
         </Tabs>
       )}

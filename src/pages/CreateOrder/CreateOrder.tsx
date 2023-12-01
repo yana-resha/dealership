@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { Box, Step, StepIcon, StepLabel, Stepper, Typography } from '@mui/material'
 import cx from 'classnames'
@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 
 import { OrderCalculator } from 'common/OrderCalculator'
 import { OrderContext } from 'common/OrderCalculator'
-import { clearOrder, updateOrder } from 'entities/reduxStore/orderSlice'
+import { clearOrder, setCurrentStep, updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 
@@ -47,7 +47,7 @@ export function CreateOrder() {
   const classes = useStyles()
   const dispatch = useDispatch()
   const location = useLocation()
-  const initialOrder = useAppSelector(state => state.order.order)
+  const order = useAppSelector(state => state.order.order)
   const { isFilledElementaryClientData = false, isFilledLoanData = false } = useAppSelector(
     state => state.order.order?.fillingProgress || {},
   )
@@ -63,9 +63,7 @@ export function CreateOrder() {
     : 'Заявка на кредит'
 
   const steps = useMemo(() => (isExistingApplication ? STEPS.slice(1) : STEPS), [isExistingApplication])
-
-  const [currentStepIdx, setCurrentStepIdx] = useState(initialOrder?.currentStep ?? 0)
-
+  const currentStepIdx = order?.currentStep ?? 0
   const saveValueToStoreRef = useRef<(() => void) | null>(null)
 
   const currentStep = useMemo(() => steps[currentStepIdx], [currentStepIdx, steps])
@@ -87,7 +85,7 @@ export function CreateOrder() {
       предыдущего шага, что может привести к багам. Потому после вызова saveValueToStoreRef удаляем его */
       saveValueToStoreRef.current?.()
       saveValueToStoreRef.current = null
-      setCurrentStepIdx(stepIdx)
+      dispatch(setCurrentStep(stepIdx))
     }
   }
 
@@ -95,10 +93,10 @@ export function CreateOrder() {
     (nextId?: number) => {
       if (currentStepIdx < steps.length - 1) {
         scrollContainerRef.current?.parentElement?.scroll({ top: 0 })
-        setCurrentStepIdx(prevIdx => nextId ?? prevIdx + 1)
+        dispatch(setCurrentStep(nextId ?? currentStepIdx + 1))
       }
     },
-    [currentStepIdx, steps.length],
+    [currentStepIdx, dispatch, steps.length],
   )
 
   const handleFormChange = useCallback((saveValuesToStore: () => void) => {
