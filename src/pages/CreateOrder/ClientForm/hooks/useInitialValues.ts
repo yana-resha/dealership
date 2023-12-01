@@ -427,6 +427,9 @@ export function useInitialValues() {
 
   const initialValuesClientData: ClientData = {
     ...initialValues,
+    incomeConfirmation: fullApplicationData?.application?.loanData?.incomeProduct
+      ? true
+      : !!(applicant?.income?.incomeVerify ?? initialValues.incomeConfirmation),
     ...(fullApplicationData?.application?.applicant
       ? {
           // В данной группе основным значением идет initialValues,
@@ -459,7 +462,6 @@ export function useInitialValues() {
           averageIncome: `${applicant?.income?.basicIncome ?? initialValues.averageIncome}`,
           additionalIncome: `${applicant?.income?.addIncome ?? initialValues.additionalIncome}`,
 
-          incomeConfirmation: !!(applicant?.income?.incomeVerify ?? initialValues.incomeConfirmation),
           ndfl2File: makeDocumentTypeFile(DocumentType.TWO_NDFL),
           ndfl3File: makeDocumentTypeFile(DocumentType.TAX_DECLARATION),
           bankStatementFile: makeDocumentTypeFile(DocumentType.CERTIFICATE_FREE_FORM),
