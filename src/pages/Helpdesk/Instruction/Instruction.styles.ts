@@ -7,6 +7,22 @@ export const useStyles = makeStyles(theme => ({
     gap: theme.spacing(3),
   },
 
+  emailContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+  },
+
+  copyingBtn: {
+    width: 24,
+    height: 24,
+
+    '& svg': {
+      width: 16,
+      height: 16,
+    },
+  },
+
   listWrapper: {
     display: 'flex',
     alignItems: 'end',

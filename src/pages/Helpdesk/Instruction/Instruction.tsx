@@ -24,7 +24,16 @@ export function Instruction() {
   const mailBody = getMailBody(user, vendorCode)
   const link = `mailto:${HELPDESK_MAIL}?body=${encodeURIComponent(mailBody)}`
 
-  const handleCopy = useCallback(() => {
+  const handleMailAddressCopy = useCallback(() => {
+    copy(HELPDESK_MAIL, {
+      format: 'text/plain', // когда задан onCopy, copy не работет без свойства format
+      onCopy: () => {
+        enqueueSnackbar('Скопировано в буфер обмена', { variant: 'success' })
+      },
+    })
+  }, [enqueueSnackbar])
+
+  const handleMailBodyCopy = useCallback(() => {
     copy(mailBody, {
       format: 'text/plain', // когда задан onCopy, copy не работет без свойства format
       onCopy: () => {
@@ -36,13 +45,26 @@ export function Instruction() {
   return (
     <div data-testid="Instruction">
       <Box className={classes.container}>
-        <SberTypography component="p" sberautoVariant="body3">
-          Для обращения в службу поддержки отправьте письмо на электронную почту{' '}
-          <Link data-testid="helpdeskLink" href={link} target="_blank">
-            {HELPDESK_MAIL}
-          </Link>
-          .
-        </SberTypography>
+        <Box className={classes.emailContainer}>
+          <SberTypography component="p" sberautoVariant="body3">
+            Для обращения в службу поддержки отправьте письмо на электронную почту{' '}
+            <Link data-testid="helpdeskLink" href={link} target="_blank">
+              {HELPDESK_MAIL}
+            </Link>
+            .
+          </SberTypography>
+          <CustomTooltip arrow title={<span>Нажмите, чтобы скопировать эл. адрес</span>}>
+            <Box>
+              <SquareBtn
+                onClick={handleMailAddressCopy}
+                testId="mailAddressCopyingSquareBtn"
+                className={classes.copyingBtn}
+              >
+                <ContentCopyIcon />
+              </SquareBtn>
+            </Box>
+          </CustomTooltip>
+        </Box>
 
         <Box className={classes.listWrapper}>
           <List className={classes.listContainer}>
@@ -59,7 +81,11 @@ export function Instruction() {
             title={<span>Нажмите, чтобы скопировать указанные поля с предзаполенными данными</span>}
           >
             <Box>
-              <SquareBtn onClick={handleCopy} testId="copyingSquareBtn">
+              <SquareBtn
+                onClick={handleMailBodyCopy}
+                testId="mailBodyCopyingSquareBtn"
+                className={classes.copyingBtn}
+              >
                 <ContentCopyIcon />
               </SquareBtn>
             </Box>
