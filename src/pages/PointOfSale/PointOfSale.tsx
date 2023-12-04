@@ -1,32 +1,11 @@
-import React from 'react'
-
-import { Paper } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 import { Navigate } from 'react-router-dom'
 
 import { useAuthContext } from 'common/auth'
 import { PointOfSaleAuth } from 'common/PointOfSaleAuth'
+import { AuthWrapper } from 'entities/AuthWrapper'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
-const useStyles = makeStyles(theme => ({
-  page: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-
-    [theme.breakpoints.down('sm')]: {
-      alignItems: 'unset',
-      padding: 0,
-      backgroundColor: theme.palette.background.paper,
-    },
-  },
-}))
-
 export function PointOfSale() {
-  const classes = useStyles()
-
   const { isAuth } = useAuthContext()
 
   if (!isAuth) {
@@ -34,8 +13,8 @@ export function PointOfSale() {
   }
 
   return (
-    <Paper className={classes.page} data-testid="authPage">
+    <AuthWrapper dataTestId="pointOfSalePage">
       <PointOfSaleAuth />
-    </Paper>
+    </AuthWrapper>
   )
 }

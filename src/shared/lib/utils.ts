@@ -70,7 +70,7 @@ type KeysToSnakeCase<T> = {
 }
 
 /** Нормализуем формат данных в тот, что на сервере (в змеиную) ({userId: 1} => {user_id: 1}) */
-export const toSnakecaseKeysData = <T extends object>(data: T): KeysToSnakeCase<T> => {
+export const toSnakeCaseKeysData = <T extends object>(data: T): KeysToSnakeCase<T> => {
   if (typeof data !== 'object') {
     throw new Error('data is not object')
   }

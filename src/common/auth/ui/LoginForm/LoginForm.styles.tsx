@@ -5,44 +5,28 @@ export default makeStyles(theme => ({
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
-    width: '416px',
+    width: '100%',
     boxSizing: 'border-box',
     padding: theme.spacing(3),
     gap: theme.spacing(3),
-    borderRadius: 4 * theme.shape.borderRadius,
-    boxShadow: `0 4px 16px ${theme.palette.grey[300]}`,
-    background: theme.palette.background.default,
-  },
-
-  avatarContainer: {
-    '&.MuiAvatar-root': {
-      width: '100px',
-      height: '100px',
-      backgroundColor: theme.palette.background.paper,
-    },
   },
 
   formMessage: {
     '&.MuiTypography-root': {
       fontWeight: 600,
-      fontSize: 19,
+      fontSize: 22,
       lineHeight: theme.spacing(3),
     },
   },
 
   loginButton: {
-    width: '100%',
-    height: '48px',
-
     '&.MuiButton-root': {
+      width: '240px',
+      height: '48px',
       borderRadius: 12 * theme.shape.borderRadius,
       fontSize: 16,
-      background: theme.palette.sber.main,
-
-      '&:hover': {
-        background: theme.palette.sber.dark,
-      },
     },
   },
 

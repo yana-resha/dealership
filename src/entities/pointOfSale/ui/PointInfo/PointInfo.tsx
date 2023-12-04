@@ -7,7 +7,7 @@ import Cookies from 'js-cookie'
 import compact from 'lodash/compact'
 
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
-import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale'
+import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
 const useStyles = makeStyles(theme => ({
   posNumber: {
@@ -25,7 +25,7 @@ type Props = {
 
 export const PointInfo = ({ onButtonClick }: Props) => {
   const classes = useStyles()
-  const pointOfSale: Vendor = JSON.parse(Cookies.get(COOKIE_POINT_OF_SALE) ?? '{}')
+  const pointOfSale = getPointOfSaleFromCookies()
 
   const fullPointInfo = useMemo(() => {
     const entities = [pointOfSale?.vendorName, pointOfSale?.address]
