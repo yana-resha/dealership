@@ -1,4 +1,4 @@
-export enum TableCellKey {
+export enum HeaderCellKey {
   ProductName = 'productName',
   Downpayment = 'downpayment',
   Term = 'term',
@@ -16,17 +16,29 @@ export enum TableCellType {
   Icon = 'icon',
 }
 
+export enum SortOrder {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
+export type BankOffersTableHeader = {
+  key: HeaderCellKey
+  label: string
+  isCanSort?: boolean
+  type?: TableCellType
+}
+
 export const BANK_OFFERS_TABLE_HEADERS = [
-  { key: TableCellKey.ProductName, label: 'Продукт' },
-  { key: TableCellKey.Downpayment, label: 'ПВ' },
-  { key: TableCellKey.Term, label: 'Срок' },
-  { key: TableCellKey.MonthlyPayment, label: 'Платеж' },
+  { key: HeaderCellKey.ProductName, label: 'Продукт', isCanSort: true },
+  { key: HeaderCellKey.Downpayment, label: 'ПВ' },
+  { key: HeaderCellKey.Term, label: 'Срок' },
+  { key: HeaderCellKey.MonthlyPayment, label: 'Платеж', isCanSort: true },
   // убрали тк не будет функционала в пилоте
-  // { key: TableCellKey.LastPayment, label: 'Последний платеж' },
-  { key: TableCellKey.Overpayment, label: 'Переплата' },
-  { key: TableCellKey.CurrentRate, label: '% ставка' },
-  { key: TableCellKey.CascoFlag, label: 'КАСКО' },
-  { key: TableCellKey.TotalSum, label: 'Сумма кредита' },
-  { key: TableCellKey.Attachment, label: '', type: TableCellType.Icon }, //пустой столбец для отображения иконоки графика платежей
-  { key: TableCellKey.IncomeFlag, label: '', type: TableCellType.Icon }, //пустой столбец для отображения иконки обязательности подтверждения дохода
+  // { key: HeaderCell.LastPayment, label: 'Последний платеж' },
+  { key: HeaderCellKey.Overpayment, label: 'Переплата', isCanSort: true },
+  { key: HeaderCellKey.CurrentRate, label: '% ставка', isCanSort: true },
+  { key: HeaderCellKey.CascoFlag, label: 'КАСКО', isCanSort: true },
+  { key: HeaderCellKey.TotalSum, label: 'Сумма кредита' },
+  { key: HeaderCellKey.Attachment, label: '', type: TableCellType.Icon }, //пустой столбец для отображения иконоки графика платежей
+  { key: HeaderCellKey.IncomeFlag, label: '', type: TableCellType.Icon }, //пустой столбец для отображения иконки обязательности подтверждения дохода
 ]

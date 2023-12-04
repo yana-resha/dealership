@@ -17,47 +17,12 @@ export default makeStyles(theme => ({
     marginTop: theme.spacing(4),
   },
 
-  headerCell: {
-    '&.MuiTableCell-root': {
-      padding: theme.spacing(1),
-      color: theme.palette.text.secondary,
-    },
-  },
   headerRow: {
     '& > th:first-child': {
-      paddingLeft: theme.spacing(2),
+      paddingLeft: theme.spacing(1),
     },
     '& > th:last-child': {
       paddingRight: theme.spacing(2),
-    },
-  },
-  bodyCell: {
-    '&.MuiTableCell-root': {
-      padding: theme.spacing(2, 1),
-      borderBottom: 'none',
-    },
-  },
-  bodyRow: {
-    '& > td:first-child': {
-      paddingLeft: theme.spacing(2),
-    },
-    '& > td:last-child': {
-      paddingRight: theme.spacing(2),
-    },
-
-    '&:hover': {
-      cursor: 'pointer',
-      '& > *': {
-        background: theme.palette.background.paper,
-      },
-      '& > td:first-child': {
-        borderTopLeftRadius: 4 * theme.shape.borderRadius,
-        borderBottomLeftRadius: 4 * theme.shape.borderRadius,
-      },
-      '& > td:last-child': {
-        borderTopRightRadius: 4 * theme.shape.borderRadius,
-        borderBottomRightRadius: 4 * theme.shape.borderRadius,
-      },
     },
   },
 
