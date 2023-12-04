@@ -4,11 +4,11 @@ import { PreparedTableData } from 'entities/application/ApplicationTable/Applica
 import { getFullName } from 'shared/utils/clientNameTransform'
 
 const sourceMap = {
-  Sberbankru: 'Сайт',
-  Sberbankru2: 'Сайт',
-  Portalda: 'PortalDA',
-  Sberbankrucall: 'ЕРКЦ',
-  Marketing: 'RBC',
+  sberbankru: 'Сайт',
+  sberbankru2: 'Сайт',
+  portalda: 'PortalDA',
+  sberbankrucall: 'ЕРКЦ',
+  marketing: 'RBC',
   broker_before_chat: 'СберАвто',
   broker_after_chat: 'СберАвто',
   sbol_after_chat: 'СберАвто',
@@ -17,10 +17,10 @@ const sourceMap = {
   avito: 'Avito',
   classified: 'Дром',
   broker: 'СберАвто',
-  DC: 'ДЦ',
-  SBOL: 'SBOL',
-  ECREDIT: 'eCredit',
-  AST: 'АСТ',
+  dc: 'ДЦ',
+  sbol: 'SBOL',
+  ecredit: 'eCredit',
+  ast: 'АСТ',
 }
 
 export const makeApplicationTableData = (data: Application[]): PreparedTableData[] =>
@@ -42,7 +42,7 @@ export const makeApplicationTableData = (data: Application[]): PreparedTableData
       applicationUpdateDate: applicationUpdateDate ?? '',
       fullName: getFullName(firstName, lastName, middleName),
       vendorCode: vendorCode ?? '',
-      source: sourceMap[(source || '') as keyof typeof sourceMap] || source || '',
+      source: sourceMap[(source || '').toLowerCase() as keyof typeof sourceMap] || source || '',
       decisionTerm: typeof decisionTerm === 'number' && decisionTerm >= 0 ? decisionTerm : '-',
       status: status ?? StatusCode.ERROR,
     }
