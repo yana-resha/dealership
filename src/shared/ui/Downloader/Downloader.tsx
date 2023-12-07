@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import { Link } from '@mui/material'
 import { Box } from '@mui/system'
+import cx from 'classnames'
 import { useSnackbar } from 'notistack'
 
 import { CircularProgressWheel } from '../CircularProgressWheel/CircularProgressWheel'
@@ -10,20 +11,25 @@ import useStyles from './Downloader.styles'
 type DownloaderIconProps = {
   onDownloadFile: () => Promise<File | undefined>
   gridColumn?: string
+  disabled?: boolean
 }
 
 export function Downloader({
   onDownloadFile,
   gridColumn,
+  disabled = false,
   children,
 }: React.PropsWithChildren<DownloaderIconProps>) {
-  const styles = useStyles()
+  const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
 
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | undefined>()
 
   const handleDownload = async () => {
+    if (disabled) {
+      return
+    }
     if (onDownloadFile && !file) {
       setIsLoading(true)
       try {
@@ -58,15 +64,19 @@ export function Downloader({
       {file ? (
         <Link
           data-testid="downloaderLink"
-          href={preview}
-          className={styles.fileLink}
+          href={disabled ? undefined : preview}
+          className={cx(classes.fileLink, { [classes.disabledFileLink]: disabled })}
           target="_blank"
           download={file?.name}
         >
           {children}
         </Link>
       ) : (
-        <Link data-testid="downloaderLinkDownloader" className={styles.fileLink} onClick={handleDownload}>
+        <Link
+          data-testid="downloaderLinkDownloader"
+          className={cx(classes.fileLink, { [classes.disabledFileLink]: disabled })}
+          onClick={handleDownload}
+        >
           {!isLoading && children}
           {isLoading && <CircularProgressWheel />}
         </Link>

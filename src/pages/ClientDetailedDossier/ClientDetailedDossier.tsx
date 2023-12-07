@@ -79,6 +79,7 @@ export function ClientDetailedDossier() {
       additionalOptions: application?.loanData?.additionalOptions || [],
       overpayment: application?.loanData?.overpayment,
       incomeProduct: application?.loanData?.incomeProduct ?? false,
+      scans: application?.scans || [],
     }),
     [
       application?.status,
@@ -97,6 +98,7 @@ export function ClientDetailedDossier() {
       application?.loanData?.additionalOptions,
       application?.loanData?.overpayment,
       application?.loanData?.incomeProduct,
+      application?.scans,
     ],
   )
 

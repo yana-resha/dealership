@@ -200,6 +200,7 @@ export const theme = createTheme({
     text: {
       primary: DARK_NORMAL,
       secondary: GRAY_NORMAL,
+      disabled: alpha(BLACK, 0.26),
     },
     colors: {
       blueGray: '#ECF1FA',

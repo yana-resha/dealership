@@ -1,6 +1,8 @@
 import React, { PropsWithChildren } from 'react'
 
 import {
+  DocumentType,
+  DownloadDocumentRequest,
   GetPreliminaryPaymentScheduleFormRequest,
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
@@ -16,6 +18,7 @@ const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{c
 
 const blob = new Blob([''], { type: 'text/html' })
 const mockedUseGetShareFormMutation = jest.spyOn(loanAppLifeCycleDcModule, 'useGetShareFormMutation')
+const mockedUseDownloadDocumentMutation = jest.spyOn(loanAppLifeCycleDcModule, 'useDownloadDocumentMutation')
 const mockedUseGetPreliminaryPaymentScheduleFormMutationMutation = jest.spyOn(
   loanAppLifeCycleDcModule,
   'useGetPreliminaryPaymentScheduleFormMutation',
@@ -50,6 +53,7 @@ const informationAreaProps = {
   ],
   overpayment: 1000.1,
   incomeProduct: true,
+  scans: [],
 }
 
 describe('InformationAreaTest', () => {
@@ -59,6 +63,12 @@ describe('InformationAreaTest', () => {
         ({
           mutateAsync: () => Promise.resolve(blob as File),
         } as UseMutationResult<File, unknown, void, unknown>),
+    )
+    mockedUseDownloadDocumentMutation.mockImplementation(
+      () =>
+        ({
+          mutateAsync: ({}) => Promise.resolve(blob as File),
+        } as UseMutationResult<File, unknown, DownloadDocumentRequest, unknown>),
     )
     mockedUseGetPreliminaryPaymentScheduleFormMutationMutation.mockImplementation(
       () =>
@@ -175,10 +185,33 @@ describe('InformationAreaTest', () => {
       expect(screen.getByText('График платежей')).toBeInTheDocument()
     })
 
-    it('График платежей отображается при статусе Approved (Предварительно одобрен)', () => {
+    it('График платежей отсутствует при статусе Approved (Предварительно одобрен)', () => {
       render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.APPROVED }} />, {
         wrapper: createWrapper,
       })
+
+      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+    })
+
+    it('График платежей отображается при статусе Approved (Предварительно одобрен)', () => {
+      render(
+        <InformationArea
+          {...{
+            ...informationAreaProps,
+            statusCode: StatusCode.APPROVED,
+            scans: [
+              {
+                type: DocumentType.UNSPECIFIED,
+                name: 'Любой файл',
+                extension: 'pdf',
+              },
+            ],
+          }}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
 
       expect(screen.getByText('График платежей')).toBeInTheDocument()
     })
@@ -191,20 +224,20 @@ describe('InformationAreaTest', () => {
       expect(screen.getByText('График платежей')).toBeInTheDocument()
     })
 
-    it('График платежей отсутствует при статусе Formation (Формирование КД)', () => {
+    it('График платежей отображается при статусе статусе Formation (Формирование КД)', () => {
       render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.FORMATION }} />, {
         wrapper: createWrapper,
       })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+      expect(screen.queryByText('График платежей')).toBeInTheDocument()
     })
 
-    it('График платежей отсутствует при статусе Singed (КД подписан)', () => {
+    it('График платежей отображается при статусе Singed (КД подписан)', () => {
       render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.SIGNED }} />, {
         wrapper: createWrapper,
       })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+      expect(screen.queryByText('График платежей')).toBeInTheDocument()
     })
 
     it('График платежей отсутствует при статусе Rejected (Отказ)', () => {
@@ -242,20 +275,20 @@ describe('InformationAreaTest', () => {
       expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
     })
 
-    it('График платежей отсутствует при статусе Authorized (Ожидание финансирования)', () => {
+    it('График платежей отображается при статусе Authorized (Ожидание финансирования)', () => {
       render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.AUTHORIZED }} />, {
         wrapper: createWrapper,
       })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+      expect(screen.queryByText('График платежей')).toBeInTheDocument()
     })
 
-    it('График платежей отсутствует при статусе Financed (Кредит выдан)', () => {
+    it('График платежей отображается при статусе Financed (Кредит выдан)', () => {
       render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.ISSUED }} />, {
         wrapper: createWrapper,
       })
 
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
+      expect(screen.queryByText('График платежей')).toBeInTheDocument()
     })
 
     it('График платежей отсутствует при статусе Error (Ошибка)', () => {

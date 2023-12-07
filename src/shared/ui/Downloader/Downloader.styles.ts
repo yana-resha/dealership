@@ -16,4 +16,18 @@ export default makeStyles(theme => ({
       },
     },
   },
+
+  disabledFileLink: {
+    cursor: 'not-allowed!important',
+    color: theme.palette.text.disabled,
+    '&.MuiLink-root': {
+      color: theme.palette.text.disabled,
+    },
+    '&.MuiLink-root svg': {
+      fill: theme.palette.text.disabled,
+    },
+    '&.MuiLink-root:hover': {
+      textDecoration: 'none',
+    },
+  },
 }))
