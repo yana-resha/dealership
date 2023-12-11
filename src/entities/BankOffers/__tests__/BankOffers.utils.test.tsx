@@ -64,10 +64,6 @@ describe('BankOffers.utils', () => {
       ])
     })
     it('Работает обратная сортировка по КАСКО', () => {
-      console.log(
-        'sortBankOffersByCasco(mockedCalculatedProducts, SortOrder.Desc)',
-        sortBankOffersByCasco(mockedCalculatedProducts, SortOrder.Desc),
-      )
       expect(sortBankOffersByCasco(mockedCalculatedProducts, SortOrder.Desc)).toMatchObject([
         mockedCalculatedProducts[1],
         mockedCalculatedProducts[3],

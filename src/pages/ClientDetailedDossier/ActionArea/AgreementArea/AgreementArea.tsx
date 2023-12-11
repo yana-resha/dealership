@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Box, Button, Divider } from '@mui/material'
-import { DocumentType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { Box, Button } from '@mui/material'
+import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { getStatus, PreparedStatus } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useCheckDocumentsList } from 'features/ApplicationFileLoader/hooks/useCheckDocumentsList'
-import { useDownloadDocument } from 'features/ApplicationFileLoader/hooks/useDownloadDocument'
 import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'
 import {
   RequiredScan,
@@ -19,15 +18,14 @@ import {
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
-import { FileDownloader } from 'shared/ui/FileDownloader/FileDownloader'
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
-import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
-import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
 import { ADDITIONAL_AGREEMENT_DOC_TYPES, AGREEMENT_DOC_TYPES, progressBarConfig } from '../../config'
 import { useGetFullApplicationQuery } from '../../hooks/useGetFullApplicationQuery'
+import { DocsStatus, ProgressBarSteps } from './AgreementArea.config'
 import { useStyles } from './AgreementArea.styles'
+import { AgreementDocument } from './AgreementDocument/AgreementDocument'
 import { RequisitesArea } from './RequisitesArea/RequisitesArea'
 
 type Props = {
@@ -38,20 +36,6 @@ type Props = {
   closeConfirmationModal: () => void
   confirmedAction?: () => void
   editApplication: (editFunction: () => void) => void
-}
-
-enum ProgressBarSteps {
-  CREATE_AGREEMENT_STEP = 0,
-  DOWNLOAD_AGREEMENT_STEP = 1,
-  SIGN_AGREEMENT_STEP = 2,
-  CHECK_REQUISITES = 3,
-  ERROR_STEP = -1,
-}
-
-enum DocsStatus {
-  Received = 'received',
-  Downloaded = 'downloaded',
-  Signed = 'signed',
 }
 
 export function AgreementArea({
@@ -74,7 +58,7 @@ export function AgreementArea({
   const [isDocsLoading, setDocsLoading] = useState(false)
   const [isDocsFetched, setDocsFetched] = useState(false)
   const [docsStatus, setDocsStatus] = useState<string[]>([])
-  const [rightsAssigned, setRightsAssigned] = useState(false)
+  const [isRightsAssigned, setRightsAssigned] = useState<boolean>()
   const [financingEnabled, setFinancingEnabled] = useState(true)
   const agreementAreaRef = useRef<HTMLDivElement | undefined>()
 
@@ -84,24 +68,20 @@ export function AgreementArea({
     { enabled: false },
   )
   const { mutateAsync: sendToFinancing, isLoading: isSendLoading } = useSendToFinancingMutation()
-  const { mutate: updateApplicationStatus, isLoading: isStatusLoading } = useUpdateApplicationStatusMutation(
-    application?.dcAppId ?? '',
-    (statusCode: StatusCode) => {
+  const { mutate: updateApplicationStatusMutate, isLoading: isStatusLoading } =
+    useUpdateApplicationStatusMutation(application?.dcAppId ?? '', (statusCode: StatusCode) => {
       updateApplicationStatusLocally(statusCode)
       // требуется обновлять заявку, т.к. меняется количество сканов в ней при шаге назад.
       if (statusCode === StatusCode.FINALLY_APPROVED) {
         refetchGetFullApplication()
       }
-    },
-  )
+    })
   const { mutateAsync: formContractMutate } = useFormContractMutation({
     dcAppId: application?.dcAppId ?? '',
   })
-
   const { refetch: refetchFullApplication, isFetching: isRefetchFullApplicationLoading } =
     useGetFullApplicationQuery({ applicationId }, { enabled: false })
   const { checkApplicationDocumentsList } = useCheckDocumentsList()
-  const { downloadFile } = useDownloadDocument()
 
   const uploadedAgreementScans = useMemo(
     () =>
@@ -134,18 +114,18 @@ export function AgreementArea({
   const currentStep = useMemo(() => {
     switch (status) {
       case StatusCode.FINALLY_APPROVED: {
-        return ProgressBarSteps.CREATE_AGREEMENT_STEP
+        return ProgressBarSteps.CreateAgreementStep
       }
       case StatusCode.FORMATION: {
         return [DocsStatus.Downloaded, DocsStatus.Signed].some(value => docsStatus.includes(value))
-          ? ProgressBarSteps.SIGN_AGREEMENT_STEP
-          : ProgressBarSteps.DOWNLOAD_AGREEMENT_STEP
+          ? ProgressBarSteps.SignAgreementStep
+          : ProgressBarSteps.DownloadAgreementStep
       }
       case StatusCode.SIGNED: {
-        return ProgressBarSteps.CHECK_REQUISITES
+        return ProgressBarSteps.CheckRequisites
       }
       default: {
-        return ProgressBarSteps.ERROR_STEP
+        return ProgressBarSteps.ErrorStep
       }
     }
   }, [docsStatus, status])
@@ -174,14 +154,13 @@ export function AgreementArea({
       updateApplicationStatusLocally(StatusCode.FORMATION)
     }
     setDocsLoading(true)
-    setRightsAssigned(false)
+    setRightsAssigned(undefined)
     fetchAgreement()
   }, [preparedStatus, formContractMutate, checkDocuments, enqueueSnackbar, updateApplicationStatusLocally])
 
-  const onButtonClick = useCallback(async () => {
+  const handleSendToFinancingBtnClick = useCallback(async () => {
     const res = await sendToFinancing({
       dcAppId: application.dcAppId,
-      assignmentOfClaim: rightsAssigned,
     }).catch(err => err)
 
     if (res.success) {
@@ -189,7 +168,27 @@ export function AgreementArea({
     } else {
       enqueueSnackbar('Не удалось отправить на финансирование. Попробуйте еще раз', { variant: 'error' })
     }
-  }, [sendToFinancing, application.dcAppId, rightsAssigned, refetchFullApplication, enqueueSnackbar])
+  }, [sendToFinancing, application.dcAppId, refetchFullApplication, enqueueSnackbar])
+
+  const returnToFirstStage = useCallback(() => {
+    setDocsStatus([])
+    updateApplicationStatusMutate({ statusCode: StatusCode.FINALLY_APPROVED })
+  }, [updateApplicationStatusMutate])
+
+  const changeApplicationStatusToSigned = useCallback(() => {
+    updateApplicationStatusMutate({ statusCode: StatusCode.SIGNED, assignmentOfClaim: isRightsAssigned })
+  }, [isRightsAssigned, updateApplicationStatusMutate])
+
+  const handleEditBtnClick = useCallback(
+    () =>
+      editApplication(() => {
+        const isFullCalculator = application.vendor?.vendorCode === vendorCode
+        navigate(appRoutePaths.createOrder, {
+          state: { isExistingApplication: true, isFullCalculator, saveDraftDisabled: true },
+        })
+      }),
+    [application.vendor?.vendorCode, editApplication, navigate, vendorCode],
+  )
 
   // Данный эфект необходим на случай формирования договора и быстрой перезагрузки страницы
   useEffect(() => {
@@ -249,65 +248,12 @@ export function AgreementArea({
     }
   }, [preparedStatus])
 
-  const returnToFirstStage = useCallback(() => {
-    setDocsStatus([])
-    updateApplicationStatus(StatusCode.FINALLY_APPROVED)
-  }, [updateApplicationStatus])
-
-  const setDocumentToDownloaded = useCallback(
-    (index: number) => {
-      const docStatus = [...docsStatus]
-      docStatus[index] = DocsStatus.Downloaded
-      setDocsStatus(docStatus)
-    },
-    [docsStatus, setDocsStatus],
-  )
-
-  const updateDocumentStatus = useCallback(
-    (checked: boolean, index: number) => {
-      const docStatus = [...docsStatus]
-      docStatus[index] = checked ? DocsStatus.Signed : DocsStatus.Downloaded
-      setDocsStatus(docStatus)
-      let signCounter = 0
-      for (const doc of docStatus) {
-        if (doc === DocsStatus.Signed) {
-          signCounter++
-        }
-      }
-      if (signCounter === docStatus.length) {
-        updateApplicationStatus(StatusCode.SIGNED)
-      }
-    },
-    [docsStatus, setDocsStatus, updateApplicationStatus],
-  )
-
-  const changeRightsAssigned = useCallback(
-    (value: boolean) => {
-      if (!value) {
-        updateDocumentStatus(false, 0)
-      }
-      setRightsAssigned(value)
-    },
-    [updateDocumentStatus, setRightsAssigned],
-  )
-
-  const editApplicationWithFinallyApprovedStatus = useCallback(() => {
-    const isFullCalculator = application.vendor?.vendorCode === vendorCode
-    navigate(appRoutePaths.createOrder, {
-      state: { isExistingApplication: true, isFullCalculator, saveDraftDisabled: true },
-    })
-  }, [application.vendor?.vendorCode, vendorCode, navigate])
-
   return (
     <Box className={classes.blockContainer} ref={agreementAreaRef}>
       <ProgressBar {...progressBarConfig} currentStep={currentStep} />
       {preparedStatus === PreparedStatus.finallyApproved && (
         <Box className={classes.actionButtons}>
-          <Button
-            variant="contained"
-            className={classes.button}
-            onClick={() => editApplication(editApplicationWithFinallyApprovedStatus)}
-          >
+          <Button variant="contained" className={classes.button} onClick={handleEditBtnClick}>
             Редактировать
           </Button>
           {application.vendor?.vendorCode === vendorCode && (
@@ -330,44 +276,16 @@ export function AgreementArea({
           ) : (
             <Box className={classes.documentsBlock}>
               {agreementDocs.map((document, index) => (
-                <Box key={document?.name} className={classes.documentContainer}>
-                  <Box className={classes.document}>
-                    <FileDownloader
-                      file={document}
-                      index={index}
-                      loadingMessage="Файл загружается"
-                      onClick={() => setDocumentToDownloaded(index)}
-                      onDownloadFile={downloadFile}
-                    />
-
-                    {docsStatus[index] !== DocsStatus.Received && (
-                      <SwitchInput
-                        label="Подписан"
-                        id={'document_' + index}
-                        value={docsStatus[index] === 'signed'}
-                        disabled={document.documentType === DocumentType.CREDIT_CONTRACT && !rightsAssigned}
-                        afterChange={event => updateDocumentStatus(event.target.checked, index)}
-                      />
-                    )}
-                  </Box>
-                  {document.documentType === DocumentType.CREDIT_CONTRACT &&
-                    docsStatus[index] !== DocsStatus.Received && (
-                      <Box className={classes.radioGroup}>
-                        <SberTypography sberautoVariant="body2" component="p">
-                          Согласие на уступку прав
-                        </SberTypography>
-                        <RadioGroupInput
-                          radioValues={[
-                            { radioValue: true, radioLabel: 'Согласен' },
-                            { radioValue: false, radioLabel: 'Не согласен' },
-                          ]}
-                          defaultValue={false}
-                          onChange={changeRightsAssigned}
-                        />
-                      </Box>
-                    )}
-                  {docsStatus[index] !== DocsStatus.Received && <Divider />}
-                </Box>
+                <AgreementDocument
+                  key={document?.name}
+                  document={document}
+                  index={index}
+                  isRightsAssigned={isRightsAssigned}
+                  docsStatus={docsStatus}
+                  setDocsStatus={setDocsStatus}
+                  setRightsAssigned={setRightsAssigned}
+                  changeApplicationStatusToSigned={changeApplicationStatusToSigned}
+                />
               ))}
             </Box>
           )}
@@ -397,7 +315,7 @@ export function AgreementArea({
             <Button
               variant="contained"
               className={classes.financingButton}
-              onClick={onButtonClick}
+              onClick={handleSendToFinancingBtnClick}
               disabled={!financingEnabled || isSendLoading || isRefetchFullApplicationLoading}
             >
               {isSendLoading || isRefetchFullApplicationLoading ? (

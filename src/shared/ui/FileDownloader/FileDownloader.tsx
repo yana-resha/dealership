@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { Avatar, Button, IconButton, Link } from '@mui/material'
+import { Avatar, IconButton, Link } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { Box } from '@mui/system'
 
@@ -55,7 +55,7 @@ export type FileMetadata = {
 type FileOrMetadata = File | FileMetadata
 
 type FileDownloaderProps = {
-  file: FileOrMetadata | undefined
+  fileOrMetadata: FileOrMetadata | undefined
   index: number
   loadingMessage?: string
   onClick?: () => void
@@ -64,7 +64,7 @@ type FileDownloaderProps = {
 }
 
 export const FileDownloader = ({
-  file,
+  fileOrMetadata,
   index,
   onClick,
   loadingMessage,
@@ -74,6 +74,7 @@ export const FileDownloader = ({
   const styles = useStyles()
 
   const [isLoading, setIsLoading] = useState(false)
+  const [file, setFile] = useState<FileOrMetadata | undefined>(fileOrMetadata)
 
   const isFileObject = (input: FileOrMetadata | undefined): input is File => input instanceof File
 
@@ -94,6 +95,7 @@ export const FileDownloader = ({
         simulateLink.download = downloadedFile.name
         simulateLink.click()
         URL.revokeObjectURL(downloadURL)
+        setFile(downloadedFile)
       } catch (error) {
         console.error('Error downloading the file:', error)
       }
@@ -105,7 +107,8 @@ export const FileDownloader = ({
     if (onClickRemove) {
       onClickRemove(index)
     }
-  }, [onClickRemove, index])
+    setFile(fileOrMetadata)
+  }, [onClickRemove, fileOrMetadata, index])
 
   const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
   const message = loadingMessage ? loadingMessage : 'Файл загружается...'

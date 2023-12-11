@@ -21,7 +21,7 @@ describe('FileDownloader', () => {
 
     render(
       <MockProviders>
-        <FileDownloader file={file} index={0} onClickRemove={deleteFn} />
+        <FileDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
       </MockProviders>,
     )
 
@@ -33,7 +33,7 @@ describe('FileDownloader', () => {
   it('при клике на крестик вызывается onClickDelete', () => {
     render(
       <MockProviders>
-        <FileDownloader file={file} index={0} onClickRemove={deleteFn} />
+        <FileDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
       </MockProviders>,
     )
 
@@ -45,7 +45,7 @@ describe('FileDownloader', () => {
   it('если нет превью то показываем CircularProgress', () => {
     render(
       <MockProviders>
-        <FileDownloader file={file} index={0} onClickRemove={deleteFn} />
+        <FileDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
       </MockProviders>,
     )
 

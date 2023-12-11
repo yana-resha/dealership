@@ -101,7 +101,7 @@ const Uploader: React.FC<UploaderProps> = ({
           )}
 
           <FileDownloader
-            file={documentFile?.file}
+            fileOrMetadata={documentFile?.file}
             loadingMessage={loadingMessage}
             index={0}
             onClickRemove={handleRemove}
@@ -132,7 +132,7 @@ const Uploader: React.FC<UploaderProps> = ({
             <Box gridColumn="1 / -1" className={classes.item} display="flex" alignItems="center">
               {documentFile?.file && !isLoading ? (
                 <FileDownloader
-                  file={documentFile?.file}
+                  fileOrMetadata={documentFile?.file}
                   loadingMessage={loadingMessage}
                   index={0}
                   onClickRemove={handleRemove}
