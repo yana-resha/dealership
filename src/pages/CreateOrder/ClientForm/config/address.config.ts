@@ -385,11 +385,17 @@ export const REGION_CODE = [
     label: 'г. Байконур',
   },
 ]
+
 /** Тип района */
+export const DEFAULT_AREA_TYPE = {
+  value: '201',
+  label: 'Район',
+}
 export const AREA_TYPES = [
+  DEFAULT_AREA_TYPE,
   {
     value: '201',
-    label: 'Район',
+    label: 'Поселение',
   },
   {
     value: '203',
@@ -402,14 +408,15 @@ export const AREA_TYPES = [
 ]
 
 /** Тип города */
+export const DEFAULT_CITY_TYPE = {
+  value: '301',
+  label: 'Город',
+}
 export const CITY_TYPES = [
+  DEFAULT_CITY_TYPE,
   {
     value: '310',
     label: 'Волость',
-  },
-  {
-    value: '301',
-    label: 'Город',
   },
   {
     value: '305',
@@ -462,7 +469,12 @@ export const CITY_TYPES = [
 ]
 
 /** Тип улицы */
+export const DEFAULT_STREET_TYPE = {
+  value: '529',
+  label: 'Улица',
+}
 export const STREET_TYPES = [
+  DEFAULT_STREET_TYPE,
   {
     value: '532',
     label: 'Аал',
@@ -680,10 +692,6 @@ export const STREET_TYPES = [
     label: 'Тупик',
   },
   {
-    value: '529',
-    label: 'Улица',
-  },
-  {
     value: '530',
     label: 'Участок',
   },
@@ -698,7 +706,12 @@ export const STREET_TYPES = [
 ]
 
 /** Тип населенного пункта */
+export const DEFAULT_SETTLEMENT_TYPE = {
+  value: '405',
+  label: 'Город',
+}
 export const SETTLEMENT_TYPES = [
+  DEFAULT_SETTLEMENT_TYPE,
   {
     value: '401',
     label: 'Аал',
@@ -714,10 +727,6 @@ export const SETTLEMENT_TYPES = [
   {
     value: '404',
     label: 'Выселки(ок)',
-  },
-  {
-    value: '405',
-    label: 'Город',
   },
   {
     value: '436',

@@ -83,7 +83,7 @@ describe('утилиты анкеты клиента', () => {
       postalCode: '108813',
       regCode: '77',
       area: 'Московский',
-      areaType: '',
+      areaType: '201',
       city: 'Московский',
       cityType: '301',
       house: '',
