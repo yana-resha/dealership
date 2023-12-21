@@ -25,7 +25,7 @@ import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
-import { agreementDocTypes, progressBarConfig } from '../../config'
+import { ADDITIONAL_AGREEMENT_DOC_TYPES, AGREEMENT_DOC_TYPES, progressBarConfig } from '../../config'
 import { useGetFullApplicationQuery } from '../../hooks/useGetFullApplicationQuery'
 import { useStyles } from './AgreementArea.styles'
 import { RequisitesArea } from './RequisitesArea/RequisitesArea'
@@ -106,7 +106,15 @@ export function AgreementArea({
   const uploadedAgreementScans = useMemo(
     () =>
       (application.scans || []).filter(scan =>
-        agreementDocTypes.find(type => type === scan.type),
+        AGREEMENT_DOC_TYPES.find(type => type === scan.type),
+      ) as RequiredScan[],
+    [application.scans],
+  )
+
+  const uploadedAdditionalAgreementScans = useMemo(
+    () =>
+      (application.scans || []).filter(scan =>
+        ADDITIONAL_AGREEMENT_DOC_TYPES.find(type => type === scan.type),
       ) as RequiredScan[],
     [application.scans],
   )
@@ -114,13 +122,13 @@ export function AgreementArea({
   const agreementDocs = useMemo(
     () =>
       status !== StatusCode.FINALLY_APPROVED
-        ? uploadedAgreementScans.map(scan => ({
+        ? [...uploadedAgreementScans, ...uploadedAdditionalAgreementScans].map(scan => ({
             dcAppId: applicationId,
             documentType: scan.type,
             name: scan.name || 'name',
           }))
         : [],
-    [applicationId, status, uploadedAgreementScans],
+    [applicationId, status, uploadedAdditionalAgreementScans, uploadedAgreementScans],
   )
 
   const currentStep = useMemo(() => {
@@ -143,7 +151,7 @@ export function AgreementArea({
   }, [docsStatus, status])
 
   const checkDocuments = useCallback(async () => {
-    await checkApplicationDocumentsList(application?.dcAppId ?? '', agreementDocTypes, {
+    await checkApplicationDocumentsList(application?.dcAppId ?? '', AGREEMENT_DOC_TYPES, {
       interval: 15,
       timeout: 5 * 60,
     })
@@ -183,10 +191,11 @@ export function AgreementArea({
     }
   }, [sendToFinancing, application.dcAppId, rightsAssigned, refetchFullApplication, enqueueSnackbar])
 
+  // Данный эфект необходим на случай формирования договора и быстрой перезагрузки страницы
   useEffect(() => {
     if (
       preparedStatus === PreparedStatus.formation &&
-      uploadedAgreementScans.length < agreementDocTypes.length
+      uploadedAgreementScans.length < AGREEMENT_DOC_TYPES.length
     ) {
       if (!isDocsLoading && !isDocsFetched) {
         const check = async () => {
@@ -207,15 +216,32 @@ export function AgreementArea({
     isDocsFetched,
   ])
 
+  // Когда все обязательные документы подгружены, заканчивается ожидание формирования ПФ.
+  // Всем обязательным ПФ присваиваем статус Получены
   useEffect(() => {
     if (
       preparedStatus === PreparedStatus.formation &&
-      uploadedAgreementScans.length === agreementDocTypes.length &&
+      uploadedAgreementScans.length === AGREEMENT_DOC_TYPES.length &&
       !docsStatus.length
     ) {
       setDocsStatus(Array(uploadedAgreementScans.length).fill(DocsStatus.Received))
     }
   }, [docsStatus.length, preparedStatus, uploadedAgreementScans.length])
+
+  // Когда все обязательные документы подгружены и статусы Received для них проставлены
+  // (docsStatus.length === AGREEMENT_DOC_TYPES.length), всем дополнителным ПФ присваиваем статус Получены
+  useEffect(() => {
+    if (
+      preparedStatus === PreparedStatus.formation &&
+      uploadedAdditionalAgreementScans.length === ADDITIONAL_AGREEMENT_DOC_TYPES.length &&
+      docsStatus.length === AGREEMENT_DOC_TYPES.length
+    ) {
+      setDocsStatus(prevDocStatus => [
+        ...prevDocStatus,
+        ...Array(uploadedAdditionalAgreementScans.length).fill(DocsStatus.Received),
+      ])
+    }
+  }, [docsStatus.length, preparedStatus, uploadedAdditionalAgreementScans.length])
 
   useEffect(() => {
     if (preparedStatus === PreparedStatus.signed) {

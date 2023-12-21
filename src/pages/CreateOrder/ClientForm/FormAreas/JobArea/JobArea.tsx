@@ -11,7 +11,6 @@ import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
 
 import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
-import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { useOnScreen } from 'shared/hooks/useOnScreen'
 import { maskInn, maskNoRestrictions, maskCommonPhoneNumber } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'

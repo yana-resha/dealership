@@ -4,8 +4,10 @@ export const progressBarConfig = {
   steps: ['Сформировать договор', 'Скачать КД', 'Подписать КД', 'Проверка реквизитов'],
 }
 
-export const agreementDocTypes = [
+export const AGREEMENT_DOC_TYPES = [
   DocumentType.CREDIT_CONTRACT,
   DocumentType.ACCOUNT_OPEN_FORM,
   DocumentType.STATEMENT_FORM,
 ]
+
+export const ADDITIONAL_AGREEMENT_DOC_TYPES = [DocumentType.PDN_NOTIFICATION_FORM]

@@ -16,7 +16,7 @@ import { FileDownloader } from 'shared/ui/FileDownloader/FileDownloader'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { PreparedStatus, getStatus } from '../../../entities/application/application.utils'
-import { agreementDocTypes } from '../config'
+import { AGREEMENT_DOC_TYPES } from '../config'
 import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
 import { useStyles } from './DocumentsArea.styles'
 
@@ -39,7 +39,7 @@ export function DocumentsArea({ status }: Props) {
   )
   const agreementDocs = useMemo(
     () =>
-      (scans.filter(scan => agreementDocTypes.find(type => type === scan.type)) as RequiredScan[]).map(
+      (scans.filter(scan => AGREEMENT_DOC_TYPES.find(type => type === scan.type)) as RequiredScan[]).map(
         scan => ({
           dcAppId: applicationId,
           documentType: scan.type,
