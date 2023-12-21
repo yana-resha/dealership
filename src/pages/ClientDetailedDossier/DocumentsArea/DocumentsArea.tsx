@@ -134,7 +134,7 @@ export function DocumentsArea({ status }: Props) {
               {agreementDocs.map((document, index) => (
                 <FileDownloader
                   key={index}
-                  file={document}
+                  fileOrMetadata={document}
                   index={index}
                   loadingMessage="Файл загружается"
                   onDownloadFile={downloadFile}

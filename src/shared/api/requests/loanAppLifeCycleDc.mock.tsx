@@ -371,6 +371,11 @@ export const fullApplicationData: GetFullApplicationResponse = {
         extension: '.pdf',
         name: 'Заявление на открытие счёта.pdf',
       },
+      {
+        type: DocumentType.STATEMENT_FORM,
+        extension: '.pdf',
+        name: 'Заявление на выдачу кредита.pdf',
+      },
     ],
 
     specialMark: 'Находится в нетрезвом состоянии',

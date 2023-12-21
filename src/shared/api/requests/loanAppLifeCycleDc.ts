@@ -88,19 +88,30 @@ export const useUpdateApplicationStatusMutation = (
 
   return useMutation(
     ['updateApplicationStatus'],
-    (statusCode: StatusCode) =>
-      updateApplicationStatus({
-        dcAppId: appId,
-        status: statusCode,
-      }),
+    ({ statusCode, assignmentOfClaim }: { statusCode: StatusCode; assignmentOfClaim?: boolean }) => {
+      if (statusCode !== StatusCode.SIGNED || typeof assignmentOfClaim === 'boolean') {
+        return updateApplicationStatus({
+          dcAppId: appId,
+          status: statusCode,
+          assignmentOfClaim,
+        })
+      } else {
+        throw new Error('Не удалось обновить статус. Необходимо отметить Согласие/Несогласие на уступку прав')
+      }
+    },
     {
       onSuccess: response => {
         if (response.status) {
           onSuccess(prepareStatusCode(response.status as unknown as keyof typeof StatusCode))
         }
       },
-      onError: () => {
-        enqueueSnackbar('Не удалось обновить статус, попробуйте снова', { variant: 'error' })
+      onError: (err: unknown) => {
+        enqueueSnackbar(
+          err instanceof Error && err.message
+            ? `${err.message}`
+            : 'Не удалось обновить статус, попробуйте снова',
+          { variant: 'error' },
+        )
       },
     },
   )

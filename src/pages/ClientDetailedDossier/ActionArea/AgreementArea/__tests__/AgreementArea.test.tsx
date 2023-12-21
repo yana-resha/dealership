@@ -136,7 +136,7 @@ describe('AgreementAreaTest', () => {
       })
     })
 
-    it('Отображается 2 документа после загрузки', async () => {
+    it('Отображается 3 документа после загрузки', async () => {
       render(
         <AgreementArea
           status={StatusCode.FORMATION}
@@ -150,7 +150,7 @@ describe('AgreementAreaTest', () => {
           wrapper: createWrapper,
         },
       )
-      await waitFor(async () => expect(await screen.findAllByTestId('uploadFile')).toHaveLength(2))
+      await waitFor(async () => expect(await screen.findAllByTestId('uploadFile')).toHaveLength(3))
     })
 
     it('После загрузки документов отображается кнопка "Вернуться..."', async () => {
@@ -189,23 +189,27 @@ describe('AgreementAreaTest', () => {
           },
         )
       })
+
       it('После клика по документам появляются свитчи', async () => {
-        await waitFor(async () => expect(await screen.findAllByTestId('uploadFile')).toHaveLength(2))
+        await waitFor(async () => expect(await screen.findAllByTestId('uploadFile')).toHaveLength(3))
         const documents = await screen.findAllByTestId('uploadFile')
         userEvent.click(documents[0])
         userEvent.click(documents[1])
-        expect(await screen.findAllByText('Подписан')).toHaveLength(2)
+        userEvent.click(documents[2])
+        expect(await screen.findAllByText('Подписан')).toHaveLength(3)
       })
 
       it('После подтверждения подписания документов заявке присваивается статус "КД Подписан"', async () => {
-        await waitFor(async () => expect(await screen.findAllByTestId('uploadFile')).toHaveLength(2))
+        await waitFor(async () => expect(await screen.findAllByTestId('uploadFile')).toHaveLength(3))
         const documents = await screen.findAllByTestId('uploadFile')
         userEvent.click(documents[0])
         userEvent.click(documents[1])
+        userEvent.click(documents[2])
         const switches = await screen.findAllByText('Подписан')
         userEvent.click(screen.getByText('Согласен'))
         userEvent.click(switches[0])
         userEvent.click(switches[1])
+        userEvent.click(switches[2])
         expect(mockUpdateStatus).toBeCalledTimes(1)
       })
     })
