@@ -67,7 +67,7 @@ export function ActionArea(props: Props) {
     dispatch(
       updateOrder({
         orderData: {
-          application: { ...application, loanData: undefined, loanCar: undefined, specialMark: undefined },
+          application: { applicant: application.applicant },
         },
       }),
     )
@@ -207,7 +207,7 @@ export function ActionArea(props: Props) {
                 </Button>
               ) : (
                 <Button variant="contained" onClick={recreateApplication}>
-                  Пересоздать заявку
+                  Пересоздать новую заявку
                 </Button>
               )}
             </>
