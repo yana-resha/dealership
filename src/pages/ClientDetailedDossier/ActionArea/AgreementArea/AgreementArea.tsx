@@ -9,6 +9,7 @@ import { getStatus, PreparedStatus } from 'entities/application/application.util
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useCheckDocumentsList } from 'features/ApplicationFileLoader/hooks/useCheckDocumentsList'
 import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'
+import { useAgreementDocs } from 'pages/ClientDetailedDossier/hooks/useAgreementDocs'
 import {
   RequiredScan,
   useFormContractMutation,
@@ -83,32 +84,8 @@ export function AgreementArea({
     useGetFullApplicationQuery({ applicationId }, { enabled: false })
   const { checkApplicationDocumentsList } = useCheckDocumentsList()
 
-  const uploadedAgreementScans = useMemo(
-    () =>
-      (application.scans || []).filter(scan =>
-        AGREEMENT_DOC_TYPES.find(type => type === scan.type),
-      ) as RequiredScan[],
-    [application.scans],
-  )
-
-  const uploadedAdditionalAgreementScans = useMemo(
-    () =>
-      (application.scans || []).filter(scan =>
-        ADDITIONAL_AGREEMENT_DOC_TYPES.find(type => type === scan.type),
-      ) as RequiredScan[],
-    [application.scans],
-  )
-
-  const agreementDocs = useMemo(
-    () =>
-      status !== StatusCode.FINALLY_APPROVED
-        ? [...uploadedAgreementScans, ...uploadedAdditionalAgreementScans].map(scan => ({
-            dcAppId: applicationId,
-            documentType: scan.type,
-            name: scan.name || 'name',
-          }))
-        : [],
-    [applicationId, status, uploadedAdditionalAgreementScans, uploadedAgreementScans],
+  const { uploadedAgreementScans, uploadedAdditionalAgreementScans, agreementDocs } = useAgreementDocs(
+    status !== StatusCode.FINALLY_APPROVED,
   )
 
   const currentStep = useMemo(() => {

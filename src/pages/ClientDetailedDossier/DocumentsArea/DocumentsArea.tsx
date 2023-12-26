@@ -16,8 +16,8 @@ import { FileDownloader } from 'shared/ui/FileDownloader/FileDownloader'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { PreparedStatus, getStatus } from '../../../entities/application/application.utils'
-import { AGREEMENT_DOC_TYPES } from '../config'
 import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
+import { useAgreementDocs } from '../hooks/useAgreementDocs'
 import { useStyles } from './DocumentsArea.styles'
 
 type Props = {
@@ -32,21 +32,11 @@ export function DocumentsArea({ status }: Props) {
   const scans = useAppSelector(state => state.order.order?.orderData?.application?.scans || [])
 
   const { downloadFile } = useDownloadDocument()
+  const { agreementDocs } = useAgreementDocs(true)
 
   const questionnaireScan = useMemo(
     () => scans.find(scan => scan.type === DocumentType.CONSENT_FORM),
     [scans],
-  )
-  const agreementDocs = useMemo(
-    () =>
-      (scans.filter(scan => AGREEMENT_DOC_TYPES.find(type => type === scan.type)) as RequiredScan[]).map(
-        scan => ({
-          dcAppId: applicationId,
-          documentType: scan.type,
-          name: scan.name || 'name',
-        }),
-      ),
-    [applicationId, scans],
   )
 
   const [fileQuestionnaire, setFileQuestionnaire] = useState<FileInfo | undefined>()
