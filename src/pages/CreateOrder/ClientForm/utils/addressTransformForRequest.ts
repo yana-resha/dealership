@@ -21,7 +21,6 @@ export const addressTransformForRequest = (address: Address, addressType: Addres
     houseExt,
     unitNum,
   } = address
-
   const result = {
     type: addressType,
     country: 'Россия',
