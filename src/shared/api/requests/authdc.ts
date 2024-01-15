@@ -3,14 +3,16 @@ import {
   CreateSessionRequest,
   GetUserRequest,
   GetUserResponse,
+  TrainingCreateSessionRequest,
+  TrainingCreateSessionResponse,
 } from '@sberauto/authdc-proto/public'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 
 import { appConfig } from 'config'
 import { AUTH_TOKEN } from 'shared/constants/constants'
 import { setLocalStorage } from 'shared/lib/helpers'
 
-import { Rest } from '../client'
+import { CustomFetchError, Rest } from '../client'
 import { setAuthCookie } from '../helpers/authCookie'
 
 const authDcApi = createAuthDc(`${appConfig.apiUrl}/authdc`, Rest.request)
@@ -46,3 +48,20 @@ const prepareUser = (data: GetUserResponse): PreparedUser => {
 export const getUser = (params: GetUserRequest) =>
   authDcApi.getUser({ data: params }).then(res => (res.data ? prepareUser(res.data) : res.data ?? {}))
 export const useGetUserQuery = () => useQuery(['getUser'], () => getUser({}), {})
+
+export const trainingCreateSession = (params: TrainingCreateSessionRequest) =>
+  authDcApi.trainingCreateSession({ data: params }).then(res => {
+    setAuthCookie()
+    if (res.data.tokenCsrf) {
+      setLocalStorage(AUTH_TOKEN, res.data.tokenCsrf)
+    }
+
+    return res.data ?? {}
+  })
+export const useTrainingCreateSessionMutation = () =>
+  useMutation<TrainingCreateSessionResponse, CustomFetchError, TrainingCreateSessionRequest, unknown>(
+    ['trainingCreateSession'],
+    trainingCreateSession,
+  )
+
+export const trainingLogout = () => authDcApi.trainingLogout()

@@ -1,20 +1,22 @@
+import React from 'react'
+
 import { render, screen } from '@testing-library/react'
 
 import { MockProviders } from 'tests/mocks'
 
-import { Auth } from '../Auth'
+import { TrainingAuth } from '../TrainingAuth'
 
 jest.mock('common/auth/ui/LoginForm/LoginForm.tsx')
 
-describe('AuthPage', () => {
+describe('TrainingAuth', () => {
   it('отрисовывает форму авторизации', () => {
     render(
       <MockProviders>
-        <Auth />
+        <TrainingAuth />
       </MockProviders>,
     )
 
-    const loginForm = screen.getByTestId('loginForm')
+    const loginForm = screen.getByTestId('trainingLoginForm')
     expect(loginForm).toBeInTheDocument()
   })
 })

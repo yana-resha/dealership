@@ -16,5 +16,5 @@ export const appConfig = {
   sberTeamIdUrl: env('REACT_APP_SBER_TEAM_ID_URL'),
   dochubApiHeader: env('REACT_APP_DOCHUB_API_HEADER'),
   env: env<'dev' | 'stage' | 'prod'>('REACT_APP_ENVIRONMENT'),
-  sberTeamAuthEnv: env<'dev' | 'integration' | 'prod'>('REACT_APP_SBER_TEAM_ID_ENVIRONMENT'),
+  sberTeamAuthEnv: env<'dev' | 'integration' | 'prod' | 'training'>('REACT_APP_SBER_TEAM_ID_ENVIRONMENT'),
 }
