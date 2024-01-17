@@ -228,17 +228,19 @@ export function InformationArea({
             </InfoText>
           </Box>
 
-          <InfoText label="Сумма кредита">{creditAmount ? formatMoney(creditAmount) : ''}</InfoText>
-          <InfoText label="Платеж">{monthlyPayment ? formatMoney(monthlyPayment) : ''}</InfoText>
-          <InfoText label="ПВ">{downPayment ? formatMoney(downPayment) : ''}</InfoText>
+          <InfoText label="Сумма кредита">{formatMoney(creditAmount)}</InfoText>
+          <InfoText label="Платеж">{formatMoney(monthlyPayment)}</InfoText>
+          <InfoText label="ПВ">{formatMoney(downPayment)}</InfoText>
           <InfoText label="Переплата">{formatMoney(overpayment)}</InfoText>
           {/* переводим baseRate (0...1) в проценты */}
-          <InfoText label="% ставка">{rate ? parseFloat((rate * 100).toFixed(2)) : ''}%</InfoText>
+          <InfoText label="% ставка">
+            {typeof rate === 'number' && !isNaN(rate) ? parseFloat((rate * 100).toFixed(2)) : ''}%
+          </InfoText>
           <Box className={classes.infoTextContainer} gridColumn="span 2">
             <InfoText label="Кредитный продукт">{productName}</InfoText>
           </Box>
           <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
-          <InfoText label="Срок кредита">{term ? formatTerm(term) : ''}</InfoText>
+          <InfoText label="Срок кредита">{formatTerm(term)}</InfoText>
 
           {isShowScheduleBtn && isHasFeeScheduleInScans && (
             <FeeScheduleBtn onClick={handleFeeScheduleClick} disabled={isDisableScheduleBtn} />
