@@ -44,18 +44,20 @@ export function formatMoney(number?: number) {
   return formatNumber(number, { postfix: ' ₽' })
 }
 
+function getPluralForm(forms: string[], num: number) {
+  return num % 10 === 1 && num % 100 !== 11
+    ? forms[0]
+    : num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20)
+    ? forms[1]
+    : forms[2]
+}
+
 export function formatTerm(term?: number) {
   if (typeof term !== 'number' || isNaN(term)) {
     return ''
   }
-  if (term == 1) {
-    return `${term} месяц`
-  }
-  if (term > 1 && term < 5) {
-    return `${term} месяца`
-  }
 
-  return `${term} месяцев`
+  return `${term} ${getPluralForm(['месяц', 'месяца', 'месяцев'], term)}`
 }
 
 export function formatPassport(series?: string, number?: string) {
