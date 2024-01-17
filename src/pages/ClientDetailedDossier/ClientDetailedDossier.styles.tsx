@@ -19,5 +19,6 @@ export const useStyles = makeStyles(theme => ({
 
   circular: {
     margin: theme.spacing(20, 0),
+    alignSelf: 'center',
   },
 }))

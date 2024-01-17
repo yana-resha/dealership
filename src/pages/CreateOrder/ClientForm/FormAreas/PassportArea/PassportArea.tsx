@@ -153,7 +153,7 @@ export function PassportArea() {
       <MaskedInputFormik
         name="clientName"
         label="ФИО"
-        placeholder="-"
+        placeholder="Фамилия Имя Отчество"
         mask={maskFullName}
         gridColumn="span 12"
         disabled
@@ -164,7 +164,7 @@ export function PassportArea() {
         <MaskedInputFormik
           name="clientFormerName"
           label="ФИО до смены"
-          placeholder="-"
+          placeholder="Фамилия Имя Отчество"
           mask={maskFullName}
           gridColumn="span 12"
         />
