@@ -95,8 +95,14 @@ function fileUploadStatusNotError(file: FileInfo | null | undefined) {
   return true
 }
 
-function isJobDisabled(occupation: number | null) {
-  return occupation !== null && JOB_DISABLED_OCCUPATIONS.includes(occupation)
+function isJobDisabled(
+  occupation: number | null,
+  additionalDisabledOccupations = [] as typeof JOB_DISABLED_OCCUPATIONS,
+) {
+  return (
+    occupation !== null &&
+    [...JOB_DISABLED_OCCUPATIONS, ...additionalDisabledOccupations].includes(occupation)
+  )
 }
 
 function setRequiredIfSave<T extends Yup.BaseSchema<any, AnyObject, any>>(schema: T, message?: string) {
@@ -267,9 +273,13 @@ export const clientFormValidationSchema = Yup.object().shape({
   employerName: Yup.string()
     .nullable()
     .when('occupation', {
-      is: (occupation: number | null) => isJobDisabled(occupation),
+      is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
       otherwise: schema => setRequiredIfSave(schema),
     }),
+  employerInn: Yup.string().when('occupation', {
+    is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
+    otherwise: schema => setRequiredIfSave(schema),
+  }),
   employerPhone: Yup.string()
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
       const { mobileNumber, additionalNumber } = (context.options as InternalOptions)?.from?.[0].value || {}
@@ -277,17 +287,14 @@ export const clientFormValidationSchema = Yup.object().shape({
       return !value || (value !== mobileNumber && value !== additionalNumber)
     })
     .when('occupation', {
-      is: (occupation: number | null) => isJobDisabled(occupation),
+      is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
       otherwise: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
     }),
   employerAddressString: Yup.string().when('occupation', {
-    is: (occupation: number | null) => isJobDisabled(occupation),
+    is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
     otherwise: schema => setRequiredIfSave(schema),
   }),
-  employerInn: Yup.string().when('occupation', {
-    is: (occupation: number | null) => isJobDisabled(occupation),
-    otherwise: schema => setRequiredIfSave(schema),
-  }),
+
   questionnaireFile: Yup.object()
     .nullable()
     .test('badUpload', 'Ошибка при выгрузке файла', questionnaireFile =>
