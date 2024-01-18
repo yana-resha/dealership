@@ -8,6 +8,7 @@ import { disableConsole } from 'tests/utils'
 import { OrderCalculator } from '../OrderCalculator'
 
 disableConsole('error')
+jest.mock('shared/hooks/useScrollToErrorField')
 
 describe('Calculator', () => {
   it('Изначально отображается только форма Малого калькулятора калькулятора', () => {

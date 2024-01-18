@@ -4,9 +4,9 @@ import { Form, useFormikContext } from 'formik'
 
 import { initialValueMap } from 'common/OrderCalculator/config'
 import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProducts'
-import { useDisableFormSubmit } from 'common/OrderCalculator/hooks/useDisableFormSubmit'
 import { useFormChanging } from 'common/OrderCalculator/hooks/useFormChanging'
 import { BriefOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
@@ -29,6 +29,7 @@ export function FormContainer({
   enableFormSubmit,
 }: Props) {
   const { values } = useFormikContext<BriefOrderCalculatorFields>()
+  useScrollToErrorField()
 
   const formFields = useMemo(
     () => ({

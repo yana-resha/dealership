@@ -27,6 +27,7 @@ import { BriefOrderCalculator } from '../BriefOrderCalculator'
 import { formFields } from './OrderCalculator.mock'
 
 disableConsole('error')
+jest.mock('shared/hooks/useScrollToErrorField')
 
 const createWrapper = ({ store, children }: PropsWithChildren<{ store?: MockStore }>) => (
   <MockProviders mockStore={store}>{children}</MockProviders>

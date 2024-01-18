@@ -1,14 +1,12 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
-import { FormikProps } from 'formik'
 import { MockStore } from 'redux-mock-store'
 
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { ClientForm } from '../ClientForm'
-import { ClientData } from '../ClientForm.types'
 
 jest.mock('../FormAreas/PassportArea/PassportArea', () => ({
   PassportArea: () => <div data-testid="passportArea" />,
@@ -34,7 +32,7 @@ jest.mock('notistack', () => ({
     enqueueSnackbar: jest.fn(),
   }),
 }))
-const formRef = React.createRef<FormikProps<ClientData>>()
+jest.mock('shared/hooks/useScrollToErrorField')
 
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore
