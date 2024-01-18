@@ -112,7 +112,9 @@ export const FileDownloader = ({
 
   const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
   const message = loadingMessage ? loadingMessage : 'Файл загружается...'
-  const nameMaxLength = 30
+  // TODO DCB-1336 Удалить ограничение количества символов в названии файла.
+  // Переделать на ограничение ширины в родителе.
+  const nameMaxLength = 100
   const fileName = file?.name
     ? file.name?.length > nameMaxLength
       ? file.name.slice(0, nameMaxLength) + '...'

@@ -1,10 +1,11 @@
 import { PropsWithChildren } from 'react'
 
-import { StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { DocumentType, StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MockStore } from 'redux-mock-store'
 
+import * as useAgreementDocsModule from 'pages/ClientDetailedDossier/hooks/useAgreementDocs'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { MockProviders } from 'tests/mocks'
@@ -51,6 +52,8 @@ jest.mock('features/ApplicationFileLoader/hooks/useCheckDocumentsList', () => ({
   }),
 }))
 
+const mockedUseAgreementDocs = jest.spyOn(useAgreementDocsModule, 'useAgreementDocs')
+
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
@@ -62,6 +65,43 @@ const createWrapper = ({ store, children }: WrapperProps) => (
 describe('AgreementAreaTest', () => {
   beforeEach(() => {
     mockedUseAppSelector.mockImplementation(() => fullApplicationData.application)
+    mockedUseAgreementDocs.mockImplementation(() => ({
+      uploadedAgreementScans: [
+        {
+          type: DocumentType.CREDIT_CONTRACT,
+          extension: '.pdf',
+          name: 'Договор (ИУК).pdf',
+        },
+        {
+          type: DocumentType.ACCOUNT_OPEN_FORM,
+          extension: '.pdf',
+          name: 'Заявление на открытие счёта.pdf',
+        },
+        {
+          type: DocumentType.STATEMENT_FORM,
+          extension: '.pdf',
+          name: 'Заявление на выдачу кредита.pdf',
+        },
+      ],
+      uploadedAdditionalAgreementScans: [],
+      agreementDocs: [
+        {
+          documentType: DocumentType.CREDIT_CONTRACT,
+          dcAppId: fullApplicationData.application?.dcAppId || '',
+          name: 'Договор (ИУК).pdf',
+        },
+        {
+          documentType: DocumentType.ACCOUNT_OPEN_FORM,
+          dcAppId: fullApplicationData.application?.dcAppId || '',
+          name: 'Заявление на открытие счёта.pdf',
+        },
+        {
+          documentType: DocumentType.STATEMENT_FORM,
+          dcAppId: fullApplicationData.application?.dcAppId || '',
+          name: 'Заявление на выдачу кредита.pdf',
+        },
+      ],
+    }))
   })
   describe('На каждом шаге отображаются все элементы', () => {
     it('Отображается ProgressBar', () => {
