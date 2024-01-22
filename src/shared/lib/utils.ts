@@ -37,14 +37,17 @@ export function formatNumber(num: number | string, options?: { postfix?: string;
 }
 
 export function formatMoney(number?: number) {
-  if (typeof number !== 'number') {
+  if (typeof number !== 'number' || isNaN(number)) {
     return ''
   }
 
   return formatNumber(number, { postfix: ' ₽' })
 }
 
-export function formatTerm(term: number) {
+export function formatTerm(term?: number) {
+  if (typeof term !== 'number' || isNaN(term)) {
+    return ''
+  }
   if (term == 1) {
     return `${term} месяц`
   }
