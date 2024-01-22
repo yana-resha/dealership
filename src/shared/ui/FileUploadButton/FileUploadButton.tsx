@@ -78,7 +78,7 @@ const FileUploadButton = ({
   }, [setIsVisible])
 
   return (
-    <Box>
+    <Box data-testid="fileUploadButton">
       <Button
         classes={{ root: styles.root, startIcon: styles.startIcon }}
         startIcon={isUploading ? <CircularProgressWheel size="small" /> : icon ?? <AttachIcon />}
