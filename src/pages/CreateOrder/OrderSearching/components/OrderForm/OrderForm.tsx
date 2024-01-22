@@ -94,7 +94,7 @@ function OrderForm({
           <MaskedInputFormik
             name="clientName"
             label="ФИО"
-            placeholder="-"
+            placeholder="Фамилия Имя Отчество"
             mask={maskFullName}
             gridColumn="span 9"
             disabled={disabledFields.includes('clientName')}
