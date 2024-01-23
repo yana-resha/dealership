@@ -13,7 +13,7 @@ import { ReactComponent as TableFileIcon } from 'assets/icons/tableFile.svg'
 import { ReactComponent as TextFileIcon } from 'assets/icons/textFile.svg'
 import { Role } from 'shared/api/requests/authdc'
 import { RequiredCatalog, useDownloadFileMutation } from 'shared/api/requests/fileStorageDc.api'
-import { DEFAULT_FILE_NAME } from 'shared/config/uploadFile.config'
+import { DEFAULT_FILE_NAME } from 'shared/config/fileLoading.config'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
 import { imageExtensions, tableExtensions, textExtensions } from '../Catalog.config'

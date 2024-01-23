@@ -9,7 +9,6 @@ import { FileInfo, UploaderConfig, DocumentUploadStatus } from 'features/Applica
 import { Uploader } from 'features/ApplicationFileLoader/ApplicationFileUploader'
 import { useDownloadDocument } from 'features/ApplicationFileLoader/hooks/useDownloadDocument'
 import { UPLOADED_DOCUMENTS } from 'pages/CreateOrder/ClientForm/config/clientFormInitialValues'
-import { RequiredScan } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { FileDownloader } from 'shared/ui/FileDownloader/FileDownloader'
@@ -126,6 +125,8 @@ export function DocumentsArea({ status }: Props) {
                   key={index}
                   fileOrMetadata={document}
                   index={index}
+                  dcAppId={document.dcAppId}
+                  documentType={document.documentType}
                   loadingMessage="Файл загружается"
                   onDownloadFile={downloadFile}
                 />
