@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { AdditionalOptionsFrontdc, OptionType } from '@sberauto/loanapplifecycledc-proto/public'
+import { AdditionalOptionsFrontdc, OptionType, DocType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { formatMoney } from 'shared/lib/utils'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
@@ -8,6 +8,14 @@ import { useStyles } from './Requisite.styles'
 
 type Props = {
   additionalOption: AdditionalOptionsFrontdc
+}
+
+const docTypeLabelMap = {
+  [DocType.DOCTYPE_UNSPECIFIED]: 'Номер документа',
+  [DocType.PAYMENT_ORDER]: 'Номер счета',
+  [DocType.INSURANCE_POLICY]: 'Номер полиса',
+  [DocType.CONTRACT]: 'Номер договора',
+  [DocType.ACT]: 'Номер акта',
 }
 
 export function Requisite({ additionalOption }: Props) {
@@ -26,6 +34,10 @@ export function Requisite({ additionalOption }: Props) {
     : vendor?.requisites?.accountRequisite?.accountNumber
   const tax = broker ? broker.taxInfo?.amount : vendor?.taxInfo?.amount
 
+  const docTypeLabel =
+    docTypeLabelMap[additionalOption.docType || DocType.DOCTYPE_UNSPECIFIED] ||
+    docTypeLabelMap[DocType.DOCTYPE_UNSPECIFIED]
+
   return (
     <Box className={classes.requisiteContainer}>
       <Box className={classes.requisiteInfo}>
@@ -34,7 +46,7 @@ export function Requisite({ additionalOption }: Props) {
         {!!broker && <InfoText label="Агент получатель">{broker?.vendorName}</InfoText>}
         {price !== undefined && <InfoText label="Стоимость">{formatMoney(price)}</InfoText>}
         {!!term && <InfoText label="Срок">{term} мес.</InfoText>}
-        {!!docNumber && <InfoText label="Номер полиса">{docNumber}</InfoText>}
+        {!!docNumber && <InfoText label={docTypeLabel}>{docNumber}</InfoText>}
         {!!beneficiaryBank && <InfoText label="Получатель">{beneficiaryBank}</InfoText>}
         {!!correspondentAccount && <InfoText label="Корреспондентский счёт">{correspondentAccount}</InfoText>}
         {!!bankAccountNumber && <InfoText label="Расчетный счет">{bankAccountNumber}</InfoText>}
