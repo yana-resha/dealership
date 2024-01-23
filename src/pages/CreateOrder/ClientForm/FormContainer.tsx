@@ -8,6 +8,7 @@ import { useOrderContext } from 'common/OrderCalculator'
 import { ApplicationProvider } from 'entities/application/ApplicationProvider'
 import { FraudDialog } from 'entities/SpecialMark'
 import { usePrevious } from 'shared/hooks/usePrevious'
+import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
 import { useStyles } from './ClientForm.styles'
@@ -46,6 +47,8 @@ export function FormContainer({
 }: Props) {
   const classes = useStyles()
   const { values, handleSubmit, setFieldValue, isValid } = useFormikContext<ClientData>()
+  useScrollToErrorField()
+
   const { onChangeForm } = useOrderContext()
   const [isShouldSubmit, setShouldSubmit] = useState(false)
 

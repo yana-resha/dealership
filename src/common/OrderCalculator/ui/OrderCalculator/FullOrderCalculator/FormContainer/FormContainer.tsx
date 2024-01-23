@@ -13,6 +13,7 @@ import {
 } from 'entities/application/AdditionalOptionsRequisites/hooks/useRequisitesForFinancingQuery'
 import { RequisitesContextProvider } from 'entities/application/AdditionalOptionsRequisites/ui/RequisitesContext'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
@@ -36,6 +37,8 @@ export function FormContainer({
 }: Props) {
   const { values } = useFormikContext<FullOrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
+  useScrollToErrorField()
+
   const [requisites, setRequisites] = useState<RequisitesForFinancing | undefined>()
 
   const additionalOptionsIds = useMemo(

@@ -28,6 +28,7 @@ import { FullOrderCalculator } from '../FullOrderCalculator'
 import { formFields } from './FullOrderCalculator.mock'
 
 jest.mock('entities/pointOfSale')
+jest.mock('shared/hooks/useScrollToErrorField')
 disableConsole('error')
 
 const createWrapper = ({ store, children }: PropsWithChildren<{ store?: MockStore }>) => (
