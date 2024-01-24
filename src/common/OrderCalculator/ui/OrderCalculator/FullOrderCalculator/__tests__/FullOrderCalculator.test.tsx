@@ -62,6 +62,7 @@ const getCreditProductListData = {
   ...prepareCreditProduct(creditProductListRsData.creditProducts),
 }
 
+// TODO Разбить тесты по дочерним компонентам DCB-1411
 describe('FullOrderCalculator', () => {
   const fn = jest.fn()
   beforeEach(() => {
@@ -71,6 +72,8 @@ describe('FullOrderCalculator', () => {
           data: getCreditProductListData,
           isError: false,
           isFetching: false,
+          isLoading: false,
+          isSuccess: true,
         } as any),
     )
     mockedUseGetVendorOptions.mockImplementation(
@@ -78,9 +81,11 @@ describe('FullOrderCalculator', () => {
         ({
           data: mockGetVendorOptionsResponse,
           isError: false,
+          isLoading: false,
+          isSuccess: true,
         } as any),
     )
-    mockedUseCarSection.mockImplementation(() => ({ cars: carBrands }))
+    mockedUseCarSection.mockImplementation(() => ({ cars: carBrands, isLoading: false, isSuccess: true }))
     mockedUseInitialValues.mockImplementation(
       () =>
         ({

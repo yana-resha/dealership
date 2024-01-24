@@ -90,12 +90,16 @@ export function useLimits({ vendorCode }: Params) {
   } = values
   const carCost = parseFloat(values.carCost)
 
-  const { data, isLoading, isSuccess } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
-  const { cars } = useCarSection()
+  const {
+    data: creditProductListData,
+    isLoading: isCreditProductListLoading,
+    isSuccess: isCreditProductListSuccess,
+  } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
+  const { cars, isLoading: isGetCarsLoading, isSuccess: isGetCarsSuccess } = useCarSection()
 
   useEffect(() => {
-    dispatch(updateOrder({ creditProductsList: data?.products }))
-  }, [data, dispatch])
+    dispatch(updateOrder({ creditProductsList: creditProductListData?.products }))
+  }, [creditProductListData, dispatch])
 
   const carMaxAge = carBrand ? cars[carBrand]?.maxCarAge ?? 0 : 0
   const durationMaxFromCarAge = carYear
@@ -119,7 +123,7 @@ export function useLimits({ vendorCode }: Params) {
 
   const { creditProducts, isValidCreditProduct } = useMemo(
     () =>
-      (data?.products || []).reduce(
+      (creditProductListData?.products || []).reduce(
         (acc, cur) => {
           if (cur.durationMin && cur.durationMin > durationMaxFromAge) {
             return acc
@@ -140,12 +144,23 @@ export function useLimits({ vendorCode }: Params) {
           isValidCreditProduct: boolean
         },
       ),
-    [creditProduct, data?.products, durationMaxFromAge],
+    [creditProduct, creditProductListData?.products, durationMaxFromAge],
   )
-  const currentProduct = useMemo(() => data?.productsMap?.[creditProduct], [creditProduct, data?.productsMap])
+
+  const currentProduct = useMemo(
+    () => creditProductListData?.productsMap?.[creditProduct],
+    [creditProduct, creditProductListData?.productsMap],
+  )
+
   // Если creditProduct пришел с Бэка, но по какой-то причине не проходит по сроку, то очищаем поле
   useEffect(() => {
-    if (data?.products && !isValidCreditProduct && creditProduct) {
+    if (
+      !isGetCarsLoading &&
+      isGetCarsSuccess &&
+      creditProductListData?.products &&
+      !isValidCreditProduct &&
+      creditProduct
+    ) {
       setCreditProduct('')
     }
     // Исключили setCreditProduct что бы избежать случайного перерендера
@@ -153,8 +168,8 @@ export function useLimits({ vendorCode }: Params) {
   }, [creditProduct, currentProduct])
 
   const onlyCreditAdditionalEquipmentsCost = getServicesTotalCost(additionalEquipments, true)
-  const minInitialPaymentPercent = currentProduct?.downpaymentMin || data?.fullDownpaymentMin
-  const maxInitialPaymentPercent = currentProduct?.downpaymentMax || data?.fullDownpaymentMax
+  const minInitialPaymentPercent = currentProduct?.downpaymentMin || creditProductListData?.fullDownpaymentMin
+  const maxInitialPaymentPercent = currentProduct?.downpaymentMax || creditProductListData?.fullDownpaymentMax
   const minInitialPayment = getMinMaxValueFromPercent(
     minInitialPaymentPercent,
     carCost + onlyCreditAdditionalEquipmentsCost,
@@ -171,11 +186,15 @@ export function useLimits({ vendorCode }: Params) {
   */
   const loanTerms = useMemo(() => {
     const durationMin =
-      Math.ceil((currentProduct?.durationMin || data?.fullDurationMin || 0) / LOAN_TERM_GRADUATION_VALUE) *
-      LOAN_TERM_GRADUATION_VALUE
+      Math.ceil(
+        (currentProduct?.durationMin || creditProductListData?.fullDurationMin || 0) /
+          LOAN_TERM_GRADUATION_VALUE,
+      ) * LOAN_TERM_GRADUATION_VALUE
     const durationMaxFromProduct =
-      Math.floor((currentProduct?.durationMax || data?.fullDurationMax || 0) / LOAN_TERM_GRADUATION_VALUE) *
-      LOAN_TERM_GRADUATION_VALUE
+      Math.floor(
+        (currentProduct?.durationMax || creditProductListData?.fullDurationMax || 0) /
+          LOAN_TERM_GRADUATION_VALUE,
+      ) * LOAN_TERM_GRADUATION_VALUE
 
     const durationMax = Math.min(durationMaxFromProduct, durationMaxFromAge)
     if (durationMin > durationMax || durationMax <= 0) {
@@ -190,8 +209,8 @@ export function useLimits({ vendorCode }: Params) {
   }, [
     currentProduct?.durationMax,
     currentProduct?.durationMin,
-    data?.fullDurationMax,
-    data?.fullDurationMin,
+    creditProductListData?.fullDurationMax,
+    creditProductListData?.fullDurationMin,
     durationMaxFromAge,
   ])
 
@@ -350,7 +369,7 @@ export function useLimits({ vendorCode }: Params) {
   ])
 
   const isNecessaryCasco = !!currentProduct?.cascoFlag
-  const isLoadedCreditProducts = !isLoading && isSuccess
+  const isLoadedCreditProducts = !isCreditProductListLoading && isCreditProductListSuccess
 
   /*
   В initialValues формика прописано свойство validationParams. Поля для него нет,
@@ -441,5 +460,7 @@ export function useLimits({ vendorCode }: Params) {
     commonErrors,
     isNecessaryCasco,
     isLoadedCreditProducts,
+    isLoading: isCreditProductListLoading || isGetCarsLoading,
+    isSuccess: isCreditProductListSuccess && isGetCarsSuccess,
   }
 }

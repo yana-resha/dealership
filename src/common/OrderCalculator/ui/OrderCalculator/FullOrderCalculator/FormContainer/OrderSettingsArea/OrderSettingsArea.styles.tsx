@@ -18,4 +18,10 @@ export default makeStyles(theme => ({
     color: theme.palette.error.main,
     gap: theme.spacing(2),
   },
+
+  loaderContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
 }))

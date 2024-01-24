@@ -54,6 +54,7 @@ const getCreditProductListData = {
 
 const mockedUseInitialValues = jest.spyOn(useInitialValuesModule, 'useInitialValues')
 
+// TODO Разбить тесты по дочерним компонентам DCB-1410
 describe('OrderCalculator', () => {
   const fn = jest.fn()
 
@@ -64,6 +65,8 @@ describe('OrderCalculator', () => {
           data: getCreditProductListData,
           isError: false,
           isFetching: false,
+          isLoading: false,
+          isSuccess: true,
         } as any),
     )
     mockedUseGetVendorOptions.mockImplementation(
@@ -71,6 +74,8 @@ describe('OrderCalculator', () => {
         ({
           data: mockGetVendorOptionsResponse,
           isError: false,
+          isLoading: false,
+          isSuccess: true,
         } as any),
     )
     mockedUseInitialValues.mockImplementation(
@@ -80,7 +85,7 @@ describe('OrderCalculator', () => {
           initialValues: initialValueMap,
         } as any),
     )
-    mockedUseCarSection.mockImplementation(() => ({ cars: carBrands }))
+    mockedUseCarSection.mockImplementation(() => ({ cars: carBrands, isLoading: false, isSuccess: true }))
     mockedUseAppSelector.mockImplementation(() => fullApplicationData.application?.applicant?.birthDate)
   })
 
