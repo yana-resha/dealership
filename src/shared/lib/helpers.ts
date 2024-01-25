@@ -49,3 +49,22 @@ export function prepareOptionType(type: keyof typeof OptionType): OptionType | u
 export function prepareOptionId(type: keyof typeof OptionID): OptionID | undefined {
   return OptionID[type] ?? undefined
 }
+
+export const getLocalStorage = <T>(key: string): T | undefined => {
+  const rawData = localStorage.getItem(key)
+  if (rawData) {
+    try {
+      return JSON.parse(rawData)
+    } catch {
+      console.error(`json parse error by key ${key}`)
+
+      return
+    }
+  }
+
+  return
+}
+
+export const setLocalStorage = <T>(key: string, data: T) => localStorage.setItem(key, JSON.stringify(data))
+
+export const removeLocalStorage = (key: string) => localStorage.removeItem(key)

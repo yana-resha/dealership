@@ -7,6 +7,8 @@ import {
 import { useQuery } from 'react-query'
 
 import { appConfig } from 'config'
+import { AUTH_TOKEN } from 'shared/constants/constants'
+import { setLocalStorage } from 'shared/lib/helpers'
 
 import { Rest } from '../client'
 import { setAuthCookie } from '../helpers/authCookie'
@@ -16,6 +18,9 @@ const authDcApi = createAuthDc(`${appConfig.apiUrl}/authdc`, Rest.request)
 export const createSession = (params: CreateSessionRequest) =>
   authDcApi.createSession({ data: params }).then(res => {
     setAuthCookie()
+    if (res.data.tokenCsrf) {
+      setLocalStorage(AUTH_TOKEN, res.data.tokenCsrf)
+    }
 
     return res
   })

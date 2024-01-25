@@ -9,7 +9,9 @@ import { clearOrder } from 'entities/reduxStore/orderSlice'
 import { removeUserInfo } from 'entities/user/model/userSlice'
 import { checkIsAuth, removeAuthCookie } from 'shared/api/helpers/authCookie'
 import { deleteSession } from 'shared/api/requests/authdc'
+import { AUTH_TOKEN } from 'shared/constants/constants'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
+import { removeLocalStorage } from 'shared/lib/helpers'
 import { sleep } from 'shared/lib/sleep'
 
 import { useAuthContext } from '../ui/AuthProvider'
@@ -56,6 +58,7 @@ export const useLogout = (beforeRedirectCb?: () => Promise<void>) => {
 
       // Чистим куки
       Cookies.remove(COOKIE_POINT_OF_SALE)
+      removeLocalStorage(AUTH_TOKEN)
       removeAuthCookie()
       // т.к. в прилоджении производится проверка isAuth, то на этом этапе
       // будет произведен редирект на страницу авторизации

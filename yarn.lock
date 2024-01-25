@@ -2198,10 +2198,10 @@
   resolved "https://nexus.x.sberauto.com/repository/npm/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
   integrity "sha1-i+NqH2bzJlOJ6QtfnJliFGdY9yg= sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg=="
 
-"@sberauto/authdc-proto@1.0.11":
-  version "1.0.11"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-1.0.11.tgz#1e7fef78f75a2cb098704db696c5bbc3691c2c0d"
-  integrity sha512-F81b1bhk9QditV/nj61kwm3u6VS5Pf8sFyKIk04DmCuQbJ355FJ1VWJPZj/joTNChRxqB3lO2XWmg9xFXmGTBA==
+"@sberauto/authdc-proto@1.1.2":
+  version "1.1.2"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/authdc-proto/-/authdc-proto-1.1.2.tgz#28cade600cd53d7558f917577f9ef5487952c84b"
+  integrity sha512-f2Uajwy4/LKGoVG+L/6MtNPoLnLdawpDHeEHs99oLKNViqW7CNVK/ARgEhJMj/RPgnm+Sfed5gQSxNj56vXtzA==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
