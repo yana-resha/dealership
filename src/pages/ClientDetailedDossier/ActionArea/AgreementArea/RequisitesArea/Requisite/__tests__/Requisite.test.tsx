@@ -67,7 +67,7 @@ describe('RequisiteTest', () => {
 
     it('Отображается "НДС"', () => {
       expect(screen.getByText('НДС')).toBeInTheDocument()
-      expect(screen.getByText('13.5')).toBeInTheDocument()
+      expect(screen.getByText('13,5 ₽')).toBeInTheDocument()
     })
   })
 })
