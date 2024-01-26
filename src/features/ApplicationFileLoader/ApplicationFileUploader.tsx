@@ -136,7 +136,7 @@ const Uploader: React.FC<UploaderProps> = ({
             </SberTypography>
           )}
 
-          <Stack direction="row">
+          <Stack direction="row" className={classes.stack}>
             <Box gridColumn="1 / -1" className={classes.item} display="flex" alignItems="center">
               {documentFile?.file && !isLoading ? (
                 <FileDownloader

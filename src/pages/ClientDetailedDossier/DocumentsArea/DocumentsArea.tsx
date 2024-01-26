@@ -118,20 +118,18 @@ export function DocumentsArea({ status }: Props) {
         />
 
         {isShowDownloadLoanAgreement && (
-          <Box gridColumn="1 / -1">
-            <Box className={classes.documentsBlock}>
-              {agreementDocs.map((document, index) => (
-                <FileDownloader
-                  key={index}
-                  fileOrMetadata={document}
-                  index={index}
-                  dcAppId={document.dcAppId}
-                  documentType={document.documentType}
-                  loadingMessage="Файл загружается"
-                  onDownloadFile={downloadFile}
-                />
-              ))}
-            </Box>
+          <Box gridColumn="1 / -1" className={classes.documentsBlock}>
+            {agreementDocs.map((document, index) => (
+              <FileDownloader
+                key={index}
+                fileOrMetadata={document}
+                index={index}
+                dcAppId={document.dcAppId}
+                documentType={document.documentType}
+                loadingMessage="Файл загружается"
+                onDownloadFile={downloadFile}
+              />
+            ))}
           </Box>
         )}
       </Box>
