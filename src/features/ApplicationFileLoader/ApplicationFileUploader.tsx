@@ -41,11 +41,11 @@ const Uploader: React.FC<UploaderProps> = ({
   isDisabledRemove = false,
   isShowLabel = false,
 }) => {
-  const { documentLabel, documentName, documentFile } = uploaderConfig || {}
+  const { documentLabel, documentName, documentFile, documentError } = uploaderConfig || {}
   const isShowInput = !!onUploadDocument
   const isLoading = documentFile?.status === DocumentUploadStatus.Progress
-  const isError = !!uploaderConfig.documentError || documentFile?.status === DocumentUploadStatus.Error
-  const errorMessage = uploaderConfig.documentError ?? 'Не удалось загрузить файл'
+  const isError = !!documentError || documentFile?.status === DocumentUploadStatus.Error
+  const errorMessage = documentError ?? 'Не удалось загрузить файл'
 
   const classes = useStyles()
 
@@ -55,7 +55,6 @@ const Uploader: React.FC<UploaderProps> = ({
   const handleUpload = useCallback(
     (files: FileList) => {
       const file = files.item(0)
-
       if (file) {
         onUploadDocument?.(file, documentName, DocumentUploadStatus.Local)
       }
@@ -92,10 +91,10 @@ const Uploader: React.FC<UploaderProps> = ({
     }
 
     return (
-      <Box>
+      <Box data-testid="uploaderContainer">
         <Box className={classes.documentPreview}>
           {isShowLabel && (
-            <SberTypography sberautoVariant="body3" component="p">
+            <SberTypography sberautoVariant="body3" component="p" data-testid="documentLabel">
               {documentLabel}
             </SberTypography>
           )}
@@ -108,22 +107,31 @@ const Uploader: React.FC<UploaderProps> = ({
             onDownloadFile={downloadFile}
           />
         </Box>
-        {isError && <FormHelperText error>{errorMessage}</FormHelperText>}
+        {isError && (
+          <FormHelperText error data-testid="errorMessage">
+            {errorMessage}
+          </FormHelperText>
+        )}
       </Box>
     )
   }
 
   return (
-    <Box className={classes.documentSection}>
+    <Box className={classes.documentSection} data-testid="uploaderDragAndDropContainer">
       <>
         <DragAndDropWrapper onChange={handleUpload}>
           {isShowLabel && (
-            <SberTypography sberautoVariant="h6" component="p">
+            <SberTypography sberautoVariant="h6" component="p" data-testid="documentLabel">
               {documentLabel}
             </SberTypography>
           )}
           {!!suggest && (
-            <SberTypography sberautoVariant="body3" component="p" className={classes.sectionInfo}>
+            <SberTypography
+              sberautoVariant="body3"
+              component="p"
+              className={classes.sectionInfo}
+              data-testid="suggestion"
+            >
               {suggest}
             </SberTypography>
           )}

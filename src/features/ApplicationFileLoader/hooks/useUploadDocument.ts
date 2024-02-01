@@ -9,7 +9,6 @@ import { checkIsFile } from '../utils/checkIsFile'
 
 type UseUploadDocumentParams = {
   uploaderConfig: UploaderConfig
-
   /** Если хотим чтобы форма не только выводила файл, но и могла изменять и выгружать его на бэк.
    * Меняет внешний вид компонента */
   onUploadDocument?: (file: File, documentName: string, status: FileInfo['status']) => void
@@ -17,13 +16,11 @@ type UseUploadDocumentParams = {
 }
 
 /** Отправляет файл на сервер и ждет подтверждение о загрузке */
-const useUploadDocument = (params: UseUploadDocumentParams) => {
-  const { uploaderConfig, onError, onUploadDocument } = params
+export const useUploadDocument = ({ uploaderConfig, onError, onUploadDocument }: UseUploadDocumentParams) => {
   const { documentName, documentFile, documentType } = uploaderConfig || {}
 
   const { onGetOrderId } = useApplicationContext()
-  const { mutateAsync: uploadDocument } = useUploadDocumentMutation()
-
+  const { mutateAsync: uploadDocumentMutate } = useUploadDocumentMutation()
   const { checkApplicationDocumentsList } = useCheckDocumentsList()
 
   const sendFile = useCallback(async () => {
@@ -40,7 +37,7 @@ const useUploadDocument = (params: UseUploadDocumentParams) => {
         throw new Error('dcAppId is empty')
       }
 
-      await uploadDocument({
+      await uploadDocumentMutate({
         dcAppId,
         file,
         documentType,
@@ -65,10 +62,8 @@ const useUploadDocument = (params: UseUploadDocumentParams) => {
     onError,
     onGetOrderId,
     onUploadDocument,
-    uploadDocument,
+    uploadDocumentMutate,
   ])
 
   return { sendFile }
 }
-
-export { useUploadDocument }

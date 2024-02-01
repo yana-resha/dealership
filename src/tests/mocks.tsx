@@ -20,10 +20,6 @@ export function StoreProviderMock({
   return <Provider store={mockStore || store}>{children}</Provider>
 }
 
-export function MockThemeProviders({ children }: React.PropsWithChildren<{}>) {
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
-}
-
 const queryClient = new QueryClient()
 
 export function MockProviders({

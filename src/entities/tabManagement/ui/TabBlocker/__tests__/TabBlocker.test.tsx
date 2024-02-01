@@ -2,7 +2,7 @@ import React from 'react'
 
 import { render, screen, act } from '@testing-library/react'
 
-import { MockThemeProviders } from 'tests/mocks'
+import { ThemeProviderMock } from 'tests/mocks'
 
 import * as useTabManagementHooks from '../../../hooks/useTabManagement'
 import * as tabManagementSelectors from '../../../model/selectors/slIsCurrentTabActive'
@@ -33,11 +33,11 @@ describe('TabBlocker', () => {
     slIsCurrentTabActiveSpy.mockImplementation(() => true)
 
     render(
-      <MockThemeProviders>
+      <ThemeProviderMock>
         <TabBlocker>
           <></>
         </TabBlocker>
-      </MockThemeProviders>,
+      </ThemeProviderMock>,
     )
 
     await act(async () => {
@@ -52,11 +52,11 @@ describe('TabBlocker', () => {
     slIsCurrentTabActiveSpy.mockImplementation(() => false)
 
     render(
-      <MockThemeProviders>
+      <ThemeProviderMock>
         <TabBlocker>
           <></>
         </TabBlocker>
-      </MockThemeProviders>,
+      </ThemeProviderMock>,
     )
 
     await act(async () => {
