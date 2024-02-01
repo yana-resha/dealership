@@ -178,7 +178,7 @@ describe('ActionAreaTest', () => {
     })
 
     describe('Статус CanceledDeal (КД отменен)', () => {
-      it('Отображается кнопка "Пересоздать заявку"', () => {
+      it('Отображается кнопка "Пересоздать новую заявку"', () => {
         render(
           <ActionArea
             status={StatusCode.CANCELED_DEAL}
@@ -194,12 +194,12 @@ describe('ActionAreaTest', () => {
           },
         )
 
-        expect(screen.getByText('Пересоздать заявку')).toBeInTheDocument()
+        expect(screen.getByText('Пересоздать новую заявку')).toBeInTheDocument()
       })
     })
 
     describe('Статус Canceled (Отменен)', () => {
-      it('Отображается кнопка "Пересоздать заявку"', () => {
+      it('Отображается кнопка "Пересоздать новую заявку"', () => {
         render(
           <ActionArea
             status={StatusCode.CANCELED}
@@ -215,7 +215,7 @@ describe('ActionAreaTest', () => {
           },
         )
 
-        expect(screen.getByText('Пересоздать заявку')).toBeInTheDocument()
+        expect(screen.getByText('Пересоздать новую заявку')).toBeInTheDocument()
       })
     })
 
