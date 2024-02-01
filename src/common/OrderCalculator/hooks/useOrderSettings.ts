@@ -69,7 +69,7 @@ export function useOrderSettings(nextStep: () => void) {
         termsLoanCode: creditProduct?.termsLoanCode,
         downpayment: bankOffer?.downpayment,
         term: bankOffer?.term,
-        amount: bankOffer?.totalSum,
+        amount: bankOffer?.amountWithoutPercent,
         amountWithoutOptions: bankOffer?.amountWithoutOptions,
         cascoInProduct: bankOffer?.cascoFlag,
         incomeProduct: bankOffer?.incomeFlag,
