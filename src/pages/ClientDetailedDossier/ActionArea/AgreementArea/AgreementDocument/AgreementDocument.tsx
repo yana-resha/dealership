@@ -71,6 +71,8 @@ export function AgreementDocument({
     <Box key={document?.name} className={classes.documentContainer} data-testid="agreementDocument">
       <Box className={classes.document}>
         <FileDownloader
+          dcAppId={document.dcAppId}
+          documentType={document.documentType}
           fileOrMetadata={document}
           index={index}
           loadingMessage="Файл загружается"

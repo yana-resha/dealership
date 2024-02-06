@@ -6,7 +6,7 @@ import { useField, useFormikContext } from 'formik'
 
 import { ReactComponent as AttachIcon } from 'assets/icons/attach.svg'
 import { FileInfo, UploaderConfig, Uploader, DocumentUploadStatus } from 'features/ApplicationFileLoader'
-import { DEFAULT_MAX_FILE_SIZE_MB } from 'shared/config/uploadFile.config'
+import { DEFAULT_MAX_FILE_SIZE_MB } from 'shared/config/fileLoading.config'
 import { ModalDialog } from 'shared/ui/ModalDialog'
 
 import { ClientData } from '../../ClientForm.types'

@@ -2,11 +2,13 @@ import { useCallback } from 'react'
 
 import { TableCell, TableRow } from '@mui/material'
 import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
+import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { useGetPreliminaryPaymentScheduleFormMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { Downloader } from 'shared/ui/Downloader'
+import { transformFileName } from 'shared/utils/fileLoading'
 
 import { HeaderCellKey, TableCellType } from '../BankOffers.config'
 import { getCellsChildren } from '../BankOffers.utils'
@@ -21,6 +23,7 @@ type Props = {
 export const BodyRow = ({ row, onClick }: Props) => {
   const classes = useStyles()
   const autoPrice = useAppSelector(state => state.order.order?.orderData?.application?.loanCar?.autoPrice)
+  const dcAppId = useAppSelector(state => state.order.order?.orderData?.application?.dcAppId)
 
   const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
     useGetPreliminaryPaymentScheduleFormMutation()
@@ -40,10 +43,14 @@ export const BodyRow = ({ row, onClick }: Props) => {
         equipmentInCreditPrice: row.equipmentInCreditPrice,
       })
       if (blob) {
-        return new File([blob], 'График платежей', { type: 'application/pdf' })
+        return new File(
+          [blob],
+          transformFileName(DocumentType.ESTIMATED_FEE_SCHEDULE, dcAppId || '') || 'График платежей',
+          { type: 'application/pdf' },
+        )
       }
     },
-    [autoPrice, getPreliminaryPaymentScheduleFormMutate],
+    [autoPrice, dcAppId, getPreliminaryPaymentScheduleFormMutate],
   )
 
   return (

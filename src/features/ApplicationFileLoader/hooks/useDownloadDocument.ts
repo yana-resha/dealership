@@ -4,7 +4,7 @@ import {
   useDownloadDocumentMutation,
   useGetApplicationDocumentsListMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
-import { DEFAULT_FILE_NAME } from 'shared/config/uploadFile.config'
+import { DEFAULT_FILE_NAME } from 'shared/config/fileLoading.config'
 import { FileMetadata } from 'shared/ui/FileDownloader/FileDownloader'
 
 /** Загружает файл с сервера */
@@ -25,13 +25,13 @@ const useDownloadDocument = () => {
           })
           const fileInfo = response?.uploadDocumentList?.[0]
 
-          return new File([file], fileInfo?.fileName || DEFAULT_FILE_NAME)
+          return new File([file], fileInfo?.fileName || DEFAULT_FILE_NAME, { type: file.type })
         } catch (err) {
           console.log('getApplicationDocumentsList err', err)
         }
       }
 
-      return new File([file], name || DEFAULT_FILE_NAME)
+      return new File([file], name || DEFAULT_FILE_NAME, { type: file.type })
     },
     [downloadDocument, getApplicationDocumentsList],
   )

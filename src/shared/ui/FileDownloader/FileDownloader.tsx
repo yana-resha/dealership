@@ -1,48 +1,16 @@
 import { useCallback, useState } from 'react'
 
 import { Avatar, IconButton, Link } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 import { Box } from '@mui/system'
+import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ReactComponent as Close } from 'assets/icons/close.svg'
 import documentIcon from 'assets/icons/document.svg'
+import { transformFileName } from 'shared/utils/fileLoading'
 
 import { CircularProgressWheel } from '../CircularProgressWheel/CircularProgressWheel'
 import SberTypography from '../SberTypography'
-
-const useStyles = makeStyles(theme => ({
-  avatar: {
-    '&.MuiAvatar-root': {
-      width: 32,
-      height: 32,
-      backgroundColor: 'transparent',
-    },
-  },
-  text: {
-    color: theme.palette.primary.main,
-  },
-  fileLink: {
-    '&.MuiLink-root': {
-      display: 'flex',
-      alignItems: 'center',
-      textDecoration: 'none',
-      gap: theme.spacing(1),
-      cursor: 'pointer',
-      width: 'fit-content',
-      '&:hover': {
-        textDecoration: 'underline',
-      },
-    },
-  },
-  loaderContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 32,
-    height: 32,
-    margin: 'auto',
-  },
-}))
+import useStyles from './FileDownloader.styles'
 
 /** Данные о файле по которым его можно подтянуть с бэка,
  * файл прилетает в base64  а не в виде url, поэтому грузить сразу расточительно */
@@ -58,12 +26,16 @@ type FileDownloaderProps = {
   fileOrMetadata: FileOrMetadata | undefined
   index: number
   loadingMessage?: string
+  dcAppId?: string
+  documentType?: DocumentType
   onClick?: () => void
   onClickRemove?: (index: number) => void
   onDownloadFile?: (metadata: FileMetadata) => Promise<File>
 }
 
 export const FileDownloader = ({
+  dcAppId,
+  documentType,
   fileOrMetadata,
   index,
   onClick,
@@ -92,7 +64,7 @@ export const FileDownloader = ({
         const downloadURL = URL.createObjectURL(downloadedFile)
         const simulateLink = document.createElement('a')
         simulateLink.href = downloadURL
-        simulateLink.download = downloadedFile.name
+        simulateLink.download = transformFileName(documentType, dcAppId) || downloadedFile.name
         simulateLink.click()
         URL.revokeObjectURL(downloadURL)
         setFile(downloadedFile)
@@ -124,7 +96,13 @@ export const FileDownloader = ({
   return (
     <Box data-testid="uploadFile" display="flex" alignItems="center" gap={1} onClick={onClick}>
       {isFileObject(file) ? (
-        <Link href={preview} className={styles.fileLink} target="_blank" download={file?.name} gap={1}>
+        <Link
+          href={preview}
+          className={styles.fileLink}
+          target="_blank"
+          download={transformFileName(documentType, dcAppId) || file?.name}
+          gap={1}
+        >
           {preview ? (
             <Avatar variant="square" className={styles.avatar}>
               <img
@@ -138,7 +116,6 @@ export const FileDownloader = ({
               <CircularProgressWheel size="small" />
             </Box>
           )}
-
           <SberTypography className={styles.text} sberautoVariant="body3" component="p">
             {file ? fileName : message}
           </SberTypography>
@@ -154,7 +131,6 @@ export const FileDownloader = ({
               <img width="100%" height="100%" src={documentIcon} />
             </Avatar>
           )}
-
           <SberTypography className={styles.text} sberautoVariant="body3" component="p">
             {file ? fileName : message}
           </SberTypography>

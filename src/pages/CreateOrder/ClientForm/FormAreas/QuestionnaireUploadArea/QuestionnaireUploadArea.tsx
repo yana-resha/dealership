@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
 import { FileInfo, UploaderConfig, Uploader, DocumentUploadStatus } from 'features/ApplicationFileLoader'
-import { DEFAULT_MAX_FILE_SIZE_MB } from 'shared/config/uploadFile.config'
+import { DEFAULT_MAX_FILE_SIZE_MB } from 'shared/config/fileLoading.config'
 
 import { ClientData } from '../../ClientForm.types'
 import { UPLOADED_DOCUMENTS } from '../../config/clientFormInitialValues'

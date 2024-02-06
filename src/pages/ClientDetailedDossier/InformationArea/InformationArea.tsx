@@ -20,6 +20,7 @@ import { formatMoney, formatTerm } from 'shared/lib/utils'
 import { Downloader } from 'shared/ui/Downloader'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
+import { transformFileName } from 'shared/utils/fileLoading'
 
 import { getStatus, PreparedStatus } from '../../../entities/application/application.utils'
 import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
@@ -154,14 +155,22 @@ export function InformationArea({
   const handleShareClick = useCallback(async () => {
     const blob = await getShareFormMutate()
     if (blob) {
-      return new File([blob], 'Письмо об одобрении', { type: 'application/pdf' })
+      return new File(
+        [blob],
+        transformFileName(DocumentType.SHARING_FORM, applicationId) || 'Письмо об одобрении',
+        { type: 'application/pdf' },
+      )
     }
-  }, [getShareFormMutate])
+  }, [applicationId, getShareFormMutate])
 
   const handleFeeScheduleClick = useCallback(async () => {
     const blob = await downloadDocument({ dcAppId: applicationId, documentType: DocumentType.FEE_SCHEDULE })
     if (blob) {
-      return new File([blob], 'График платежей', { type: 'application/pdf' })
+      return new File(
+        [blob],
+        transformFileName(DocumentType.FEE_SCHEDULE, applicationId) || 'График платежей',
+        { type: 'application/pdf' },
+      )
     }
   }, [applicationId, downloadDocument])
 
@@ -179,9 +188,14 @@ export function InformationArea({
       equipmentInCreditPrice,
     })
     if (blob) {
-      return new File([blob], 'График платежей', { type: 'application/pdf' })
+      return new File(
+        [blob],
+        transformFileName(DocumentType.ESTIMATED_FEE_SCHEDULE, applicationId) || 'График платежей',
+        { type: 'application/pdf' },
+      )
     }
   }, [
+    applicationId,
     autoPrice,
     downPayment,
     equipmentInCreditPrice,

@@ -8,7 +8,7 @@ import {
   DEFAULT_ALLOWED_FILE_TYPES,
   DEFAULT_MAX_FILE_SIZE_MB,
   defaultMaxFileSizeBite,
-} from '../../config/uploadFile.config'
+} from '../../config/fileLoading.config'
 import { ModalDialog } from '../ModalDialog/ModalDialog'
 import SberTypography from '../SberTypography/SberTypography'
 
