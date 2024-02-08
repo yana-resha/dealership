@@ -1,7 +1,9 @@
 import throttle from 'lodash/throttle'
 
 import { appConfig } from 'config'
+import { AUTH_TOKEN } from 'shared/constants/constants'
 import { getUserSessionId } from 'shared/lib/getUserSessionId'
+import { getLocalStorage } from 'shared/lib/helpers'
 
 import { Service, getErrorMessage } from '../errors'
 import { Options } from './types'
@@ -128,6 +130,10 @@ class Rest {
       'Content-Type': 'application/json',
       ...additionalHeaders,
     })
+    const authToken = getLocalStorage<string>(AUTH_TOKEN)
+    if (authToken) {
+      headers.append('Token-Csrf', authToken)
+    }
     const userSessionId = getUserSessionId()
     if (userSessionId) {
       headers.append('X-Session-Id', userSessionId)
