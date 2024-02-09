@@ -8,7 +8,6 @@ import { getLocalStorage } from 'shared/lib/helpers'
 import { Service, getErrorMessage } from '../errors'
 import { Options } from './types'
 
-type RefreshMethod = () => Promise<any>
 type LogoutMethod = (errorMessage?: string) => Promise<void> | void
 
 type FetchError = {
@@ -47,10 +46,7 @@ let instance: Rest
 
 /** Делает запросы, помогает следить за состоянием токенов */
 class Rest {
-  /* Обновить токен */
-  private refreshMethod?: RefreshMethod
   private logoutMethod?: LogoutMethod
-  private isRefreshing?: boolean
 
   static instance(): Rest {
     if (!instance) {
@@ -60,69 +56,15 @@ class Rest {
     return instance
   }
 
-  /** Установить флаг статуса процесса рефреша токена */
-  private setIsRefreshing(value: boolean) {
-    this.isRefreshing = value
-  }
-
-  setRefresh(method: RefreshMethod) {
-    this.refreshMethod = method
-  }
-
   setLogout(method: LogoutMethod) {
     this.logoutMethod = method
-  }
-
-  /** Рефрешим токены */
-  refresh = async (attempt = 0) => {
-    if (!this.isRefreshing) {
-      this.setIsRefreshing(true)
-      try {
-        const res = await this.refreshMethod?.()
-        this.setIsRefreshing(false)
-
-        return res
-      } catch (err) {
-        const error = err as unknown as CustomFetchError
-        const isAuthError = checkIsAuthError(error)
-        if (isAuthError || attempt <= 5) {
-          throttle(() => this.logoutMethod?.(getErrorMessage(Service.Authdc, error.code)), 1500)()
-        } else {
-          await this.refresh(attempt + 1)
-
-          return
-        }
-      }
-      this.setIsRefreshing(false)
-    }
-  }
-
-  /* Ожидаем пока не завершиться рефреш */
-  private waitingRefreshed = async (): Promise<void> => {
-    if (!this.isRefreshing) {
-      return Promise.resolve()
-    } else {
-      return new Promise(resolve => {
-        const timer = setInterval(() => {
-          if (!this.isRefreshing) {
-            clearInterval(timer)
-            resolve()
-          }
-        }, 50)
-      })
-    }
   }
 
   request = async <RequestType, ResponseType>(
     url: string,
     options: Options<RequestType> = {},
-    isRepeated?: boolean,
   ): Promise<ResponseType> => {
     const { headers: additionalHeaders, isResponseBlob = false, data, method = 'POST', ...opt } = options
-
-    if (!url.includes('refreshSession')) {
-      await this.waitingRefreshed()
-    }
 
     // Формируем headers
     const isDataFormdata = data instanceof FormData
@@ -191,28 +133,11 @@ class Rest {
         }
       })
       .catch(async (error: CustomFetchError) => {
-        if (
-          checkIsAuthError(error) &&
-          !isRepeated &&
-          // Если упал метод refreshSession, то он не должен тригерить повторный запуск рефреша
-          !url.includes('refreshSession')
-        ) {
-          const refreshRes = await this.refresh()
-          await this.waitingRefreshed()
-          if (refreshRes?.success) {
-            /** Запускаем запрос повторно, помечаем что он повторный,
-             * если опять упадет по авторизации то выкинет в ошибку */
-            this.request(url, options, true)
-          } else {
-            throw error
-          }
-        } else {
-          if (isRepeated && checkIsAuthError(error)) {
-            const errorMessage = getErrorMessage(getServiceFromUrl(url) as Service, error.code)
-            this.logoutMethod?.(errorMessage)
-          }
-          throw error
+        if (checkIsAuthError(error)) {
+          const errorMessage = getErrorMessage(getServiceFromUrl(url) as Service, error.code)
+          this.logoutMethod?.(errorMessage)
         }
+        throw error
       })
   }
 }
