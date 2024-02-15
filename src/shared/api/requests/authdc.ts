@@ -25,13 +25,6 @@ export const createSession = (params: CreateSessionRequest) =>
     return res
   })
 
-export const refreshSession = () =>
-  authDcApi.refreshSession().then(res => {
-    setAuthCookie()
-
-    return res
-  })
-
 export const deleteSession = () => authDcApi.deleteSession()
 
 export enum Role {
