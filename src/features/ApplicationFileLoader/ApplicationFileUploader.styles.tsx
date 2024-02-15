@@ -18,6 +18,7 @@ export default makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(2),
+    overflow: 'hidden',
   },
 
   sectionInfo: {
@@ -33,7 +34,12 @@ export default makeStyles(theme => ({
     paddingTop: theme.spacing(2),
   },
 
+  stack: {
+    width: '100%',
+  },
+
   item: {
     height: 40,
+    width: '100%',
   },
 }))

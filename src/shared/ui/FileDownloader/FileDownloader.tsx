@@ -10,7 +10,7 @@ import { transformFileName } from 'shared/utils/fileLoading'
 
 import { CircularProgressWheel } from '../CircularProgressWheel/CircularProgressWheel'
 import SberTypography from '../SberTypography'
-import useStyles from './FileDownloader.styles'
+import { useStyles } from './FileDownloader.styles'
 
 /** Данные о файле по которым его можно подтянуть с бэка,
  * файл прилетает в base64  а не в виде url, поэтому грузить сразу расточительно */
@@ -84,17 +84,17 @@ export const FileDownloader = ({
 
   const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
   const message = loadingMessage ? loadingMessage : 'Файл загружается...'
-  // TODO DCB-1336 Удалить ограничение количества символов в названии файла.
-  // Переделать на ограничение ширины в родителе.
-  const nameMaxLength = 100
-  const fileName = file?.name
-    ? file.name?.length > nameMaxLength
-      ? file.name.slice(0, nameMaxLength) + '...'
-      : file.name
-    : 'Файл'
+  const fileName = file?.name || 'Файл'
 
   return (
-    <Box data-testid="uploadFile" display="flex" alignItems="center" gap={1} onClick={onClick}>
+    <Box
+      data-testid="uploadFile"
+      display="flex"
+      alignItems="center"
+      gap={1}
+      onClick={onClick}
+      className={styles.fileDownloaderContainer}
+    >
       {isFileObject(file) ? (
         <Link
           href={preview}

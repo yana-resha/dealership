@@ -27,7 +27,7 @@ export const useStyles = makeStyles(theme => ({
   documentsBlock: {
     display: 'flex',
     flexDirection: 'column',
-    width: 'max-content',
+    width: '100%',
     gap: theme.spacing(3),
   },
 

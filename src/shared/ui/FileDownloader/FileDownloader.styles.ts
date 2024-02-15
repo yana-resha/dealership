@@ -1,6 +1,9 @@
 import { makeStyles } from '@mui/styles'
 
-export default makeStyles(theme => ({
+export const useStyles = makeStyles(theme => ({
+  fileDownloaderContainer: {
+    overflow: 'hidden',
+  },
   avatar: {
     '&.MuiAvatar-root': {
       width: 32,
@@ -10,6 +13,9 @@ export default makeStyles(theme => ({
   },
   text: {
     color: theme.palette.primary.main,
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
   },
   fileLink: {
     '&.MuiLink-root': {
@@ -18,7 +24,7 @@ export default makeStyles(theme => ({
       textDecoration: 'none',
       gap: theme.spacing(1),
       cursor: 'pointer',
-      width: 'fit-content',
+      overflow: 'hidden',
       '&:hover': {
         textDecoration: 'underline',
       },
