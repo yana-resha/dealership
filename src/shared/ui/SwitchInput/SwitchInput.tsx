@@ -31,7 +31,7 @@ export const SwitchInput = (props: SwitchInputProps) => {
     checked: fieldValue,
     disabled: disabled,
     onChange: handleSwitch,
-    'data-fieldId': id,
+    'data-fieldid': id,
   }
 
   return (

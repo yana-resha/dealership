@@ -2,11 +2,10 @@ import {
   createAuthDc,
   CreateSessionRequest,
   GetUserRequest,
-  GetUserResponse,
   TrainingCreateSessionRequest,
   TrainingCreateSessionResponse,
 } from '@sberauto/authdc-proto/public'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
 import { AUTH_TOKEN } from 'shared/constants/constants'
@@ -29,25 +28,8 @@ export const createSession = (params: CreateSessionRequest) =>
 
 export const deleteSession = () => authDcApi.deleteSession()
 
-export enum Role {
-  FrontdcCreditExpert = 'frontdc_credit_expert',
-  FrontdcContentManager = 'frontdc_content_manager',
-}
-export interface PreparedUser extends Omit<GetUserResponse, 'roles'> {
-  roles: Record<string, boolean>
-}
-const prepareUser = (data: GetUserResponse): PreparedUser => {
-  const roles = (data.roles || []).reduce((acc, cur) => {
-    acc[cur] = true
-
-    return acc
-  }, {} as Record<string, boolean>)
-
-  return { ...data, roles }
-}
 export const getUser = (params: GetUserRequest) =>
-  authDcApi.getUser({ data: params }).then(res => (res.data ? prepareUser(res.data) : res.data ?? {}))
-export const useGetUserQuery = () => useQuery(['getUser'], () => getUser({}), {})
+  authDcApi.getUser({ data: params }).then(res => res.data ?? {})
 
 export const trainingCreateSession = (params: TrainingCreateSessionRequest) =>
   authDcApi.trainingCreateSession({ data: params }).then(res => {

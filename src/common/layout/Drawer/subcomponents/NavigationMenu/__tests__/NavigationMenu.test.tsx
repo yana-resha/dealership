@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { render, screen } from '@testing-library/react'
 
 import { MockProviders } from 'tests/mocks'
@@ -14,8 +12,6 @@ mockedUseGetItems.mockImplementation(jest.fn())
 
 const mockedUseGetLogoutBtn = jest.spyOn(UseGetLogoutBtnHook, 'useGetLogoutBtn')
 mockedUseGetLogoutBtn.mockImplementation(jest.fn())
-
-const authType = 'auth'
 
 describe('NavigationMenu', () => {
   let mockMenuItems: MenuItem[] = []
@@ -68,7 +64,7 @@ describe('NavigationMenu', () => {
   it('отображает табы для каждого элемента меню', () => {
     render(
       <MockProviders>
-        <NavigationMenu authType={authType} />
+        <NavigationMenu />
       </MockProviders>,
     )
 
@@ -80,7 +76,7 @@ describe('NavigationMenu', () => {
   it('вызывает onCallback для кнопки выхода и перенаправляет на страницу авторизации', () => {
     render(
       <MockProviders>
-        <NavigationMenu authType={authType} />
+        <NavigationMenu />
       </MockProviders>,
     )
 

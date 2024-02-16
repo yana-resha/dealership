@@ -3,26 +3,18 @@ import { useCallback } from 'react'
 import { Box, Button, ListItemText, Tab, Tabs } from '@mui/material'
 import { useNavigate, useLocation, matchPath } from 'react-router-dom'
 
-import { AuthType } from 'common/auth'
-
 import { MenuItem } from './hooks/types'
 import { useGetItems } from './hooks/useGetItems'
 import { useGetLogoutBtn } from './hooks/useGetLogoutBtn'
 import useStyles from './NavigationMenu.styles'
 
-type Props = {
-  authType: AuthType
-}
-
-export function NavigationMenu(props: Props) {
-  const { authType } = props
-
+export function NavigationMenu() {
   const classes = useStyles()
   const navigate = useNavigate()
   const location = useLocation()
 
-  const menuItems = useGetItems({ authType })
-  const logoutItems = useGetLogoutBtn({ authType })
+  const menuItems = useGetItems()
+  const logoutItems = useGetLogoutBtn()
 
   const handleTabClick = useCallback(
     (item: MenuItem) => {

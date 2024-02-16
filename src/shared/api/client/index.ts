@@ -32,7 +32,7 @@ function makeError(code: string, status: number, info?: string): CustomFetchErro
   return { code, status, ok: false, info }
 }
 
-function checkIsAuthError(error?: CustomFetchError) {
+export function checkIsAuthError(error?: CustomFetchError) {
   const { code, status } = error || {}
 
   return (!!code && ['Unauthorized', 'Unauthenticated'].includes(code)) || status === 401

@@ -15,7 +15,7 @@ export const useGetAuthLink = (code?: string | null) => {
   const [isSuccessRequest, setIsSuccessRequest] = useState(false)
   const { setLogoutUrl } = useAuthContext()
 
-  const { data, error, isLoading } = useQuery(['getStateAndNonce'], () => getStateAndNonce({}), {
+  const { data, error, isLoading } = useQuery(['getStateAndNonce', code], () => getStateAndNonce({}), {
     retry: false,
     cacheTime: Infinity,
     /** Вызываем запрос только в том случае если НЕ было успешных попыток */

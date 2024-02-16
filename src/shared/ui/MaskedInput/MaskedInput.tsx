@@ -51,7 +51,7 @@ export const MaskedInput = memo(
       error: isError,
       helperText: isError ? errorMessage : helperMessage || '',
       autoFocus,
-      'data-fieldId': id,
+      'data-fieldid': id,
     }
 
     return (

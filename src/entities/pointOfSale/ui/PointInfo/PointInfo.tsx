@@ -2,8 +2,6 @@ import React, { useMemo } from 'react'
 
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
-import Cookies from 'js-cookie'
 import compact from 'lodash/compact'
 
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'

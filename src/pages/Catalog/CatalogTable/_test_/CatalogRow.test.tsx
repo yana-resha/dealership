@@ -2,16 +2,15 @@ import { PropsWithChildren } from 'react'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { Role } from 'shared/api/requests/authdc'
+import * as useUserRolesModule from 'entities/user/hooks/useUserRoles'
 import { catalogData } from 'shared/api/requests/fileStorageDc.mock'
-import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { CatalogRow } from '../CatalogRow'
 
 const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
-const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
+const mockedUseUserRoles = jest.spyOn(useUserRolesModule, 'useUserRoles')
 
 disableConsole('error')
 
@@ -20,6 +19,10 @@ const onRemove = jest.fn()
 
 describe('CatalogRow', () => {
   describe('Данные в строке отображаются корректно', () => {
+    beforeEach(() => {
+      mockedUseUserRoles.mockImplementation(() => ({ isContentManager: false, isCreditExpert: false }))
+    })
+
     it('Отображение папки', async () => {
       render(<CatalogRow data={catalogData.catalog[0]} onRowClick={onRowClick} onRemove={onRemove} />, {
         wrapper: createWrapper,
@@ -55,7 +58,7 @@ describe('CatalogRow', () => {
     })
 
     it('Если есть роль FrontdcContentManager, то разрешено удаление', async () => {
-      mockedUseAppSelector.mockImplementation(() => ({ [Role.FrontdcContentManager]: true }))
+      mockedUseUserRoles.mockImplementation(() => ({ isContentManager: true, isCreditExpert: false }))
       render(<CatalogRow data={catalogData.catalog[0]} onRowClick={onRowClick} onRemove={onRemove} />, {
         wrapper: createWrapper,
       })

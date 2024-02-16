@@ -7,7 +7,7 @@ import cx from 'classnames'
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
 import { useLogout } from 'common/auth'
 import { ChoosePoint } from 'entities/pointOfSale'
-import { useGetUserQuery } from 'shared/api/requests/authdc'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { sleep } from 'shared/lib/sleep'
 import SberTypography from 'shared/ui/SberTypography'
 
@@ -18,14 +18,13 @@ const ANIMATION_DURATION = 1500
 export function PointOfSaleAuth() {
   const classes = useStyles({ animationDuration: ANIMATION_DURATION })
   const [isEnabledClosingAnimation, setEnabledClosingAnimation] = useState(false)
+  const user = useAppSelector(state => state.user.user)
 
   const { logout } = useLogout(async () => {
     setEnabledClosingAnimation(true)
     // время для выполнения анимации выхода
     await sleep(ANIMATION_DURATION - 500)
   })
-
-  const { data } = useGetUserQuery()
 
   return (
     <Box
@@ -39,9 +38,9 @@ export function PointOfSaleAuth() {
       </IconButton>
 
       <Box className={classes.greetingContainer}>
-        {data && (
+        {user && (
           <SberTypography className={classes.formMessage} component="h1" sberautoVariant="body5">
-            {`Привет, ${data.lastName} ${data.firstName}`}
+            {`Привет, ${user.lastName} ${user.firstName}`}
           </SberTypography>
         )}
       </Box>

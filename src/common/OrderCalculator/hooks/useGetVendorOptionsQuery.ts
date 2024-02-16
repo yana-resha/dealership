@@ -26,10 +26,10 @@ export const useGetVendorOptionsQuery = (
     Awaited<ReturnType<typeof getVendorOptionsList>>,
     unknown,
     NonNullableGetVendorOptionsListResponse,
-    string[]
+    (string | GetVendorOptionsListRequest)[]
   >,
 ) =>
-  useQuery(['getVendorOptionsList'], () => getVendorOptionsList(params), {
+  useQuery(['getVendorOptionsList', params], () => getVendorOptionsList(params), {
     retry: false,
     cacheTime: Infinity,
     ...options,

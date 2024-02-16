@@ -1,18 +1,16 @@
 import { renderHook } from '@testing-library/react-hooks'
 
+import * as useUserRolesModule from 'entities/user/hooks/useUserRoles'
 import { MockProviders } from 'tests/mocks'
 
 import { useGetItems } from '../useGetItems'
 
+const mockedUseUserRoles = jest.spyOn(useUserRolesModule, 'useUserRoles')
+
 describe('useGetItems', () => {
-  it('возвращает пустой массив для неавторизованных пользователей', () => {
-    const { result } = renderHook(() => useGetItems({ authType: 'no_auth' }), { wrapper: MockProviders })
-
-    expect(result.current).toEqual([])
-  })
-
-  it('возвращает массив элементов меню для авторизованных пользователей', () => {
-    const { result } = renderHook(() => useGetItems({ authType: 'auth' }), { wrapper: MockProviders })
+  it('Возвращает соответствующий массив элементов меню для пользователей с ролью "Кредитный эксперт"', () => {
+    mockedUseUserRoles.mockImplementation(() => ({ isContentManager: false, isCreditExpert: true }))
+    const { result } = renderHook(() => useGetItems(), { wrapper: MockProviders })
     const expectedMenuItems = [
       {
         label: 'Создать заявку',
@@ -40,7 +38,24 @@ describe('useGetItems', () => {
         path: '/helpdesk',
       },
     ]
+    expect(result.current).toMatchObject(expectedMenuItems)
+  })
 
+  it('Возвращает соответствующий массив элементов меню для пользователей с ролью "Контент менеджер"', () => {
+    mockedUseUserRoles.mockImplementation(() => ({ isContentManager: true, isCreditExpert: false }))
+    const { result } = renderHook(() => useGetItems(), { wrapper: MockProviders })
+    const expectedMenuItems = [
+      {
+        label: 'Документы',
+        icon: expect.any(Function),
+        path: '/document_storage',
+      },
+      {
+        label: 'Поддержка',
+        icon: expect.any(Function),
+        path: '/helpdesk',
+      },
+    ]
     expect(result.current).toMatchObject(expectedMenuItems)
   })
 })

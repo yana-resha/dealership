@@ -10,11 +10,16 @@ import { getFullApplication } from 'shared/api/requests/loanAppLifeCycleDc'
 
 export const useGetFullApplicationQuery = (
   params: GetFullApplicationRequest,
-  options?: UseQueryOptions<GetFullApplicationResponse, unknown, GetFullApplicationResponse, string[]>,
+  options?: UseQueryOptions<
+    GetFullApplicationResponse,
+    unknown,
+    GetFullApplicationResponse,
+    (string | GetFullApplicationRequest)[]
+  >,
 ) => {
   const dispatch = useDispatch()
 
-  return useQuery(['getFullApplication', params.applicationId || ''], () => getFullApplication(params), {
+  return useQuery(['getFullApplication', params], () => getFullApplication(params), {
     retry: false,
     onSuccess: response => {
       dispatch(setOrder({ orderData: response }))

@@ -5,7 +5,6 @@ import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { InputAdornment } from '@mui/material'
 import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import cx from 'classnames'
-import { useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 
 import { ReactComponent as DoneIcon } from 'assets/icons/done.svg'
@@ -29,7 +28,6 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   const classes = useStyles()
   const theme = useTheme()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
 
   const { data, error, isLoading } = useGetVendorsListQuery()
   const [chosenOption, setChosenOption] = useState<Vendor | null>(value ?? null)
@@ -61,9 +59,8 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
     savePointOfSaleToCookies(chosenOption)
     setIsDialogOpen(false)
     onSuccessEditing && onSuccessEditing()
-    queryClient.resetQueries()
     navigate(defaultRoute)
-  }, [navigate, chosenOption, onSuccessEditing, queryClient])
+  }, [navigate, chosenOption, onSuccessEditing])
 
   const calculateIsOptionEqualToValue = useCallback(
     (option: Vendor, value: Vendor) => option.vendorCode === value.vendorCode,

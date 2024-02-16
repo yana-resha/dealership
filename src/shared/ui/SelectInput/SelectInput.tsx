@@ -43,7 +43,7 @@ export function SelectInputWithoutMemo<T extends string | number>(props: SelectI
     disabled: disabled,
     error: isError,
     'data-testid': id,
-    'data-fieldId': id,
+    'data-fieldid': id,
   }
 
   return (

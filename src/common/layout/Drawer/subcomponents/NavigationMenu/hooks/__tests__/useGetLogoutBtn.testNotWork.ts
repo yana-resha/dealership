@@ -15,12 +15,12 @@ describe('useGetLogoutBtn', () => {
   })
 
   it('возвращает null для пользователей с типом авторизации no_auth', () => {
-    const { result } = renderHook(() => useGetLogoutBtn({ authType: 'no_auth' }))
+    const { result } = renderHook(() => useGetLogoutBtn())
     expect(result.current).toBeNull()
   })
 
   it('возвращает объект кнопки выхода для авторизованных пользователей', () => {
-    const { result } = renderHook(() => useGetLogoutBtn({ authType: 'auth' }))
+    const { result } = renderHook(() => useGetLogoutBtn())
     const expectedLogoutBtn = {
       label: 'Выйти',
       icon: expect.any(Function),

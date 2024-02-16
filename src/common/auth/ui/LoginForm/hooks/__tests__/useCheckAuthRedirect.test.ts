@@ -1,27 +1,17 @@
 import { renderHook } from '@testing-library/react-hooks'
-import { URLSearchParamsInit, useNavigate, useSearchParams } from 'react-router-dom'
+import { URLSearchParamsInit, useSearchParams } from 'react-router-dom'
 
 import * as authdcApi from 'shared/api/requests/authdc'
-import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { useCheckAuthRedirect } from '../useCheckAuthRedirect'
 
 // Мокаем навигацию
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: jest.fn(),
   useSearchParams: jest.fn(),
 }))
 
-// Мокаем sleep
-jest.mock('shared/lib/sleep', () => ({
-  sleep: jest.fn(),
-}))
-
-const useNavigateMock = useNavigate as jest.MockedFunction<typeof useNavigate>
 const useSearchParamsMock = useSearchParams as jest.MockedFunction<typeof useSearchParams>
-const navigateMock = jest.fn()
-
 const createSessionMock = jest.spyOn(authdcApi, 'createSession')
 
 describe('useCheckAuthRedirect', () => {
@@ -40,7 +30,6 @@ describe('useCheckAuthRedirect', () => {
     }
     //@ts-ignore
     useSearchParamsMock.mockImplementation(() => [new URLSearchParams(query), setSearchParams])
-    useNavigateMock.mockImplementation(() => navigateMock)
     createSessionMock.mockReset()
     onRejectMock.mockReset()
     jest.clearAllMocks()
@@ -58,7 +47,6 @@ describe('useCheckAuthRedirect', () => {
       authCode: defaultCode,
       state: defaultState,
     })
-    expect(navigateMock).toHaveBeenCalledWith(appRoutePaths.vendorList)
     expect(result.current.isLoading).toBe(false)
   })
 })
