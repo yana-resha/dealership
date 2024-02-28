@@ -1,6 +1,7 @@
 export const appRoutes = {
   dealership: () => '/',
   auth: () => '/auth',
+  fakeAuth: () => '/teamid',
   vendorList: () => '/vendorlist',
   createOrder: () => '/create_order',
   orderList: () => '/order_list',
@@ -14,6 +15,7 @@ export const appRoutes = {
 export const appRoutePaths = {
   dealership: appRoutes.dealership(),
   auth: appRoutes.auth(),
+  fakeAuth: appRoutes.fakeAuth(),
   vendorList: appRoutes.vendorList(),
   createOrder: appRoutes.createOrder(),
   orderList: appRoutes.orderList(),

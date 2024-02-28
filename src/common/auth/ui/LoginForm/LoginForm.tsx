@@ -26,8 +26,6 @@ export function LoginForm() {
   const { authLink, isLoading: authLinkLoading, error } = useGetAuthLink(code)
   const { isLoading: redirectLoading, isHasCodeAndState } = useCheckAuthRedirect(showError)
 
-  const isLoading = authLinkLoading
-
   if (isHasCodeAndState || redirectLoading) {
     return <CircularProgressWheel size="extraLarge" />
   }
@@ -40,11 +38,11 @@ export function LoginForm() {
         variant="contained"
         className={classes.loginButton}
         href={authLink}
-        disabled={isLoading || !!error}
+        disabled={authLinkLoading || !!error}
         data-testid="loginButton"
         startIcon={<MonochromeSberIcon />}
       >
-        {!isLoading && !!authLink ? 'Войти' : <CircularProgressWheel size="small" />}
+        {!authLinkLoading && !!authLink ? 'Войти' : <CircularProgressWheel size="small" />}
       </Button>
 
       <Collapse in={!!error} timeout="auto" unmountOnExit>

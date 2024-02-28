@@ -4,11 +4,12 @@ import Cookies from 'js-cookie'
 import { useSnackbar } from 'notistack'
 import { useQueryClient } from 'react-query'
 
+import { appConfig } from 'config'
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
 import { clearOrder } from 'entities/reduxStore/orderSlice'
 import { removeUserInfo } from 'entities/user/model/userSlice'
 import { checkIsAuth, removeAuthCookie } from 'shared/api/helpers/authCookie'
-import { deleteSession } from 'shared/api/requests/authdc'
+import { deleteSession, trainingLogout } from 'shared/api/requests/authdc'
 import { AUTH_TOKEN } from 'shared/constants/constants'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { removeLocalStorage } from 'shared/lib/helpers'
@@ -63,7 +64,11 @@ export const useLogout = (beforeRedirectCb?: () => Promise<void>) => {
       // т.к. в прилоджении производится проверка isAuth, то на этом этапе
       // будет произведен редирект на страницу авторизации
 
-      deleteSession()
+      if (appConfig.sberTeamAuthEnv === 'training') {
+        trainingLogout()
+      } else {
+        deleteSession()
+      }
       redirectToLogoutUrl()
     },
     [beforeRedirectCb, dispatch, enqueueSnackbar, logoutUrl, queryClient, redirectToLogoutUrl],

@@ -4,6 +4,7 @@ import { useQuery } from 'react-query'
 
 import { appConfig } from 'config'
 import { getStateAndNonce } from 'shared/api/requests/authsberteamid'
+import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { useAuthContext } from '../../AuthProvider'
 import { getAuthorizeUrl, getLogoutUrl } from '../utils/authorizeUrl'
@@ -23,6 +24,12 @@ export const useGetAuthLink = (code?: string | null) => {
 
   const { authLink, logoutUrl } = useMemo(() => {
     //NOTE: что бы не блочить авторизацию на деве ориентируемся на среду
+    if (appConfig.sberTeamAuthEnv === 'training') {
+      return {
+        authLink: appConfig.appUrl + appRoutePaths.fakeAuth,
+        logoutUrl: undefined,
+      }
+    }
     if (appConfig.sberTeamAuthEnv === 'dev') {
       return {
         authLink:
