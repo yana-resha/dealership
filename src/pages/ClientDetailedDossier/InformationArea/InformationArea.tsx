@@ -128,7 +128,7 @@ export function InformationArea({
   )
 
   const status = getStatus(statusCode)
-  const isHasFeeScheduleInScans = scans.some(scan => scan.type === DocumentType.FEE_SCHEDULE)
+  const isHasFeeScheduleInScans = scans.some(scan => scan.type === DocumentType.ESTIMATED_FEE_SCHEDULE)
 
   const isShowScheduleBtn =
     [
@@ -158,18 +158,21 @@ export function InformationArea({
       return new File(
         [blob],
         transformFileName(DocumentType.SHARING_FORM, applicationId) || 'Письмо об одобрении',
-        { type: 'application/pdf' },
+        { type: blob.type },
       )
     }
   }, [applicationId, getShareFormMutate])
 
-  const handleFeeScheduleClick = useCallback(async () => {
-    const blob = await downloadDocument({ dcAppId: applicationId, documentType: DocumentType.FEE_SCHEDULE })
+  const handleSavedPreliminaryFeeScheduleClick = useCallback(async () => {
+    const blob = await downloadDocument({
+      dcAppId: applicationId,
+      documentType: DocumentType.ESTIMATED_FEE_SCHEDULE,
+    })
     if (blob) {
       return new File(
         [blob],
-        transformFileName(DocumentType.FEE_SCHEDULE, applicationId) || 'График платежей',
-        { type: 'application/pdf' },
+        transformFileName(DocumentType.ESTIMATED_FEE_SCHEDULE, applicationId) || 'График платежей',
+        { type: blob.type },
       )
     }
   }, [applicationId, downloadDocument])
@@ -191,7 +194,7 @@ export function InformationArea({
       return new File(
         [blob],
         transformFileName(DocumentType.ESTIMATED_FEE_SCHEDULE, applicationId) || 'График платежей',
-        { type: 'application/pdf' },
+        { type: blob.type },
       )
     }
   }, [
@@ -257,7 +260,10 @@ export function InformationArea({
           <InfoText label="Срок кредита">{formatTerm(term)}</InfoText>
 
           {isShowScheduleBtn && isHasFeeScheduleInScans && (
-            <FeeScheduleBtn onClick={handleFeeScheduleClick} disabled={isDisableScheduleBtn} />
+            <FeeScheduleBtn
+              onClick={handleSavedPreliminaryFeeScheduleClick}
+              disabled={isDisableScheduleBtn}
+            />
           )}
           {isShowScheduleBtn && !isHasFeeScheduleInScans && (
             <FeeScheduleBtn onClick={handlePreliminaryFeeScheduleClick} disabled={isDisableScheduleBtn} />

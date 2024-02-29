@@ -46,7 +46,7 @@ export const BodyRow = ({ row, onClick }: Props) => {
         return new File(
           [blob],
           transformFileName(DocumentType.ESTIMATED_FEE_SCHEDULE, dcAppId || '') || 'График платежей',
-          { type: 'application/pdf' },
+          { type: blob.type },
         )
       }
     },

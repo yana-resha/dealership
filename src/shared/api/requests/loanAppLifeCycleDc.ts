@@ -165,11 +165,11 @@ export const getApplicationDocumentsList = (params: GetApplicationDocumentsListR
     .then(response => prepareApplicationDocumentType(response.data ?? {}))
 
 /** Получение документа привязанного к заявке */
-export const downloadDocument = (data: DownloadDocumentRequest): Promise<File> => {
+export const downloadDocument = (data: DownloadDocumentRequest): Promise<Blob> => {
   const url = `${appConfig.apiUrl}/loanapplifecycledc`
   const endpoint = 'downloadDocument'
 
-  return Rest.request<DownloadDocumentRequest, File>(`${url}/${endpoint}`, {
+  return Rest.request<DownloadDocumentRequest, Blob>(`${url}/${endpoint}`, {
     data,
     isResponseBlob: true,
   })
@@ -342,11 +342,11 @@ export const useFormContractMutation = (params: FormContractRequest) =>
 
 export const getPreliminaryPaymentScheduleForm = (
   data: GetPreliminaryPaymentScheduleFormRequest,
-): Promise<File> => {
+): Promise<Blob> => {
   const url = `${appConfig.apiUrl}/loanapplifecycledc`
   const endpoint = 'getPreliminaryPaymentScheduleForm'
 
-  return Rest.request<GetPreliminaryPaymentScheduleFormRequest, File>(`${url}/${endpoint}`, {
+  return Rest.request<GetPreliminaryPaymentScheduleFormRequest, Blob>(`${url}/${endpoint}`, {
     data,
     isResponseBlob: true,
   })
@@ -354,11 +354,11 @@ export const getPreliminaryPaymentScheduleForm = (
 export const useGetPreliminaryPaymentScheduleFormMutation = () =>
   useMutation('getPreliminaryPaymentScheduleForm', getPreliminaryPaymentScheduleForm)
 
-export const getShareForm = (data: GetShareFormRequest): Promise<File> => {
+export const getShareForm = (data: GetShareFormRequest): Promise<Blob> => {
   const url = `${appConfig.apiUrl}/loanapplifecycledc`
   const endpoint = 'getShareForm'
 
-  return Rest.request<GetShareFormRequest, File>(`${url}/${endpoint}`, {
+  return Rest.request<GetShareFormRequest, Blob>(`${url}/${endpoint}`, {
     data,
     isResponseBlob: true,
   })
