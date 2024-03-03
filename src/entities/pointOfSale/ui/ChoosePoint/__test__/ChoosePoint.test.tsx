@@ -71,11 +71,11 @@ describe('ChoosePoint', () => {
     })
 
     it('Отображается кнопка Продолжить', () => {
-      expect(screen.getByText('Продолжить')).toBeInTheDocument()
+      expect(screen.getByTestId('choosePointBtn')).toBeInTheDocument()
     })
   })
 
-  describe('Если передан пропс isHeader, меняется размер и кнопка', () => {
+  describe('Если передан пропс isHeader, меняется размер и отсутствуеткнопка', () => {
     beforeEach(() => {
       mockedUseGetVendorsListQuery.mockImplementation(() => ({
         data: mockResponse,
@@ -91,11 +91,12 @@ describe('ChoosePoint', () => {
     })
 
     it('Отображается кнопка иконка', () => {
-      expect(screen.getByTestId('choosePointIconButton')).toBeVisible()
+      expect(screen.queryByTestId('choosePointBtn')).not.toBeInTheDocument()
     })
 
-    it('Не отображается кнопка Продолжить', async () => {
-      expect(await screen.queryByText('Продолжить')).not.toBeInTheDocument()
+    it('Список опций открыт по умолчанию', async () => {
+      const options = await screen.findAllByRole('option')
+      expect(options).toHaveLength(3)
     })
   })
 
@@ -186,17 +187,24 @@ describe('ChoosePoint', () => {
     })
   })
 
-  describe('При нажатии кнопки "Продолжить" видим корректную модалку', () => {
+  describe('При выборе ДЦ видим корректную модалку', () => {
     beforeEach(() => {
+      // mockedUseGetVendorsListQuery.mockImplementation(() => ({
+      //   data: mockResponse,
+      //   error: undefined,
+      //   isLoading: false,
+      // }))
+      // render(<ChoosePoint />, { wrapper: createWrapper })
+    })
+
+    it('Модальное окно отображается корректно, есть информация о выбранной точке (после нажатии на кнопку Продолжить)', async () => {
       mockedUseGetVendorsListQuery.mockImplementation(() => ({
         data: mockResponse,
         error: undefined,
         isLoading: false,
       }))
       render(<ChoosePoint />, { wrapper: createWrapper })
-    })
 
-    it('Модальное окно отображается корректно, есть информация о выбранной точке', async () => {
       const textField = screen.getByPlaceholderText('ТТ или адрес')
       userEvent.click(textField)
       userEvent.type(textField, 'Сармат')
@@ -210,6 +218,18 @@ describe('ChoosePoint', () => {
       screen.getAllByRole('button').map((el, i) => {
         expect(el).toHaveTextContent(i === 0 ? 'close.svg' : i === 1 ? 'Да' : 'Нет')
       })
+    })
+    it('В хедере модальное окно отображается сразу после выбора ДЦ', async () => {
+      mockedUseGetVendorsListQuery.mockImplementation(() => ({
+        data: mockResponse,
+        error: undefined,
+        isLoading: false,
+      }))
+      render(<ChoosePoint isHeader />, { wrapper: createWrapper })
+
+      const options = await screen.findAllByRole('option')
+      userEvent.click(options[0])
+      expect(screen.getByTestId('choosePointModal')).toBeInTheDocument()
     })
   })
 
