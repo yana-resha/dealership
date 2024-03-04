@@ -2214,10 +2214,10 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
-"@sberauto/dadata-proto@0.0.2":
-  version "0.0.2"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dadata-proto/-/dadata-proto-0.0.2.tgz#f3bf18091e82b44d33aad1d4052cde06b9134d5c"
-  integrity sha512-VSkzxgWUN1agt1EoS1p1BOZlT5JLrIo64zS2QmxucP0R3Pxm/C0sjos7w/0JmP9xWtjX+JMq7PBHJuIrJY0Qjg==
+"@sberauto/dadata-proto@1.2.1":
+  version "1.2.1"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dadata-proto/-/dadata-proto-1.2.1.tgz#115fadd4f52f21a313186daee449acc06b622c0c"
+  integrity sha512-sq/HbLxrFicet1c/O/z95e6QbKv7VuSKoYXT7m2uyjdo4Vd8/ZiQ75uypbl0jE/U33XVKntwsafcgbzqOHceDw==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"

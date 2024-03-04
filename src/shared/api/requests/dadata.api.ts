@@ -1,5 +1,6 @@
 import {
   createDaData,
+  GetAddressMapRequest,
   GetAddressSuggestionsRequest,
   GetFmsUnitSuggestionsRequest,
 } from '@sberauto/dadata-proto/public'
@@ -20,6 +21,9 @@ export const getOrganizationSuggestions = (params: GetAddressSuggestionsRequest)
 
 export const getFmsUnitSuggestions = (params: GetFmsUnitSuggestionsRequest) =>
   dadataApi.getFmsUnitSuggestions({ data: params }).then(response => response.data ?? {})
+
+export const getAddressMap = (params: GetAddressMapRequest) =>
+  dadataApi.getAddressMap({ data: params }).then(response => response.data ?? {})
 
 export const useGetAddressSuggestions = () =>
   useMutation(['getAddressSuggestions'], (params: string) => getAddressSuggestions({ query: params }))

@@ -17,7 +17,7 @@ type Props = {
   gridColumn?: string
   disabled?: boolean
   forceValue?: SuggestionGetAddressSuggestions
-  prepareAddress?: (addressObjectData: DataGetAddressSuggestions | null | undefined) => AddressFrontdc
+  prepareAddress: (addressObjectData: DataGetAddressSuggestions | null | undefined) => AddressFrontdc
 }
 
 export const AutocompleteDaDataAddressFormik = ({
@@ -39,43 +39,12 @@ export const AutocompleteDaDataAddressFormik = ({
   }
   const { setFieldValue } = useFormikContext()
 
-  const mapAddressToModel = useCallback(
-    (addressObject: SuggestionGetAddressSuggestions): AddressFrontdc => {
-      const data = addressObject?.data
-
-      if (prepareAddress) {
-        return prepareAddress(data)
-      }
-
-      const address: AddressFrontdc = {
-        postalCode: data?.postalCode ?? '',
-        regCode: data?.regionKladrId ? data.regionKladrId.slice(0, 2) : '',
-        area: data?.area ?? '',
-        areaType: data?.areaTypeFull ?? '',
-        city: data?.city ?? '',
-        cityType: data?.cityTypeFull ?? '',
-        house: data?.house ?? '',
-        houseExt: data?.block ?? '',
-        region: data?.region ?? '',
-        settlement: data?.settlement ?? '',
-        settlementType: data?.settlementTypeFull ?? '',
-        street: data?.street ?? '',
-        streetType: data?.streetTypeFull ?? '',
-        unit: '',
-        unitNum: data?.flat ?? '',
-      }
-
-      return address
-    },
-    [prepareAddress],
-  )
-
   const onChange = useCallback(
     (values: SuggestionGetAddressSuggestions) => {
-      setFieldValue(nameOfObject, mapAddressToModel(values))
+      setFieldValue(nameOfObject, prepareAddress(values.data))
       setFieldValue(nameOfString, values?.unrestrictedValue ?? '')
     },
-    [mapAddressToModel, nameOfObject, nameOfString, setFieldValue],
+    [nameOfObject, nameOfString, prepareAddress, setFieldValue],
   )
 
   const onInputChange = useCallback(() => {

@@ -1,17 +1,21 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 import * as mockFormik from 'formik'
+import { UseQueryResult } from 'react-query'
 
+import { ADDRESS_MAP } from 'pages/CreateOrder/ClientForm/hooks/__tests__/useGetAddressMapQuery.mock'
+import * as useGetAddressMapQueryModule from 'pages/CreateOrder/ClientForm/hooks/useGetAddressMapQuery'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
-import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
-import { Address } from '../../../ClientForm.types'
+import { Address, AddressMap } from '../../../ClientForm.types'
 import { AddressDialog } from '../AddressDialog'
+
+const mockedUseGetAddressMapQuery = jest.spyOn(useGetAddressMapQueryModule, 'useGetAddressMapQuery')
 
 jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({
   MaskedInput: MockedMaskedInput,
@@ -89,6 +93,15 @@ const createWrapper = ({ children }: PropsWithChildren) => (
 disableConsole('error')
 
 describe('AddressDialogTest', () => {
+  beforeEach(() => {
+    mockedUseGetAddressMapQuery.mockImplementation(
+      () =>
+        ({
+          data: ADDRESS_MAP,
+          isLoading: false,
+        } as unknown as UseQueryResult<AddressMap, unknown>),
+    )
+  })
   describe('Все поля отображаются на форме', () => {
     beforeEach(() => {
       render(

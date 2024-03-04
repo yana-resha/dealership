@@ -1,12 +1,16 @@
 import { PropsWithChildren } from 'react'
 
 import { render, screen } from '@testing-library/react'
+import { UseQueryResult } from 'react-query'
 import { MockStore } from 'redux-mock-store'
 
+import * as useGetAddressMapQueryModule from 'pages/CreateOrder/ClientForm/hooks/useGetAddressMapQuery'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { ClientForm } from '../ClientForm'
+import { AddressMap } from '../ClientForm.types'
+import { ADDRESS_MAP } from '../hooks/__tests__/useGetAddressMapQuery.mock'
 
 jest.mock('../FormAreas/PassportArea/PassportArea', () => ({
   PassportArea: () => <div data-testid="passportArea" />,
@@ -34,6 +38,8 @@ jest.mock('notistack', () => ({
 }))
 jest.mock('shared/hooks/useScrollToErrorField')
 
+const mockedUseGetAddressMapQuery = jest.spyOn(useGetAddressMapQueryModule, 'useGetAddressMapQuery')
+
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
@@ -45,6 +51,13 @@ disableConsole('error')
 describe('ClientFormTest', () => {
   describe('Форма отображается корректно', () => {
     beforeEach(() => {
+      mockedUseGetAddressMapQuery.mockImplementation(
+        () =>
+          ({
+            data: ADDRESS_MAP,
+            isLoading: false,
+          } as unknown as UseQueryResult<AddressMap, unknown>),
+      )
       render(<ClientForm />, { wrapper: createWrapper })
     })
 

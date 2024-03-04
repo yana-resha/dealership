@@ -8,15 +8,10 @@ import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/Autocomplet
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 
-import { Address } from '../../ClientForm.types'
-import {
-  AREA_TYPES,
-  CITY_TYPES,
-  REGION_CODE,
-  SETTLEMENT_TYPES,
-  STREET_TYPES,
-} from '../../config/address.config'
+import { Address, AddressTypeCode } from '../../ClientForm.types'
 import { clientAddressValidationSchema } from '../../config/clientFormValidation'
+import { useGetAddressMapQuery } from '../../hooks/useGetAddressMapQuery'
+import { getAddressName } from '../../utils/addressMap'
 import { useStyles } from './AddressDialog.styles'
 
 type Props = {
@@ -28,38 +23,24 @@ type Props = {
   onCloseDialog?: () => void
 }
 
-export const AddressDialog = (props: Props) => {
+export const AddressDialog = ({
+  addressName,
+  address,
+  label,
+  isVisible,
+  setIsVisible,
+  onCloseDialog,
+}: Props) => {
   const classes = useStyles()
-  const { addressName, address, label, isVisible, setIsVisible, onCloseDialog } = props
-
+  const { data: addressMap = {} } = useGetAddressMapQuery()
+  const { regionTypeCodes, areaTypeCodes, cityTypeCodes, settlementTypeCodes, streetTypeCodes } = addressMap
   const { setFieldValue } = useFormikContext<Address>()
 
   const getStringIfPresent = useCallback((value: string) => (value ? value + ' ' : ''), [])
 
-  const getLabel = useCallback(
-    (
-      values: {
-        value: string
-        label: string
-      }[],
-      value: string | null,
-    ) => {
-      if (!value) {
-        return ''
-      }
-
-      return values.find(item => item.value === value)?.label ?? value ?? ''
-    },
-    [],
-  )
-
   const getOptions = useCallback(
-    (
-      values: {
-        value: string
-        label: string
-      }[],
-    ): string[] => values.map(type => type.value),
+    (addressTypeCods: AddressTypeCode[] | undefined): string[] =>
+      (addressTypeCods || []).map(addressTypeCod => addressTypeCod.code),
     [],
   )
 
@@ -67,21 +48,21 @@ export const AddressDialog = (props: Props) => {
     (values: Address) =>
       (
         getStringIfPresent(values.regCode ?? '') +
-        getStringIfPresent(getLabel(REGION_CODE, values.regCode)) +
-        getStringIfPresent(getLabel(AREA_TYPES, values.areaType)) +
+        getStringIfPresent(getAddressName(regionTypeCodes, values.regCode)) +
+        getStringIfPresent(getAddressName(areaTypeCodes, values.areaType)) +
         getStringIfPresent(values.area) +
-        getStringIfPresent(getLabel(CITY_TYPES, values.cityType)) +
+        getStringIfPresent(getAddressName(cityTypeCodes, values.cityType)) +
         getStringIfPresent(values.city) +
-        getStringIfPresent(getLabel(SETTLEMENT_TYPES, values.settlementType)) +
+        getStringIfPresent(getAddressName(settlementTypeCodes, values.settlementType)) +
         getStringIfPresent(values.settlement) +
-        getStringIfPresent(getLabel(STREET_TYPES, values.streetType)) +
+        getStringIfPresent(getAddressName(streetTypeCodes, values.streetType)) +
         getStringIfPresent(values.street) +
         getStringIfPresent(values.house) +
         getStringIfPresent(values.unit) +
         getStringIfPresent(values.houseExt) +
         getStringIfPresent(values.unitNum)
       ).trim(),
-    [getLabel, getStringIfPresent],
+    [areaTypeCodes, cityTypeCodes, getStringIfPresent, regionTypeCodes, settlementTypeCodes, streetTypeCodes],
   )
 
   const onClose = useCallback(() => {
@@ -93,11 +74,14 @@ export const AddressDialog = (props: Props) => {
 
   const onSubmit = useCallback(
     (values: Address) => {
-      setFieldValue(addressName, { ...values, region: getLabel(REGION_CODE, values.regCode) })
+      setFieldValue(addressName, {
+        ...values,
+        region: getAddressName(addressMap.regionTypeCodes, values.regCode),
+      })
       setFieldValue(`${addressName}String`, buildAddressString(values))
       setIsVisible(false)
     },
-    [setFieldValue, addressName, getLabel, buildAddressString, setIsVisible],
+    [setFieldValue, addressName, addressMap.regionTypeCodes, buildAddressString, setIsVisible],
   )
 
   return (
@@ -109,16 +93,16 @@ export const AddressDialog = (props: Props) => {
               name="regCode"
               label="Регион"
               placeholder="-"
-              options={getOptions(REGION_CODE)}
-              getOptionLabel={value => getLabel(REGION_CODE, value)}
+              options={getOptions(regionTypeCodes)}
+              getOptionLabel={value => getAddressName(regionTypeCodes, value)}
             />
 
             <AutocompleteInputFormik
               name="areaType"
               label="Тип района"
               placeholder="-"
-              options={getOptions(AREA_TYPES)}
-              getOptionLabel={value => getLabel(AREA_TYPES, value)}
+              options={getOptions(areaTypeCodes)}
+              getOptionLabel={value => getAddressName(areaTypeCodes, value)}
             />
             <MaskedInputFormik name="area" label="Район" placeholder="-" mask={maskCyrillicAndDigits} />
 
@@ -126,8 +110,8 @@ export const AddressDialog = (props: Props) => {
               name="cityType"
               label="Тип города"
               placeholder="-"
-              options={getOptions(CITY_TYPES)}
-              getOptionLabel={value => getLabel(CITY_TYPES, value)}
+              options={getOptions(cityTypeCodes)}
+              getOptionLabel={value => getAddressName(cityTypeCodes, value)}
             />
             <MaskedInputFormik name="city" label="Город" placeholder="-" mask={maskCyrillicAndDigits} />
 
@@ -135,8 +119,8 @@ export const AddressDialog = (props: Props) => {
               name="settlementType"
               label="Тип населенного пункта"
               placeholder="-"
-              options={getOptions(SETTLEMENT_TYPES)}
-              getOptionLabel={value => getLabel(SETTLEMENT_TYPES, value)}
+              options={getOptions(settlementTypeCodes)}
+              getOptionLabel={value => getAddressName(settlementTypeCodes, value)}
             />
             <MaskedInputFormik
               name="settlement"
@@ -149,8 +133,8 @@ export const AddressDialog = (props: Props) => {
               name="streetType"
               label="Тип улицы"
               placeholder="-"
-              options={getOptions(STREET_TYPES)}
-              getOptionLabel={value => getLabel(STREET_TYPES, value)}
+              options={getOptions(streetTypeCodes)}
+              getOptionLabel={value => getAddressName(streetTypeCodes, value)}
             />
             <MaskedInputFormik name="street" label="Улица" placeholder="-" mask={maskCyrillicAndDigits} />
 

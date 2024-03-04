@@ -2,14 +2,17 @@ import React from 'react'
 
 import { AddressType, OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { renderHook } from '@testing-library/react'
+import { UseQueryResult } from 'react-query'
 
 import * as getPointOfSaleFromCookiesModule from 'entities/pointOfSale/utils/getPointOfSaleFromCookies'
-import * as authdcModule from 'shared/api/requests/authdc'
+import * as useGetAddressMapQueryModule from 'pages/CreateOrder/ClientForm/hooks/useGetAddressMapQuery'
 import { mockedUser } from 'shared/api/requests/authdc.mock'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { disableConsole } from 'tests/utils'
 
+import { AddressMap } from '../ClientForm.types'
+import { ADDRESS_MAP } from '../hooks/__tests__/useGetAddressMapQuery.mock'
 import { useInitialValues } from '../hooks/useInitialValues'
 import { EXPECTED_DATA, EXPECTED_EMPTY_DATA } from './useInitialValues.mock'
 
@@ -21,6 +24,7 @@ const mockedGetPointOfSaleFromCookies = jest.spyOn(
   'getPointOfSaleFromCookies',
 )
 const mockedUseMemo = jest.spyOn(React, 'useMemo')
+const mockedUseGetAddressMapQuery = jest.spyOn(useGetAddressMapQueryModule, 'useGetAddressMapQuery')
 const mockApplication = fullApplicationData
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -31,6 +35,13 @@ describe('useClientFormInitialValues', () => {
   beforeEach(() => {
     mockedUseMemo.mockImplementation(fn => fn())
     mockedGetPointOfSaleFromCookies.mockImplementation(() => ({ unit: 'unit' }))
+    mockedUseGetAddressMapQuery.mockImplementation(
+      () =>
+        ({
+          data: ADDRESS_MAP,
+          isLoading: false,
+        } as unknown as UseQueryResult<AddressMap, unknown>),
+    )
   })
 
   describe('Преобразование данных работает корректно', () => {

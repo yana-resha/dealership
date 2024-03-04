@@ -23,7 +23,7 @@ import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 import { ClientData } from '../../ClientForm.types'
 import { configAddressInitialValues, OCCUPATION_VALUES } from '../../config/clientFormInitialValues'
 import { JOB_DISABLED_OCCUPATIONS } from '../../config/clientFormValidation'
-import { prepareAddress } from '../../utils/prepareAddress'
+import { usePrepareAddress } from '../../hooks/usePrepareAddress'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './JobArea.styles'
 
@@ -31,6 +31,7 @@ export const DADATA_EMPLOYER_OPTIONS_LIMIT = 20
 
 export function JobArea() {
   const classes = useStyles()
+  const { prepareAddress } = usePrepareAddress()
   const [jobDisabled, setJobDisabled] = useState(false)
   const [isEmplAddressDialogVisible, setIsEmplAddressDialogVisible] = useState(false)
 
