@@ -59,7 +59,7 @@ export const FraudDialog = () => {
         orderData: { ...savedApplication, application: { ...application, specialMark: fraudReason } },
       }),
     )
-  }, [fraudReason, setFieldValue])
+  }, [application, dispatch, fraudReason, savedApplication])
 
   return (
     <Box className={classes.fraudButtonContainer}>
