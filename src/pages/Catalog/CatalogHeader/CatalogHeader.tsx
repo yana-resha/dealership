@@ -5,13 +5,12 @@ import { Box, Button, IconButton, Typography } from '@mui/material'
 import { ReactComponent as AddingFolder } from 'assets/icons/addingFolder.svg'
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
 import { ReactComponent as UploadingFile } from 'assets/icons/uploadingFile.svg'
-import { Role } from 'shared/api/requests/authdc'
+import { useUserRoles } from 'entities/user'
 import {
   useCreateCatalogMutation,
   useGetCatalogQuery,
   useUploadFileMutation,
 } from 'shared/api/requests/fileStorageDc.api'
-import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { FileUploadButton } from 'shared/ui/FileUploadButton'
 
 import { allowedFileTypes } from '../Catalog.config'
@@ -27,8 +26,7 @@ interface CatalogHeaderProps {
 export function CatalogHeader({ currentFolderId, onBack }: CatalogHeaderProps) {
   const styles = useStyles()
   const [isVisible, setVisible] = useState(false)
-  const roles = useAppSelector(state => state.user.user?.roles)
-  const isContentManager = roles?.[Role.FrontdcContentManager] ?? false
+  const { isContentManager } = useUserRoles()
 
   const { data: catalogData, refetch: refetchGetCatalog } = useGetCatalogQuery(
     { folderId: currentFolderId },

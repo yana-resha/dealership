@@ -43,9 +43,6 @@ export const useLogout = (beforeRedirectCb?: () => Promise<void>) => {
       dispatch(removeUserInfo())
       dispatch(clearOrder())
 
-      // Чистим кеш
-      queryClient.invalidateQueries()
-
       if (isAuth && errorMessage) {
         enqueueSnackbar(errorMessage, { variant: 'error' })
         if (logoutUrl) {
@@ -70,6 +67,9 @@ export const useLogout = (beforeRedirectCb?: () => Promise<void>) => {
         deleteSession()
       }
       redirectToLogoutUrl()
+
+      // Чистим кеш queryClient
+      queryClient.invalidateQueries()
     },
     [beforeRedirectCb, dispatch, enqueueSnackbar, logoutUrl, queryClient, redirectToLogoutUrl],
   )

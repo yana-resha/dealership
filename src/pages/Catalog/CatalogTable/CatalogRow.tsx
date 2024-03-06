@@ -11,10 +11,9 @@ import { ReactComponent as FolderIcon } from 'assets/icons/folder.svg'
 import { ReactComponent as ImageFileIcon } from 'assets/icons/imageFile.svg'
 import { ReactComponent as TableFileIcon } from 'assets/icons/tableFile.svg'
 import { ReactComponent as TextFileIcon } from 'assets/icons/textFile.svg'
-import { Role } from 'shared/api/requests/authdc'
+import { useUserRoles } from 'entities/user'
 import { RequiredCatalog, useDownloadFileMutation } from 'shared/api/requests/fileStorageDc.api'
 import { DEFAULT_FILE_NAME } from 'shared/config/fileLoading.config'
-import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
 import { imageExtensions, tableExtensions, textExtensions } from '../Catalog.config'
 import useStyles from './CatalogTable.styles'
@@ -27,8 +26,7 @@ type Props = {
 
 const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
   const styles = useStyles()
-  const roles = useAppSelector(state => state.user.user?.roles)
-  const isContentManager = roles?.[Role.FrontdcContentManager] ?? false
+  const { isContentManager } = useUserRoles()
 
   const { mutateAsync: downloadFileMutate } = useDownloadFileMutation()
 

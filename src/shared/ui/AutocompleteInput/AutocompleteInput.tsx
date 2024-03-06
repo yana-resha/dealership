@@ -104,7 +104,7 @@ export const AutocompleteInput = React.memo(
       error: isError,
       helperText: isError ? errorMessage : '',
       onChange: isCustomValueAllowed ? updateValueOnInputChange : undefined,
-      'data-fieldId': id,
+      'data-fieldid': id,
     }
 
     return (

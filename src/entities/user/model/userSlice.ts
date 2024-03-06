@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { PreparedUser } from 'shared/api/requests/authdc'
+import { PreparedUser } from '../types'
 
 interface UserState {
   user?: PreparedUser

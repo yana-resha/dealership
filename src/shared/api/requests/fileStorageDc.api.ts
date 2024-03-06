@@ -84,9 +84,9 @@ export const useGetCatalogQuery = (
     RequiredGetCatalogResponse,
     unknown,
     RequiredGetCatalogResponse,
-    (string | number | undefined)[]
+    (string | GetCatalogRequest)[]
   >,
-) => useQuery(['getCatalog', params.folderId], () => getCatalog(params), { ...options })
+) => useQuery(['getCatalog', params], () => getCatalog(params), { ...options })
 
 export const createCatalog = (params: CreateCatalogRequest) =>
   fileStorageDcApi.createCatalog({ data: params }).then(res => res.data ?? {})

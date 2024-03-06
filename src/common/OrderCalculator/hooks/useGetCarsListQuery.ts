@@ -15,7 +15,7 @@ type NormalizedCars = {
 
 export const useGetCarsListQuery = (
   params: GetCarsListRequest,
-  options?: UseQueryOptions<GetCarsListResponse, unknown, NormalizedCars, string[]>,
+  options?: UseQueryOptions<GetCarsListResponse, unknown, NormalizedCars, (string | GetCarsListRequest)[]>,
 ) => {
   const { enqueueSnackbar } = useSnackbar()
 
@@ -24,7 +24,7 @@ export const useGetCarsListQuery = (
     [enqueueSnackbar],
   )
 
-  return useQuery(['getCarsList'], () => getCarsList(params), {
+  return useQuery(['getCarsList', params], () => getCarsList(params), {
     retry: false,
     cacheTime: Infinity,
     select: res => ({ newCars: prepareCars(res.newCars), usedCars: prepareCars(res.usedCars) }),

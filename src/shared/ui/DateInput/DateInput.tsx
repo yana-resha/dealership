@@ -75,7 +75,7 @@ export const DateInput = React.memo(
           error: isError,
           helperText: isError ? errorMessage : '',
           onBlur: onBlur,
-          'data-fieldId': id,
+          'data-fieldid': id,
         },
       },
     }

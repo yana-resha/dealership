@@ -182,7 +182,7 @@ export const useRequisitesForFinancingQuery = (
     Awaited<ReturnType<typeof getRequisitesForFinancing>>,
     unknown,
     RequisitesForFinancing,
-    string[]
+    (string | GetRequisitesForFinancingRequest)[]
   >,
 ) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -191,24 +191,9 @@ export const useRequisitesForFinancingQuery = (
     [enqueueSnackbar],
   )
 
-  const paramsKeys = {
-    vendorCode: params.vendorCode || '',
-    additionalEquipments: (params.additionalEquipments || []).filter(o => !!o) as unknown as string[],
-    additionalOptions: (params.additionalOptions || []).filter(o => !!o) as unknown as string[],
-  }
-
-  return useQuery(
-    [
-      'getRequisitesForFinancing',
-      paramsKeys.vendorCode,
-      ...paramsKeys.additionalEquipments,
-      ...paramsKeys.additionalOptions,
-    ],
-    () => getRequisitesForFinancing(params),
-    {
-      onError,
-      ...options,
-      select: res => prepareData(res),
-    },
-  )
+  return useQuery(['getRequisitesForFinancing', params], () => getRequisitesForFinancing(params), {
+    onError,
+    ...options,
+    select: res => prepareData(res),
+  })
 }

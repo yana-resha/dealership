@@ -2,17 +2,16 @@ import { PropsWithChildren } from 'react'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { Role } from 'shared/api/requests/authdc'
+import * as useUserRolesModule from 'entities/user/hooks/useUserRoles'
 import * as useGetCatalogQueryModule from 'shared/api/requests/fileStorageDc.api'
-import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { CatalogHeader } from '../CatalogHeader'
 
 const createWrapper = ({ children }: PropsWithChildren) => <MockProviders>{children}</MockProviders>
-const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
 const mockedUseGetCatalogQuery = jest.spyOn(useGetCatalogQueryModule, 'useGetCatalogQuery')
+const mockedUseUserRoles = jest.spyOn(useUserRolesModule, 'useUserRoles')
 const onBack = jest.fn()
 
 disableConsole('error')
@@ -20,9 +19,11 @@ disableConsole('error')
 describe('CatalogHeader', () => {
   beforeEach(() => {
     mockedUseGetCatalogQuery.mockImplementation(() => ({ data: { prevFolderId: 1 } } as any))
+    mockedUseUserRoles.mockImplementation(() => ({ isContentManager: true, isCreditExpert: false }))
   })
   describe('Элементы отображаются корректно', () => {
     it('Если отсутствует роль FrontdcContentManager, то не отображаются кнопки', () => {
+      mockedUseUserRoles.mockImplementation(() => ({ isContentManager: false, isCreditExpert: false }))
       render(<CatalogHeader currentFolderId={0} onBack={onBack} />, {
         wrapper: createWrapper,
       })
@@ -31,7 +32,6 @@ describe('CatalogHeader', () => {
     })
 
     it('Если есть роль FrontdcContentManager, то отображаются кнопки', () => {
-      mockedUseAppSelector.mockImplementation(() => ({ [Role.FrontdcContentManager]: true }))
       render(<CatalogHeader currentFolderId={0} onBack={onBack} />, {
         wrapper: createWrapper,
       })
@@ -41,7 +41,6 @@ describe('CatalogHeader', () => {
     })
 
     it('При создании папки появляется модальное окно', async () => {
-      mockedUseAppSelector.mockImplementation(() => ({ [Role.FrontdcContentManager]: true }))
       render(<CatalogHeader currentFolderId={0} onBack={onBack} />, {
         wrapper: createWrapper,
       })
@@ -50,7 +49,6 @@ describe('CatalogHeader', () => {
     })
 
     it('В корневой папке отсутствует кнопка Назад', () => {
-      mockedUseAppSelector.mockImplementation(() => ({ [Role.FrontdcContentManager]: true }))
       render(<CatalogHeader currentFolderId={0} onBack={onBack} />, {
         wrapper: createWrapper,
       })
@@ -58,7 +56,6 @@ describe('CatalogHeader', () => {
     })
 
     it('В дочерних папках присутствует кнопка Назад', async () => {
-      mockedUseAppSelector.mockImplementation(() => ({ [Role.FrontdcContentManager]: true }))
       render(<CatalogHeader currentFolderId={2} onBack={onBack} />, {
         wrapper: createWrapper,
       })

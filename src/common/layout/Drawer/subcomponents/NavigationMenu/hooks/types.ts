@@ -3,4 +3,5 @@ export type MenuItem = {
   icon: (arg: { isSelected?: boolean }) => JSX.Element
   path: string
   onCallback?: () => void
+  disabled?: boolean
 }

@@ -94,7 +94,7 @@ export const AutocompleteDaDataAddress = ({
     helperText: isError ? errorMessage : '',
     onChange: handleInputChange,
     onFocus: handleOnFocus,
-    'data-fieldId': id,
+    'data-fieldid': id,
   }
 
   useEffect(() => {

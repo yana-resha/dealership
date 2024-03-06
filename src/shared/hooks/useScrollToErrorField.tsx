@@ -68,7 +68,7 @@ export const useScrollToErrorField = () => {
       return
     }
     // Находим первый элемент с ошибкой. Если нашли, то сохраняем его и передаем обсерверу.
-    const element = document.querySelector(`[data-fieldId='${fieldErrorNames[0]}']`)
+    const element = document.querySelector(`[data-fieldid='${fieldErrorNames[0]}']`)
     if (element) {
       elementRef.current = element
       observer.observe(element)
