@@ -6,12 +6,9 @@ import { useGetCatalogQuery, useRemoveCatalogMutation } from 'shared/api/request
 import { ModalDialog } from 'shared/ui/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography'
 
+import { RemovedFile } from '../CatalogTable.types'
 import useStyles from './RemoveModal.styles'
 
-export type RemovedFile = {
-  id: number
-  name: string
-}
 type Props = {
   currentFolderId: number
   removedFile: RemovedFile | undefined
@@ -39,10 +36,12 @@ export const RemoveModal = ({ currentFolderId, removedFile, closeModal }: Props)
     }
   }, [closeModal, refetchGetCatalog, removeCatalogMutate, removedFile?.id])
 
+  const entity = removedFile?.isFile ? 'файл' : 'папку'
+
   return (
     <ModalDialog isVisible={!!removedFile} label="" onClose={closeModal}>
       <SberTypography sberautoVariant="body3" component="p">
-        {`Вы действительно хотите удалить файл/папку “${removedFile?.name || ''}”?`}
+        {`Вы действительно хотите удалить ${entity} “${removedFile?.name || ''}”?`}
       </SberTypography>
 
       <Box className={styles.btnContainer}>

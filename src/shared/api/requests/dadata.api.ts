@@ -8,10 +8,11 @@ import { useMutation } from 'react-query'
 
 import { appConfig } from '../../../config'
 import { Rest } from '../client'
+import { Service } from '../constants'
 
 export const DADATA_OPTIONS_LIMIT = 10
 
-const dadataApi = createDaData(() => `${appConfig.apiUrl}/dadata`, Rest.request)
+const dadataApi = createDaData(() => `${appConfig.apiUrl}/${Service.Dadata}`, Rest.request)
 
 export const getAddressSuggestions = (params: GetAddressSuggestionsRequest) =>
   dadataApi.getAddressSuggestions({ data: params }).then(response => response.data ?? {})

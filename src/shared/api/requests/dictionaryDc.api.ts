@@ -14,7 +14,9 @@ import { appConfig } from 'config'
 import { Rest } from 'shared/api/client'
 import { prepareOptionId, prepareOptionType } from 'shared/lib/helpers'
 
-const dictionaryDcApi = createDictionaryDc(`${appConfig.apiUrl}/dictionarydc`, Rest.request)
+import { Service } from '../constants'
+
+const dictionaryDcApi = createDictionaryDc(`${appConfig.apiUrl}/${Service.Dictionarydc}`, Rest.request)
 
 export const getCarsList = (params: GetCarsListRequest) =>
   dictionaryDcApi.getCarsList({ data: params }).then(res => res.data ?? {})

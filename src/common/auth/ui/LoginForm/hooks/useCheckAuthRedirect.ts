@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { Service, getErrorMessage } from 'shared/api/errors'
+import { CustomFetchError } from 'shared/api/client'
+import { Service, ServiceApi } from 'shared/api/constants'
+import { ErrorAlias, ErrorCode, getErrorMessage } from 'shared/api/errors'
 import { createSession } from 'shared/api/requests/authdc'
 
 /** Отслеживаем обратный редирект с TeamID и запрашиваем токены */
@@ -17,22 +19,22 @@ export const useCheckAuthRedirect = (onReject: (text: string) => void) => {
 
   const fetchData = useCallback(async () => {
     if (code && state) {
-      try {
-        setIsLoading(true)
-        setSearchParams(new URLSearchParams(''))
-
-        const res = await createSession({ authCode: code, state })
-        if (!res.success) {
-          throw new Error('Invalid response data')
-        }
-      } catch (err: any) {
-        onReject(getErrorMessage(Service.Authdc, err?.code))
-      } finally {
-        setIsLoading(false)
-      }
+      setIsLoading(true)
+      setSearchParams(new URLSearchParams(''))
+      createSession({ authCode: code, state })
+        .catch((err: CustomFetchError) =>
+          onReject(
+            getErrorMessage({
+              service: Service.Authdc,
+              serviceApi: ServiceApi.CreateSession,
+              code: err.code as ErrorCode,
+              alias: err.alias as ErrorAlias,
+            }),
+          ),
+        )
+        .finally(() => setIsLoading(false))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code, state])
+  }, [code, onReject, setSearchParams, state])
 
   useEffect(() => {
     fetchData()

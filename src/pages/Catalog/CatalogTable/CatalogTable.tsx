@@ -10,6 +10,7 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material'
+import { ObjectType } from '@sberauto/filestoragedc-proto/public'
 
 import { RequiredCatalog, useGetCatalogQuery } from 'shared/api/requests/fileStorageDc.api'
 import SberTypography from 'shared/ui/SberTypography'
@@ -18,7 +19,8 @@ import { useRowsPerPage } from '../../../shared/hooks/useRowsPerPage'
 import { CatalogRow } from './CatalogRow'
 import { catalogTableHeaders } from './CatalogTable.config'
 import useStyles from './CatalogTable.styles'
-import { RemoveModal, RemovedFile } from './RemoveModal/RemoveModal'
+import { RemovedFile } from './CatalogTable.types'
+import { RemoveModal } from './RemoveModal/RemoveModal'
 import { TablePaginationActions } from './TablePaginationActions/TablePaginationActions'
 
 type Props = {
@@ -68,8 +70,8 @@ const CatalogTable = ({
 
   const [removedFile, setRemovedFile] = useState<RemovedFile>()
   const closeModal = useCallback(() => setRemovedFile(undefined), [])
-  const handleRemove = useCallback((id: number, name: string) => {
-    setRemovedFile({ id, name })
+  const handleRemove = useCallback((file: RemovedFile) => {
+    setRemovedFile(file)
   }, [])
 
   if (isLoading) {

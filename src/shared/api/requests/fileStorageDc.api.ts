@@ -14,9 +14,12 @@ import { useSnackbar } from 'notistack'
 import { UseQueryOptions, useMutation, useQuery } from 'react-query'
 
 import { appConfig } from 'config'
-import { Rest } from 'shared/api/client'
+import { CustomFetchError, Rest } from 'shared/api/client'
 
-const fileStorageDcApi = createFileStorageDc(`${appConfig.apiUrl}/filestoragedc`, Rest.request)
+import { Service, ServiceApi } from '../constants'
+import { ErrorAlias, ErrorCode, getErrorMessage } from '../errors'
+
+const fileStorageDcApi = createFileStorageDc(`${appConfig.apiUrl}/${Service.Filestoragedc}`, Rest.request)
 
 function prepareObjectType(type: keyof typeof ObjectType | undefined | null): ObjectType | undefined {
   return type ? ObjectType[type] ?? undefined : undefined
@@ -108,10 +111,18 @@ export const useRemoveCatalogMutation = () => {
   const { enqueueSnackbar } = useSnackbar()
 
   return useMutation(['removeCatalog'], removeCatalog, {
-    onError: () => {
-      enqueueSnackbar('Ошибка. Не удалось удалить каталог/файл', {
-        variant: 'error',
-      })
+    onError: (err: CustomFetchError) => {
+      enqueueSnackbar(
+        getErrorMessage({
+          service: Service.Filestoragedc,
+          serviceApi: ServiceApi.RemoveCatalog,
+          code: err.code as ErrorCode,
+          alias: err.alias as ErrorAlias,
+        }),
+        {
+          variant: 'error',
+        },
+      )
     },
   })
 }
