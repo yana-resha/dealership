@@ -7,7 +7,7 @@ import { getStateAndNonce } from 'shared/api/requests/authsberteamid'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
 import { useAuthContext } from '../../AuthProvider'
-import { getAuthorizeUrl, getLogoutUrl } from '../utils/authorizeUrl'
+// import { getAuthorizeUrl, getLogoutUrl } from '../utils/authorizeUrl'
 
 /** Генерируем ссылку на авторизацию в TeamID */
 /** пропс code использовать только на девах! */
@@ -23,27 +23,35 @@ export const useGetAuthLink = (code?: string | null) => {
   })
 
   const { authLink, logoutUrl } = useMemo(() => {
-    //NOTE: что бы не блочить авторизацию на деве ориентируемся на среду
+    // NOTE: что бы не блочить авторизацию на деве ориентируемся на среду
     if (appConfig.sberTeamAuthEnv === 'training') {
       return {
         authLink: appConfig.appUrl + appRoutePaths.fakeAuth,
         logoutUrl: undefined,
       }
     }
-    if (appConfig.sberTeamAuthEnv === 'dev') {
-      return {
-        authLink:
-          appConfig.appUrl +
-          `/auth?code=${code ?? '11111'}&state=${data?.state ?? 'e544b6f3-0697-49af-ac8b-72a39f20f7b8'}`,
-        logoutUrl: undefined,
-      }
-    } else {
-      return {
-        authLink: data ? getAuthorizeUrl(data) : undefined,
-        logoutUrl: data ? getLogoutUrl(data) : undefined,
-      }
+
+    // NOTE: Не удалять! Основная авторизация через teamid временно заблокирована
+    // if (appConfig.sberTeamAuthEnv === 'dev') {
+    //   return {
+    //     authLink:
+    //       appConfig.appUrl +
+    //       `/auth?code=${code ?? '11111'}&state=${data?.state ?? 'e544b6f3-0697-49af-ac8b-72a39f20f7b8'}`,
+    //     logoutUrl: undefined,
+    //   }
+    // } else {
+    //   return {
+    //     authLink: data ? getAuthorizeUrl(data) : undefined,
+    //     logoutUrl: data ? getLogoutUrl(data) : undefined,
+    //   }
+    // }
+
+    // NOTE: временная авторизация на проде и деве по логину, паролю и СМС
+    return {
+      authLink: appConfig.appUrl + appRoutePaths.login,
+      logoutUrl: undefined,
     }
-  }, [data, code])
+  }, [])
 
   /** фиксируем, что получили state и nonce, что бы не вызывать ручку повторно */
   useEffect(() => {

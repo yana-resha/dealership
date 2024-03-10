@@ -11,4 +11,6 @@ export enum ServiceApi {
   CreateSession = 'createSession',
   TrainingCreateSession = 'trainingCreateSession',
   RemoveCatalog = 'removeCatalog',
+  AuthorizeUser = 'authorizeUser',
+  CheckCode = 'checkCode',
 }

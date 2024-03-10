@@ -192,6 +192,7 @@ export const theme = createTheme({
     },
     primary: {
       main: PRIMARY_MAIN,
+      dark: PRIMARY_DARK,
     },
     background: {
       paper: '#F4F4F9',
