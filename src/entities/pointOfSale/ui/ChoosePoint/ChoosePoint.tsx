@@ -1,14 +1,14 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { AutocompleteRenderInputParams, Collapse, DialogContentText, useTheme } from '@mui/material'
+import { AutocompleteRenderInputParams, Collapse, DialogContentText } from '@mui/material'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { InputAdornment } from '@mui/material'
 import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
 import cx from 'classnames'
 import { useNavigate } from 'react-router-dom'
 
-import { ReactComponent as DoneIcon } from 'assets/icons/done.svg'
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
+import { usePrevious } from 'shared/hooks/usePrevious'
 import { defaultRoute } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
@@ -26,11 +26,11 @@ type Props = { value?: Vendor; isHeader?: boolean; onSuccessEditing?: () => void
 
 export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   const classes = useStyles()
-  const theme = useTheme()
   const navigate = useNavigate()
 
   const { data, error, isLoading } = useGetVendorsListQuery()
   const [chosenOption, setChosenOption] = useState<Vendor | null>(value ?? null)
+  const prevChosenOption = usePrevious(chosenOption)
   const [validationError, setValidationError] = useState<boolean>(false)
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
 
@@ -49,6 +49,12 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
       setIsDialogOpen(true)
     }
   }, [chosenOption])
+
+  useEffect(() => {
+    if (isHeader && !!chosenOption && chosenOption !== prevChosenOption) {
+      validatePointOfSale()
+    }
+  }, [chosenOption, isHeader, prevChosenOption, validatePointOfSale])
 
   const onDisagree = useCallback(() => {
     setIsDialogOpen(false)
@@ -76,6 +82,8 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
         className={classes.autocompleteTextField}
         {...params}
         size={isHeader ? 'small' : 'medium'}
+        placeholder="ТТ или адрес"
+        autoFocus={isHeader}
         InputProps={{
           ...params.InputProps,
           endAdornment: (
@@ -90,7 +98,6 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
             </InputAdornment>
           ),
         }}
-        placeholder="ТТ или адрес"
       />
     ),
     [classes.autocompleteTextField, isHeader, isLoading, validationError],
@@ -143,23 +150,15 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
           onChange={handleAutocompleteOptionChange}
           onFocus={disableErrorState}
           renderInput={renderInput}
+          openOnFocus
         />
         {renderError(errorMessage)}
       </Box>
 
-      {isHeader ? (
-        <Button
-          size="small"
-          variant="contained"
-          data-testid="choosePointIconButton"
-          className={classes.button}
-          onClick={validatePointOfSale}
-        >
-          <DoneIcon width="17px" color={theme.palette.text.primary} />
-        </Button>
-      ) : (
+      {!isHeader && (
         <Button
           variant="contained"
+          data-testid="choosePointBtn"
           className={classes.loginButton}
           onClick={validatePointOfSale}
           disabled={!!error}
