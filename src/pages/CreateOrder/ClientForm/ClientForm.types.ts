@@ -1,3 +1,4 @@
+import { GetAddressMapResponse } from '@sberauto/dadata-proto/public'
 import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { FileInfo } from 'features/ApplicationFileLoader'
@@ -89,4 +90,17 @@ export interface ClientData {
   questionnaireFile: FileInfo | null
   submitAction: SubmitAction
   isFormComplete: boolean
+}
+
+export interface AddressTypeCode {
+  code: string
+  name: string
+}
+
+export interface AddressMap extends GetAddressMapResponse {
+  regionTypeCodes?: AddressTypeCode[]
+  areaTypeCodes?: AddressTypeCode[]
+  cityTypeCodes?: AddressTypeCode[]
+  settlementTypeCodes?: AddressTypeCode[]
+  streetTypeCodes?: AddressTypeCode[]
 }

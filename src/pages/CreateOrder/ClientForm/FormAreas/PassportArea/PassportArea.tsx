@@ -29,12 +29,13 @@ import {
   childrenCounts,
   configAddressInitialValues,
 } from '../../config/clientFormInitialValues'
-import { prepareAddress } from '../../utils/prepareAddress'
+import { usePrepareAddress } from '../../hooks/usePrepareAddress'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './PassportArea.styles'
 
 export function PassportArea() {
   const classes = useStyles()
+  const { prepareAddress } = usePrepareAddress()
 
   const { values, setFieldValue } = useFormikContext<ClientData>()
   const {

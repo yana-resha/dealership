@@ -25,12 +25,13 @@ import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { ClientData, SubmitAction } from '../ClientForm.types'
-import { AREA_TYPES, CITY_TYPES, SETTLEMENT_TYPES, STREET_TYPES } from '../config/address.config'
 import { configAddressInitialValues, UPLOADED_DOCUMENTS } from '../config/clientFormInitialValues'
+import { getAddressName } from '../utils/addressMap'
 import { addressTransformForForm, addressTransformForRequest } from '../utils/addressTransformForRequest'
 import { makeClientForm } from '../utils/makeClienForm'
 import { transformDocsForRequest } from '../utils/transformDocsForRequest'
 import { transformPhoneForRequest } from '../utils/transformPhoneForRequest'
+import { useGetAddressMapQuery } from './useGetAddressMapQuery'
 
 export function useInitialValues() {
   const dispatch = useDispatch()
@@ -38,6 +39,9 @@ export function useInitialValues() {
     initialOrder: state.order.order,
     user: state.user.user,
   }))
+
+  const { data: addressMap = {}, isLoading: isAddressMapLoading } = useGetAddressMapQuery()
+  const { areaTypeCodes, cityTypeCodes, settlementTypeCodes, streetTypeCodes } = addressMap
 
   const pointOfSale = getPointOfSaleFromCookies()
 
@@ -95,13 +99,13 @@ export function useInitialValues() {
             getStringIfPresent(preparedAddress.postalCode) +
             getStringIfPresent(preparedAddress.regCode ?? '') +
             getStringIfPresent(preparedAddress.region) +
-            getStringIfPresent(getLabel(AREA_TYPES, preparedAddress.areaType)) +
+            getStringIfPresent(getAddressName(areaTypeCodes, preparedAddress.areaType)) +
             getStringIfPresent(preparedAddress.area) +
-            getStringIfPresent(getLabel(CITY_TYPES, preparedAddress.cityType)) +
+            getStringIfPresent(getAddressName(cityTypeCodes, preparedAddress.cityType)) +
             getStringIfPresent(preparedAddress.city) +
-            getStringIfPresent(getLabel(SETTLEMENT_TYPES, preparedAddress.settlementType)) +
+            getStringIfPresent(getAddressName(settlementTypeCodes, preparedAddress.settlementType)) +
             getStringIfPresent(preparedAddress.settlement) +
-            getStringIfPresent(getLabel(STREET_TYPES, preparedAddress.streetType)) +
+            getStringIfPresent(getAddressName(streetTypeCodes, preparedAddress.streetType)) +
             getStringIfPresent(preparedAddress.street) +
             getStringIfPresent(preparedAddress.house) +
             getStringIfPresent(preparedAddress.unit) +
@@ -134,10 +138,14 @@ export function useInitialValues() {
       ),
     [
       applicant?.addresses,
+      areaTypeCodes,
+      cityTypeCodes,
       getStringIfPresent,
       initialValues.employerAddressString,
       initialValues.livingAddressString,
       initialValues.registrationAddressString,
+      settlementTypeCodes,
+      streetTypeCodes,
     ],
   )
 
@@ -495,7 +503,7 @@ export function useInitialValues() {
     setAnketaType,
     updateOrderData,
     saveValuesToStore,
-    isShouldShowLoading: false,
+    isShouldShowLoading: isAddressMapLoading,
     initialValues: initialValuesClientData,
     dcAppId,
   }

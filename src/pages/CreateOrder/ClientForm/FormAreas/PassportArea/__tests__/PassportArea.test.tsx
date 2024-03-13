@@ -5,10 +5,12 @@ import { SuggestionGetAddressSuggestions } from '@sberauto/dadata-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
+import { UseQueryResult } from 'react-query'
 
-import { SubmitAction } from 'pages/CreateOrder/ClientForm/ClientForm.types'
+import { AddressMap, SubmitAction } from 'pages/CreateOrder/ClientForm/ClientForm.types'
+import { ADDRESS_MAP } from 'pages/CreateOrder/ClientForm/hooks/__tests__/useGetAddressMapQuery.mock'
+import * as useGetAddressMapQueryModule from 'pages/CreateOrder/ClientForm/hooks/useGetAddressMapQuery'
 import * as daDataQueryModule from 'shared/api/requests/dadata.api'
-import { useGetFmsUnitSuggestions } from 'shared/api/requests/dadata.api'
 import { MockedDateInput } from 'shared/ui/DateInput/__mocks__/DateInput.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
@@ -48,6 +50,7 @@ jest.mock('shared/ui/AutocompleteInput/AutocompleteInput', () => ({
   ),
 }))
 
+const mockedUseGetAddressMapQuery = jest.spyOn(useGetAddressMapQueryModule, 'useGetAddressMapQuery')
 const mockedDaDataQueryAddress = jest.spyOn(daDataQueryModule, 'useGetAddressSuggestions')
 const mockedUseGetFmsUnitSuggestions = jest.spyOn(daDataQueryModule, 'useGetFmsUnitSuggestions')
 
@@ -109,6 +112,13 @@ disableConsole('error')
 describe('PassportAreaTest', () => {
   describe('Все поля отображаются на форме', () => {
     beforeEach(() => {
+      mockedUseGetAddressMapQuery.mockImplementation(
+        () =>
+          ({
+            data: ADDRESS_MAP,
+            isLoading: false,
+          } as unknown as UseQueryResult<AddressMap, unknown>),
+      )
       mockedDaDataQueryAddress.mockImplementation(
         () =>
           ({
@@ -158,6 +168,13 @@ describe('PassportAreaTest', () => {
 
   describe('Все поля валидируются', () => {
     beforeEach(() => {
+      mockedUseGetAddressMapQuery.mockImplementation(
+        () =>
+          ({
+            data: ADDRESS_MAP,
+            isLoading: false,
+          } as unknown as UseQueryResult<AddressMap, unknown>),
+      )
       mockedUseGetFmsUnitSuggestions.mockImplementation(
         () =>
           ({

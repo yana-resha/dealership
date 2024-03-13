@@ -8,8 +8,11 @@ import {
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
+import { UseQueryResult } from 'react-query'
 
-import { SubmitAction } from 'pages/CreateOrder/ClientForm/ClientForm.types'
+import { AddressMap, SubmitAction } from 'pages/CreateOrder/ClientForm/ClientForm.types'
+import { ADDRESS_MAP } from 'pages/CreateOrder/ClientForm/hooks/__tests__/useGetAddressMapQuery.mock'
+import * as useGetAddressMapQueryModule from 'pages/CreateOrder/ClientForm/hooks/useGetAddressMapQuery'
 import * as daDataQueryModule from 'shared/api/requests/dadata.api'
 import { MockedDateInput } from 'shared/ui/DateInput/__mocks__/DateInput.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
@@ -54,6 +57,7 @@ jest.mock('shared/ui/AutocompleteInput/AutocompleteInput', () => ({
   ),
 }))
 
+const mockedUseGetAddressMapQuery = jest.spyOn(useGetAddressMapQueryModule, 'useGetAddressMapQuery')
 const mockedDaDataQueryModule = jest.spyOn(daDataQueryModule, 'useGetAddressSuggestions')
 const mockedDaDataQueryOrganization = jest.spyOn(daDataQueryModule, 'useGetOrganizationSuggestions')
 
@@ -93,6 +97,13 @@ disableConsole('error')
 describe('JobAreaTest', () => {
   describe('Все поля отображаются на форме', () => {
     beforeEach(() => {
+      mockedUseGetAddressMapQuery.mockImplementation(
+        () =>
+          ({
+            data: ADDRESS_MAP,
+            isLoading: false,
+          } as unknown as UseQueryResult<AddressMap, unknown>),
+      )
       mockedDaDataQueryModule.mockImplementation(
         () =>
           ({
@@ -125,6 +136,13 @@ describe('JobAreaTest', () => {
 
   describe('Все поля валидируются', () => {
     beforeEach(() => {
+      mockedUseGetAddressMapQuery.mockImplementation(
+        () =>
+          ({
+            data: ADDRESS_MAP,
+            isLoading: false,
+          } as unknown as UseQueryResult<AddressMap, unknown>),
+      )
       mockedDaDataQueryModule.mockImplementation(
         () =>
           ({
