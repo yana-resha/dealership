@@ -24,24 +24,17 @@ export const useStyles = makeStyles(theme => ({
     width: '267px',
   },
 
-  documentsBlock: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    gap: theme.spacing(3),
-  },
-
   documentContainer: {
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(3),
   },
 
-  document: {
+  documentsBlock: {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: theme.spacing(22),
+    flexDirection: 'column',
+    width: '715px',
+    gap: theme.spacing(3),
   },
 
   radioGroup: {

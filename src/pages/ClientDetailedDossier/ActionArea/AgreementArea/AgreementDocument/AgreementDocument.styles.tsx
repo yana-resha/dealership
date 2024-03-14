@@ -41,7 +41,7 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: theme.spacing(22),
+    gap: theme.spacing(4),
   },
 
   radioGroup: {
