@@ -127,8 +127,8 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
       setFieldValue(namePrefix + 'taxPercent', currentLegalPerson?.tax)
       setFieldValue(namePrefix + 'taxValue', currentLegalPerson?.tax * parseFloat(loanAmount))
     } else {
-      setFieldValue(namePrefix + 'taxPercent', null)
-      setFieldValue(namePrefix + 'taxValue', null)
+      setFieldValue(namePrefix + 'taxPercent', 0)
+      setFieldValue(namePrefix + 'taxValue', 0)
     }
   }, [currentLegalPerson?.tax, loanAmount, namePrefix, setFieldValue])
 

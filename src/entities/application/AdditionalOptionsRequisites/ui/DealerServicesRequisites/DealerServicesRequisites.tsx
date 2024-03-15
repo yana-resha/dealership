@@ -208,8 +208,8 @@ export function DealerServicesRequisites({
       setFieldValue(namePrefix + 'agentTaxPercent', currentBroker.tax)
       setFieldValue(namePrefix + 'agentTaxValue', currentBroker.tax * parseInt(productCost || '0', 10))
     } else {
-      setFieldValue(namePrefix + 'agentTaxPercent', null)
-      setFieldValue(namePrefix + 'agentTaxValue', null)
+      setFieldValue(namePrefix + 'agentTaxPercent', 0)
+      setFieldValue(namePrefix + 'agentTaxValue', 0)
     }
   }, [currentBroker?.tax, namePrefix, productCost, setFieldValue])
 
