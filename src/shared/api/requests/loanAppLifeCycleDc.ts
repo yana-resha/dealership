@@ -36,6 +36,7 @@ import { useMutation } from 'react-query'
 import { appConfig } from 'config'
 
 import { Rest } from '../client'
+import { Service } from '../constants'
 
 export interface RequiredScan extends Scan {
   type: DocumentType
@@ -61,7 +62,7 @@ function prepareApplication(application: Application): Application {
 }
 
 const loanAppLifeCycleDcApi = createLoanAppLifeCycleDc(
-  () => `${appConfig.apiUrl}/loanapplifecycledc`,
+  () => `${appConfig.apiUrl}/${Service.Loanapplifecycledc}`,
   Rest.request,
 )
 

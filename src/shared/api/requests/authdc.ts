@@ -12,9 +12,10 @@ import { AUTH_TOKEN } from 'shared/constants/constants'
 import { setLocalStorage } from 'shared/lib/helpers'
 
 import { CustomFetchError, Rest } from '../client'
+import { Service } from '../constants'
 import { setAuthCookie } from '../helpers/authCookie'
 
-const authDcApi = createAuthDc(`${appConfig.apiUrl}/authdc`, Rest.request)
+const authDcApi = createAuthDc(`${appConfig.apiUrl}/${Service.Authdc}`, Rest.request)
 
 export const createSession = (params: CreateSessionRequest) =>
   authDcApi.createSession({ data: params }).then(res => {

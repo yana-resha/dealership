@@ -6,7 +6,8 @@ import { useSnackbar } from 'notistack'
 import { useNavigate } from 'react-router-dom'
 
 import { useAuthContext } from 'common/auth'
-import { ErrorCode, getErrorMessage, Service } from 'shared/api/errors'
+import { Service, ServiceApi } from 'shared/api/constants'
+import { ErrorAlias, ErrorCode, getErrorMessage } from 'shared/api/errors'
 import { useTrainingCreateSessionMutation } from 'shared/api/requests/authdc'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
@@ -33,9 +34,12 @@ export function TrainingLoginForm() {
         onSuccess: () => setShouldRedirect(true),
         onError: err => {
           enqueueSnackbar(
-            err?.code === ErrorCode.InvalidArgument
-              ? 'Неверный пароль. Попробуйте еще раз'
-              : getErrorMessage(Service.Authdc, err?.code),
+            getErrorMessage({
+              service: Service.Authdc,
+              serviceApi: ServiceApi.CreateSession,
+              code: err.code as ErrorCode,
+              alias: err.alias as ErrorAlias,
+            }),
             { variant: 'error' },
           )
         },

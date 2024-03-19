@@ -17,11 +17,12 @@ import { DEFAULT_FILE_NAME } from 'shared/config/fileLoading.config'
 
 import { imageExtensions, tableExtensions, textExtensions } from '../Catalog.config'
 import useStyles from './CatalogTable.styles'
+import { RemovedFile } from './CatalogTable.types'
 
 type Props = {
   data: RequiredCatalog
   onRowClick: (id: number) => void
-  onRemove: (id: number, name: string) => void
+  onRemove: (removedFile: RemovedFile) => void
 }
 
 const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
@@ -85,8 +86,8 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
   }, [data.id, downloadFile, isFile, onRowClick])
 
   const handleRemove = useCallback(() => {
-    onRemove(data.id, data.name || 'Без имени')
-  }, [data.id, data.name, onRemove])
+    onRemove({ id: data.id, name: data.name || 'Без имени', isFile })
+  }, [data.id, data.name, onRemove, isFile])
 
   return (
     <TableRow key={data.name} className={styles.bodyRow}>

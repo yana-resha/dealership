@@ -1,11 +1,10 @@
-import throttle from 'lodash/throttle'
-
 import { appConfig } from 'config'
 import { AUTH_TOKEN } from 'shared/constants/constants'
 import { getUserSessionId } from 'shared/lib/getUserSessionId'
 import { getLocalStorage } from 'shared/lib/helpers'
 
-import { Service, getErrorMessage } from '../errors'
+import { Service, ServiceApi } from '../constants'
+import { ErrorAlias, ErrorCode, getErrorMessage } from '../errors'
 import { Options } from './types'
 
 type LogoutMethod = (errorMessage?: string) => Promise<void> | void
@@ -17,6 +16,7 @@ type FetchError = {
     description: string
     data?: {
       description?: string
+      alias?: string
     }
   }[]
 }
@@ -24,12 +24,13 @@ type FetchError = {
 export type CustomFetchError = {
   code: string
   status: number
-  info?: string
   ok: false
+  info?: string
+  alias?: string
 }
 
-function makeError(code: string, status: number, info?: string): CustomFetchError {
-  return { code, status, ok: false, info }
+function makeError(code: string, status: number, info?: string, alias?: string): CustomFetchError {
+  return { code, status, ok: false, info, alias }
 }
 
 export function checkIsAuthError(error?: CustomFetchError) {
@@ -40,6 +41,9 @@ export function checkIsAuthError(error?: CustomFetchError) {
 
 function getServiceFromUrl(url: string) {
   return url.split('/')[3]
+}
+function getServiceApiFromUrl(url: string) {
+  return url.split('/')[4]
 }
 
 let instance: Rest
@@ -115,8 +119,8 @@ class Rest {
             throw makeError(response.statusText, response.status, `${err}`)
           }
 
-          const { code, description } = error?.errors?.[0] || {}
-          throw makeError(code, response.status, description)
+          const { code, description, data } = error?.errors?.[0] || {}
+          throw makeError(code, response.status, description, data?.alias)
         }
 
         if (isResponseBlob) {
@@ -134,7 +138,12 @@ class Rest {
       })
       .catch(async (error: CustomFetchError) => {
         if (checkIsAuthError(error)) {
-          const errorMessage = getErrorMessage(getServiceFromUrl(url) as Service, error.code)
+          const errorMessage = getErrorMessage({
+            service: getServiceFromUrl(url) as Service,
+            serviceApi: getServiceApiFromUrl(url) as ServiceApi,
+            code: error.code as ErrorCode,
+            alias: error.alias as ErrorAlias,
+          })
           this.logoutMethod?.(errorMessage)
         }
         throw error
