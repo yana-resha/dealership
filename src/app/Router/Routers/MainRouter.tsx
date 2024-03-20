@@ -14,6 +14,7 @@ import { appRoutePaths, defaultRoute } from 'shared/navigation/routerPath'
 export function MainRouter(): JSX.Element {
   const {
     auth,
+    login,
     documentStorage,
     vendorList,
     documentStorageFolder,
@@ -23,6 +24,7 @@ export function MainRouter(): JSX.Element {
     createOrder,
     calculator,
     order,
+    fakeAuth,
   } = appRoutePaths
   const { isCreditExpert, isContentManager } = useUserRoles()
   const isOnlyContentManager = !isCreditExpert && isContentManager
@@ -32,6 +34,8 @@ export function MainRouter(): JSX.Element {
       <Routes>
         <Route path="*" element={<NotFoundPage />} />
         <Route path={auth} element={<Navigate to={documentStorage} replace />} />
+        <Route path={login} element={<Navigate to={documentStorage} replace />} />
+        <Route path={fakeAuth} element={<Navigate to={documentStorage} replace />} />
         <Route path={vendorList} element={<Navigate to={documentStorage} replace />} />
 
         <Route element={<DefaultLayout />}>
@@ -48,6 +52,8 @@ export function MainRouter(): JSX.Element {
     <Routes>
       <Route path="*" element={<NotFoundPage />} />
       <Route path={auth} element={<Navigate to={defaultRoute} replace />} />
+      <Route path={login} element={<Navigate to={defaultRoute} replace />} />
+      <Route path={fakeAuth} element={<Navigate to={defaultRoute} replace />} />
       <Route path={vendorList} element={<Navigate to={defaultRoute} replace />} />
 
       <Route element={<DefaultLayout />}>

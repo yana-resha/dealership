@@ -35,9 +35,22 @@ const serviceErrors: ServiceErrors = {
 ErrorAlias содержит псевдонимы, которые Фронт обрабатывает. */
 export enum ErrorAlias {
   RemoveCatalog_catalogIsNotEmpty = 'RemoveCatalog_catalogIsNotEmpty',
+  AuthorizeUser_BadLoginOrPassword = 'AuthorizeUser_BadLoginOrPassword',
+  CheckCode_WrongCode = 'CheckCode_WrongCode',
+  CheckCode_InactiveCode = 'CheckCode_InactiveCode',
+  AuthorizeUser_UserBlocked = 'AuthorizeUser_UserBlocked',
+  AuthorizeUser_UserBlockedBySmsCount = 'AuthorizeUser_UserBlockedBySmsCount',
 }
 export const errorAliasMap = {
   [ErrorAlias.RemoveCatalog_catalogIsNotEmpty]: 'Ошибка. Невозможно удалить папку, так как в ней есть файлы',
+  [ErrorAlias.AuthorizeUser_BadLoginOrPassword]: 'Неправильный логин или пароль',
+  [ErrorAlias.CheckCode_WrongCode]: 'Введен некорректный код',
+  [ErrorAlias.CheckCode_InactiveCode]:
+    'Превышено количество попыток ввода смс, необходимо авторизоваться снова',
+  [ErrorAlias.AuthorizeUser_UserBlocked]:
+    'Учетная запись заблокирована, превышено количество попыток ввода пароля, обратитесь в тех.поддержку',
+  [ErrorAlias.AuthorizeUser_UserBlockedBySmsCount]:
+    'Учетная запись заблокирована, превышено количество запрошенных СМС-кодов, обратитесь в тех.поддержку',
 }
 
 type GetErrorMessageParams = {
@@ -56,7 +69,9 @@ export const getErrorMessage = ({ alias, code, service, serviceApi }: GetErrorMe
   if (service && code) {
     return (
       serviceErrors[service]?.[serviceApi as ServiceApi]?.[code] ??
+      serviceErrors[service]?.[serviceApi as ServiceApi]?.default ??
       serviceErrors[service]?.[code] ??
+      serviceErrors[service]?.default ??
       DEFAULT_ERROR
     )
   }

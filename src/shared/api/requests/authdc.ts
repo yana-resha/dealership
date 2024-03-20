@@ -1,4 +1,8 @@
 import {
+  AuthorizeUserRequest,
+  AuthorizeUserResponse,
+  CheckCodeRequest,
+  CheckCodeResponse,
   createAuthDc,
   CreateSessionRequest,
   GetUserRequest,
@@ -48,3 +52,25 @@ export const useTrainingCreateSessionMutation = () =>
   )
 
 export const trainingLogout = () => authDcApi.trainingLogout()
+
+export const authorizeUser = (params: AuthorizeUserRequest) =>
+  authDcApi.authorizeUser({ data: params }).then(res => res.data ?? {})
+
+export const useAuthorizeUserMutation = () =>
+  useMutation<AuthorizeUserResponse, CustomFetchError, AuthorizeUserRequest, unknown>(
+    ['authorizeUser'],
+    authorizeUser,
+  )
+
+export const checkCode = (params: CheckCodeRequest) =>
+  authDcApi.checkCode({ data: params }).then(res => {
+    setAuthCookie()
+    if (res.data.tokenCsrf) {
+      setLocalStorage(AUTH_TOKEN, res.data.tokenCsrf)
+    }
+
+    return res.data ?? {}
+  })
+
+export const useCheckCodeMutation = () =>
+  useMutation<CheckCodeResponse, CustomFetchError, CheckCodeRequest, unknown>(['checkCode'], checkCode)
