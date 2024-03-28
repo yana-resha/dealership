@@ -169,8 +169,8 @@ export function AdditionalEquipmentRequisites({
       setFieldValue(namePrefix + 'taxPercent', currentBroker.tax)
       setFieldValue(namePrefix + 'taxValue', currentBroker.tax * parseInt(productCost || '0', 10))
     } else {
-      setFieldValue(namePrefix + 'taxPercent', null)
-      setFieldValue(namePrefix + 'taxValue', null)
+      setFieldValue(namePrefix + 'taxPercent', 0)
+      setFieldValue(namePrefix + 'taxValue', 0)
     }
   }, [currentBroker?.tax, namePrefix, productCost, setFieldValue])
 
