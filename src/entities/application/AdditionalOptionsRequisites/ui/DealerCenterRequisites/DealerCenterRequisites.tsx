@@ -133,7 +133,7 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   }, [currentLegalPerson?.tax, loanAmount, namePrefix, setFieldValue])
 
   return (
-    <Box className={classes.editingAreaContainer}>
+    <Box className={classes.editingAreaContainer} data-testid="DealerCenterRequisites">
       <SelectInputFormik
         name={namePrefix + 'legalPersonCode'}
         label="Юридическое лицо"

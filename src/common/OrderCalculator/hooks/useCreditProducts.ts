@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useFormikContext } from 'formik'
-import isEqual from 'lodash/isEqual'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { usePrevious } from 'shared/hooks/usePrevious'
 
 import { CREDIT_PRODUCT_PARAMS_FIELDS } from '../config'
 import { CreditProductParams, FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'

@@ -31,11 +31,7 @@ const DEALER_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.45
 const BANK_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.3
 const ALL_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.45
 
-type Params = {
-  vendorCode: string | undefined
-}
-
-function getServicesTotalCost(services: OrderCalculatorAdditionalService[], onlyCredit = false) {
+export function getServicesTotalCost(services: OrderCalculatorAdditionalService[], onlyCredit = false) {
   return services.reduce((acc, cur) => {
     if (typeof cur.productType !== 'number' || !cur.productCost || (onlyCredit && !cur.isCredit)) {
       return acc
@@ -49,7 +45,7 @@ function getServicesTotalCost(services: OrderCalculatorAdditionalService[], only
   }, 0)
 }
 
-function checkIfExceededServicesLimit(carCost: number, criterion: boolean) {
+export function checkIfExceededServicesLimit(carCost: number, criterion: boolean) {
   if (Number.isNaN(carCost)) {
     return false
   }
@@ -60,7 +56,7 @@ function checkIfExceededServicesLimit(carCost: number, criterion: boolean) {
 Хук задает ограничения в коротком и полном калькуляторах для: полей Первоначальный взнос,
 Первоначальный взнос в % и срок кредита, для стоимости доп. оборудования и  услуг.
 */
-export function useLimits({ vendorCode }: Params) {
+export function useLimits(vendorCode: string | undefined) {
   const dispatch = useAppDispatch()
   const birthDate = useAppSelector(
     state => state.order.order?.orderData?.application?.applicant?.birthDate || state.order.order?.birthDate,
@@ -99,13 +95,12 @@ export function useLimits({ vendorCode }: Params) {
 
   useEffect(() => {
     dispatch(updateOrder({ creditProductsList: creditProductListData?.products }))
-  }, [creditProductListData, dispatch])
+  }, [creditProductListData?.products, dispatch])
 
   const carMaxAge = carBrand ? cars[carBrand]?.maxCarAge ?? 0 : 0
   const durationMaxFromCarAge = carYear
     ? (carMaxAge - (new Date().getFullYear() - carYear)) * MONTH_OF_YEAR_COUNT
     : 0
-
   const durationMaxFromClientAge = useMemo(() => {
     const clientAge = birthDate
       ? Math.ceil(
@@ -118,9 +113,7 @@ export function useLimits({ vendorCode }: Params) {
 
     return clientAge ? (MAX_AGE - clientAge) * MONTH_OF_YEAR_COUNT : 0
   }, [birthDate, isFilledElementaryClientData])
-
   const durationMaxFromAge = Math.min(durationMaxFromCarAge, durationMaxFromClientAge)
-
   const { creditProducts, isValidCreditProduct } = useMemo(
     () =>
       (creditProductListData?.products || []).reduce(
@@ -146,13 +139,13 @@ export function useLimits({ vendorCode }: Params) {
       ),
     [creditProduct, creditProductListData?.products, durationMaxFromAge],
   )
-
   const currentProduct = useMemo(
     () => creditProductListData?.productsMap?.[creditProduct],
     [creditProduct, creditProductListData?.productsMap],
   )
 
-  // Если creditProduct пришел с Бэка, но по какой-то причине не проходит по сроку, то очищаем поле
+  /* Если creditProduct пришел с Бэка, но по какой-то причине не проходит по минимальному сроку,
+  или отсутствует productId, то очищаем поле */
   useEffect(() => {
     if (
       !isGetCarsLoading &&
@@ -175,6 +168,7 @@ export function useLimits({ vendorCode }: Params) {
     carCost + onlyCreditAdditionalEquipmentsCost,
     RoundOption.min,
   )
+
   const maxInitialPayment = getMinMaxValueFromPercent(
     maxInitialPaymentPercent,
     carCost + onlyCreditAdditionalEquipmentsCost,
@@ -197,6 +191,7 @@ export function useLimits({ vendorCode }: Params) {
       ) * LOAN_TERM_GRADUATION_VALUE
 
     const durationMax = Math.min(durationMaxFromProduct, durationMaxFromAge)
+
     if (durationMin > durationMax || durationMax <= 0) {
       return []
     }
@@ -343,7 +338,6 @@ export function useLimits({ vendorCode }: Params) {
       isExceededDealerAdditionalServicesLimit: isExceededDealerServicesLimit,
       isExceededBankAdditionalServicesLimit: isExceededBankServicesLimit,
     } = commonErrorsField.value
-
     if (
       isExceededTotalLimit !== isExceededServicesTotalLimit ||
       isExceededEquipmentsLimit !== isExceededAdditionalEquipmentsLimit ||
@@ -462,5 +456,7 @@ export function useLimits({ vendorCode }: Params) {
     isLoadedCreditProducts,
     isLoading: isCreditProductListLoading || isGetCarsLoading,
     isSuccess: isCreditProductListSuccess && isGetCarsSuccess,
+    // Значения ниже используются только в тестах
+    values,
   }
 }

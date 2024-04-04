@@ -10,7 +10,7 @@ import { mapValuesForCalculateCreditRequest } from '../utils/orderFormMapper'
 import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 import { useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
-type OrderCalculatorFields = BriefOrderCalculatorFields | FullOrderCalculatorFields
+export type OrderCalculatorFields = BriefOrderCalculatorFields | FullOrderCalculatorFields
 
 export function useOrderCalculator(
   remapApplicationValue: (values: OrderCalculatorFields) => void,

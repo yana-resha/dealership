@@ -6,7 +6,12 @@ import debounce from 'lodash/debounce'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { usePrevious } from 'shared/hooks/usePrevious'
 
-import { FormFieldNameMap, OrderCalculatorAdditionalService } from '../types'
+import {
+  BriefOrderCalculatorFields,
+  FormFieldNameMap,
+  FullOrderCalculatorFields,
+  OrderCalculatorAdditionalService,
+} from '../types'
 
 export function getPercentFromValue(valueStr: string, base: number) {
   const value = parseInt(valueStr, 10)
@@ -32,7 +37,7 @@ export function getValueFromPercent(percentStr: string, base: number) {
   return `${Math.ceil((percent / 100) * base)}`
 }
 export function useInitialPayment(isDisabledForm: boolean) {
-  const { setFieldValue } = useFormikContext()
+  const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields | BriefOrderCalculatorFields>()
   const [carCostField] = useField<string>(FormFieldNameMap.carCost)
   const [additionalEquipments] = useField<OrderCalculatorAdditionalService[]>(
     ServicesGroupName.additionalEquipments,
@@ -143,5 +148,8 @@ export function useInitialPayment(isDisabledForm: boolean) {
     handleInitialPaymentPercentFocus,
     handleInitialPaymentBlur,
     handleInitialPaymentPercentBlur,
+    // Значения ниже используются только в тестах
+    values,
+    setFieldValue,
   }
 }

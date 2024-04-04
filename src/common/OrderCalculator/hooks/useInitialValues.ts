@@ -477,7 +477,7 @@ export function useInitialValues<D extends boolean | undefined>(
       const newLoanData: LoanDataFrontdc = {
         productId: creditProduct,
         downpayment: parseInt(initialPayment, 10),
-        downpaymentInPercent: parseFloat(initialPaymentPercent),
+        downpaymentInPercent: initialPaymentPercent ? parseFloat(initialPaymentPercent) : undefined,
         term: parseInt(loanTerm.toString(), 10),
         additionalOptions: remapAdditionalOptionsForSmallCalculator(values),
       }
@@ -572,7 +572,7 @@ export function useInitialValues<D extends boolean | undefined>(
       const newLoanData: LoanDataFrontdc = {
         productId: creditProduct,
         downpayment: parseInt(initialPayment, 10),
-        downpaymentInPercent: parseFloat(initialPaymentPercent),
+        downpaymentInPercent: initialPaymentPercent ? parseFloat(initialPaymentPercent) : undefined,
         term: parseInt(loanTerm.toString(), 10),
         amount: !isNaN(parseInt(loanAmount, 10)) ? parseInt(loanAmount, 10) : 0,
         additionalOptions: remapAdditionalOptionsForFullCalculator(values),
@@ -587,7 +587,6 @@ export function useInitialValues<D extends boolean | undefined>(
         // большого калькулятора и анкеты, а это как раз anketaType=2
         anketaType: AnketaType.Full,
       }
-
       dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
     },
     [fullApplicationData, getCarCountryData, remapAdditionalOptionsForFullCalculator, dispatch],

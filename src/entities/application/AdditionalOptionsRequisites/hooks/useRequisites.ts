@@ -77,5 +77,5 @@ export function useRequisites({
     setFieldValue,
   ])
 
-  return { initialValues, toggleTaxInPercentField, resetInitialValues, clearFieldsForManualEntry }
+  return { toggleTaxInPercentField, resetInitialValues, clearFieldsForManualEntry }
 }

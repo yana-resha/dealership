@@ -4,7 +4,7 @@ export enum RoundOption {
 }
 
 export function getMinMaxValueFromPercent(percent: number | undefined, base: number, option?: RoundOption) {
-  if (!percent || isNaN(base)) {
+  if (typeof percent !== 'number' || isNaN(base)) {
     return undefined
   }
   switch (option) {

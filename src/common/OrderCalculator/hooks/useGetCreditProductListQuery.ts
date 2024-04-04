@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 
-import { GetCreditProductListRequest } from '@sberauto/dictionarydc-proto/public'
+import { BankOption, CreditProduct, GetCreditProductListRequest } from '@sberauto/dictionarydc-proto/public'
 import { useSnackbar } from 'notistack'
-import { useQuery } from 'react-query'
+import { UseQueryResult, useQuery } from 'react-query'
 
 import { getCreditProductList } from 'shared/api/requests/dictionaryDc.api'
 
 import { FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
-import { prepareCreditProduct } from '../utils/prepareCreditProductListData'
+import { ProductsMap, RequiredProduct, prepareCreditProduct } from '../utils/prepareCreditProductListData'
 
 type Params = {
   vendorCode: string | undefined
@@ -15,7 +15,22 @@ type Params = {
   enabled?: boolean
 }
 
-export const useGetCreditProductListQuery = ({ vendorCode, values, enabled = true }: Params) => {
+export type useGetCreditProductListQueryData = {
+  products: RequiredProduct[]
+  productsMap: ProductsMap
+  fullDownpaymentMin: number | undefined
+  fullDownpaymentMax: number | undefined
+  fullDurationMin?: number | undefined
+  fullDurationMax?: number | undefined
+  creditProducts?: CreditProduct[] | null | undefined
+  bankOptions?: BankOption[] | null | undefined
+}
+
+export const useGetCreditProductListQuery = ({
+  vendorCode,
+  values,
+  enabled = true,
+}: Params): UseQueryResult<useGetCreditProductListQueryData, unknown> => {
   const { enqueueSnackbar } = useSnackbar()
 
   const onError = useCallback(
