@@ -7,12 +7,13 @@ import { FormFieldNameMap } from '../types'
 import { useCarSection } from './useCarSection'
 
 // Обрезаем массив годом выпуска по максимальному возрасту авто
-function getTrimmedСarYears(carYears: { value: number }[], carMaxAge: number | undefined) {
+// (месяцы игнорируются для авто - январь или декабрь не важно, 1 января возрасту авто добавляется 1 год)
+export function getTrimmedСarYears(carYears: { value: number }[], carMaxAge: number | undefined) {
   if (!carMaxAge) {
     return carYears
   }
   const currentYear = new Date().getFullYear()
-  // Нельзя выдавать кредит на авто, которое уде достигло максимального возраста,
+  // Нельзя выдавать кредит на авто, которое уже достигло максимального возраста,
   // или достигнет его до истечения срока кредита. Потому добавляем MIN_LOAN_YEAR_TERM -
   // т.к. нет смысла ставить год, при котором даже кредит на минимальный срок нельзя выдать.
   const minCarYear = currentYear - carMaxAge + MIN_LOAN_YEAR_TERM

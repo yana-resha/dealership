@@ -1,4 +1,4 @@
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
+import { Car, OptionID } from '@sberauto/dictionarydc-proto/public'
 import { DocType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
@@ -201,4 +201,15 @@ export enum AutoCategory {
   A = 'A',
   B = 'B',
   C = 'C',
+}
+
+export interface NormalizedCar extends Car {
+  brand: string
+  models: string[]
+  maxCarAge: number
+}
+
+export type NormalizedCars = {
+  newCars: Record<string, NormalizedCar>
+  usedCars: Record<string, NormalizedCar>
 }

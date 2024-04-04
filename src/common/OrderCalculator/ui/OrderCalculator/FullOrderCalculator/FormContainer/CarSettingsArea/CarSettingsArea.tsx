@@ -51,7 +51,7 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
 
   return (
     <CollapsibleFormAreaContainer title="Автомобиль">
-      <Box className={classes.wrapper}>
+      <Box className={classes.wrapper} data-testid="carSettingsArea">
         <Box className={classes.gridContainer}>
           <SelectInputFormik
             name={FormFieldNameMap.carCondition}

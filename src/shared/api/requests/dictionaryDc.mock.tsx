@@ -6,7 +6,7 @@ import {
   OptionType,
 } from '@sberauto/dictionarydc-proto/public'
 
-export const carBrands = {
+export const CAR_BRANDS = {
   BMW: {
     brand: 'BMW',
     models: ['1 series', '3 series'],
@@ -17,28 +17,28 @@ export const carBrands = {
   Fiat: {
     brand: 'Fiat',
     models: ['Ducato', 'Punto', '500'],
-    maxCarAge: 20,
+    maxCarAge: 1,
     madeIn: 'ITALY',
     autoCategory: 'B',
   },
   KIA: {
     brand: 'KIA',
     models: ['Picanto', 'Rio', 'Ceed'],
-    maxCarAge: 20,
+    maxCarAge: 19,
     madeIn: 'KOREA',
     autoCategory: 'B',
   },
   Toyota: {
     brand: 'Toyota',
     models: ['Camry', 'Corolla'],
-    maxCarAge: 20,
+    maxCarAge: 21,
     madeIn: 'JAPAN',
     autoCategory: 'B',
   },
   Skoda: {
     brand: 'Skoda',
     models: ['Rapid', 'Octavia', 'Superb'],
-    maxCarAge: 20,
+    maxCarAge: 2,
     madeIn: 'CZECH',
     autoCategory: 'B',
   },

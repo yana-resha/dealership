@@ -1,10 +1,6 @@
 import { Car } from '@sberauto/dictionarydc-proto/public'
 
-export interface NormalizedCar extends Car {
-  brand: string
-  models: string[]
-  maxCarAge: number
-}
+import { NormalizedCar } from '../types'
 
 export const prepareCars = (initialCars: Car[] | null | undefined) =>
   initialCars?.reduce<Record<string, NormalizedCar>>((acc, cur) => {

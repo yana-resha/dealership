@@ -135,7 +135,7 @@ export function FormContainer({
   useFormChanging({ remapApplicationValues, onChangeForm, enableFormSubmit })
 
   return (
-    <Form>
+    <Form data-testid="fullOrderCalculatorFormContainer">
       <RequisitesContextProvider requisites={requisites} isRequisitesFetched={isRequisitesFetched}>
         <CarSettingsArea
           onFilled={changeShouldFetchProducts}

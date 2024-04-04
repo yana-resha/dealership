@@ -156,7 +156,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       mileage: '9',
       brand: 'Skoda',
       model: 'Octavia',
-      autoPrice: 1345333.54,
+      autoPrice: 1345333,
       // vinNumber: '12341234123412341',
       carBody: '12341234123412341', // номер кузова
       // ptsNumber: '123123412341234',

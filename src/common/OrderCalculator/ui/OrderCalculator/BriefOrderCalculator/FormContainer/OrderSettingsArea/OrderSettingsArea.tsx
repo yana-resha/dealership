@@ -70,7 +70,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
     isNecessaryCasco,
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
-  } = useLimits({ vendorCode })
+  } = useLimits(vendorCode)
 
   const {
     handleInitialPaymentFocus,

@@ -6,12 +6,6 @@ export default makeStyles(theme => ({
     display: 'grid',
   },
 
-  gridContainer: {
-    gap: theme.spacing(3),
-    display: 'grid',
-    gridTemplateColumns: 'repeat(5, 1fr)',
-  },
-
   errorList: {
     display: 'flex',
     flexDirection: 'column',
