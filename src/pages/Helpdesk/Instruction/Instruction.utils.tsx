@@ -9,7 +9,7 @@ export const getMailBody = (
   MAIL_FORM_FIELDS.reduce((acc, cur) => {
     const newBody = acc ? `${acc}${cur}` : cur
     if (cur === MailFormFields.UserName) {
-      return `${newBody} ${getFullName(user?.firstName, user?.lastName, user?.middleName)};\n`
+      return `${newBody} ${getFullName(user?.lastName, user?.firstName, user?.middleName)};\n`
     }
 
     if (cur === MailFormFields.DealershipNumber) {

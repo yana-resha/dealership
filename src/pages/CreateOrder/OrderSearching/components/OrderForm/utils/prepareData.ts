@@ -36,7 +36,7 @@ export const parseData = (data: IsClientRequest): OrderFormData => {
   const { passportSeries, passportNumber, lastName, firstName, middleName, birthDate, phoneNumber } = data
 
   const passport = (passportSeries || '') + (passportNumber || '')
-  const clientName = getFullName(firstName, lastName, middleName)
+  const clientName = getFullName(lastName, firstName, middleName)
 
   const parsedBirthDate = birthDate ? new Date(birthDate) : null
   const parsedPhoneNumber = phoneNumber ? phoneNumber : ''

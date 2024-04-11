@@ -40,7 +40,7 @@ export const makeApplicationTableData = (data: Application[]): PreparedTableData
     return {
       applicationNumber: applicationNumber ?? '',
       applicationUpdateDate: applicationUpdateDate ?? '',
-      fullName: getFullName(firstName, lastName, middleName),
+      fullName: getFullName(lastName, firstName, middleName),
       vendorCode: vendorCode ?? '',
       source: sourceMap[(source || '').toLowerCase() as keyof typeof sourceMap] || source || '',
       decisionTerm: typeof decisionTerm === 'number' && decisionTerm >= 0 ? decisionTerm : '-',

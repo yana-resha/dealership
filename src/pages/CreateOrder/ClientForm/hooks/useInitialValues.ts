@@ -55,8 +55,8 @@ export function useInitialValues() {
   )
 
   const clientFormerName = getFullName(
-    applicant?.prevFirstName,
     applicant?.prevLastName,
+    applicant?.prevFirstName,
     applicant?.prevMiddleName,
   )
 
@@ -378,7 +378,7 @@ export function useInitialValues() {
         applicant: newApplicant,
         createdDate: newCreatedDate,
         employees: {
-          fioActual: getFullName(user?.firstName, user?.lastName, user?.middleName),
+          fioActual: getFullName(user?.lastName, user?.firstName, user?.middleName),
           tabNumActual: user?.employeeId,
         },
         specialMark: application?.specialMark,
@@ -445,7 +445,7 @@ export function useInitialValues() {
           // потому всегда стараемся эти данные брать из первого шага, если он был
           clientName:
             initialValues.clientName ||
-            getFullName(applicant?.firstName, applicant?.lastName, applicant?.middleName),
+            getFullName(applicant?.lastName, applicant?.firstName, applicant?.middleName),
           birthDate: initialValues.birthDate || (applicant?.birthDate ? new Date(applicant.birthDate) : null),
           passport: initialValues.passport || formatPassport(passport.series, passport.number),
           mobileNumber: initialValues.mobileNumber || mobileNumber,
