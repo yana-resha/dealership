@@ -161,8 +161,10 @@ export function useLimits(vendorCode: string | undefined) {
   }, [creditProduct, currentProduct])
 
   const onlyCreditAdditionalEquipmentsCost = getServicesTotalCost(additionalEquipments, true)
-  const minInitialPaymentPercent = currentProduct?.downpaymentMin || creditProductListData?.fullDownpaymentMin
-  const maxInitialPaymentPercent = currentProduct?.downpaymentMax || creditProductListData?.fullDownpaymentMax
+  const minInitialPaymentPercent =
+    currentProduct?.downpaymentMin ?? creditProductListData?.fullDownpaymentMin ?? 0
+  const maxInitialPaymentPercent =
+    currentProduct?.downpaymentMax ?? creditProductListData?.fullDownpaymentMax ?? 100
   const minInitialPayment = getMinMaxValueFromPercent(
     minInitialPaymentPercent,
     carCost + onlyCreditAdditionalEquipmentsCost,
@@ -223,36 +225,19 @@ export function useLimits(vendorCode: string | undefined) {
   Сформирована на основе минимального и максимального Первоначального взноса
   подсказка для данного поля. Просто возвращается компоненту.
   */
-  const initialPaymentPercentHelperText = useMemo(() => {
-    if (minInitialPaymentPercent && maxInitialPaymentPercent) {
-      return `от ${formatNumber(minInitialPaymentPercent)} до ${formatNumber(maxInitialPaymentPercent, {
+  const initialPaymentPercentHelperText = useMemo(
+    () =>
+      `от ${formatNumber(minInitialPaymentPercent)} до ${formatNumber(maxInitialPaymentPercent, {
         postfix: '%',
-      })}`
-    }
-    if (minInitialPaymentPercent && !maxInitialPaymentPercent) {
-      return `от ${formatNumber(minInitialPaymentPercent, { postfix: '%' })}`
-    }
-    if (!minInitialPaymentPercent && maxInitialPaymentPercent) {
-      return `до ${formatNumber(maxInitialPaymentPercent, { postfix: '%' })}`
-    }
-
-    return ''
-  }, [maxInitialPaymentPercent, minInitialPaymentPercent])
+      })}`,
+    [maxInitialPaymentPercent, minInitialPaymentPercent],
+  )
 
   // То же для ПВ в абсолютных единицах
-  const initialPaymentHelperText = useMemo(() => {
-    if (minInitialPayment && maxInitialPayment) {
-      return `от ${formatNumber(minInitialPayment)} до ${formatMoney(maxInitialPayment)}`
-    }
-    if (minInitialPayment && !maxInitialPayment) {
-      return `от ${formatMoney(minInitialPayment)}`
-    }
-    if (!minInitialPayment && maxInitialPayment) {
-      return `до ${formatMoney(maxInitialPayment)}`
-    }
-
-    return ''
-  }, [maxInitialPayment, minInitialPayment])
+  const initialPaymentHelperText = useMemo(
+    () => `от ${formatNumber(minInitialPayment)} до ${formatMoney(maxInitialPayment)}`,
+    [maxInitialPayment, minInitialPayment],
+  )
 
   /*
   В initialValues формика прописано свойство validationParams. Поля для него нет,
