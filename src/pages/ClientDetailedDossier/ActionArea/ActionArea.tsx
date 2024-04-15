@@ -190,28 +190,22 @@ export function ActionArea(props: Props) {
     if (
       preparedStatus === PreparedStatus.canceled ||
       preparedStatus === PreparedStatus.canceledDeal ||
-      preparedStatus === PreparedStatus.rejected ||
-      preparedStatus === PreparedStatus.clientRejected
+      ((preparedStatus === PreparedStatus.rejected || preparedStatus === PreparedStatus.clientRejected) &&
+        ((moratoryEndDate && new Date() > new Date(moratoryEndDate)) || targetDcAppId))
     ) {
       return (
         <Box className={classes.actionButtons}>
-          {(((preparedStatus === PreparedStatus.rejected ||
-            preparedStatus === PreparedStatus.clientRejected) &&
-            ((moratoryEndDate && new Date() > new Date(moratoryEndDate)) || targetDcAppId)) ||
-            (preparedStatus !== PreparedStatus.rejected &&
-              preparedStatus !== PreparedStatus.clientRejected)) && (
-            <>
-              {targetDcAppId ? (
-                <Button variant="contained" onClick={getToNewApplication}>
-                  Перейти на новую заявку
-                </Button>
-              ) : (
-                <Button variant="contained" onClick={recreateApplication}>
-                  Пересоздать новую заявку
-                </Button>
-              )}
-            </>
-          )}
+          <>
+            {targetDcAppId ? (
+              <Button variant="contained" onClick={getToNewApplication}>
+                Перейти на новую заявку
+              </Button>
+            ) : (
+              <Button variant="contained" onClick={recreateApplication}>
+                Пересоздать новую заявку
+              </Button>
+            )}
+          </>
         </Box>
       )
     }
