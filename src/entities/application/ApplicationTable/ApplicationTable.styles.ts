@@ -1,9 +1,17 @@
 import { makeStyles } from '@mui/styles'
 
 export default makeStyles(theme => ({
+  header: {
+    '&.MuiTableHead-root': {
+      borderBottom: '1px solid rgba(0, 0, 0, 0.15)',
+    },
+  },
+
   headerCell: {
     '&.MuiTableCell-root': {
       padding: theme.spacing(1),
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
       color: theme.palette.text.secondary,
       borderBottom: 'none',
       textAlign: 'start',

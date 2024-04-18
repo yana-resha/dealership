@@ -67,7 +67,7 @@ export const ApplicationTable = (props: Props) => {
 
   return (
     <Table size="small" data-testid="applicationTable" style={{ flexGrow: 1 }}>
-      <TableHead>
+      <TableHead className={classes.header}>
         <TableRow className={classes.headerRow}>
           {APPLICATION_HEADERS.map(header => (
             <CustomTooltip
