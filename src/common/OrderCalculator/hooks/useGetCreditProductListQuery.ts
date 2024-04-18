@@ -18,8 +18,8 @@ type Params = {
 export type useGetCreditProductListQueryData = {
   products: RequiredProduct[]
   productsMap: ProductsMap
-  fullDownpaymentMin: number | undefined
-  fullDownpaymentMax: number | undefined
+  fullDownpaymentMin: number
+  fullDownpaymentMax: number
   fullDurationMin?: number | undefined
   fullDurationMax?: number | undefined
   creditProducts?: CreditProduct[] | null | undefined
@@ -52,8 +52,8 @@ export const useGetCreditProductListQuery = ({
     select: res => ({
       ...res,
       // С Бэка значение приходит в диапазоне 0...1, а на фронте используются проценты (0...100)
-      fullDownpaymentMin: res.fullDownpaymentMin ? res.fullDownpaymentMin * 100 : undefined,
-      fullDownpaymentMax: res.fullDownpaymentMax ? res.fullDownpaymentMax * 100 : undefined,
+      fullDownpaymentMin: res.fullDownpaymentMin ? res.fullDownpaymentMin * 100 : 0,
+      fullDownpaymentMax: res.fullDownpaymentMax ? res.fullDownpaymentMax * 100 : 100,
       ...prepareCreditProduct(res.creditProducts),
     }),
     onError,

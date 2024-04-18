@@ -94,8 +94,8 @@ describe('useLimits', () => {
         wrapper: createWrapper({ ...initialData, carBrand: 'Skoda' }),
       })
       const { initialPaymentPercentHelperText, initialPaymentHelperText } = result.current
-      expect(initialPaymentPercentHelperText).toEqual('до 90%')
-      expect(initialPaymentHelperText).toEqual('до 90 ₽')
+      expect(initialPaymentPercentHelperText).toEqual('от 0 до 90%')
+      expect(initialPaymentHelperText).toEqual('от 0 до 90 ₽')
     })
     it('Если КП выбран, то подсказки ПВ берутся из его downpaymentMin и downpaymentMax', async () => {
       const { result } = renderHook(() => useLimits('1'), {
