@@ -1,7 +1,7 @@
 import compact from 'lodash/compact'
 
-export function getFullName(firstName?: string, lastName?: string, middleName?: string) {
-  const nameArr = [lastName, firstName, middleName]
+export function getFullName(firstStr?: string, secondStr?: string, thirdStr?: string) {
+  const nameArr = [firstStr, secondStr, thirdStr]
 
   return compact(nameArr).join(' ')
 }
