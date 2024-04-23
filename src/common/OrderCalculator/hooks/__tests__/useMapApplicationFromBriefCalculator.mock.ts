@@ -165,6 +165,7 @@ export const EXPECTED_REMAPPED_BRIEF_DATA: Order = {
             name: 'Перекрасить авто',
             inCreditFlag: true,
             price: 20,
+            cascoLimit: 0,
           },
           {
             bankOptionType: 1,
@@ -172,6 +173,7 @@ export const EXPECTED_REMAPPED_BRIEF_DATA: Order = {
             name: 'ОСАГО',
             inCreditFlag: true,
             price: 21,
+            cascoLimit: undefined,
           },
         ],
       },

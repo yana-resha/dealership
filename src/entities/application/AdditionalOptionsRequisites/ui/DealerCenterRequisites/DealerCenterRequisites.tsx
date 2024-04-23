@@ -15,6 +15,10 @@ import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
+import {
+  FULL_INITIAL_ADDITIONAL_SERVICE,
+  fullInitialValueMap,
+} from '../../../../../common/OrderCalculator/config'
 import { useRequisites } from '../../hooks/useRequisites'
 import { useRequisitesContext } from '../RequisitesContext'
 import { useStyles } from './DealerCenterRequisites.styles'
@@ -112,7 +116,10 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
 
   useEffect(() => {
     const loanAmount = parseInt(carCost, 10) + priceOfAdditionalOptionsInCredit - parseInt(initialPayment, 10)
-    setFieldValue(namePrefix + 'loanAmount', loanAmount >= 0 ? `${loanAmount}` : '0')
+    setFieldValue(
+      namePrefix + 'loanAmount',
+      loanAmount >= 0 ? `${loanAmount}` : fullInitialValueMap[FormFieldNameMap.loanAmount],
+    )
     // Исключены лишние зависимости, чтобы избежать случайных перерендеров
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carCost, initialPayment, priceOfAdditionalOptionsInCredit])
@@ -128,8 +135,8 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
       setFieldValue(namePrefix + 'taxPercent', currentLegalPerson?.tax)
       setFieldValue(namePrefix + 'taxValue', (currentLegalPerson?.tax * parseFloat(loanAmount)) / 100)
     } else {
-      setFieldValue(namePrefix + 'taxPercent', 0)
-      setFieldValue(namePrefix + 'taxValue', 0)
+      setFieldValue(namePrefix + 'taxPercent', FULL_INITIAL_ADDITIONAL_SERVICE[FormFieldNameMap.taxPercent])
+      setFieldValue(namePrefix + 'taxValue', FULL_INITIAL_ADDITIONAL_SERVICE[FormFieldNameMap.taxValue])
     }
   }, [currentLegalPerson?.tax, loanAmount, namePrefix, setFieldValue])
 

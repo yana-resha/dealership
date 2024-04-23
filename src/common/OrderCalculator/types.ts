@@ -64,7 +64,7 @@ export interface OrderCalculatorAdditionalService {
   [FormFieldNameMap.productType]: string | null
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
-  [FormFieldNameMap.cascoLimit]?: string
+  [FormFieldNameMap.cascoLimit]: string
 }
 
 export interface OrderCalculatorBankAdditionalService
@@ -72,7 +72,7 @@ export interface OrderCalculatorBankAdditionalService
     OrderCalculatorAdditionalService,
     `${FormFieldNameMap.isCredit}` | `${FormFieldNameMap.cascoLimit}`
   > {
-  [FormFieldNameMap.tariff]?: number
+  [FormFieldNameMap.tariff]: number | null
   [FormFieldNameMap.loanTerm]: number | null
 }
 
@@ -154,7 +154,7 @@ export interface BriefOrderCalculatorFields {
   [FormFieldNameMap.carCondition]: number
   [FormFieldNameMap.carBrand]: string | null
   [FormFieldNameMap.carModel]: string | null
-  [FormFieldNameMap.carYear]: number | undefined
+  [FormFieldNameMap.carYear]: number | null
   [FormFieldNameMap.carCost]: string
   [FormFieldNameMap.carMileage]: string
   [FormFieldNameMap.creditProduct]: number | null

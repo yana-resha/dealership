@@ -56,7 +56,7 @@ export const useGetCreditProductListQuery = ({
     model: values?.carModel || '',
     brand: values?.carBrand || '',
     isCarNew: !!values?.carCondition,
-    autoCreateYear: values?.carYear,
+    autoCreateYear: values?.carYear || undefined,
   }
 
   const res = useQuery(['getCreditProductList', params], () => getCreditProductList(params), {

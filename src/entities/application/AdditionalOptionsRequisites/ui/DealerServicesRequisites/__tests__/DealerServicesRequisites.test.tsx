@@ -49,6 +49,7 @@ const mockedDealerServicesFields: { dealerAdditionalServices: FullInitialAdditio
       documentType: 2,
       documentDate: new Date('2023-04-23T00:00:00.000Z'),
       isCustomFields: false,
+      cascoLimit: '',
     },
   ],
 }

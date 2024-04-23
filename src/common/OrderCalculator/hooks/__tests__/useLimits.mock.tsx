@@ -20,11 +20,13 @@ export const EXPECTED_ADDITIONAL_EQUIPMENTS: OrderCalculatorAdditionalService[] 
     productType: 1,
     productCost: '10',
     isCredit: true,
+    cascoLimit: '',
   },
   {
     productType: 1,
     productCost: '20',
     isCredit: true,
+    cascoLimit: '',
   },
 ]
 
@@ -33,11 +35,13 @@ export const DEALER_ADDITIONAL_SERVICES: OrderCalculatorAdditionalService[] = [
     productType: 1,
     productCost: '15',
     isCredit: true,
+    cascoLimit: '',
   },
   {
     productType: 1,
     productCost: '30',
     isCredit: true,
+    cascoLimit: '',
   },
 ]
 

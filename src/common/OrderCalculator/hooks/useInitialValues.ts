@@ -8,7 +8,7 @@ import { checkIsNumber } from 'shared/lib/helpers'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
-import { FormFieldNameMap, FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
+import { BriefOrderCalculatorFields, FormFieldNameMap, FullOrderCalculatorFields } from '../types'
 
 type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : BriefOrderCalculatorFields
 
@@ -37,6 +37,9 @@ export function useInitialValues<D extends boolean | undefined>(
             [FormFieldNameMap.productType]: cur.type ?? initialData.additionalEquipments[0].productType,
             [FormFieldNameMap.productCost]: `${cur.price ?? initialData.additionalEquipments[0].productCost}`,
             [FormFieldNameMap.isCredit]: cur.inCreditFlag ?? initialData.additionalEquipments[0].isCredit,
+            [FormFieldNameMap.cascoLimit]: `${
+              cur.cascoLimit ?? initialData.additionalEquipments[0].cascoLimit
+            }`,
           }
           const initialAdditionalServiceDocInfo = isFullCalculator
             ? {

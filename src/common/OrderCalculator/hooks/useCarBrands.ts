@@ -5,6 +5,7 @@ import { useField, useFormikContext } from 'formik'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import { compareStrings } from 'shared/utils/compareStrings'
 
+import { initialValueMap } from '../config'
 import { FormFieldNameMap } from '../types'
 import { useCarSection } from './useCarSection'
 
@@ -25,7 +26,7 @@ export function useCarBrands() {
 
   useEffect(() => {
     if (prevCarBrandValue !== carBrandField.value) {
-      setFieldValue(FormFieldNameMap.carModel, null)
+      setFieldValue(FormFieldNameMap.carModel, initialValueMap[FormFieldNameMap.carModel])
     }
   }, [carBrandField.value, prevCarBrandValue, setFieldValue])
 

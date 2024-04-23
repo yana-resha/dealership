@@ -8,7 +8,6 @@ import {
   AdditionalOptionRsForFinancing,
   ProviderBroker,
   AdditionalEquipmentRsForFinancing,
-  Vendor,
   VendorRequisites,
 } from '@sberauto/dictionarydc-proto/public'
 import { useSnackbar } from 'notistack'

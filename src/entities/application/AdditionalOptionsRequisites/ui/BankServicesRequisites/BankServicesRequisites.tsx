@@ -30,9 +30,8 @@ export function BankServicesRequisites({
 }: Props) {
   const classes = useStyles()
 
-  const { setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
+  const { setFieldValue, values } = useFormikContext<FullOrderCalculatorFields>()
   const { productType, provider, productCost } = servicesItem
-  const prevProvider = usePrevious(provider)
   const { requisites, isRequisitesFetched } = useRequisitesContext()
   const namePrefix = `${parentName}[${index}].`
 
@@ -65,7 +64,7 @@ export function BankServicesRequisites({
   }, [currentProvider?.providerCode, isRequisitesFetched, namePrefix, setFieldValue])
 
   useEffect(() => {
-    if (provider !== prevProvider && currentProvider) {
+    if (currentProvider) {
       const tax = currentProvider.brokers[0]?.tax
       setFieldValue(namePrefix + FormFieldNameMap.providerName, currentProvider.providerName)
       setFieldValue(namePrefix + FormFieldNameMap.broker, currentProvider.brokers[0]?.brokerCode)
@@ -96,7 +95,7 @@ export function BankServicesRequisites({
       setFieldValue(namePrefix + FormFieldNameMap.ogrn, currentProvider.brokers[0]?.ogrn)
       setFieldValue(namePrefix + FormFieldNameMap.kpp, currentProvider.brokers[0]?.kpp)
     }
-  }, [currentProvider, namePrefix, prevProvider, productCost, provider, setFieldValue])
+  }, [currentProvider, namePrefix, productCost, provider, setFieldValue])
 
   return (
     <Box gridColumn="1/-1" className={classes.requisitesContainer}>

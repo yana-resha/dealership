@@ -81,7 +81,7 @@ export function useMapApplicationFromBriefCalculator() {
             name: vendorOptions?.additionalOptionsMap[productType ?? '']?.optionName,
             inCreditFlag: true, // Банковские допы всегда в кредит
             price: stringToNumber(productCost),
-            tariffId: tariff,
+            tariffId: tariff || undefined,
             tariff: vendorOptions?.additionalOptionsMap[productType ?? '']?.tariffs?.find(
               t => t.tariffId === tariff,
             )?.tariff,

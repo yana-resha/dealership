@@ -65,7 +65,7 @@ export const mapValuesForCalculateCreditRequest = (
 
   const loanCar: LoanCar = {
     isCarNew: !!values[FormFieldNameMap.carCondition],
-    autoCreateYear: values[FormFieldNameMap.carYear],
+    autoCreateYear: values[FormFieldNameMap.carYear] || undefined,
     mileage: stringToNumber(values[FormFieldNameMap.carMileage]),
     brand: values[FormFieldNameMap.carBrand] || '',
     model: values[FormFieldNameMap.carModel] || '',

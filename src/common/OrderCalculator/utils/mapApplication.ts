@@ -56,7 +56,7 @@ export const mapCommonApplicationValues = (
     autoPrice: stringToNumber(carCost),
     mileage: carMileage,
     model: carModel ?? undefined,
-    autoCreateYear: carYear,
+    autoCreateYear: carYear ?? undefined,
     ...getCarCountryData(carBrand, carCondition, carsData),
   }
   const commonLoanData: LoanDataFrontdc = {

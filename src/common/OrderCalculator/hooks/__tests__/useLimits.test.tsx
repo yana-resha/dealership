@@ -202,11 +202,11 @@ describe('useLimits', () => {
           ...initialData,
           additionalEquipments: [
             ...EXPECTED_ADDITIONAL_EQUIPMENTS,
-            { productType: 1, productCost: '1', isCredit: false },
+            { productType: 1, productCost: '1', isCredit: false, cascoLimit: '' },
           ],
           dealerAdditionalServices: [
             ...DEALER_ADDITIONAL_SERVICES,
-            { productType: 1, productCost: '1', isCredit: false },
+            { productType: 1, productCost: '1', isCredit: false, cascoLimit: '' },
           ],
           bankAdditionalServices: [
             ...BANK_ADDITIONAL_SERVICES,
@@ -461,7 +461,7 @@ describe('useLimits', () => {
         wrapper: createWrapper({
           ...initialData,
           creditProduct: 1,
-          dealerAdditionalServices: [{ productType: 15, productCost: '1', isCredit: false }],
+          dealerAdditionalServices: [{ productType: 15, productCost: '1', isCredit: false, cascoLimit: '' }],
         }),
       })
       const { values } = result.current
@@ -484,7 +484,7 @@ describe('useLimits', () => {
         wrapper: createWrapper({
           ...initialData,
           creditProduct: 1,
-          dealerAdditionalServices: [{ productType: 15, productCost: '1', isCredit: false }],
+          dealerAdditionalServices: [{ productType: 15, productCost: '1', isCredit: false, cascoLimit: '' }],
         }),
       })
       const { values } = result.current
@@ -506,6 +506,7 @@ describe('getServicesTotalCost', () => {
             productType: 1,
             productCost: '30',
             isCredit: false,
+            cascoLimit: '',
           },
         ],
         true,

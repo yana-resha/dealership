@@ -65,15 +65,17 @@ export const INITIAL_CAR_ID_TYPE = [
 ]
 
 export const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
-  productType: null,
-  productCost: '',
-  isCredit: false,
+  [FormFieldNameMap.productType]: null,
+  [FormFieldNameMap.productCost]: '',
+  [FormFieldNameMap.isCredit]: false,
+  [FormFieldNameMap.cascoLimit]: '',
 }
 
 export const INITIAL_BANK_ADDITIONAL_SERVICE: OrderCalculatorBankAdditionalService = {
-  productType: null,
-  productCost: '',
-  loanTerm: null,
+  [FormFieldNameMap.productType]: null,
+  [FormFieldNameMap.productCost]: '',
+  [FormFieldNameMap.loanTerm]: null,
+  [FormFieldNameMap.tariff]: null,
 }
 
 export const INITIAL_ADDITIONAL_SERVICE_DOC_INFO: OrderCalculatorAdditionalServiceDocInfo = {
