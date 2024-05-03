@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { Vendor } from '@sberauto/dictionarydc-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from 'react-query'

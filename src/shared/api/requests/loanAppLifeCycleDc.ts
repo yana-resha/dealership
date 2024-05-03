@@ -8,7 +8,6 @@ import {
   FindApplicationsRequest,
   GetFullApplicationRequest,
   GetFullApplicationResponse,
-  GetVendorsListRequest,
   IsClientRequest,
   MaritalStatus,
   OccupationType,
@@ -71,9 +70,6 @@ const updateApplicationStatus = (params: ChangeApplicationStatusRequest) =>
 
 export const checkIfSberClient = (params: IsClientRequest) =>
   loanAppLifeCycleDcApi.isClient({ data: params }).then(response => response.data ?? {})
-
-export const getVendorsList = (params: GetVendorsListRequest) =>
-  loanAppLifeCycleDcApi.getVendorsList({ data: params }).then(response => response.data ?? {})
 
 export const saveLoanApplicationDraft = (params: SaveLoanApplicationDraftRequest) =>
   loanAppLifeCycleDcApi.saveLoanApplicationDraft({ data: params }).then(response => response.data ?? {})

@@ -1,4 +1,4 @@
-import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { Vendor } from '@sberauto/dictionarydc-proto/public'
 import Cookies from 'js-cookie'
 
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'

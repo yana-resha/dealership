@@ -7,9 +7,7 @@ import {
   OptionType,
   GetRequisitesForFinancingRequest,
   CalculateCreditResponse,
-  GetCreditProductListResponse,
-  CalculatedProduct,
-  RequiredServiceFlag,
+  GetVendorsListRequest,
 } from '@sberauto/dictionarydc-proto/public'
 import { useMutation } from 'react-query'
 
@@ -49,3 +47,6 @@ export const useCalculateCreditMutation = () =>
 
 export const getRequisitesForFinancing = (params: GetRequisitesForFinancingRequest) =>
   dictionaryDcApi.getRequisitesForFinancing({ data: params }).then(res => res.data ?? {})
+
+export const getVendorsList = (params: GetVendorsListRequest) =>
+  dictionaryDcApi.getVendorsList({ data: params }).then(response => response.data ?? {})

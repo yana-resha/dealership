@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react'
 
-import { DocumentType, StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { Vendor } from '@sberauto/dictionarydc-proto/public'
+import { DocumentType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MockStore } from 'redux-mock-store'

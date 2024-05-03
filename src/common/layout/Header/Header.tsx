@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
 import { ClickAwayListener } from '@mui/material'
-import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { Vendor } from '@sberauto/dictionarydc-proto/public'
 import Cookies from 'js-cookie'
 
 import { PointInfo } from 'entities/pointOfSale'
