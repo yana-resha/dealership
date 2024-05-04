@@ -8,8 +8,10 @@ import {
   FullInitialAdditionalEquipments,
   FullInitialAdditionalService,
   OrderCalculatorAdditionalService,
+  OrderCalculatorBankAdditionalService,
 } from 'common/OrderCalculator/types'
 import { usePrevious } from 'shared/hooks/usePrevious'
+import { checkIsNumber } from 'shared/lib/helpers'
 
 import useStyles from './AdditionalServicesContainer.styles'
 import { AdditionalServicesContainerProvider } from './AdditionalServicesContainerProvider'
@@ -18,6 +20,7 @@ const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка при получ
 
 type AdditionalService =
   | OrderCalculatorAdditionalService
+  | OrderCalculatorBankAdditionalService
   | FullInitialAdditionalService
   | FullInitialAdditionalEquipments
 type Props = {
@@ -57,7 +60,7 @@ export const AdditionalServicesContainer = React.memo(
       if (prevSubmitCount === submitCount) {
         return
       }
-      const newValue = field.value.filter((value: AdditionalService) => value.productType)
+      const newValue = field.value.filter((value: AdditionalService) => checkIsNumber(value.productType))
       setServices(newValue.length ? newValue : [initialValues])
       !newValue.length && closeAccordion()
     }, [closeAccordion, field.name, field.value, initialValues, prevSubmitCount, setServices, submitCount])

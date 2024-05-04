@@ -4,7 +4,7 @@ export const useStyles = makeStyles(theme => ({
   editingAreaContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(15, 1fr)',
-    gap: theme.spacing(4),
+    gap: theme.spacing(3),
   },
 
   btnContainer: {

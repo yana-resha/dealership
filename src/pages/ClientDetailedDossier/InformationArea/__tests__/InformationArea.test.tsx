@@ -39,7 +39,7 @@ const informationAreaProps = {
   creditAmount: 2000000,
   monthlyPayment: 10400,
   downPayment: 200000,
-  rate: 0.098,
+  rate: 9.8,
   productName: 'Драйв В',
   term: 60,
   additionalOptions: [

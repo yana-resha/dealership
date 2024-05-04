@@ -15,4 +15,9 @@ export const useStyles = makeStyles(theme => ({
       lineHeight: '18px',
     },
   },
+  brokenInfoTextValue: {
+    '&.MuiTypography-root': {
+      wordBreak: 'break-word',
+    },
+  },
 }))

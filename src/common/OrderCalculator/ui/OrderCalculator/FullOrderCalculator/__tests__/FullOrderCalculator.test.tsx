@@ -6,6 +6,7 @@ import { MockStore } from 'redux-mock-store'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
+import * as useMapApplicationFromFullCalculatorModule from 'common/OrderCalculator/hooks/useMapApplicationFromFullCalculator'
 import * as useOrderCalculatorModule from 'common/OrderCalculator/hooks/useOrderCalculator'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { MockProviders } from 'tests/mocks'
@@ -18,6 +19,10 @@ const mockedRemapApplicationValues = jest.fn()
 const mockedOnSubmit = jest.fn()
 
 const mockedUseInitialValues = jest.spyOn(useInitialValuesModule, 'useInitialValues')
+const mockedUseMapApplicationFromFullCalculator = jest.spyOn(
+  useMapApplicationFromFullCalculatorModule,
+  'useMapApplicationFromFullCalculator',
+)
 const mockedUseOrderCalculator = jest.spyOn(useOrderCalculatorModule, 'useOrderCalculator')
 
 const createWrapper = ({ store, children }: PropsWithChildren<{ store?: MockStore }>) => (
@@ -27,9 +32,11 @@ const createWrapper = ({ store, children }: PropsWithChildren<{ store?: MockStor
 describe('FullOrderCalculator', () => {
   beforeEach(() => {
     mockedUseInitialValues.mockImplementation(() => ({
-      remapApplicationValues: mockedRemapApplicationValues,
       initialValues: {} as FullOrderCalculatorFields,
       hasCustomInitialValues: false,
+    }))
+    mockedUseMapApplicationFromFullCalculator.mockImplementation(() => ({
+      remapApplicationValues: mockedRemapApplicationValues,
     }))
     mockedUseOrderCalculator.mockImplementation(() => ({
       formRef: {} as RefObject<FormikProps<useOrderCalculatorModule.OrderCalculatorFields>>,
@@ -54,6 +61,9 @@ describe('FullOrderCalculator', () => {
 
   it('Хуки вызываются корректно', () => {
     expect(mockedUseInitialValues).toBeCalledWith(fullInitialValueMap, true)
-    expect(mockedUseOrderCalculator).toBeCalledWith(mockedRemapApplicationValues, mockedOnSubmit)
+    expect(mockedUseOrderCalculator).toBeCalledWith({
+      remapApplicationFullValues: mockedRemapApplicationValues,
+      onSubmit: mockedOnSubmit,
+    })
   })
 })

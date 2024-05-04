@@ -1,5 +1,8 @@
-export const stringToNumber = (num: string) => {
-  const preparedNum = parseFloat(num.replace(/ /g, ''))
+export const stringToNumber = (str: string | undefined) => {
+  if (!str) {
+    return undefined
+  }
+  const preparedNum = parseFloat(str.replace(/ /g, ''))
 
-  return preparedNum ? preparedNum : undefined
+  return typeof preparedNum === 'number' && !isNaN(preparedNum) ? preparedNum : undefined
 }

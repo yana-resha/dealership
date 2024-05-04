@@ -66,15 +66,15 @@ describe('useLimits', () => {
 
   describe('Хук врзвращает корректные данные', () => {
     it('Если durationMaxFromCarAge больше durationMin КП, то данный КП отфильтровывается из creditProducts', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({ ...initialData, carBrand: 'Skoda' }),
       })
       const { creditProducts } = result.current
       expect(creditProducts.length).toEqual(1)
-      expect(creditProducts[0].value).toEqual('ACDC')
+      expect(creditProducts[0].value).toEqual(1)
     })
     it('Если durationMaxFromClientAge больше durationMin КП, то данный КП отфильтровывается из creditProducts', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper(
           {
             ...initialData,
@@ -87,10 +87,10 @@ describe('useLimits', () => {
       })
       const { creditProducts } = result.current
       expect(creditProducts.length).toEqual(1)
-      expect(creditProducts[0].value).toEqual('ACDC')
+      expect(creditProducts[0].value).toEqual(1)
     })
     it('Если КП не выбран, то подсказки ПВ берутся из fullDownpaymentMin и fullDownpaymentMax', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({ ...initialData, carBrand: 'Skoda' }),
       })
       const { initialPaymentPercentHelperText, initialPaymentHelperText } = result.current
@@ -98,10 +98,10 @@ describe('useLimits', () => {
       expect(initialPaymentHelperText).toEqual('от 0 до 90 ₽')
     })
     it('Если КП выбран, то подсказки ПВ берутся из его downpaymentMin и downpaymentMax', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
-          creditProduct: 'ACDC',
+          creditProduct: 1,
         }),
       })
       const { initialPaymentPercentHelperText, initialPaymentHelperText } = result.current
@@ -109,41 +109,41 @@ describe('useLimits', () => {
       expect(initialPaymentHelperText).toEqual('от 20 до 80 ₽')
     })
     it('Если КП не выбран, то loanTerms ограничивается по fullDurationMin и fullDurationMax', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper(initialData),
       })
       const { loanTerms } = result.current
       expect(loanTerms).toEqual(EXPECTED_LOAN_TERMS)
     })
     it('Если КП выбран, то loanTerms ограничивается по durationMin и durationMax, выбранного КП', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
-          creditProduct: 'AKHC',
+          creditProduct: 2,
         }),
       })
       const { loanTerms } = result.current
       expect(loanTerms).toEqual(EXPECTED_LOAN_TERMS.slice(1, 5))
     })
     it('Если durationMaxFromAge меньше durationMax или fullDurationMax (Если КП не выбран), то loanTerms ограничивается по нему', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({ ...initialData, carBrand: 'Skoda' }),
       })
       const { loanTerms } = result.current
       expect(loanTerms).toEqual(EXPECTED_LOAN_TERMS.slice(0, 1))
     })
     it('Если полцчившийся durationMax меньше durationMin, то loanTerms пустой массив', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({ ...initialData, carBrand: 'BMW' }),
       })
       const { loanTerms } = result.current
       expect(loanTerms).toEqual([])
     })
     it('Возвращается корректный isNecessaryCasco выбранного продукта', async () => {
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
-          creditProduct: 'AKHC',
+          creditProduct: 2,
         }),
       })
       const { isNecessaryCasco } = result.current
@@ -161,7 +161,7 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper(initialData),
       })
       const { isLoadedCreditProducts } = result.current
@@ -179,7 +179,7 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper(initialData),
       })
       const { isLoadedCreditProducts } = result.current
@@ -197,7 +197,7 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
           additionalEquipments: [
@@ -210,7 +210,7 @@ describe('useLimits', () => {
           ],
           bankAdditionalServices: [
             ...BANK_ADDITIONAL_SERVICES,
-            { productType: 1, productCost: '1', isCredit: false },
+            { productType: 1, productCost: '1', tariff: 1, loanTerm: null },
           ],
         }),
       })
@@ -243,7 +243,7 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
           additionalEquipments: EXPECTED_ADDITIONAL_EQUIPMENTS,
@@ -280,7 +280,7 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
           additionalEquipments: [EXPECTED_ADDITIONAL_EQUIPMENTS[0]],
@@ -290,7 +290,8 @@ describe('useLimits', () => {
             {
               productType: 1,
               productCost: '1',
-              isCredit: true,
+              tariff: 1,
+              loanTerm: null,
             },
           ],
         }),
@@ -314,7 +315,7 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
           additionalEquipments: [EXPECTED_ADDITIONAL_EQUIPMENTS[0]],
@@ -344,10 +345,10 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
-          creditProduct: 'ACDC',
+          creditProduct: 1,
           carBrand: 'Skoda',
           carYear: currentYear - 1,
         }),
@@ -368,11 +369,11 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({ ...initialData, loanTerm: 120 }),
       })
       const { values } = result.current
-      expect(values.loanTerm).toEqual('')
+      expect(values.loanTerm).toEqual(null)
     })
 
     it('Если кредитный продукт не выбран, то параметры валидации соответствуют дефолтным значения из ручки GetCreditProductList', async () => {
@@ -387,7 +388,7 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper(initialData),
       })
       const { values } = result.current
@@ -412,8 +413,8 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
-        wrapper: createWrapper({ ...initialData, creditProduct: 'ACDC' }),
+      const { result } = renderHook(() => useLimits(1), {
+        wrapper: createWrapper({ ...initialData, creditProduct: 1 }),
       })
       const { values } = result.current
       expect(values.validationParams).toEqual({
@@ -437,8 +438,8 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
-        wrapper: createWrapper({ ...initialData, creditProduct: 'ACDC' }),
+      const { result } = renderHook(() => useLimits(1), {
+        wrapper: createWrapper({ ...initialData, creditProduct: 1 }),
       })
       const { values } = result.current
       expect(values.commonError.isHasNotCascoOption).toEqual(true)
@@ -456,10 +457,10 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
-          creditProduct: 'ACDC',
+          creditProduct: 1,
           dealerAdditionalServices: [{ productType: 15, productCost: '1', isCredit: false }],
         }),
       })
@@ -479,10 +480,10 @@ describe('useLimits', () => {
             unknown
           >),
       )
-      const { result } = renderHook(() => useLimits('1'), {
+      const { result } = renderHook(() => useLimits(1), {
         wrapper: createWrapper({
           ...initialData,
-          creditProduct: 'ACDC',
+          creditProduct: 1,
           dealerAdditionalServices: [{ productType: 15, productCost: '1', isCredit: false }],
         }),
       })
@@ -497,7 +498,19 @@ describe('getServicesTotalCost', () => {
     expect(getServicesTotalCost(EXPECTED_ADDITIONAL_EQUIPMENTS)).toEqual(30)
   })
   it('Если передан второй аргумент (= true), то getServicesTotalCost считает суммы доп. услуг (оборудования), взятых в кредит', () => {
-    expect(getServicesTotalCost(BANK_ADDITIONAL_SERVICES, true)).toEqual(10)
+    expect(
+      getServicesTotalCost(
+        [
+          ...DEALER_ADDITIONAL_SERVICES,
+          {
+            productType: 1,
+            productCost: '30',
+            isCredit: false,
+          },
+        ],
+        true,
+      ),
+    ).toEqual(45)
   })
 })
 

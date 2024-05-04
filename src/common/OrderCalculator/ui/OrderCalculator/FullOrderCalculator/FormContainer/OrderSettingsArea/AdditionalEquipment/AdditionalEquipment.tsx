@@ -9,6 +9,7 @@ import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { AdditionalEquipmentRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
+import { checkIsNumber } from 'shared/lib/helpers'
 
 import useStyles from './AdditionalEquipment.styles'
 
@@ -17,8 +18,8 @@ type Props = {
   isError?: boolean
   errorMessage?: string
   options: {
-    productType: { value: string | number; label: string }[]
-    loanTerms: { value: string | number }[]
+    productType: { value: number; label: string }[]
+    loanTerms: { value: number }[]
   }
 }
 
@@ -27,7 +28,7 @@ export function AdditionalEquipment({ disabled = false, options, isError, errorM
   const [field] = useField<FullInitialAdditionalEquipments[]>(ServicesGroupName.additionalEquipments)
 
   const { ids, changeIds } = useAdditionalServiceIds()
-  const isInitialExpanded = !!field.value.length && !!field.value[0].productType
+  const isInitialExpanded = !!field.value.length && checkIsNumber(field.value[0].productType)
 
   return (
     <AdditionalServicesContainer

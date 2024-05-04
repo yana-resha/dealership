@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { Form, useFormikContext } from 'formik'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
@@ -14,6 +13,8 @@ import {
 import { RequisitesContextProvider } from 'entities/application/AdditionalOptionsRequisites/ui/RequisitesContext'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
+import { checkIsNumber } from 'shared/lib/helpers'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
@@ -41,26 +42,29 @@ export function FormContainer({
 
   const [requisites, setRequisites] = useState<RequisitesForFinancing | undefined>()
 
-  const additionalOptionsIds = useMemo(
-    () =>
-      [...values.bankAdditionalServices, ...values.dealerAdditionalServices]
-        .map(s => s.productType)
-        .filter(s => !!s) as OptionID[],
-    [values.bankAdditionalServices, values.dealerAdditionalServices],
-  )
   const additionalEquipmentsIds = useMemo(
-    () => [...values.additionalEquipments].map(s => s.productType).filter(s => !!s) as OptionID[],
+    () => values.additionalEquipments.map(s => s.productType).filter(s => checkIsNumber(s)) as number[],
     [values.additionalEquipments],
   )
+  const additionalOptionsIds = useMemo(
+    () => values.dealerAdditionalServices.map(s => s.productType).filter(s => checkIsNumber(s)) as number[],
+    [values.dealerAdditionalServices],
+  )
+  const bankAdditionalOptionsIds = useMemo(
+    () => values.bankAdditionalServices.map(s => s.productType).filter(s => checkIsNumber(s)) as number[],
+    [values.bankAdditionalServices],
+  )
+
   const {
     data: requisitesData,
     isError: isRequisitesQueryError,
     isLoading: isRequisitesQueryLoading,
     isSuccess: isRequisitesQuerySuccess,
   } = useRequisitesForFinancingQuery({
-    vendorCode,
+    vendorCode: stringToNumber(vendorCode),
+    additionalEquipment: additionalEquipmentsIds,
     additionalOptions: additionalOptionsIds,
-    additionalEquipments: additionalEquipmentsIds,
+    bankOptions: bankAdditionalOptionsIds,
   })
 
   const isRequisitesFetched = !isRequisitesQueryLoading && requisitesData === requisites

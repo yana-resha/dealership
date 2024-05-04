@@ -1,4 +1,4 @@
-import { OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
 import { EmailStatusCode, GetEmailsResponse } from '@sberauto/emailappdc-proto/public'
 
 export const exhaustiveCheck = (value: never) => value
@@ -45,12 +45,6 @@ export function prepareOptionType(type: keyof typeof OptionType): OptionType | u
   return OptionType[type] ?? undefined
 }
 
-/** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,
- * поэтому приводим к изначальному виду */
-export function prepareOptionId(type: keyof typeof OptionID): OptionID | undefined {
-  return OptionID[type] ?? undefined
-}
-
 export const getLocalStorage = <T>(key: string): T | undefined => {
   const rawData = localStorage.getItem(key)
   if (rawData) {
@@ -88,3 +82,4 @@ export function prepareEmailStatus(response: GetEmailsResponse) {
 export function prepareEmailStatusCode(code: keyof typeof EmailStatusCode): EmailStatusCode {
   return EmailStatusCode[code] ?? EmailStatusCode.INITIAL
 }
+export const checkIsNumber = (val: any): val is number => typeof val === 'number' && !isNaN(val)

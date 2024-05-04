@@ -4,13 +4,17 @@ import { BankOption, CreditProduct, GetCreditProductListRequest } from '@sberaut
 import { useSnackbar } from 'notistack'
 import { UseQueryResult, useQuery } from 'react-query'
 
+import { ProductsMap, RequiredProduct } from 'entities/reduxStore/orderSlice'
+import { CustomFetchError } from 'shared/api/client'
+import { Service, ServiceApi } from 'shared/api/constants'
+import { ErrorAlias, ErrorCode, getErrorMessage } from 'shared/api/errors'
 import { getCreditProductList } from 'shared/api/requests/dictionaryDc.api'
 
 import { FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
-import { ProductsMap, RequiredProduct, prepareCreditProduct } from '../utils/prepareCreditProductListData'
+import { prepareCreditProduct } from '../utils/prepareCreditProductListData'
 
 type Params = {
-  vendorCode: string | undefined
+  vendorCode: number | undefined
   values: BriefOrderCalculatorFields | FullOrderCalculatorFields
   enabled?: boolean
 }
@@ -18,12 +22,12 @@ type Params = {
 export type useGetCreditProductListQueryData = {
   products: RequiredProduct[]
   productsMap: ProductsMap
-  fullDownpaymentMin: number
-  fullDownpaymentMax: number
-  fullDurationMin?: number | undefined
-  fullDurationMax?: number | undefined
-  creditProducts?: CreditProduct[] | null | undefined
-  bankOptions?: BankOption[] | null | undefined
+  fullDownpaymentMin?: number
+  fullDownpaymentMax?: number
+  fullDurationMin?: number
+  fullDurationMax?: number
+  creditProducts?: CreditProduct[] | null
+  bankOptions?: BankOption[] | null
 }
 
 export const useGetCreditProductListQuery = ({
@@ -34,7 +38,16 @@ export const useGetCreditProductListQuery = ({
   const { enqueueSnackbar } = useSnackbar()
 
   const onError = useCallback(
-    () => enqueueSnackbar('Не удалось получить список кредитных продуктов', { variant: 'error' }),
+    (err: CustomFetchError) =>
+      enqueueSnackbar(
+        getErrorMessage({
+          service: Service.Dictionarydc,
+          serviceApi: ServiceApi.GET_CREDIT_PRODUCT_LIST,
+          code: err.code as ErrorCode,
+          alias: err.alias as ErrorAlias,
+        }),
+        { variant: 'error' },
+      ),
     [enqueueSnackbar],
   )
 
@@ -51,9 +64,6 @@ export const useGetCreditProductListQuery = ({
     refetchOnWindowFocus: false,
     select: res => ({
       ...res,
-      // С Бэка значение приходит в диапазоне 0...1, а на фронте используются проценты (0...100)
-      fullDownpaymentMin: res.fullDownpaymentMin ? res.fullDownpaymentMin * 100 : 0,
-      fullDownpaymentMax: res.fullDownpaymentMax ? res.fullDownpaymentMax * 100 : 100,
       ...prepareCreditProduct(res.creditProducts),
     }),
     onError,

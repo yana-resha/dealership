@@ -8,11 +8,12 @@ import {
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
 
-import { RequiredRequisite } from './useRequisitesForFinancingQuery'
+import { PreparedBroker, PreparedVendor, RequiredRequisite } from './useRequisitesForFinancingQuery'
 
 type Params = {
   namePrefix: string
   values: FullOrderCalculatorFields | FullInitialAdditionalEquipments | FullInitialAdditionalService
+  currentBroker: PreparedBroker | PreparedVendor | undefined
   currentBank: RequiredRequisite | undefined
   isCustomFields: boolean
   isRequisitesFetched: boolean
@@ -20,6 +21,7 @@ type Params = {
 export function useRequisites({
   namePrefix,
   values,
+  currentBroker,
   currentBank,
   isCustomFields,
   isRequisitesFetched,
@@ -59,18 +61,18 @@ export function useRequisites({
         namePrefix + 'bankAccountNumber',
         currentBank?.accounts?.find(a => a === bankAccountNumber) || '',
       )
-      setFieldValue(namePrefix + 'inn', currentBank?.inn || '', false)
-      setFieldValue(namePrefix + 'ogrn', currentBank?.ogrn || '', false)
-      setFieldValue(namePrefix + 'kpp', currentBank?.kpp || '', false)
+      setFieldValue(namePrefix + 'inn', currentBroker?.inn || '', false)
+      setFieldValue(namePrefix + 'ogrn', currentBroker?.ogrn || '', false)
+      setFieldValue(namePrefix + 'kpp', currentBroker?.kpp || '', false)
     }
   }, [
     bankAccountNumber,
     currentBank?.accountCorrNumber,
     currentBank?.accounts,
     currentBank?.bik,
-    currentBank?.inn,
-    currentBank?.kpp,
-    currentBank?.ogrn,
+    currentBroker?.inn,
+    currentBroker?.kpp,
+    currentBroker?.ogrn,
     isCustomFields,
     isRequisitesFetched,
     namePrefix,

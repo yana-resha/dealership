@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { useField, useFormikContext } from 'formik'
 import { DateTime, Interval } from 'luxon'
 
@@ -9,9 +8,11 @@ import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { MAX_AGE, MIN_AGE } from 'shared/config/client.config'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+import { checkIsNumber } from 'shared/lib/helpers'
 import { formatMoney, formatNumber } from 'shared/lib/utils'
 
-import { formMessages } from '../config'
+import { CASCO_OPTION_ID, formMessages } from '../config'
+import { LOAN_TERM_GRADUATION_VALUE, MONTH_OF_YEAR_COUNT } from '../constants'
 import {
   CommonError,
   FormFieldNameMap,
@@ -19,21 +20,24 @@ import {
   OrderCalculatorAdditionalService,
   BriefOrderCalculatorFields,
   ValidationParams,
+  OrderCalculatorBankAdditionalService,
 } from '../types'
 import { RoundOption, getMinMaxValueFromPercent } from '../utils/getValueFromPercent'
 import { useCarSection } from './useCarSection'
 import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 
-const LOAN_TERM_GRADUATION_VALUE = 12
-const MONTH_OF_YEAR_COUNT = 12
 const ADDITIONAL_EQUIPMENT_FROM_CAR_COST_SETPOINT = 0.3
 const DEALER_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.45
 const BANK_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.3
 const ALL_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.45
 
-export function getServicesTotalCost(services: OrderCalculatorAdditionalService[], onlyCredit = false) {
+export function getServicesTotalCost(
+  services: (OrderCalculatorAdditionalService | OrderCalculatorBankAdditionalService)[],
+  onlyCredit = false,
+) {
   return services.reduce((acc, cur) => {
-    if (typeof cur.productType !== 'number' || !cur.productCost || (onlyCredit && !cur.isCredit)) {
+    const isCredit = (cur as OrderCalculatorAdditionalService).isCredit ?? false
+    if (typeof cur.productType !== 'number' || !cur.productCost || (onlyCredit && !isCredit)) {
       return acc
     }
     const productCost = parseFloat(cur.productCost)
@@ -56,7 +60,7 @@ export function checkIfExceededServicesLimit(carCost: number, criterion: boolean
 Хук задает ограничения в коротком и полном калькуляторах для: полей Первоначальный взнос,
 Первоначальный взнос в % и срок кредита, для стоимости доп. оборудования и  услуг.
 */
-export function useLimits(vendorCode: string | undefined) {
+export function useLimits(vendorCode: number | undefined) {
   const dispatch = useAppDispatch()
   const birthDate = useAppSelector(
     state => state.order.order?.orderData?.application?.applicant?.birthDate || state.order.order?.birthDate,
@@ -72,7 +76,7 @@ export function useLimits(vendorCode: string | undefined) {
     FormFieldNameMap.validationParams,
   )
   const [, , { setValue: setCreditProduct }] = useField<string>(FormFieldNameMap.creditProduct)
-  const [, , { setValue: setLoanTerm }] = useField<string>(FormFieldNameMap.loanTerm)
+  const [, , { setValue: setLoanTerm }] = useField<number | null>(FormFieldNameMap.loanTerm)
 
   const { values, setFieldTouched } = useFormikContext<BriefOrderCalculatorFields>()
   const {
@@ -94,31 +98,43 @@ export function useLimits(vendorCode: string | undefined) {
   const { cars, isLoading: isGetCarsLoading, isSuccess: isGetCarsSuccess } = useCarSection()
 
   useEffect(() => {
-    dispatch(updateOrder({ creditProductsList: creditProductListData?.products }))
-  }, [creditProductListData?.products, dispatch])
+    dispatch(updateOrder({ productsMap: creditProductListData?.productsMap || {} }))
+  }, [creditProductListData?.productsMap, dispatch])
 
   const carMaxAge = carBrand ? cars[carBrand]?.maxCarAge ?? 0 : 0
   const durationMaxFromCarAge = carYear
     ? (carMaxAge - (new Date().getFullYear() - carYear)) * MONTH_OF_YEAR_COUNT
     : 0
-  const durationMaxFromClientAge = useMemo(() => {
-    const clientAge = birthDate
-      ? Math.ceil(
-          Interval.fromDateTimes(DateTime.fromJSDate(new Date(birthDate)), DateTime.now()).toDuration('years')
-            .years,
-        )
-      : !isFilledElementaryClientData
-      ? MIN_AGE
-      : undefined
 
-    return clientAge ? (MAX_AGE - clientAge) * MONTH_OF_YEAR_COUNT : 0
-  }, [birthDate, isFilledElementaryClientData])
+  const clientAge = birthDate
+    ? Math.ceil(
+        Interval.fromDateTimes(DateTime.fromJSDate(new Date(birthDate)), DateTime.now()).toDuration('years')
+          .years,
+      )
+    : !isFilledElementaryClientData
+    ? MIN_AGE
+    : undefined
+
+  const durationMaxFromClientAge = clientAge ? (MAX_AGE - clientAge) * MONTH_OF_YEAR_COUNT : 0
+
   const durationMaxFromAge = Math.min(durationMaxFromCarAge, durationMaxFromClientAge)
   const { creditProducts, isValidCreditProduct } = useMemo(
     () =>
       (creditProductListData?.products || []).reduce(
         (acc, cur) => {
-          if (cur.durationMin && cur.durationMin > durationMaxFromAge) {
+          const productDurationMin = cur.conditions?.reduce((conditionsAcc, condition) => {
+            if (
+              checkIsNumber(condition.durationMin) &&
+              conditionsAcc &&
+              condition.durationMin < conditionsAcc
+            ) {
+              conditionsAcc = condition.durationMin
+            }
+
+            return conditionsAcc
+          }, creditProductListData?.fullDownpaymentMax)
+
+          if (productDurationMin && productDurationMin > durationMaxFromAge) {
             return acc
           }
 
@@ -133,19 +149,77 @@ export function useLimits(vendorCode: string | undefined) {
           creditProducts: [],
           isValidCreditProduct: false,
         } as {
-          creditProducts: { value: string; label: string }[]
+          creditProducts: { value: number; label: string }[]
           isValidCreditProduct: boolean
         },
       ),
-    [creditProduct, creditProductListData?.products, durationMaxFromAge],
+    [
+      creditProduct,
+      creditProductListData?.fullDownpaymentMax,
+      creditProductListData?.products,
+      durationMaxFromAge,
+    ],
   )
   const currentProduct = useMemo(
-    () => creditProductListData?.productsMap?.[creditProduct],
+    () => creditProductListData?.productsMap?.[`${creditProduct}`],
     [creditProduct, creditProductListData?.productsMap],
   )
 
-  /* Если creditProduct пришел с Бэка, но по какой-то причине не проходит по минимальному сроку,
-  или отсутствует productId, то очищаем поле */
+  // Находим крайние значения Downpayment и Duration для ограничения полей ПВ и срока,
+  // когда кредитный продукт выбран: из всех conditions находим меньшее значение downpaymentMin и
+  // меньшее значение downpaymentMax, то же самое делаем для duration.
+  const { currentDownpaymentMin, currentDownpaymentMax, currentDurationMin, currentDurationMax } = useMemo(
+    () =>
+      currentProduct?.conditions?.reduce<{
+        currentDownpaymentMin?: number
+        currentDownpaymentMax?: number
+        currentDurationMin?: number
+        currentDurationMax?: number
+      }>(
+        (acc, condition) => {
+          if (acc.currentDownpaymentMin === undefined) {
+            acc.currentDownpaymentMin = condition.downpaymentMin
+          } else if (
+            checkIsNumber(condition.downpaymentMin) &&
+            condition.downpaymentMin < acc.currentDownpaymentMin
+          ) {
+            acc.currentDownpaymentMin = condition.downpaymentMin
+          }
+
+          if (acc.currentDownpaymentMax === undefined) {
+            acc.currentDownpaymentMax = condition.downpaymentMax
+          } else if (
+            checkIsNumber(condition.downpaymentMax) &&
+            condition.downpaymentMax > acc.currentDownpaymentMax
+          ) {
+            acc.currentDownpaymentMax = condition.downpaymentMax
+          }
+
+          if (acc.currentDurationMin === undefined) {
+            acc.currentDurationMin = condition.durationMin
+          } else if (checkIsNumber(condition.durationMin) && condition.durationMin < acc.currentDurationMin) {
+            acc.currentDurationMin = condition.durationMin
+          }
+
+          if (acc.currentDurationMax === undefined) {
+            acc.currentDurationMax = condition.durationMax
+          } else if (checkIsNumber(condition.durationMax) && condition.durationMax > acc.currentDurationMax) {
+            acc.currentDurationMax = condition.durationMax
+          }
+
+          return acc
+        },
+        {
+          currentDownpaymentMin: undefined,
+          currentDownpaymentMax: undefined,
+          currentDurationMin: undefined,
+          currentDurationMax: undefined,
+        },
+      ) || {},
+    [currentProduct?.conditions],
+  )
+
+  // Если creditProduct пришел с Бэка, но по какой-то причине не проходит по сроку, то очищаем поле
   useEffect(() => {
     if (
       !isGetCarsLoading &&
@@ -161,10 +235,8 @@ export function useLimits(vendorCode: string | undefined) {
   }, [creditProduct, currentProduct])
 
   const onlyCreditAdditionalEquipmentsCost = getServicesTotalCost(additionalEquipments, true)
-  const minInitialPaymentPercent =
-    currentProduct?.downpaymentMin ?? creditProductListData?.fullDownpaymentMin ?? 0
-  const maxInitialPaymentPercent =
-    currentProduct?.downpaymentMax ?? creditProductListData?.fullDownpaymentMax ?? 100
+  const minInitialPaymentPercent = currentDownpaymentMin ?? creditProductListData?.fullDownpaymentMin ?? 0
+  const maxInitialPaymentPercent = currentDownpaymentMax ?? creditProductListData?.fullDownpaymentMax ?? 100
   const minInitialPayment = getMinMaxValueFromPercent(
     minInitialPaymentPercent,
     carCost + onlyCreditAdditionalEquipmentsCost,
@@ -182,15 +254,11 @@ export function useLimits(vendorCode: string | undefined) {
   */
   const loanTerms = useMemo(() => {
     const durationMin =
-      Math.ceil(
-        (currentProduct?.durationMin || creditProductListData?.fullDurationMin || 0) /
-          LOAN_TERM_GRADUATION_VALUE,
-      ) * LOAN_TERM_GRADUATION_VALUE
+      Math.ceil((currentDurationMin || creditProductListData?.fullDurationMin || 0) / MONTH_OF_YEAR_COUNT) *
+      MONTH_OF_YEAR_COUNT
     const durationMaxFromProduct =
-      Math.floor(
-        (currentProduct?.durationMax || creditProductListData?.fullDurationMax || 0) /
-          LOAN_TERM_GRADUATION_VALUE,
-      ) * LOAN_TERM_GRADUATION_VALUE
+      Math.floor((currentDurationMax || creditProductListData?.fullDurationMax || 0) / MONTH_OF_YEAR_COUNT) *
+      MONTH_OF_YEAR_COUNT
 
     const durationMax = Math.min(durationMaxFromProduct, durationMaxFromAge)
 
@@ -204,10 +272,10 @@ export function useLimits(vendorCode: string | undefined) {
 
     return loanTerms
   }, [
-    currentProduct?.durationMax,
-    currentProduct?.durationMin,
     creditProductListData?.fullDurationMax,
     creditProductListData?.fullDurationMin,
+    currentDurationMax,
+    currentDurationMin,
     durationMaxFromAge,
   ])
 
@@ -215,7 +283,7 @@ export function useLimits(vendorCode: string | undefined) {
   то очищаем поле */
   useEffect(() => {
     if (!!loanTerm && loanTerms.length && !loanTerms.some(term => term.value === loanTerm)) {
-      setLoanTerm('')
+      setLoanTerm(null)
     }
     // Исключили setLoanTerm что бы избежать случайного перерендера
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -271,8 +339,8 @@ export function useLimits(vendorCode: string | undefined) {
   ])
 
   const additionalEquipmentsCost = getServicesTotalCost(additionalEquipments)
-  const bankAdditionalServicesCost = getServicesTotalCost(bankAdditionalServices)
   const dealerAdditionalServicesCost = getServicesTotalCost(dealerAdditionalServices)
+  const bankAdditionalServicesCost = getServicesTotalCost(bankAdditionalServices)
 
   const isExceededServicesTotalLimit = useMemo(
     () =>
@@ -366,7 +434,7 @@ export function useLimits(vendorCode: string | undefined) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentProduct?.cascoFlag, validationParamsField.value])
 
-  const isHasCasco = dealerAdditionalServices.some(e => e.productType === OptionID.CASCO)
+  const isHasCasco = dealerAdditionalServices.some(e => e.productType === CASCO_OPTION_ID)
 
   /*
   В initialValues формика прописано свойство commonErrors. Поля для него нет,
@@ -432,6 +500,7 @@ export function useLimits(vendorCode: string | undefined) {
   )
 
   return {
+    clientAge,
     creditProducts,
     initialPaymentPercentHelperText,
     initialPaymentHelperText,

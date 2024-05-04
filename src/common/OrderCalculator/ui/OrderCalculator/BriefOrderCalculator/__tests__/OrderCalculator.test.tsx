@@ -1,6 +1,5 @@
 import { PropsWithChildren } from 'react'
 
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
@@ -105,8 +104,11 @@ describe('OrderCalculator', () => {
           case 'Тип продукта':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
             break
+          case 'Срок':
+            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
+            break
           default:
-            expect(screen.getByText(`${fieldName}`)).toBeInTheDocument()
+            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(1)
             break
         }
       }
@@ -186,7 +188,7 @@ describe('OrderCalculator', () => {
       await act(async () =>
         userEvent.click(
           await screen.findByText(
-            mockGetVendorOptionsResponse?.additionalOptions?.find(o => o.optionId === OptionID.CASCO)
+            mockGetVendorOptionsResponse?.additionalOptions?.find(o => o.optionId === 15)
               ?.optionName as string,
           ),
         ),

@@ -1,32 +1,14 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
-import {
-  AdditionalOptionsFrontdc,
-  OptionType,
-  LoanCarFrontdc,
-  LoanDataFrontdc,
-  VendorFrontdc,
-} from '@sberauto/loanapplifecycledc-proto/public'
-import { DateTime } from 'luxon'
-import { useDispatch } from 'react-redux'
+import { OptionType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
-import { AnketaType } from 'entities/application/application.utils'
-import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { convertedDateToString } from 'shared/utils/dateTransform'
+import { checkIsNumber } from 'shared/lib/helpers'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
-import { AUTO_TYPE_MAP, CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
-import {
-  AutoCategory,
-  FormFieldNameMap,
-  FullOrderCalculatorFields,
-  BriefOrderCalculatorFields,
-} from '../types'
-import { getCountryMark } from '../utils/getCountryMark'
-import { useGetCarsListQuery } from './useGetCarsListQuery'
-import { useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
+import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
+import { FormFieldNameMap, FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
 
 type CalculatorFields<D> = D extends boolean ? FullOrderCalculatorFields : BriefOrderCalculatorFields
 
@@ -35,11 +17,6 @@ export function useInitialValues<D extends boolean | undefined>(
   isFullCalculator?: D,
 ) {
   const initialOrder = useAppSelector(state => state.order.order)
-  const dispatch = useDispatch()
-
-  const { vendorCode, vendorName } = getPointOfSaleFromCookies()
-  const { data: vendorOptions } = useGetVendorOptionsQuery({ vendorCode }, { enabled: false })
-  const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
 
   const application = useMemo(
     () => initialOrder?.orderData?.application || {},
@@ -52,7 +29,7 @@ export function useInitialValues<D extends boolean | undefined>(
     () =>
       (loanData?.additionalOptions || []).reduce(
         (acc, cur) => {
-          if (!cur.bankOptionType && cur.bankOptionType !== OptionType.BANK) {
+          if (cur.bankOptionType === null || cur.bankOptionType === undefined) {
             return acc
           }
 
@@ -109,20 +86,20 @@ export function useInitialValues<D extends boolean | undefined>(
           const dealerAdditionalServiceData = isFullCalculator
             ? {
                 [FormFieldNameMap.provider]:
-                  cur.vendor?.vendorCode ??
+                  stringToNumber(cur.vendor?.vendorCode) ??
                   (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].provider,
-                [FormFieldNameMap.agent]:
-                  cur.broker?.vendorCode ??
-                  (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].agent,
+                [FormFieldNameMap.broker]:
+                  stringToNumber(cur.broker?.vendorCode) ??
+                  (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].broker,
                 [FormFieldNameMap.loanTerm]:
                   cur.term ?? (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].loanTerm,
                 [FormFieldNameMap.cascoLimit]: cur.cascoLimit
                   ? `${cur.cascoLimit}`
                   : (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].cascoLimit,
-                [FormFieldNameMap.agentTaxValue]: (initialData as FullOrderCalculatorFields)
-                  .dealerAdditionalServices[0].agentTaxValue,
-                [FormFieldNameMap.agentTaxPercent]: (initialData as FullOrderCalculatorFields)
-                  .dealerAdditionalServices[0].agentTaxPercent,
+                [FormFieldNameMap.taxValue]: (initialData as FullOrderCalculatorFields)
+                  .dealerAdditionalServices[0].taxValue,
+                [FormFieldNameMap.taxPercent]: (initialData as FullOrderCalculatorFields)
+                  .dealerAdditionalServices[0].taxPercent,
               }
             : {
                 [FormFieldNameMap.cascoLimit]: cur.cascoLimit
@@ -132,22 +109,28 @@ export function useInitialValues<D extends boolean | undefined>(
 
           switch (cur.bankOptionType) {
             case OptionType.EQUIPMENT: {
-              if (acc.additionalEquipments.length === 1 && !acc.additionalEquipments[0].productType) {
+              if (
+                acc.additionalEquipments.length === 1 &&
+                !checkIsNumber(acc.additionalEquipments[0].productType)
+              ) {
                 acc.additionalEquipments.shift()
               }
               acc.additionalEquipments.push({
                 ...additionalServiceBaseData,
                 ...initialAdditionalServiceDocInfo,
-                [FormFieldNameMap.legalPersonCode]:
-                  cur.broker?.vendorCode ??
-                  (initialData as FullOrderCalculatorFields).additionalEquipments[0].legalPersonCode,
+                [FormFieldNameMap.broker]:
+                  stringToNumber(cur.broker?.vendorCode) ??
+                  (initialData as FullOrderCalculatorFields).additionalEquipments[0].broker,
                 ...additionalServiceRequisitesData,
                 ...additionalEquipmentsData,
               })
               break
             }
             case OptionType.DEALER: {
-              if (acc.dealerAdditionalServices.length === 1 && !acc.dealerAdditionalServices[0].productType) {
+              if (
+                acc.dealerAdditionalServices.length === 1 &&
+                !checkIsNumber(acc.dealerAdditionalServices[0].productType)
+              ) {
                 acc.dealerAdditionalServices.shift()
               }
               acc.dealerAdditionalServices.push({
@@ -158,17 +141,24 @@ export function useInitialValues<D extends boolean | undefined>(
               })
               break
             }
-            // case OptionType.BANK: {
-            //   if (acc.bankAdditionalServices.length === 1 && !acc.bankAdditionalServices[0].productType) {
-            //     acc.bankAdditionalServices.shift()
-            //   }
-            //   acc.bankAdditionalServices.push({
-            //     ...additionalServiceBaseData,
-            //     ...dealerAdditionalServiceData,
-            //     ...additionalServiceRequisitesData,
-            //   })
-            //   break
-            // }
+            case OptionType.BANK: {
+              if (
+                acc.bankAdditionalServices.length === 1 &&
+                !checkIsNumber(acc.bankAdditionalServices[0].productType)
+              ) {
+                acc.bankAdditionalServices.shift()
+              }
+              acc.bankAdditionalServices.push({
+                [FormFieldNameMap.productType]: cur.type ?? initialData.bankAdditionalServices[0].productType,
+                [FormFieldNameMap.productCost]: `${
+                  cur.price ?? initialData.bankAdditionalServices[0].productCost
+                }`,
+                [FormFieldNameMap.tariff]: cur.tariffId ?? initialData.bankAdditionalServices[0].tariff,
+                [FormFieldNameMap.loanTerm]: cur.term ?? initialData.bankAdditionalServices[0].loanTerm,
+                ...dealerAdditionalServiceData,
+              })
+              break
+            }
           }
 
           return acc
@@ -208,7 +198,8 @@ export function useInitialValues<D extends boolean | undefined>(
           ? new Date(loanCar.dkpDate)
           : (initialData as FullOrderCalculatorFields).salesContractDate,
         [FormFieldNameMap.legalPersonCode]:
-          vendor?.broker?.vendorCode ?? (initialData as FullOrderCalculatorFields).legalPersonCode,
+          stringToNumber(vendor?.broker?.vendorCode) ??
+          (initialData as FullOrderCalculatorFields).legalPersonCode,
         [FormFieldNameMap.loanAmount]: `${
           loanData?.amount ?? (initialData as FullOrderCalculatorFields).loanAmount
         }`,
@@ -237,367 +228,7 @@ export function useInitialValues<D extends boolean | undefined>(
       }
     : {}
 
-  const remapAdditionalOptionsForSmallCalculator = useCallback(
-    (values: BriefOrderCalculatorFields) => {
-      const { additionalEquipments, dealerAdditionalServices } = values
-      const additionalOptionsFromCalculator = [additionalEquipments, dealerAdditionalServices]
-      const additionalOptionsForApplication: AdditionalOptionsFrontdc[] = []
-      for (let i = 0; i < additionalOptionsFromCalculator.length; i++) {
-        const additionalOption = additionalOptionsFromCalculator[i]
-        const additionalOptionForApplication = additionalOption.reduce(
-          (acc: AdditionalOptionsFrontdc[], option) => {
-            const { productCost, productType, isCredit, cascoLimit } = option
-            const additionalOption: AdditionalOptionsFrontdc = {
-              bankOptionType: i === 0 ? OptionType.EQUIPMENT : OptionType.DEALER,
-              type: parseInt((productType || '').toString(), 10) ?? undefined,
-              name: productType
-                ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
-                : undefined,
-              inCreditFlag: isCredit,
-              price: parseFloat(productCost),
-              cascoLimit: cascoLimit ? parseFloat(cascoLimit) : undefined,
-            }
-            if (additionalOption.type) {
-              acc.push(additionalOption)
-            }
-
-            return acc
-          },
-          [],
-        )
-
-        additionalOptionsForApplication.push(...additionalOptionForApplication)
-      }
-
-      return additionalOptionsForApplication
-    },
-    [vendorOptions?.additionalOptionsMap],
-  )
-
-  const remapAdditionalOptionsForFullCalculator = useCallback(
-    (values: FullOrderCalculatorFields) => {
-      const { additionalEquipments, dealerAdditionalServices } = values
-      const additionalEquipmentForApplication = additionalEquipments.reduce(
-        (acc: AdditionalOptionsFrontdc[], option) => {
-          const {
-            productCost,
-            taxValue,
-            taxPercent,
-            bankAccountNumber,
-            correspondentAccount,
-            legalPersonCode,
-            legalPersonName,
-            bankIdentificationCode,
-            beneficiaryBank,
-            inn,
-            ogrn,
-            kpp,
-            productType,
-            documentType,
-            documentNumber,
-            documentDate,
-            isCredit,
-          } = option
-
-          const additionalOption: AdditionalOptionsFrontdc = {
-            bankOptionType: OptionType.EQUIPMENT,
-            type: parseInt((productType || '').toString(), 10) ?? undefined,
-            name: productType
-              ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
-              : undefined,
-            inCreditFlag: isCredit,
-            price: parseFloat(productCost),
-            vendor: isCredit
-              ? {
-                  vendorCode,
-                  vendorName,
-                }
-              : undefined,
-            broker: {
-              vendorCode: legalPersonCode,
-              vendorName: legalPersonName,
-              requisites: {
-                accountRequisite: {
-                  accountNumber: bankAccountNumber,
-                  accountCorrNumber: correspondentAccount,
-                  bank: beneficiaryBank,
-                  bic: bankIdentificationCode,
-                  inn: inn,
-                  ogrn: ogrn,
-                  kpp: kpp,
-                },
-              },
-              taxInfo: {
-                amount: taxValue ?? undefined,
-                percent: taxPercent ?? undefined,
-              },
-            },
-            docType: documentType,
-            docNumber: documentNumber,
-            docDate: convertedDateToString(documentDate),
-          }
-          if (additionalOption.type) {
-            acc.push(additionalOption)
-          }
-
-          return acc
-        },
-        [],
-      )
-
-      const additionalDealerServicesForApplication = dealerAdditionalServices.reduce(
-        (acc: AdditionalOptionsFrontdc[], option) => {
-          const {
-            provider,
-            providerName,
-            productCost,
-            productType,
-            isCredit,
-            bankAccountNumber,
-            correspondentAccount,
-            agentTaxPercent,
-            agentTaxValue,
-            bankIdentificationCode,
-            beneficiaryBank,
-            inn,
-            ogrn,
-            kpp,
-            loanTerm,
-            agent,
-            agentName,
-            documentType,
-            documentNumber,
-            documentDate,
-            cascoLimit,
-          } = option
-
-          const docDate = convertedDateToString(documentDate) || undefined
-          const dateEnd = documentDate
-            ? loanTerm
-              ? DateTime.fromJSDate(documentDate).plus({ months: loanTerm }).toFormat('yyyy-LL-dd')
-              : docDate
-            : undefined
-
-          const additionalOption: AdditionalOptionsFrontdc = {
-            bankOptionType: OptionType.DEALER,
-            type: productType ? parseInt(productType.toString(), 10) : undefined,
-            name: productType
-              ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
-              : undefined,
-            inCreditFlag: isCredit,
-            price: parseFloat(productCost),
-            vendor: {
-              vendorCode: provider,
-              vendorName: providerName,
-            },
-            broker: {
-              vendorCode: agent,
-              vendorName: agentName,
-              requisites: {
-                accountRequisite: {
-                  accountNumber: bankAccountNumber,
-                  accountCorrNumber: correspondentAccount,
-                  bank: beneficiaryBank,
-                  bic: bankIdentificationCode,
-                  inn: inn,
-                  ogrn: ogrn,
-                  kpp: kpp,
-                },
-              },
-              taxInfo: {
-                amount: agentTaxValue ?? undefined,
-                percent: agentTaxPercent ?? undefined,
-              },
-            },
-            term: loanTerm,
-            docType: documentType,
-            docNumber: documentNumber,
-            docDate,
-            dateStart: docDate,
-            dateEnd,
-            cascoLimit: cascoLimit ? parseFloat(cascoLimit) : undefined,
-          }
-          if (additionalOption.type) {
-            acc.push(additionalOption)
-          }
-
-          return acc
-        },
-        [],
-      )
-
-      return [...additionalEquipmentForApplication, ...additionalDealerServicesForApplication]
-    },
-    [vendorCode, vendorName, vendorOptions?.additionalOptionsMap],
-  )
-
-  const getCarCountryData = useCallback(
-    (carBrand: string | null, carCondition: number) => {
-      const cars = (carCondition ? carsData?.newCars : carsData?.usedCars) || {}
-      const currentCarBrand = cars[carBrand ?? '']
-
-      return {
-        mark: getCountryMark(currentCarBrand?.madeIn),
-        countryMade: currentCarBrand?.madeIn,
-        type: AUTO_TYPE_MAP[currentCarBrand?.autoCategory as AutoCategory],
-        category: currentCarBrand?.autoCategory,
-      }
-    },
-    [carsData?.newCars, carsData?.usedCars],
-  )
-
-  const remapApplicationValuesForSmallCalculator = useCallback(
-    (values: BriefOrderCalculatorFields) => {
-      const {
-        carCost,
-        carModel,
-        carBrand,
-        carCondition,
-        carMileage,
-        carYear,
-        initialPayment,
-        initialPaymentPercent,
-        loanTerm,
-        creditProduct,
-      } = values
-      const newLoanCar: LoanCarFrontdc = {
-        brand: carBrand ?? undefined,
-        isCarNew: !!carCondition,
-        autoPrice: parseInt(carCost, 10),
-        mileage: carMileage,
-        model: carModel ?? undefined,
-        autoCreateYear: carYear,
-        ...getCarCountryData(carBrand, carCondition),
-      }
-      const newLoanData: LoanDataFrontdc = {
-        productId: creditProduct,
-        downpayment: parseInt(initialPayment, 10),
-        downpaymentInPercent: initialPaymentPercent ? parseFloat(initialPaymentPercent) : undefined,
-        term: parseInt(loanTerm.toString(), 10),
-        additionalOptions: remapAdditionalOptionsForSmallCalculator(values),
-      }
-
-      const updatedApplication = {
-        ...application,
-        loanCar: newLoanCar,
-        loanData: newLoanData,
-        /* Если попали на короткий калькулятор, то выйти из него можно с anketaType=0 или anketaType=1,
-        в зависимости от полноты данных, даже если до этого в заявке был anketaType=2.
-        Потому тут изначально ставим 0, а на этапе сохранения выбираем 0 или 1 */
-        anketaType: AnketaType.Incomplete,
-      }
-      dispatch(updateApplication(updatedApplication))
-    },
-    [application, getCarCountryData, remapAdditionalOptionsForSmallCalculator, dispatch],
-  )
-
-  const remapApplicationValuesForFullCalculator = useCallback(
-    (values: FullOrderCalculatorFields) => {
-      const {
-        carCost,
-        carModel,
-        carBrand,
-        carCondition,
-        carMileage,
-        carYear,
-        initialPayment,
-        initialPaymentPercent,
-        loanTerm,
-        creditProduct,
-        carId,
-        taxValue,
-        taxPercent,
-        bankAccountNumber,
-        carIdType,
-        bankIdentificationCode,
-        beneficiaryBank,
-        inn,
-        ogrn,
-        kpp,
-        carPassportId,
-        carPassportCreationDate,
-        correspondentAccount,
-        legalPersonCode,
-        legalPersonName,
-        loanAmount,
-        salesContractDate,
-        salesContractId,
-      } = values
-      const newLoanCar: LoanCarFrontdc = {
-        brand: carBrand ?? undefined,
-        isCarNew: !!carCondition,
-        autoPrice: parseInt(carCost, 10),
-        mileage: carMileage,
-        model: carModel ?? undefined,
-        autoCreateYear: carYear,
-        ptsNumber: carPassportId,
-        ptsDate: convertedDateToString(carPassportCreationDate),
-        vinNumber: carIdType === 1 ? carId : undefined,
-        carBody: carIdType === 0 ? carId : undefined,
-        dkpNumber: salesContractId,
-        dkpDate: convertedDateToString(salesContractDate),
-        ...getCarCountryData(carBrand, carCondition),
-      }
-      const newVendor: VendorFrontdc = {
-        /* Не нужно на этапе калькулятора передвать в этот объект данные из pointOfSale,
-        т.к. из-за этого на этапе анкеты будет не ясно, что заявка была заведена под другим вендором.
-        Инфо о текущем вендоре будет передано в заявку только на этапе ее сохранения (черновик или скоринг) */
-        broker: {
-          vendorCode: legalPersonCode,
-          vendorName: legalPersonName,
-          requisites: {
-            accountRequisite: {
-              bank: beneficiaryBank,
-              bic: bankIdentificationCode,
-              accountNumber: bankAccountNumber,
-              accountCorrNumber: correspondentAccount,
-              inn: inn,
-              ogrn: ogrn,
-              kpp: kpp,
-            },
-          },
-          taxInfo: {
-            amount: taxValue ?? undefined,
-            percent: taxPercent ?? undefined,
-          },
-        },
-      }
-      const newLoanData: LoanDataFrontdc = {
-        productId: creditProduct,
-        downpayment: parseInt(initialPayment, 10),
-        downpaymentInPercent: initialPaymentPercent ? parseFloat(initialPaymentPercent) : undefined,
-        term: parseInt(loanTerm.toString(), 10),
-        amount: !isNaN(parseInt(loanAmount, 10)) ? parseInt(loanAmount, 10) : 0,
-        additionalOptions: remapAdditionalOptionsForFullCalculator(values),
-      }
-
-      const updatedApplication = {
-        ...application,
-        loanCar: newLoanCar,
-        loanData: newLoanData,
-        vendor: newVendor,
-        // Если попали на большой калькулятор, то выйти из него можно только заполнив все поля
-        // большого калькулятора и анкеты, а это как раз anketaType=2
-        anketaType: AnketaType.Full,
-      }
-      dispatch(updateApplication(updatedApplication))
-    },
-    [getCarCountryData, remapAdditionalOptionsForFullCalculator, dispatch, application],
-  )
-
-  const remapApplicationValues = useCallback(
-    (values: BriefOrderCalculatorFields | FullOrderCalculatorFields) => {
-      if (isFullCalculator) {
-        remapApplicationValuesForFullCalculator(values as FullOrderCalculatorFields)
-      } else {
-        remapApplicationValuesForSmallCalculator(values as BriefOrderCalculatorFields)
-      }
-    },
-    [isFullCalculator, remapApplicationValuesForSmallCalculator, remapApplicationValuesForFullCalculator],
-  )
-
   return {
-    remapApplicationValues,
     hasCustomInitialValues: !!application?.loanCar,
     initialValues: application
       ? ({

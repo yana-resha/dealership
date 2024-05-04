@@ -3,13 +3,14 @@ import { AnyObject } from 'yup/lib/types'
 
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { FieldMessages } from 'shared/constants/fieldMessages'
+import { checkIsNumber } from 'shared/lib/helpers'
 
 export function setRequiredIfHasProductType<T extends Yup.BaseSchema<any, AnyObject, any>>(
   schema: T,
   message?: string,
 ) {
   return schema.when([FormFieldNameMap.productType], {
-    is: (productType: string) => !!productType,
+    is: (productType: number) => checkIsNumber(productType),
     then: schema => schema.required(message || FieldMessages.required),
   })
 }
@@ -28,7 +29,7 @@ export const bankDetailsFormValidation = {
   [FormFieldNameMap.bankIdentificationCode]: setRequiredIfInCredit(Yup.string()).when(
     [FormFieldNameMap.productType, FormFieldNameMap.isCustomFields],
     {
-      is: (productType: string, isCustomFields: boolean) => !!productType && isCustomFields,
+      is: (productType: number, isCustomFields: boolean) => checkIsNumber(productType) && isCustomFields,
       then: schema => schema.min(9, FieldMessages.enterFullData),
     },
   ),
@@ -36,14 +37,14 @@ export const bankDetailsFormValidation = {
   [FormFieldNameMap.bankAccountNumber]: setRequiredIfInCredit(Yup.string()).when(
     [FormFieldNameMap.productType, FormFieldNameMap.isCustomFields],
     {
-      is: (productType: string, isCustomFields: boolean) => !!productType && isCustomFields,
+      is: (productType: number, isCustomFields: boolean) => checkIsNumber(productType) && isCustomFields,
       then: schema => schema.min(20, FieldMessages.enterFullData),
     },
   ),
   [FormFieldNameMap.correspondentAccount]: Yup.string().when(
     [FormFieldNameMap.productType, FormFieldNameMap.isCustomFields],
     {
-      is: (productType: string, isCustomFields: boolean) => !!productType && isCustomFields,
+      is: (productType: number, isCustomFields: boolean) => checkIsNumber(productType) && isCustomFields,
       then: schema => schema.required(FieldMessages.required).min(20, FieldMessages.enterFullData),
     },
   ),

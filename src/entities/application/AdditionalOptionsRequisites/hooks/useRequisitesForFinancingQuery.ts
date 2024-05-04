@@ -4,51 +4,54 @@ import {
   GetRequisitesForFinancingResponse,
   Requisite,
   GetRequisitesForFinancingRequest,
-  OptionID,
-  OptionType,
   Broker,
   AdditionalOptionRsForFinancing,
   ProviderBroker,
+  AdditionalEquipmentRsForFinancing,
+  Vendor,
+  VendorRequisites,
 } from '@sberauto/dictionarydc-proto/public'
 import { useSnackbar } from 'notistack'
 import { UseQueryOptions, useQuery } from 'react-query'
 
 import { getRequisitesForFinancing } from 'shared/api/requests/dictionaryDc.api'
-import { prepareOptionId, prepareOptionType } from 'shared/lib/helpers'
 
 export interface RequiredRequisite extends Requisite {
   bankName: string
 }
 export interface PreparedBroker extends Broker {
-  brokerCode: string
+  brokerCode: number
   requisites: RequiredRequisite[]
 }
 export interface PreparedBrokerMap extends PreparedBroker {
   requisitesMap: Record<string, RequiredRequisite>
 }
 export interface PreparedProviderBroker extends ProviderBroker {
-  providerCode: string
+  providerCode: number
   brokers: PreparedBroker[]
 }
 export interface PreparedProviderBrokerMap extends PreparedProviderBroker {
   brokersMap: Record<string, PreparedBrokerMap>
 }
-export interface PreparedAdditionalOptionForFinancing extends AdditionalOptionRsForFinancing {
-  optionId: OptionID
+export interface PreparedAdditionalOptions extends AdditionalOptionRsForFinancing {
   providerBrokers: PreparedProviderBroker[]
-}
-export interface PreparedAdditionalOptionForFinancingMap extends PreparedAdditionalOptionForFinancing {
   providerBrokersMap: Record<string, PreparedProviderBrokerMap>
 }
+
+export interface PreparedAdditionalEquipment extends AdditionalEquipmentRsForFinancing {
+  brokers: PreparedBroker[]
+  brokersMap: Record<string, PreparedBrokerMap>
+}
+
+export interface PreparedVendor extends VendorRequisites {
+  requisites: RequiredRequisite[]
+  requisitesMap: Record<string, RequiredRequisite>
+}
 export interface RequisitesForFinancing extends GetRequisitesForFinancingResponse {
-  dealerCenterBrokers: PreparedBroker[]
-  dealerCenterBrokersMap: Record<string, PreparedBrokerMap>
-  additionalEquipments: PreparedAdditionalOptionForFinancing[]
-  additionalEquipmentsMap: Record<string, PreparedAdditionalOptionForFinancingMap>
-  dealerOptions: PreparedAdditionalOptionForFinancing[]
-  dealerOptionsMap: Record<string, PreparedAdditionalOptionForFinancingMap>
-  bankOptions: PreparedAdditionalOptionForFinancing[]
-  bankOptionsMap: Record<string, PreparedAdditionalOptionForFinancingMap>
+  vendor: PreparedVendor
+  dealerOptionsMap: Record<string, PreparedAdditionalOptions> // dima + id. а он нужен?
+  additionalEquipmentsMap: Record<string, PreparedAdditionalEquipment>
+  bankOptionsMap: Record<string, PreparedAdditionalOptions>
 }
 
 const prepareRequisites = (requisites: Requisite[]) =>
@@ -100,7 +103,6 @@ const prepareProviders = (providers: ProviderBroker[]) =>
           providerCode: cur.providerCode,
           brokers: requiredBrokers,
         }
-
         acc.requiredProviders.push(newProvider)
         acc.providersMap[cur.providerCode] = { ...newProvider, brokersMap }
       }
@@ -113,65 +115,49 @@ const prepareProviders = (providers: ProviderBroker[]) =>
     },
   )
 
-const prepareAdditionalOptions = (options: AdditionalOptionRsForFinancing[]) =>
-  options.reduce(
-    (acc, cur) => {
-      const optionId = prepareOptionId(cur.optionId as unknown as keyof typeof OptionID)
-      const optionType = prepareOptionType(cur.optionType as unknown as keyof typeof OptionType)
-      if (optionId) {
-        const { requiredProviders, providersMap } = prepareProviders(cur.providerBrokers || [])
-        const newOptions = {
-          ...cur,
-          optionId: optionId,
-          optionType: optionType,
-          providerBrokers: requiredProviders,
-        }
-        if (optionType === OptionType.EQUIPMENT) {
-          acc.additionalEquipments.push(newOptions)
-          acc.additionalEquipmentsMap[optionId] = { ...newOptions, providerBrokersMap: providersMap }
-        }
-        if (optionType === OptionType.DEALER) {
-          acc.dealerOptions.push(newOptions)
-          acc.dealerOptionsMap[optionId] = { ...newOptions, providerBrokersMap: providersMap }
-        }
-        if (optionType === OptionType.BANK) {
-          acc.bankOptions.push(newOptions)
-          acc.bankOptionsMap[optionId] = { ...newOptions, providerBrokersMap: providersMap }
-        }
-      }
+const prepareAdditionalOptions = (
+  optionMap: Record<string, AdditionalOptionRsForFinancing | null> | null | undefined,
+) =>
+  Object.keys(optionMap || []).reduce((acc, cur) => {
+    const optionId = cur
+    const { requiredProviders, providersMap } = prepareProviders(optionMap?.[cur]?.providerBrokers || [])
+    acc[optionId] = {
+      providerBrokers: requiredProviders,
+      providerBrokersMap: providersMap,
+    }
 
-      return acc
-    },
-    {
-      additionalEquipments: [] as PreparedAdditionalOptionForFinancing[],
-      additionalEquipmentsMap: {} as Record<string, PreparedAdditionalOptionForFinancingMap>,
-      dealerOptions: [] as PreparedAdditionalOptionForFinancing[],
-      dealerOptionsMap: {} as Record<string, PreparedAdditionalOptionForFinancingMap>,
-      bankOptions: [] as PreparedAdditionalOptionForFinancing[],
-      bankOptionsMap: {} as Record<string, PreparedAdditionalOptionForFinancingMap>,
-    },
-  )
+    return acc
+  }, {} as Record<string, PreparedAdditionalOptions>)
+
+const prepareAdditionalEquipments = (
+  equipmentMap: Record<string, AdditionalEquipmentRsForFinancing | null> | null | undefined,
+) =>
+  Object.keys(equipmentMap || []).reduce((acc, cur) => {
+    const optionId = cur
+    const { requiredBrokers, brokersMap } = prepareBrokers(equipmentMap?.[cur]?.brokers || [])
+    acc[optionId] = {
+      brokers: requiredBrokers,
+      brokersMap,
+    }
+
+    return acc
+  }, {} as Record<string, PreparedAdditionalEquipment>)
 
 const prepareData = (res: GetRequisitesForFinancingResponse): RequisitesForFinancing => {
-  const { requiredBrokers, brokersMap } = prepareBrokers(res.dealerCenterBrokers || [])
-
-  const {
-    additionalEquipments,
-    additionalEquipmentsMap,
-    dealerOptions,
-    dealerOptionsMap,
-    bankOptions,
-    bankOptionsMap,
-  } = prepareAdditionalOptions([...(res.additionalEquipments ?? []), ...(res.additionalOptions ?? [])])
+  const dealerOptionsMap = prepareAdditionalOptions(res.additionalOptions)
+  const additionalEquipmentsMap = prepareAdditionalEquipments(res.additionalEquipment)
+  const bankOptionsMap = prepareAdditionalOptions(res.bankOptions)
+  const { requiredRequisites, requisitesMap } = prepareRequisites(res.vendor?.requisites || [])
+  const vendor: PreparedVendor = {
+    ...res.vendor,
+    requisites: requiredRequisites,
+    requisitesMap,
+  }
 
   return {
-    dealerCenterBrokers: requiredBrokers,
-    dealerCenterBrokersMap: brokersMap,
-    additionalEquipments,
-    additionalEquipmentsMap,
-    dealerOptions,
+    vendor,
     dealerOptionsMap,
-    bankOptions,
+    additionalEquipmentsMap,
     bankOptionsMap,
   }
 }
@@ -179,7 +165,7 @@ const prepareData = (res: GetRequisitesForFinancingResponse): RequisitesForFinan
 export const useRequisitesForFinancingQuery = (
   params: GetRequisitesForFinancingRequest,
   options?: UseQueryOptions<
-    Awaited<ReturnType<typeof getRequisitesForFinancing>>,
+    GetRequisitesForFinancingResponse,
     unknown,
     RequisitesForFinancing,
     (string | GetRequisitesForFinancingRequest)[]

@@ -5,8 +5,8 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { FullInitialAdditionalService } from 'common/OrderCalculator/types'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
-import { PreparedAdditionalOptionForFinancingMap } from 'entities/application/AdditionalOptionsRequisites/hooks/useRequisitesForFinancingQuery'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
@@ -26,15 +26,14 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
 
-const mockedDealerServicesFields = {
+const mockedDealerServicesFields: { dealerAdditionalServices: FullInitialAdditionalService[] } = {
   dealerAdditionalServices: [
     {
-      optionType: 'dealerServices',
       productType: null,
-      provider: '',
+      provider: null,
       providerName: undefined,
-      agent: '',
-      agentName: undefined,
+      broker: null,
+      brokerName: undefined,
       productCost: '0',
       loanTerm: 0,
       bankIdentificationCode: '',
@@ -44,16 +43,12 @@ const mockedDealerServicesFields = {
       taxPresence: false,
       taxation: undefined,
       isCredit: true,
-      taxPercent: null,
-      taxValue: null,
+      taxPercent: undefined,
+      taxValue: undefined,
       documentNumber: '32ук23к22',
       documentType: 2,
       documentDate: new Date('2023-04-23T00:00:00.000Z'),
       isCustomFields: false,
-      agentTaxPercent: null,
-      agentTaxValue: null,
-      providerTaxPercent: null,
-      providerTaxValue: null,
     },
   ],
 }
@@ -62,6 +57,7 @@ const createWrapper = ({ children }: PropsWithChildren) => (
   <ThemeProviderMock>
     <Formik
       initialValues={mockedDealerServicesFields}
+      // TODO DCB-1410 переделать тесты - editRequisitesValidationSchema - должен браться из калькулятора
       validationSchema={editRequisitesValidationSchema}
       onSubmit={() => {}}
     >
@@ -104,7 +100,7 @@ describe('DealerServicesRequisitesTest', () => {
     })
 
     it('Отображается поле "Имя агента"', () => {
-      expect(screen.getByTestId('dealerAdditionalServices[0].agent')).toBeInTheDocument()
+      expect(screen.getByTestId('dealerAdditionalServices[0].broker')).toBeInTheDocument()
     })
 
     it('Отображается поле "Срок"', () => {
@@ -196,7 +192,7 @@ describe('DealerServicesRequisitesTest', () => {
     })
 
     it('Валидируется поле "Имя агента"', async () => {
-      expect(await screen.findByTestId('dealerAdditionalServices[0].agentErrorMessage')).toBeInTheDocument()
+      expect(await screen.findByTestId('dealerAdditionalServices[0].brokerErrorMessage')).toBeInTheDocument()
     })
 
     it('Валидируется поле "Срок"', async () => {

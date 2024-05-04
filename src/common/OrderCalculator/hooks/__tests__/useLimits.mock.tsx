@@ -1,5 +1,9 @@
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
-import { BriefOrderCalculatorFields, OrderCalculatorAdditionalService } from 'common/OrderCalculator/types'
+import {
+  BriefOrderCalculatorFields,
+  OrderCalculatorAdditionalService,
+  OrderCalculatorBankAdditionalService,
+} from 'common/OrderCalculator/types'
 
 export const EXPECTED_LOAN_TERMS = [
   { value: 24 },
@@ -37,16 +41,18 @@ export const DEALER_ADDITIONAL_SERVICES: OrderCalculatorAdditionalService[] = [
   },
 ]
 
-export const BANK_ADDITIONAL_SERVICES: OrderCalculatorAdditionalService[] = [
+export const BANK_ADDITIONAL_SERVICES: OrderCalculatorBankAdditionalService[] = [
   {
     productType: 1,
     productCost: '10',
-    isCredit: true,
+    tariff: 1,
+    loanTerm: null,
   },
   {
     productType: 1,
     productCost: '20',
-    isCredit: false,
+    tariff: 1,
+    loanTerm: null,
   },
 ]
 
@@ -55,7 +61,7 @@ export const initialData: BriefOrderCalculatorFields = {
   carBrand: 'KIA',
   carYear: currentYear,
   carCost: '100',
-  creditProduct: '',
+  creditProduct: null,
   loanTerm: 36,
 }
 

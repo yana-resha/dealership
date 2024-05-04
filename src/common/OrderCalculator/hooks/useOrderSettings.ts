@@ -2,11 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { CalculateCreditRequest, CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 import { LoanDataFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
+import { useSnackbar } from 'notistack'
 
-import { updateApplication, updateFillingProgress, updateOrder } from 'entities/reduxStore/orderSlice'
+import { updateApplication, updateFillingProgress } from 'entities/reduxStore/orderSlice'
+import { Service, ServiceApi } from 'shared/api/constants'
+import { ErrorAlias, ErrorCode, getErrorMessage } from 'shared/api/errors'
 import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+import { checkIsNumber } from 'shared/lib/helpers'
 
 import { useOrderContext } from '../ui/OrderContext'
 
@@ -14,9 +18,16 @@ export function useOrderSettings(nextStep: () => void) {
   const dispatch = useAppDispatch()
   const initialOrder = useAppSelector(state => state.order.order)
   const orderData = initialOrder?.orderData
-  const creditProductsList = initialOrder?.creditProductsList
+  const productsMap = initialOrder?.productsMap
+
+  const { enqueueSnackbar } = useSnackbar()
+
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[] | null>(null)
-  const { mutateAsync, isError: isOfferError, isLoading: isOfferLoading } = useCalculateCreditMutation()
+  const {
+    mutate: calculateCreditMutate,
+    isError: isOfferError,
+    isLoading: isOfferLoading,
+  } = useCalculateCreditMutation()
 
   const { onChangeForm } = useOrderContext()
 
@@ -37,19 +48,35 @@ export function useOrderSettings(nextStep: () => void) {
   )
 
   const calculateCredit = useCallback(
-    async (data: CalculateCreditRequest, onSuccess: () => void) => {
-      const res = await mutateAsync(data)
-      if (res && res.products) {
-        setBankOffers(res.products)
-        onSuccess()
-      }
-    },
-    [mutateAsync],
+    async (data: CalculateCreditRequest, onSuccess: () => void) =>
+      calculateCreditMutate(data, {
+        onSuccess: res => {
+          if (res.products) {
+            setBankOffers(res.products)
+            onSuccess()
+          }
+        },
+        onError: err => {
+          enqueueSnackbar(
+            getErrorMessage({
+              service: Service.Dictionarydc,
+              serviceApi: ServiceApi.CALCULATE_CREDIT,
+              code: err.code as ErrorCode,
+              alias: err.alias as ErrorAlias,
+            }),
+            { variant: 'error' },
+          )
+        },
+      }),
+    [enqueueSnackbar, calculateCreditMutate],
   )
 
   const handleCreditProductClick = useCallback(
     (bankOffer: CalculatedProduct) => {
-      const creditProduct = creditProductsList?.find(product => product.productId === bankOffer.productId)
+      const creditProduct = productsMap?.[`${bankOffer.productId}`]
+
+      const condition = creditProduct?.conditions?.find(c => c.id === bankOffer.conditionId)
+
       const loanData: LoanDataFrontdc = {
         ...orderData?.application?.loanData,
         productId: bankOffer.productId ?? orderData?.application?.loanData?.productId,
@@ -59,10 +86,10 @@ export function useOrderSettings(nextStep: () => void) {
         monthlyPayment: bankOffer?.monthlyPayment,
         dateStart: creditProduct?.activeDateFrom,
         dateEnd: creditProduct?.activeDateTo,
-        crMinValue: creditProduct?.crMinValue,
-        crMaxValue: creditProduct?.crMaxValue,
-        crMinDuration: creditProduct?.durationMin,
-        crMaxDuration: creditProduct?.durationMax,
+        crMinValue: condition?.crMinValue,
+        crMaxValue: condition?.crMaxValue,
+        crMinDuration: condition?.durationMin,
+        crMaxDuration: condition?.durationMax,
         npllzp: creditProduct?.npllzp,
         npllzak: creditProduct?.npllzak,
         approvalValidity: creditProduct?.approvalValidity,
@@ -74,13 +101,12 @@ export function useOrderSettings(nextStep: () => void) {
         cascoInProduct: bankOffer?.cascoFlag,
         incomeProduct: bankOffer?.incomeFlag,
         productRates: {
-          baseRate: creditProduct?.baseRate,
-          baseRateNew: creditProduct?.baseRateNew,
-          baseRateOld: creditProduct?.baseRateOld,
-          rateNewGrnty: creditProduct?.rateNewGrnty,
-          rateNonGrnty: creditProduct?.rateNonGrnty,
-          rateDiscountCpi: creditProduct?.rateDiscountCpi,
-          ratePenaltyCasco: creditProduct?.ratePenaltyCasco,
+          baseRate: condition?.baseRate,
+          rateGrntyPeriod: condition?.rateGrntyPeriod,
+          rateNewGrnty: condition?.rateNewGrnty,
+          rateNonGrnty: condition?.rateNonGrnty,
+          rateDiscountCpi: condition?.rateDiscountCpi,
+          ratePenaltyCasco: condition?.ratePenaltyCasco,
         },
         overpayment: bankOffer.overpayment,
       }
@@ -89,7 +115,7 @@ export function useOrderSettings(nextStep: () => void) {
 
       nextStep()
     },
-    [creditProductsList, dispatch, nextStep, orderData],
+    [productsMap, dispatch, nextStep, orderData],
   )
 
   useEffect(() => {

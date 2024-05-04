@@ -4,6 +4,7 @@ import { Formik } from 'formik'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import { useInitialValues } from 'common/OrderCalculator/hooks/useInitialValues'
+import { useMapApplicationFromFullCalculator } from 'common/OrderCalculator/hooks/useMapApplicationFromFullCalculator'
 import { useOrderCalculator } from 'common/OrderCalculator/hooks/useOrderCalculator'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 
@@ -19,14 +20,13 @@ type Props = {
 export function FullOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }: Props) {
   const classes = useStyles()
 
-  const { remapApplicationValues, initialValues, hasCustomInitialValues } = useInitialValues(
-    fullInitialValueMap,
-    true,
-  )
-  const { formRef, isDisabled, enableFormSubmit, handleSubmit } = useOrderCalculator(
-    remapApplicationValues,
+  const { initialValues, hasCustomInitialValues } = useInitialValues(fullInitialValueMap, true)
+  const { remapApplicationValues } = useMapApplicationFromFullCalculator()
+
+  const { formRef, isDisabled, enableFormSubmit, handleSubmit } = useOrderCalculator({
+    remapApplicationFullValues: remapApplicationValues,
     onSubmit,
-  )
+  })
 
   return (
     <Box className={classes.formContainer} data-testid="fullOrderCalculatorForm">

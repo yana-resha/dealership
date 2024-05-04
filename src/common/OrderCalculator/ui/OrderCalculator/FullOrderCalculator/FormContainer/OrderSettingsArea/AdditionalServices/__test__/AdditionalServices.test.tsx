@@ -1,7 +1,6 @@
 import { PropsWithChildren } from 'react'
 
 import { Button } from '@mui/material'
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Formik, Form } from 'formik'
@@ -24,11 +23,11 @@ disableConsole('warn')
 const mockedInitialValues = {
   [FormFieldNameMap.carCost]: '1000',
   [ServicesGroupName.additionalEquipments]: [
-    { productType: OptionID.ACOUSTIC_SYSTEM, productCost: '100', isCredit: true },
-    { productType: OptionID.ALARM_AUTOSTART, productCost: '200', isCredit: true },
+    { productType: 1, productCost: '100', isCredit: true },
+    { productType: 2, productCost: '200', isCredit: true },
   ],
   [ServicesGroupName.dealerAdditionalServices]: [
-    { productType: OptionID.CASCO, productCost: '', isCredit: false, cascoLimit: '1299' },
+    { productType: 15, productCost: '', isCredit: false, cascoLimit: '1299' },
   ],
   [FormFieldNameMap.commonError]: { isExceededServicesTotalLimit: false },
   [FormFieldNameMap.validationParams]: { isNecessaryCasco: true },
@@ -57,17 +56,9 @@ describe('FullAdditionalServices', () => {
 
   describe('Валидация основных полей формы работает корректно', () => {
     it('Если Сумма покрытия КАСКО ниже суммы авто и доп. оборудования', async () => {
-      render(
-        <AdditionalServices
-          title="Test"
-          options={{ productType: [], loanTerms: [] }}
-          name={ServicesGroupName.dealerAdditionalServices}
-          isNecessaryCasco
-        />,
-        {
-          wrapper: createWrapper(),
-        },
-      )
+      render(<AdditionalServices options={{ productType: [], loanTerms: [] }} isNecessaryCasco />, {
+        wrapper: createWrapper(),
+      })
       userEvent.click(screen.getByTestId('submit'))
 
       expect(screen.queryByText('Сумма покрытия КАСКО')).toBeInTheDocument()
@@ -77,26 +68,18 @@ describe('FullAdditionalServices', () => {
     })
 
     it('Если Сумма покрытия КАСКО выше суммы авто и доп. оборудования', async () => {
-      render(
-        <AdditionalServices
-          title="Test"
-          options={{ productType: [], loanTerms: [] }}
-          name={ServicesGroupName.dealerAdditionalServices}
-          isNecessaryCasco
-        />,
-        {
-          wrapper: createWrapper({
-            [ServicesGroupName.dealerAdditionalServices]: [
-              {
-                productType: OptionID.CASCO,
-                productCost: '',
-                isCredit: false,
-                cascoLimit: '1300',
-              } as FullInitialAdditionalService,
-            ],
-          }),
-        },
-      )
+      render(<AdditionalServices options={{ productType: [], loanTerms: [] }} isNecessaryCasco />, {
+        wrapper: createWrapper({
+          [ServicesGroupName.dealerAdditionalServices]: [
+            {
+              productType: 15,
+              productCost: '',
+              isCredit: false,
+              cascoLimit: '1300',
+            } as FullInitialAdditionalService,
+          ],
+        }),
+      })
       userEvent.click(screen.getByTestId('submit'))
 
       expect(

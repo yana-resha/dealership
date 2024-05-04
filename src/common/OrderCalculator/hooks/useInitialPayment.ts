@@ -4,6 +4,7 @@ import { useFormikContext } from 'formik'
 import debounce from 'lodash/debounce'
 
 import { usePrevious } from 'shared/hooks/usePrevious'
+import { checkIsNumber } from 'shared/lib/helpers'
 
 import {
   BriefOrderCalculatorFields,

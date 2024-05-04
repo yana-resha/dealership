@@ -5,14 +5,14 @@ import {
   GetVendorOptionsListRequest,
   createDictionaryDc,
   OptionType,
-  OptionID,
   GetRequisitesForFinancingRequest,
+  CalculateCreditResponse,
 } from '@sberauto/dictionarydc-proto/public'
 import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
-import { Rest } from 'shared/api/client'
-import { prepareOptionId, prepareOptionType } from 'shared/lib/helpers'
+import { CustomFetchError, Rest } from 'shared/api/client'
+import { prepareOptionType } from 'shared/lib/helpers'
 
 import { Service } from '../constants'
 
@@ -29,7 +29,7 @@ export const getVendorOptionsList = (params: GetVendorOptionsListRequest) =>
     const additionalOptions = response.data.additionalOptions?.map(el => ({
       ...el,
       optionType: prepareOptionType(el.optionType as unknown as keyof typeof OptionType),
-      optionId: prepareOptionId(el.optionId as unknown as keyof typeof OptionID),
+      optionId: el.optionId,
     }))
 
     return { ...(response.data ?? {}), additionalOptions }
@@ -37,9 +37,11 @@ export const getVendorOptionsList = (params: GetVendorOptionsListRequest) =>
 
 export const calculateCredit = (params: CalculateCreditRequest) =>
   dictionaryDcApi.calculateCredit({ data: params }).then(res => res.data ?? {})
-
 export const useCalculateCreditMutation = () =>
-  useMutation(['calculateCredit'], (params: CalculateCreditRequest) => calculateCredit(params))
+  useMutation<CalculateCreditResponse, CustomFetchError, CalculateCreditRequest, unknown>(
+    ['calculateCredit'],
+    (params: CalculateCreditRequest) => calculateCredit(params),
+  )
 
 export const getRequisitesForFinancing = (params: GetRequisitesForFinancingRequest) =>
   dictionaryDcApi.getRequisitesForFinancing({ data: params }).then(res => res.data ?? {})

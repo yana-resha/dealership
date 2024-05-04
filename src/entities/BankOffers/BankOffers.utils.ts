@@ -24,7 +24,7 @@ export const prepareRow = (row: CalculatedProduct) => {
     row.amountWithoutPercent !== undefined ? row.amountWithoutPercent : '',
     options,
   )
-  const currentRate = formatNumber(row.currentRate !== undefined ? row.currentRate * 100 : '', {
+  const currentRate = formatNumber(row.currentRate !== undefined ? row.currentRate : '', {
     digits: 2,
   })
 

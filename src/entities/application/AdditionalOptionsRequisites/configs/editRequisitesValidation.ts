@@ -6,7 +6,7 @@ const FIELD_NOT_COMPLETED = 'Введите значение полностью'
 const dealerServiceValidationSchema = Yup.object().shape({
   productType: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   provider: Yup.string().required(MANDATORY_FIELD_MESSAGE),
-  agent: Yup.string().required(MANDATORY_FIELD_MESSAGE),
+  broker: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   loanTerm: Yup.number().required(MANDATORY_FIELD_MESSAGE),
   productCost: Yup.number().required(MANDATORY_FIELD_MESSAGE),
   beneficiaryBank: Yup.string().required(MANDATORY_FIELD_MESSAGE),
@@ -19,7 +19,7 @@ const dealerServiceValidationSchema = Yup.object().shape({
 const additionalEquipmentValidationSchema = Yup.object().shape({
   productType: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   productCost: Yup.string().required(MANDATORY_FIELD_MESSAGE),
-  legalPersonCode: Yup.string().required(MANDATORY_FIELD_MESSAGE),
+  broker: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   beneficiaryBank: Yup.string().required(MANDATORY_FIELD_MESSAGE),
   bankAccountNumber: Yup.string().required(MANDATORY_FIELD_MESSAGE).min(20, FIELD_NOT_COMPLETED),
   bankIdentificationCode: Yup.string().required(MANDATORY_FIELD_MESSAGE).min(9, FIELD_NOT_COMPLETED),

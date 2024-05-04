@@ -4,6 +4,7 @@ import { CalculateCreditRequest } from '@sberauto/dictionarydc-proto/public'
 import { FormikProps } from 'formik'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
 import { mapValuesForCalculateCreditRequest } from '../utils/orderFormMapper'
@@ -11,19 +12,21 @@ import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 import { useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
 export type OrderCalculatorFields = BriefOrderCalculatorFields | FullOrderCalculatorFields
-
-export function useOrderCalculator(
-  remapApplicationValue: (values: OrderCalculatorFields) => void,
-  onSubmit: (data: CalculateCreditRequest, onSuccess: () => void) => void,
-) {
+type Params = {
+  onSubmit: (data: CalculateCreditRequest, onSuccess: () => void) => void
+  remapApplicationValues?: (values: BriefOrderCalculatorFields) => void
+  remapApplicationFullValues?: (values: FullOrderCalculatorFields) => void
+}
+export function useOrderCalculator({ onSubmit, remapApplicationValues, remapApplicationFullValues }: Params) {
   const { vendorCode } = getPointOfSaleFromCookies()
+  const vendorCodeNumber = stringToNumber(vendorCode)
   const { data: vendorOptions } = useGetVendorOptionsQuery({
-    vendorCode,
+    vendorCode: vendorCodeNumber,
   })
 
   const formRef = useRef<FormikProps<OrderCalculatorFields>>(null)
   const { data: creditProductListData } = useGetCreditProductListQuery({
-    vendorCode,
+    vendorCode: vendorCodeNumber,
     values: formRef.current?.values as OrderCalculatorFields,
     enabled: false,
   })
@@ -34,7 +37,8 @@ export function useOrderCalculator(
 
   const handleSubmit = useCallback(
     async (values: OrderCalculatorFields) => {
-      remapApplicationValue(values)
+      remapApplicationValues?.(values)
+      remapApplicationFullValues?.(values as FullOrderCalculatorFields)
       onSubmit(
         mapValuesForCalculateCreditRequest(
           values,
@@ -48,7 +52,8 @@ export function useOrderCalculator(
       creditProductListData?.productsMap,
       disabledFormSubmit,
       onSubmit,
-      remapApplicationValue,
+      remapApplicationFullValues,
+      remapApplicationValues,
       vendorOptions?.additionalOptionsMap,
     ],
   )

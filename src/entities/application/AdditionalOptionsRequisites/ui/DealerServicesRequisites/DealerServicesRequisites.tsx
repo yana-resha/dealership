@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box } from '@mui/material'
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
-import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
+import { CASCO_OPTION_ID, FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import {
   FormFieldNameMap,
   FullInitialAdditionalService,
@@ -40,7 +39,7 @@ type Props = {
   isLoadedCreditProducts?: boolean
   isRequisiteEditable: boolean
   productOptions?: {
-    value: string | number
+    value: number
     label: string
   }[]
   arrayHelpers?: ArrayHelpers
@@ -73,7 +72,7 @@ export function DealerServicesRequisites({
   const classes = useStyles()
 
   const { values, setFieldValue, submitCount } = useFormikContext<FullOrderCalculatorFields>()
-  const { provider, agent, beneficiaryBank, taxPresence, productCost, productType, cascoLimit, isCredit } =
+  const { provider, broker, beneficiaryBank, taxPresence, productCost, productType, cascoLimit, isCredit } =
     servicesItem
   const [isCustomFields, setCustomFields] = useState(false)
 
@@ -110,7 +109,7 @@ export function DealerServicesRequisites({
   )
 
   const currentProvider = useMemo(
-    () => optionRequisite?.providerBrokersMap[provider],
+    () => optionRequisite?.providerBrokersMap[provider || ''],
     [optionRequisite?.providerBrokersMap, provider],
   )
 
@@ -124,8 +123,8 @@ export function DealerServicesRequisites({
   )
 
   const currentBroker = useMemo(
-    () => currentProvider?.brokersMap[agent],
-    [agent, currentProvider?.brokersMap],
+    () => currentProvider?.brokersMap[broker || ''],
+    [broker, currentProvider?.brokersMap],
   )
 
   const banksOptions = useMemo(
@@ -149,6 +148,7 @@ export function DealerServicesRequisites({
   const { toggleTaxInPercentField, resetInitialValues, clearFieldsForManualEntry } = useRequisites({
     namePrefix,
     values: servicesItem,
+    currentBroker,
     currentBank,
     isCustomFields,
     isRequisitesFetched,
@@ -183,7 +183,7 @@ export function DealerServicesRequisites({
   }, [currentProvider?.providerName, namePrefix])
 
   useEffect(() => {
-    setFieldValue(namePrefix + 'agentName', currentBroker?.brokerName)
+    setFieldValue(namePrefix + FormFieldNameMap.brokerName, currentBroker?.brokerName)
     // Исключен setFieldValue, чтобы избежать случайных перерендеров
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentBroker?.brokerName, namePrefix])
@@ -206,15 +206,18 @@ export function DealerServicesRequisites({
 
   useEffect(() => {
     if (currentBroker?.tax) {
-      setFieldValue(namePrefix + 'agentTaxPercent', currentBroker.tax)
-      setFieldValue(namePrefix + 'agentTaxValue', currentBroker.tax * parseFloat(productCost || '0'))
+      setFieldValue(namePrefix + FormFieldNameMap.taxPercent, currentBroker.tax)
+      setFieldValue(
+        namePrefix + FormFieldNameMap.taxValue,
+        (currentBroker.tax * parseInt(productCost || '0', 10)) / 100,
+      )
     } else {
-      setFieldValue(namePrefix + 'agentTaxPercent', 0)
-      setFieldValue(namePrefix + 'agentTaxValue', 0)
+      setFieldValue(namePrefix + FormFieldNameMap.taxPercent, 0)
+      setFieldValue(namePrefix + FormFieldNameMap.taxValue, 0)
     }
   }, [currentBroker?.tax, namePrefix, productCost, setFieldValue])
 
-  const isCascoProductType = productType === OptionID.CASCO
+  const isCascoProductType = productType === CASCO_OPTION_ID
   const isShouldShowCascoLimitField =
     isNecessaryCasco && parentName === ServicesGroupName.dealerAdditionalServices && isCascoProductType
 
@@ -237,7 +240,7 @@ export function DealerServicesRequisites({
     if (isCredit) {
       return
     }
-    setFieldValue(namePrefix + 'agent', '')
+    setFieldValue(namePrefix + 'broker', '')
     setFieldValue(namePrefix + 'bankIdentificationCode', '')
     setFieldValue(namePrefix + 'beneficiaryBank', '')
     setFieldValue(namePrefix + 'bankAccountNumber', '')
@@ -250,7 +253,7 @@ export function DealerServicesRequisites({
     }
 
     if (!isShouldShowCascoLimitField) {
-      setFieldValue(namePrefix + 'loanTerm', undefined)
+      setFieldValue(namePrefix + 'loanTerm', FULL_INITIAL_ADDITIONAL_SERVICE.loanTerm)
       setFieldValue(namePrefix + 'documentType', null)
       setFieldValue(namePrefix + 'documentNumber', '')
       setFieldValue(namePrefix + 'documentDate', null)
@@ -351,7 +354,7 @@ export function DealerServicesRequisites({
       {isCredit && (
         <>
           <SelectInputFormik
-            name={`${namePrefix}agent`}
+            name={`${namePrefix}broker`}
             label="Агент получатель"
             placeholder="-"
             options={brokerOptions}

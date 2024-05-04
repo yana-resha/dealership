@@ -1,11 +1,9 @@
 import { useMemo } from 'react'
 
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
-
 import { ServicesGroupName } from '../configs/additionalOptionsRequisites.config'
 
 interface AdditionalServiceItem {
-  productType: OptionID | null
+  productType: number | null
 }
 
 type Values = {
@@ -20,7 +18,7 @@ type Params = {
   parentName: ServicesGroupName
   options:
     | {
-        value: string | number
+        value: number
         label: string
       }[]
     | undefined

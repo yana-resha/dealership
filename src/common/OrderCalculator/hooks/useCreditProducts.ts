@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useFormikContext } from 'formik'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { CREDIT_PRODUCT_PARAMS_FIELDS } from '../config'
 import { CreditProductParams, FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
@@ -38,7 +39,7 @@ export function useCreditProducts<T extends FullOrderCalculatorFields | BriefOrd
   )
 
   const { data, isError, isFetching, isLoading } = useGetCreditProductListQuery({
-    vendorCode,
+    vendorCode: stringToNumber(vendorCode),
     values,
     enabled: shouldFetchProducts,
   })

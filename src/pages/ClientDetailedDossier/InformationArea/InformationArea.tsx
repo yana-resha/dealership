@@ -21,6 +21,7 @@ import {
   useGetPreliminaryPaymentScheduleFormMutation,
   useGetShareFormMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
+import { checkIsNumber } from 'shared/lib/helpers'
 import { formatMoney, formatTerm } from 'shared/lib/utils'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { AreaContainer } from 'shared/ui/DossierAreaContainer'
@@ -296,9 +297,8 @@ export function InformationArea({
           <InfoText label="Платеж">{formatMoney(monthlyPayment)}</InfoText>
           <InfoText label="ПВ">{formatMoney(downPayment)}</InfoText>
           <InfoText label="Переплата">{formatMoney(overpayment)}</InfoText>
-          {/* переводим baseRate (0...1) в проценты */}
           <InfoText label="% ставка">
-            {typeof rate === 'number' && !isNaN(rate) ? parseFloat((rate * 100).toFixed(2)) : ''}%
+            {checkIsNumber(rate) ? Math.round((rate as number) * 100) / 100 : ''}%
           </InfoText>
           <Box className={classes.infoTextContainer} gridColumn="span 2">
             <InfoText label="Кредитный продукт">{productName}</InfoText>

@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { useFormikContext } from 'formik'
 
-import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
+import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 
 import { RequisitesForFinancing } from '../../hooks/useRequisitesForFinancingQuery'
 
@@ -12,8 +12,8 @@ type Params = {
   isRequisitesFetched: boolean
   namePrefix: string
   requisites: RequisitesForFinancing | undefined
-  productType: OptionID | null
-  legalPersonCode: string
+  productType: number | null
+  broker: number | null
   beneficiaryBank: string
   productCost: string
   isCredit: boolean
@@ -25,7 +25,7 @@ export function useAdditionalEquipmentRequisites({
   beneficiaryBank,
   productType,
   requisites,
-  legalPersonCode,
+  broker,
   productCost,
   isCredit,
 }: Params) {
@@ -36,23 +36,18 @@ export function useAdditionalEquipmentRequisites({
     [requisites?.additionalEquipmentsMap, productType],
   )
 
-  const currentProvider = useMemo(
-    () => optionRequisite?.providerBrokersMap && Object.values(optionRequisite?.providerBrokersMap)[0],
-    [optionRequisite?.providerBrokersMap],
-  )
-
   const brokerOptions = useMemo(
     () =>
-      (currentProvider?.brokers || []).map(v => ({
+      (optionRequisite?.brokers || []).map(v => ({
         value: v.brokerCode,
         label: v.brokerName,
       })),
-    [currentProvider?.brokers],
+    [optionRequisite?.brokers],
   )
 
   const currentBroker = useMemo(
-    () => currentProvider?.brokersMap?.[legalPersonCode],
-    [currentProvider?.brokersMap, legalPersonCode],
+    () => optionRequisite?.brokersMap?.[broker || ''],
+    [optionRequisite?.brokersMap, broker],
   )
 
   const banksOptions = useMemo(
@@ -75,14 +70,14 @@ export function useAdditionalEquipmentRequisites({
   useEffect(() => {
     if (!isCustomFields && isRequisitesFetched) {
       setFieldValue(
-        namePrefix + 'legalPersonCode',
-        currentBroker?.brokerCode ? currentBroker?.brokerCode : '',
+        namePrefix + FormFieldNameMap.broker,
+        currentBroker?.brokerCode || FULL_INITIAL_ADDITIONAL_EQUIPMENTS.broker,
       )
     }
   }, [currentBroker?.brokerCode, isCustomFields, isRequisitesFetched, namePrefix, setFieldValue])
 
   useEffect(() => {
-    setFieldValue(namePrefix + 'legalPersonName', currentBroker?.brokerName)
+    setFieldValue(namePrefix + FormFieldNameMap.brokerName, currentBroker?.brokerName)
   }, [currentBroker?.brokerName, namePrefix, setFieldValue])
 
   useEffect(() => {
@@ -113,7 +108,7 @@ export function useAdditionalEquipmentRequisites({
 
   useEffect(() => {
     if (!isCredit) {
-      setFieldValue(namePrefix + 'legalPersonCode', '')
+      setFieldValue(namePrefix + FormFieldNameMap.broker, FULL_INITIAL_ADDITIONAL_EQUIPMENTS.broker)
       setFieldValue(namePrefix + 'documentType', null)
       setFieldValue(namePrefix + 'documentNumber', '')
       setFieldValue(namePrefix + 'documentDate', null)
@@ -127,6 +122,7 @@ export function useAdditionalEquipmentRequisites({
   }, [isCredit, namePrefix, setFieldValue])
 
   return {
+    currentBroker,
     brokerOptions,
     banksOptions,
     currentBank,
