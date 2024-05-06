@@ -13,18 +13,16 @@ export const useStyles = makeStyles(theme => ({
       height: '100%',
     },
   },
-
-  flexContainer: {
+  gridContainer: {
     position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
+    display: 'grid',
+    gridTemplateColumns: '1fr',
     gap: theme.spacing(3),
   },
 
-  recoverBtn: {
-    '&.MuiButton-root': {
-      alignSelf: 'flex-start',
-    },
+  iconButton: {
+    height: '30px',
+    width: '30px',
   },
 
   submitBtn: {

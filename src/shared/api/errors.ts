@@ -19,6 +19,9 @@ const serviceErrors: ServiceErrors = {
     [ServiceApi.TrainingCreateSession]: {
       [ErrorCode.InvalidArgument]: 'Неверный пароль. Попробуйте еще раз',
     },
+    [ServiceApi.CHANGE_PASSWORD]: {
+      [ErrorCode.NotFound]: 'Пользователь c данным логином не найден',
+    },
     [ErrorCode.Unautorization]: 'Ошибка авторизации. Попробуйте еще раз',
     [ErrorCode.NotFound]: 'Пользователь не найден. Не удалось авторизоваться, попробуйте еще раз',
     [ErrorCode.InvalidArgument]: 'Ошибка запроса. Попробуйте еще раз',
@@ -40,6 +43,8 @@ export enum ErrorAlias {
   CheckCode_InactiveCode = 'CheckCode_InactiveCode',
   AuthorizeUser_UserBlocked = 'AuthorizeUser_UserBlocked',
   AuthorizeUser_UserBlockedBySmsCount = 'AuthorizeUser_UserBlockedBySmsCount',
+  CheckUserByLogin_EarlyResetPasswordCode = 'CheckUserByLogin_EarlyResetPasswordCode',
+  ChangePassword_MismatchResetCode = 'ChangePassword_MismatchResetCode',
 }
 export const errorAliasMap = {
   [ErrorAlias.RemoveCatalog_catalogIsNotEmpty]: 'Ошибка. Невозможно удалить папку, так как в ней есть файлы',
@@ -51,6 +56,8 @@ export const errorAliasMap = {
     'Учетная запись заблокирована, превышено количество попыток ввода пароля, обратитесь в тех.поддержку',
   [ErrorAlias.AuthorizeUser_UserBlockedBySmsCount]:
     'Учетная запись заблокирована, превышено количество запрошенных СМС-кодов, обратитесь в тех.поддержку',
+  [ErrorAlias.CheckUserByLogin_EarlyResetPasswordCode]: '',
+  [ErrorAlias.ChangePassword_MismatchResetCode]: 'Неверный код восстановления пароля',
 }
 
 type GetErrorMessageParams = {

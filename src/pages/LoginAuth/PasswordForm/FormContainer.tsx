@@ -14,28 +14,21 @@ import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography'
 
-import { FormFieldMap, LoginFormFields } from '../types'
-import { useStyles } from './LoginForm.styles'
+import { FormFieldMap, PasswordFormFields } from '../types'
+import { useStyles } from './PasswordForm.styles'
 
 type Props = {
   isSubmitLoading: boolean
-  isDisabledSubmit: boolean
   errorMessage?: string
   onChangeForm: () => void
-  onRecover: () => void
 }
 
-export function FormContainer({
-  isSubmitLoading = false,
-  isDisabledSubmit,
-  errorMessage,
-  onChangeForm,
-  onRecover,
-}: Props) {
+export function FormContainer({ isSubmitLoading = false, errorMessage, onChangeForm }: Props) {
   const classes = useStyles()
   const [isShowPassword, setShowPassword] = useState(false)
+  const [isShowControlPassword, setShowControlPassword] = useState(false)
 
-  const { values } = useFormikContext<LoginFormFields>()
+  const { values } = useFormikContext<PasswordFormFields>()
   const prevValues = usePrevious(values)
 
   useEffect(() => {
@@ -45,19 +38,22 @@ export function FormContainer({
   }, [onChangeForm, prevValues, values])
 
   const handleShowPasswordClick = () => setShowPassword(show => !show)
+  const handleShowControlPasswordClick = () => setShowControlPassword(show => !show)
+
+  const isDisabledSubmitBtn = !values.code || !values.password || !values.controlPassword || isSubmitLoading
 
   return (
     <Form>
-      <Box className={classes.flexContainer}>
+      <Box className={classes.gridContainer}>
         <MaskedInputFormik
-          name={FormFieldMap.LOGIN}
-          label="Логин"
+          name={FormFieldMap.CODE}
+          label="Код из Email"
           placeholder="-"
           mask={maskNoRestrictions}
         />
         <AdornmentInputFormik
           name={FormFieldMap.PASSWORD}
-          label="Пароль"
+          label="Новый пароль"
           placeholder="-"
           mask={maskNoRestrictions}
           type={isShowPassword ? 'text' : 'password'}
@@ -73,15 +69,24 @@ export function FormContainer({
             </InputAdornment>
           }
         />
-        <Button
-          className={classes.recoverBtn}
-          variant="text"
-          disabled={isSubmitLoading}
-          data-testid="recoverButton"
-          onClick={onRecover}
-        >
-          Забыли пароль?
-        </Button>
+        <AdornmentInputFormik
+          name={FormFieldMap.CONTROL_PASSWORD}
+          label="Подтвердите пароль"
+          placeholder="-"
+          mask={maskNoRestrictions}
+          type={isShowControlPassword ? 'text' : 'password'}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleShowControlPasswordClick}
+                edge="end"
+              >
+                {isShowControlPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
 
         {!!errorMessage && (
           <SberTypography
@@ -99,7 +104,7 @@ export function FormContainer({
         type="submit"
         className={classes.submitBtn}
         variant="contained"
-        disabled={!values.login || !values.password || isSubmitLoading || isDisabledSubmit}
+        disabled={isDisabledSubmitBtn}
         data-testid="loginButton"
       >
         {isSubmitLoading ? (

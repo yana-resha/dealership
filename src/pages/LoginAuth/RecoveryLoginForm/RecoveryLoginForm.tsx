@@ -7,43 +7,39 @@ import { CustomFetchError } from 'shared/api/client'
 import { Service, ServiceApi } from 'shared/api/constants'
 import { ErrorAlias, ErrorCode, getErrorMessage } from 'shared/api/errors'
 
-import { LoginFormFields } from '../types'
+import { RecoveryLoginFormFields } from '../types'
 import { initialValueMap } from './config'
 import { FormContainer } from './FormContainer'
-import { useStyles } from './LoginForm.styles'
-import { loginFormValidationSchema } from './loginFormValidation'
+import { useStyles } from './RecoveryLoginForm.styles'
+import { recoveryLoginFormValidation } from './recoveryLoginFormValidation'
 
 type Props = {
   isLoading: boolean
-  onSubmit: (values: LoginFormFields, onError: (err: CustomFetchError) => void) => void
-  onRecover: () => void
+  onSubmit: (values: RecoveryLoginFormFields, onError: (err: CustomFetchError) => void) => void
 }
 
-export function LoginForm({ isLoading, onSubmit, onRecover }: Props) {
+export function RecoveryLoginForm({ isLoading, onSubmit }: Props) {
   const classes = useStyles()
 
   const [errorMessage, setErrorMessage] = useState<string>()
-  const [isDisabledButton, setDisabledButton] = useState(true)
 
   const handleError = useCallback((err: CustomFetchError) => {
     const errorMessage = getErrorMessage({
       service: Service.Authdc,
-      serviceApi: ServiceApi.AuthorizeUser,
+      serviceApi: ServiceApi.CHECK_USER_BY_LOGIN,
       code: err.code as ErrorCode,
       alias: err.alias as ErrorAlias,
     })
-    setErrorMessage(errorMessage)
 
-    switch (err.alias) {
-      case ErrorAlias.AuthorizeUser_UserBlocked:
-      case ErrorAlias.AuthorizeUser_UserBlockedBySmsCount:
-        setDisabledButton(true)
-        break
+    if (err.alias === ErrorAlias.CheckUserByLogin_EarlyResetPasswordCode || err.code === ErrorCode.NotFound) {
+      return
     }
+
+    setErrorMessage(errorMessage)
   }, [])
 
   const handleSubmit = useCallback(
-    (values: LoginFormFields) => {
+    (values: RecoveryLoginFormFields) => {
       onSubmit(values, handleError)
     },
     [handleError, onSubmit],
@@ -51,22 +47,19 @@ export function LoginForm({ isLoading, onSubmit, onRecover }: Props) {
 
   const handleFormChange = useCallback(() => {
     setErrorMessage(undefined)
-    setDisabledButton(false)
   }, [])
 
   return (
     <Box className={classes.container} data-testid="loginForm">
       <Formik
         initialValues={initialValueMap}
-        validationSchema={loginFormValidationSchema}
+        validationSchema={recoveryLoginFormValidation}
         onSubmit={handleSubmit}
       >
         <FormContainer
           isSubmitLoading={isLoading}
-          isDisabledSubmit={isDisabledButton}
           errorMessage={errorMessage}
           onChangeForm={handleFormChange}
-          onRecover={onRecover}
         />
       </Formik>
     </Box>

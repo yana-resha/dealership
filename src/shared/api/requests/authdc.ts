@@ -1,8 +1,12 @@
 import {
   AuthorizeUserRequest,
   AuthorizeUserResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
   CheckCodeRequest,
   CheckCodeResponse,
+  CheckUserByLoginRequest,
+  CheckUserByLoginResponse,
   createAuthDc,
   CreateSessionRequest,
   GetUserRequest,
@@ -74,3 +78,21 @@ export const checkCode = (params: CheckCodeRequest) =>
 
 export const useCheckCodeMutation = () =>
   useMutation<CheckCodeResponse, CustomFetchError, CheckCodeRequest, unknown>(['checkCode'], checkCode)
+
+export const checkUserByLogin = (params: CheckUserByLoginRequest) =>
+  authDcApi.checkUserByLogin({ data: params }).then(res => res.data ?? {})
+
+export const useCheckUserByLoginMutation = () =>
+  useMutation<CheckUserByLoginResponse, CustomFetchError, CheckUserByLoginRequest, unknown>(
+    ['checkUserByLogin'],
+    checkUserByLogin,
+  )
+
+export const changePassword = (params: ChangePasswordRequest) =>
+  authDcApi.changePassword({ data: params }).then(res => res.data ?? {})
+
+export const useChangePasswordMutation = () =>
+  useMutation<ChangePasswordResponse, CustomFetchError, ChangePasswordRequest, unknown>(
+    ['changePassword'],
+    changePassword,
+  )

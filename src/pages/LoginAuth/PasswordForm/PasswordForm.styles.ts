@@ -14,17 +14,11 @@ export const useStyles = makeStyles(theme => ({
     },
   },
 
-  flexContainer: {
+  gridContainer: {
     position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(3),
-  },
-
-  recoverBtn: {
-    '&.MuiButton-root': {
-      alignSelf: 'flex-start',
-    },
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: theme.spacing(1.5),
   },
 
   submitBtn: {

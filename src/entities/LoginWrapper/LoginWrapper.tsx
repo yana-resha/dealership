@@ -1,7 +1,8 @@
 import { PropsWithChildren } from 'react'
 
-import { Box } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 
+import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { useStyles } from './LoginWrapper.styles'
@@ -10,9 +11,10 @@ type Props = {
   title: string
   subtitle?: string
   logo: React.ReactNode
+  onBack?: () => void
 }
 
-export function LoginWrapper({ title, subtitle, logo, children }: PropsWithChildren<Props>) {
+export function LoginWrapper({ title, subtitle, logo, children, onBack }: PropsWithChildren<Props>) {
   const classes = useStyles()
 
   return (
@@ -20,25 +22,33 @@ export function LoginWrapper({ title, subtitle, logo, children }: PropsWithChild
       <Box className={classes.container}>
         <Box className={classes.logoContainer}>{logo}</Box>
         <Box className={classes.loginContainer}>
-          <Box className={classes.titleContainer}>
-            <SberTypography
-              className={classes.title}
-              component="h1"
-              sberautoVariant="body1"
-              data-testid="loginFormTitle"
-            >
-              {title}
-            </SberTypography>
-            {!!subtitle && (
+          <Box className={classes.titleWrapper}>
+            {!!onBack && (
+              <IconButton data-testid="backBtn" className={classes.iconButton} onClick={onBack}>
+                <KeyboardArrowLeft />
+              </IconButton>
+            )}
+
+            <Box className={classes.titleContainer}>
               <SberTypography
-                className={classes.subtitle}
-                component="p"
-                sberautoVariant="body3"
+                className={classes.title}
+                component="h1"
+                sberautoVariant="body1"
                 data-testid="loginFormTitle"
               >
-                {subtitle}
+                {title}
               </SberTypography>
-            )}
+              {!!subtitle && (
+                <SberTypography
+                  className={classes.subtitle}
+                  component="p"
+                  sberautoVariant="body3"
+                  data-testid="loginFormTitle"
+                >
+                  {subtitle}
+                </SberTypography>
+              )}
+            </Box>
           </Box>
 
           {children}
