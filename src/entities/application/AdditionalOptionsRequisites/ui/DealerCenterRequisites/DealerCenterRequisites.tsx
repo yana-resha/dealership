@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { Box } from '@mui/material'
 import { useFormikContext } from 'formik'
 
+import { FULL_INITIAL_ADDITIONAL_SERVICE, fullInitialValueMap } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import {
   maskBankAccountNumber,
@@ -15,10 +16,6 @@ import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
-import {
-  FULL_INITIAL_ADDITIONAL_SERVICE,
-  fullInitialValueMap,
-} from '../../../../../common/OrderCalculator/config'
 import { useRequisites } from '../../hooks/useRequisites'
 import { useRequisitesContext } from '../RequisitesContext'
 import { useStyles } from './DealerCenterRequisites.styles'

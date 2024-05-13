@@ -2,13 +2,13 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { useFormikContext } from 'formik'
 
+import { INITIAL_BANK_DETAILS_VALUE } from 'common/OrderCalculator/config'
 import {
   FullInitialAdditionalEquipments,
   FullInitialAdditionalService,
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
 
-import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from '../../../../common/OrderCalculator/config'
 import { PreparedBroker, PreparedVendor, RequiredRequisite } from './useRequisitesForFinancingQuery'
 
 type Params = {
@@ -19,6 +19,7 @@ type Params = {
   isCustomFields: boolean
   isRequisitesFetched: boolean
 }
+
 export function useRequisites({
   namePrefix,
   values,
@@ -34,35 +35,32 @@ export function useRequisites({
   const toggleTaxInPercentField = useCallback(
     (value: boolean) => {
       setFieldValue(`${namePrefix}taxPresence`, value)
-      setFieldValue(`${namePrefix}taxation`, value ? FULL_INITIAL_ADDITIONAL_EQUIPMENTS.taxation : '0')
+      setFieldValue(`${namePrefix}taxation`, value ? INITIAL_BANK_DETAILS_VALUE.taxation : '0')
     },
     [namePrefix, setFieldValue],
   )
 
   const resetInitialValues = useCallback(() => {
-    setFieldValue(`${namePrefix}beneficiaryBank`, FULL_INITIAL_ADDITIONAL_EQUIPMENTS.beneficiaryBank)
+    setFieldValue(`${namePrefix}beneficiaryBank`, INITIAL_BANK_DETAILS_VALUE.beneficiaryBank)
     setFieldValue(`${namePrefix}taxPresence`, initialValues.current.taxPresence)
     setFieldValue(`${namePrefix}taxation`, initialValues.current.taxation)
   }, [namePrefix, setFieldValue])
 
   const clearFieldsForManualEntry = useCallback(() => {
-    setFieldValue(`${namePrefix}beneficiaryBank`, FULL_INITIAL_ADDITIONAL_EQUIPMENTS.beneficiaryBank)
-    setFieldValue(`${namePrefix}bankAccountNumber`, FULL_INITIAL_ADDITIONAL_EQUIPMENTS.bankAccountNumber)
-    setFieldValue(
-      `${namePrefix}bankIdentificationCode`,
-      FULL_INITIAL_ADDITIONAL_EQUIPMENTS.bankIdentificationCode,
-    )
-    setFieldValue(
-      `${namePrefix}correspondentAccount`,
-      FULL_INITIAL_ADDITIONAL_EQUIPMENTS.correspondentAccount,
-    )
-    setFieldValue(`${namePrefix}taxPresence`, FULL_INITIAL_ADDITIONAL_EQUIPMENTS.taxPresence)
-    setFieldValue(`${namePrefix}taxation`, FULL_INITIAL_ADDITIONAL_EQUIPMENTS.taxation)
+    setFieldValue(`${namePrefix}beneficiaryBank`, INITIAL_BANK_DETAILS_VALUE.beneficiaryBank)
+    setFieldValue(`${namePrefix}bankAccountNumber`, INITIAL_BANK_DETAILS_VALUE.bankAccountNumber)
+    setFieldValue(`${namePrefix}bankIdentificationCode`, INITIAL_BANK_DETAILS_VALUE.bankIdentificationCode)
+    setFieldValue(`${namePrefix}correspondentAccount`, INITIAL_BANK_DETAILS_VALUE.correspondentAccount)
+    setFieldValue(`${namePrefix}taxPresence`, INITIAL_BANK_DETAILS_VALUE.taxPresence)
+    setFieldValue(`${namePrefix}taxation`, INITIAL_BANK_DETAILS_VALUE.taxation)
   }, [namePrefix, setFieldValue])
 
   useEffect(() => {
     if (!isCustomFields && isRequisitesFetched) {
-      setFieldValue(namePrefix + 'bankIdentificationCode', currentBank?.bik)
+      setFieldValue(
+        namePrefix + 'bankIdentificationCode',
+        currentBank?.bik || INITIAL_BANK_DETAILS_VALUE.bankIdentificationCode,
+      )
       setFieldValue(namePrefix + 'correspondentAccount', currentBank?.accountCorrNumber)
       setFieldValue(
         namePrefix + 'bankAccountNumber',

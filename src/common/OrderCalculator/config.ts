@@ -84,7 +84,7 @@ export const INITIAL_ADDITIONAL_SERVICE_DOC_INFO: OrderCalculatorAdditionalServi
   [FormFieldNameMap.documentDate]: null,
 }
 
-const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
+export const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
   [FormFieldNameMap.bankIdentificationCode]: '',
   [FormFieldNameMap.beneficiaryBank]: '',
   [FormFieldNameMap.bankAccountNumber]: '',
