@@ -1,11 +1,20 @@
-import { CustomFetchError } from 'shared/api/client'
-
 export enum FormFieldMap {
-  login = 'login',
-  password = 'password',
+  LOGIN = 'login',
+  PASSWORD = 'password',
+  CODE = 'code',
+  CONTROL_PASSWORD = 'controlPassword',
 }
 
-export interface LoginFormFields {
-  [FormFieldMap.login]: string
-  [FormFieldMap.password]: string
+export interface RecoveryLoginFormFields {
+  [FormFieldMap.LOGIN]: string
+}
+
+export interface LoginFormFields extends RecoveryLoginFormFields {
+  [FormFieldMap.PASSWORD]: string
+}
+
+export interface PasswordFormFields {
+  [FormFieldMap.CODE]: string
+  [FormFieldMap.PASSWORD]: string
+  [FormFieldMap.CONTROL_PASSWORD]: string
 }

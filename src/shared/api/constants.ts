@@ -13,4 +13,6 @@ export enum ServiceApi {
   RemoveCatalog = 'removeCatalog',
   AuthorizeUser = 'authorizeUser',
   CheckCode = 'checkCode',
+  CHECK_USER_BY_LOGIN = 'checkUserByLogin',
+  CHANGE_PASSWORD = 'changePassword',
 }

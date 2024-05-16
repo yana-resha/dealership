@@ -31,11 +31,23 @@ export const useStyles = makeStyles(theme => ({
     borderRadius: theme.spacing(1.25),
   },
 
+  titleWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    marginBottom: theme.spacing(3),
+  },
+
+  iconButton: {
+    height: '30px',
+    width: '30px',
+  },
+
   titleContainer: {
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(),
-    marginBottom: theme.spacing(3),
   },
 
   title: {

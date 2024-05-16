@@ -2,31 +2,46 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { Box } from '@mui/material'
 import cx from 'classnames'
+import { useSnackbar } from 'notistack'
 
 import { ReactComponent as SberIcon } from 'assets/icons/sberIcon.svg'
 import { ReactComponent as SberLogoTitle } from 'assets/icons/sberLogoTitle.svg'
 import { LoginWrapper } from 'entities/LoginWrapper/LoginWrapper'
 import { CustomFetchError } from 'shared/api/client'
-import { useAuthorizeUserMutation } from 'shared/api/requests/authdc'
+import {
+  useAuthorizeUserMutation,
+  useChangePasswordMutation,
+  useCheckUserByLoginMutation,
+} from 'shared/api/requests/authdc'
 
 import { useStyles } from './LoginAuth.styles'
 import { LoginForm } from './LoginForm/LoginForm'
+import { PasswordForm } from './PasswordForm/PasswordForm'
+import { RecoveryLoginForm } from './RecoveryLoginForm/RecoveryLoginForm'
 import { SMSCode } from './SMSCode/SMSCode'
-import { LoginFormFields } from './types'
+import { LoginFormFields, PasswordFormFields, RecoveryLoginFormFields } from './types'
 
 export function LoginAuth() {
   const classes = useStyles()
+  const { enqueueSnackbar } = useSnackbar()
 
-  const [isShowSMSField, setShowSMSField] = useState(false)
   const [loginData, setLoginData] = useState<LoginFormFields | null>(null)
+  const [isShowSMSCodeField, setShowSMSCodeField] = useState(false)
+  const [recoveryLoginData, setRecoveryLoginData] = useState<RecoveryLoginFormFields | null>(null)
+  const [isShowEmailCodeField, setShowEmailCodeField] = useState(false)
+
+  const [isShowRecoverForm, setShowRecoverForm] = useState(false)
 
   const { mutate: authorizeUserMutate, isLoading: isAuthorizeUserLoading } = useAuthorizeUserMutation()
+  const { mutate: checkUserByLoginMutate, isLoading: isCheckUserByLoginLoading } =
+    useCheckUserByLoginMutation()
+  const { mutate: changePasswordMutate, isLoading: isChangePasswordLoading } = useChangePasswordMutation()
 
-  const handleSubmit = useCallback(
+  const authorizeUser = useCallback(
     (values: LoginFormFields, onError: (err: CustomFetchError) => void) => {
       authorizeUserMutate(values, {
         onSuccess: () => {
-          setShowSMSField(true)
+          setShowSMSCodeField(true)
           setLoginData(values)
         },
         onError,
@@ -34,6 +49,9 @@ export function LoginAuth() {
     },
     [authorizeUserMutate],
   )
+  const handleRecover = useCallback(() => {
+    setShowRecoverForm(true)
+  }, [])
 
   const resendLogin = useCallback(
     (onSuccess: () => void, onError: (err: CustomFetchError) => void) => {
@@ -48,8 +66,49 @@ export function LoginAuth() {
   )
 
   const handleBack = useCallback(() => {
-    setShowSMSField(false)
+    setShowSMSCodeField(false)
   }, [])
+  const handleBackToLogin = useCallback(() => {
+    setShowRecoverForm(false)
+    setShowEmailCodeField(false)
+  }, [])
+
+  const checkUserByLogin = useCallback(
+    (values: RecoveryLoginFormFields, onError: (err: CustomFetchError) => void) => {
+      checkUserByLoginMutate(values, {
+        onSuccess: () => {
+          setShowEmailCodeField(true)
+          setRecoveryLoginData(values)
+          enqueueSnackbar('Если пользователь существует, то пароль будет выслан ему на почту', {
+            variant: 'success',
+          })
+        },
+        onError,
+      })
+    },
+    [checkUserByLoginMutate, enqueueSnackbar],
+  )
+
+  const changePassword = useCallback(
+    (values: PasswordFormFields, onError: (err: CustomFetchError) => void) => {
+      changePasswordMutate(
+        {
+          login: recoveryLoginData?.login,
+          code: values.code,
+          password: values.password,
+        },
+        {
+          onSuccess: () => {
+            setShowRecoverForm(false)
+            setShowEmailCodeField(false)
+            enqueueSnackbar('Пароль успешно изменен', { variant: 'success' })
+          },
+          onError,
+        },
+      )
+    },
+    [changePasswordMutate, enqueueSnackbar, recoveryLoginData?.login],
+  )
 
   const logo = useMemo(
     () => (
@@ -62,25 +121,49 @@ export function LoginAuth() {
   )
 
   return (
-    <LoginWrapper title="Ваш аккаунт" logo={logo}>
+    <LoginWrapper
+      title="Ваш аккаунт"
+      logo={logo}
+      subtitle={isShowRecoverForm ? 'Востановление пароля' : undefined}
+      onBack={isShowRecoverForm ? handleBackToLogin : undefined}
+    >
       <Box className={classes.wrapper}>
-        <Box
-          className={cx(classes.animatingContainer, classes.openingAnimation, {
-            [classes.closingAnimation]: isShowSMSField,
-            [classes.closedAnimatingContainer]: isShowSMSField,
-          })}
-        >
-          <LoginForm onSubmit={handleSubmit} isLoading={isAuthorizeUserLoading} />
+        {isShowRecoverForm ? (
+          <Box
+            className={cx(classes.animatingContainer, classes.openingAnimation, {
+              [classes.closingAnimation]: isShowEmailCodeField,
+              [classes.closedAnimatingContainer]: isShowEmailCodeField,
+            })}
+          >
+            <RecoveryLoginForm onSubmit={checkUserByLogin} isLoading={isCheckUserByLoginLoading} />
 
-          {isShowSMSField && (
-            <SMSCode
-              login={loginData?.login || ''}
+            {isShowEmailCodeField && (
+              <PasswordForm onSubmit={changePassword} isLoading={isChangePasswordLoading} />
+            )}
+          </Box>
+        ) : (
+          <Box
+            className={cx(classes.animatingContainer, classes.openingAnimation, {
+              [classes.closingAnimation]: isShowSMSCodeField,
+              [classes.closedAnimatingContainer]: isShowSMSCodeField,
+            })}
+          >
+            <LoginForm
+              onSubmit={authorizeUser}
+              onRecover={handleRecover}
               isLoading={isAuthorizeUserLoading}
-              requireCode={resendLogin}
-              onBack={handleBack}
             />
-          )}
-        </Box>
+
+            {isShowSMSCodeField && (
+              <SMSCode
+                login={loginData?.login || ''}
+                isLoading={isAuthorizeUserLoading}
+                requireCode={resendLogin}
+                onBack={handleBack}
+              />
+            )}
+          </Box>
+        )}
       </Box>
     </LoginWrapper>
   )

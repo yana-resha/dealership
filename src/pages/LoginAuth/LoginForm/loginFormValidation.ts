@@ -1,10 +1,11 @@
-import * as Yup from 'yup'
+import { object, string } from 'yup'
 
 import { FieldMessages } from 'shared/constants/fieldMessages'
 
+import { loginValidation } from '../config'
 import { FormFieldMap } from '../types'
 
-export const loginFormValidationSchema = Yup.object({
-  [FormFieldMap.login]: Yup.string().required(FieldMessages.required).min(5, FieldMessages.enterFullData),
-  [FormFieldMap.password]: Yup.string().required(FieldMessages.required).min(5, FieldMessages.enterFullData),
+export const loginFormValidationSchema = object({
+  [FormFieldMap.LOGIN]: loginValidation,
+  [FormFieldMap.PASSWORD]: string().required(FieldMessages.required).min(5, FieldMessages.enterFullData),
 })
