@@ -8,12 +8,11 @@ import { Timeout } from 'react-number-format/types/types'
 import { DADATA_OPTIONS_LIMIT, useGetFmsUnitSuggestions } from 'shared/api/requests/dadata.api'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
-  maskDigitsOnly,
   maskDivisionCode,
-  maskFullName,
   maskNoRestrictions,
   maskPassport,
   maskCyrillicAndDigits,
+  maskOnlyCyrillicNoDigits,
 } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
@@ -152,23 +151,55 @@ export function PassportArea() {
       </Box>
 
       <MaskedInputFormik
-        name="clientName"
-        label="ФИО"
-        placeholder="Фамилия Имя Отчество"
-        mask={maskFullName}
-        gridColumn="span 12"
+        name="clientLastName"
+        label="Фамилия"
+        placeholder="Фамилия"
+        mask={maskOnlyCyrillicNoDigits}
+        gridColumn="span 4"
+        disabled
+      />
+      <MaskedInputFormik
+        name="clientFirstName"
+        label="Имя"
+        placeholder="Имя"
+        mask={maskOnlyCyrillicNoDigits}
+        gridColumn="span 4"
+        disabled
+      />
+      <MaskedInputFormik
+        name="clientMiddleName"
+        label="Отчество"
+        placeholder="Отчество"
+        mask={maskOnlyCyrillicNoDigits}
+        gridColumn="span 4"
         disabled
       />
       <SwitchInputFormik name="hasNameChanged" label="Менялось" gridColumn="span 4" centered />
 
       {hasNameChanged && (
-        <MaskedInputFormik
-          name="clientFormerName"
-          label="ФИО до смены"
-          placeholder="Фамилия Имя Отчество"
-          mask={maskFullName}
-          gridColumn="span 12"
-        />
+        <>
+          <MaskedInputFormik
+            name="clientFormerLastName"
+            label="Фамилия до смены"
+            placeholder="Фамилия до смены"
+            mask={maskOnlyCyrillicNoDigits}
+            gridColumn="span 4"
+          />
+          <MaskedInputFormik
+            name="clientFormerFirstName"
+            label="Имя до смены"
+            placeholder="Имя до смены"
+            mask={maskOnlyCyrillicNoDigits}
+            gridColumn="span 4"
+          />
+          <MaskedInputFormik
+            name="clientFormerMiddleName"
+            label="Отчество до смены"
+            placeholder="Отчество до смены"
+            mask={maskOnlyCyrillicNoDigits}
+            gridColumn="span 4"
+          />
+        </>
       )}
       {hasNameChanged && <Box gridColumn="span 4" />}
 

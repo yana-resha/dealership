@@ -54,11 +54,9 @@ export function useInitialValues() {
     [fullApplicationData?.application],
   )
 
-  const clientFormerName = getFullName(
-    applicant?.prevLastName,
-    applicant?.prevFirstName,
-    applicant?.prevMiddleName,
-  )
+  const clientFormerLastName = applicant?.prevLastName
+  const clientFormerFirstName = applicant?.prevFirstName
+  const clientFormerMiddleName = applicant?.prevMiddleName
 
   const { passport, secondDocument } = useMemo(() => {
     const passport = applicant?.documents?.find(d => d.type === ApplicantDocsType.PASSPORT) || {}
@@ -203,8 +201,12 @@ export function useInitialValues() {
   const remapApplicationValues = useCallback(
     (values: ClientData): ApplicationFrontdc | undefined => {
       const {
-        clientName,
-        clientFormerName,
+        clientLastName,
+        clientFirstName,
+        clientMiddleName,
+        clientFormerLastName,
+        clientFormerFirstName,
+        clientFormerMiddleName,
         birthPlace,
         birthDate,
         issuedBy,
@@ -247,16 +249,6 @@ export function useInitialValues() {
         return undefined
       }
 
-      const {
-        firstName: clientFirstName,
-        lastName: clientLastName,
-        middleName: clientMiddleName,
-      } = getSplittedName(clientName)
-      const {
-        firstName: previousClientFirstName,
-        lastName: previousClientLastName,
-        middleName: previousClientMiddleName,
-      } = getSplittedName(clientFormerName)
       const actualLivingAddress = regAddrIsLivingAddr ? registrationAddress : livingAddress
 
       // Форматируем значения для loanCar
@@ -280,12 +272,12 @@ export function useInitialValues() {
       const newCreatedDate = dcAppId ? createdDate : convertedDateToString(new Date())
 
       const newApplicant: ApplicantFrontdc = {
-        firstName: clientFirstName,
-        lastName: clientLastName,
-        middleName: clientMiddleName,
-        prevFirstName: previousClientFirstName,
-        prevLastName: previousClientLastName,
-        prevMiddleName: previousClientMiddleName,
+        firstName: clientFirstName.trim(),
+        lastName: clientLastName.trim(),
+        middleName: clientMiddleName.trim(),
+        prevFirstName: clientFormerFirstName.trim(),
+        prevLastName: clientFormerLastName.trim(),
+        prevMiddleName: clientFormerMiddleName.trim(),
         birthDate: convertedDateToString(birthDate),
         children: numOfChildren ? numOfChildren : undefined,
         marital: familyStatus ?? undefined,
@@ -443,16 +435,18 @@ export function useInitialValues() {
           // В данной группе основным значением идет initialValues,
           // т.к. пользователь может вернуться на первый шаг и поменять данные клиента,
           // потому всегда стараемся эти данные брать из первого шага, если он был
-          clientName:
-            initialValues.clientName ||
-            getFullName(applicant?.lastName, applicant?.firstName, applicant?.middleName),
+          clientLastName: applicant?.lastName || initialValues.clientLastName,
+          clientFirstName: applicant?.firstName || initialValues.clientFirstName,
+          clientMiddleName: applicant?.middleName || initialValues.clientMiddleName,
           birthDate: initialValues.birthDate || (applicant?.birthDate ? new Date(applicant.birthDate) : null),
           passport: initialValues.passport || formatPassport(passport.series, passport.number),
           mobileNumber: initialValues.mobileNumber || mobileNumber,
           // конец группы
 
-          hasNameChanged: !!clientFormerName,
-          clientFormerName: clientFormerName || initialValues.clientFormerName,
+          hasNameChanged: !!clientFormerLastName,
+          clientFormerLastName: clientFormerLastName || initialValues.clientFormerLastName,
+          clientFormerFirstName: clientFormerFirstName || initialValues.clientFormerFirstName,
+          clientFormerMiddleName: clientFormerMiddleName || initialValues.clientFormerMiddleName,
           numOfChildren: applicant?.children ?? initialValues.numOfChildren,
           sex: applicant?.sex ?? initialValues.sex,
           familyStatus: applicant?.marital ?? initialValues.familyStatus,

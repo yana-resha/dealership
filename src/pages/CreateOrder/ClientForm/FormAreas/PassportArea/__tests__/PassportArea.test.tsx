@@ -57,7 +57,8 @@ const mockedUseGetFmsUnitSuggestions = jest.spyOn(daDataQueryModule, 'useGetFmsU
 const mockSuggestions: SuggestionGetAddressSuggestions[] = []
 
 const formFields = [
-  'clientName',
+  'clientLastName',
+  'clientFirstName',
   'numOfChildren',
   'familyStatus',
   'passport',
@@ -71,9 +72,12 @@ const formFields = [
 ]
 
 const mockedPassportAreaFields = {
-  clientName: '',
+  clientLastName: '',
+  clientFirstName: '',
   hasNameChanged: false,
-  clientFormerName: '',
+  clientFormerLastName: '',
+  clientFormerFirstName: '',
+  clientFormerMiddleName: '',
   numOfChildren: '',
   familyStatus: null,
   passport: '',
@@ -154,10 +158,22 @@ describe('PassportAreaTest', () => {
       })
     }
 
-    it('Поле "clientFormerName" отображается на форме, если указана смена имени', async () => {
-      expect(await screen.queryByTestId('clientFormerName')).not.toBeInTheDocument()
+    it('Поле "clientFormerLastName" отображается на форме, если указана смена имени', async () => {
+      expect(await screen.queryByTestId('clientFormerLastName')).not.toBeInTheDocument()
       userEvent.click(screen.getByTestId('hasNameChanged'))
-      expect(await screen.getByTestId('clientFormerName')).toBeInTheDocument()
+      expect(await screen.getByTestId('clientFormerLastName')).toBeInTheDocument()
+    })
+
+    it('Поле "clientFormerFirstName" отображается на форме, если указана смена имени', async () => {
+      expect(await screen.queryByTestId('clientFormerFirstName')).not.toBeInTheDocument()
+      userEvent.click(screen.getByTestId('hasNameChanged'))
+      expect(await screen.getByTestId('clientFormerFirstName')).toBeInTheDocument()
+    })
+
+    it('Поле "clientFormerMiddleName" отображается на форме, если указана смена имени', async () => {
+      expect(await screen.queryByTestId('clientFormerMiddleName')).not.toBeInTheDocument()
+      userEvent.click(screen.getByTestId('hasNameChanged'))
+      expect(await screen.getByTestId('clientFormerMiddleName')).toBeInTheDocument()
     })
 
     it('Поле "livingAddressString" не отображается на форме, если адрес регистрации совпадает с адресом проживания', async () => {
@@ -196,7 +212,8 @@ describe('PassportAreaTest', () => {
 
     it('Поле "clientFormerName" валидируется, если указана смена имени', async () => {
       userEvent.click(screen.getByTestId('hasNameChanged'))
-      expect(await screen.findByTestId('clientFormerNameErrorMessage')).toBeInTheDocument()
+      expect(await screen.findByTestId('clientFormerLastNameErrorMessage')).toBeInTheDocument()
+      expect(await screen.findByTestId('clientFormerFirstNameErrorMessage')).toBeInTheDocument()
     })
   })
 })

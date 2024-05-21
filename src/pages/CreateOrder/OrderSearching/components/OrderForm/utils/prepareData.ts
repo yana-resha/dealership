@@ -11,7 +11,7 @@ export const prepareData = (data: OrderFormData): IsClientRequest => {
   const passportSeries = data.passport ? data.passport.slice(0, 4) : undefined
   const passportNumber = data.passport ? data.passport.slice(4, data.passport.length) : undefined
 
-  const { lastName, firstName, middleName } = getSplittedName(data.clientName)
+  const { clientLastName, clientFirstName, clientMiddleName } = data
 
   const birthDate =
     data.birthDate instanceof Date
@@ -23,9 +23,9 @@ export const prepareData = (data: OrderFormData): IsClientRequest => {
   return {
     passportSeries,
     passportNumber,
-    lastName,
-    firstName,
-    middleName,
+    lastName: clientLastName.trim(),
+    firstName: clientFirstName.trim(),
+    middleName: clientMiddleName.trim(),
     birthDate,
     phoneNumber,
   }
@@ -36,14 +36,15 @@ export const parseData = (data: IsClientRequest): OrderFormData => {
   const { passportSeries, passportNumber, lastName, firstName, middleName, birthDate, phoneNumber } = data
 
   const passport = (passportSeries || '') + (passportNumber || '')
-  const clientName = getFullName(lastName, firstName, middleName)
 
   const parsedBirthDate = birthDate ? new Date(birthDate) : null
   const parsedPhoneNumber = phoneNumber ? phoneNumber : ''
 
   return {
     passport,
-    clientName,
+    clientLastName: lastName ?? '',
+    clientFirstName: firstName ?? '',
+    clientMiddleName: middleName ?? '',
     birthDate: parsedBirthDate,
     phoneNumber: parsedPhoneNumber,
   }

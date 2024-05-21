@@ -152,8 +152,12 @@ describe('OrderSearching', () => {
 
       const passportInput = orderForm.querySelector('#passport')!
       userEvent.type(passportInput, '1234123123')
-      const clientNameInput = orderForm.querySelector('#clientName')!
-      userEvent.type(clientNameInput, 'ЦЦ ЦЦ ЦЦ')
+      const clientLastNameInput = orderForm.querySelector('#clientLastName')!
+      userEvent.type(clientLastNameInput, 'Терентьев')
+      const clientFirstNameInput = orderForm.querySelector('#clientFirstName')!
+      userEvent.type(clientFirstNameInput, 'Михал')
+      const clientMiddleNameInput = orderForm.querySelector('#clientMiddleName')!
+      userEvent.type(clientMiddleNameInput, 'Палыч')
       const birthDateInput = orderForm.querySelector('#birthDate')!
       userEvent.type(birthDateInput, '01011990')
       const phoneNumberInput = orderForm.querySelector('#phoneNumber')!
@@ -254,8 +258,12 @@ describe('OrderSearching', () => {
 
     const passportInput = orderForm.querySelector('#passport')!
     userEvent.type(passportInput, '1234123123')
-    const clientNameInput = orderForm.querySelector('#clientName')!
-    userEvent.type(clientNameInput, 'ЦЦ ЦЦ ЦЦ')
+    const clientLastNameInput = orderForm.querySelector('#clientLastName')!
+    userEvent.type(clientLastNameInput, 'Терентьев')
+    const clientFirstNameInput = orderForm.querySelector('#clientFirstName')!
+    userEvent.type(clientFirstNameInput, 'Михал')
+    const clientMiddleNameInput = orderForm.querySelector('#clientMiddleName')!
+    userEvent.type(clientMiddleNameInput, 'Палыч')
     const birthDateInput = orderForm.querySelector('#birthDate')!
     userEvent.type(birthDateInput, '01011990')
     const phoneNumberInput = orderForm.querySelector('#phoneNumber')!

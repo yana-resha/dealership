@@ -2,7 +2,9 @@ import { OrderFormData } from './OrderForm.types'
 
 export const orderFormValuesInitialValues: OrderFormData = {
   passport: '',
-  clientName: '',
+  clientFirstName: '',
+  clientLastName: '',
+  clientMiddleName: '',
   birthDate: null,
   phoneNumber: '',
 }
