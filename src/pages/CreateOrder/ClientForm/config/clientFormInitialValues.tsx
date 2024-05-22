@@ -29,9 +29,13 @@ export const configAddressInitialValues: Address = {
 }
 
 export const configInitialValues: ClientData = {
-  clientName: '',
+  clientLastName: '',
+  clientFirstName: '',
+  clientMiddleName: '',
   hasNameChanged: false,
-  clientFormerName: '',
+  clientFormerLastName: '',
+  clientFormerFirstName: '',
+  clientFormerMiddleName: '',
   numOfChildren: null,
   familyStatus: null,
   passport: '',

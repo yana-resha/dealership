@@ -13,7 +13,7 @@ export const maskNoRestrictions = (value: string, unmasked?: boolean) => {
 
 export const maskOnlyCyrillicNoDigits = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
-    mask: /^[а-яА-ЯёЁ -]*$/,
+    mask: /^[а-яА-ЯёЁ '-.,)(]*$/,
   })
   masked.resolve(`${value}`)
 
@@ -27,26 +27,6 @@ export const maskCyrillicAndDigits = (value: string, unmasked?: boolean) => {
   masked.resolve(`${value}`)
 
   return unmasked ? masked.unmaskedValue : masked.value
-}
-
-export const maskFullName = (value: string) => {
-  const masked = IMask.createMask({
-    mask: '{capitalLetter}{namePart}{ }{capitalLetter}{namePart}{ }{capitalLetter}{namePart}',
-    blocks: {
-      capitalLetter: {
-        mask: /^[а-яА-ЯёЁ]$/,
-        prepare: function (str: string) {
-          return str.charAt(0).toUpperCase() + str.slice(1)
-        },
-      },
-      namePart: {
-        mask: /^[а-яА-ЯёЁ-]{0,49}$/,
-      },
-    },
-  })
-  masked.resolve(`${value}`)
-
-  return masked.value
 }
 
 export const maskDigitsOnly = (value: string, unmasked?: boolean) => {

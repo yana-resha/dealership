@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { FileInfo } from 'features/ApplicationFileLoader'
-import { clientNameIsCorrect, getMaxBirthDate, getMinBirthDate } from 'pages/CreateOrder/CreateOrder.utils'
+import { getMaxBirthDate, getMinBirthDate } from 'pages/CreateOrder/CreateOrder.utils'
 import { MIN_AGE } from 'shared/config/client.config'
 
 import { SubmitAction } from '../ClientForm.types'
@@ -150,15 +150,20 @@ export const clientAddressValidationSchema = Yup.object().shape(
 )
 
 export const clientFormValidationSchema = Yup.object().shape({
-  clientName: Yup.string()
-    .required('Поле обязательно для заполнения')
-    .test('nameIsCorrect', 'Введите корректное ФИО', clientNameIsCorrect),
-  clientFormerName: Yup.string().when('hasNameChanged', {
+  clientLastName: Yup.string().required('Поле обязательно для заполнения'),
+  clientFirstName: Yup.string().required('Поле обязательно для заполнения'),
+  clientFormerLastName: Yup.string().when('hasNameChanged', {
     is: true,
-    then: schema =>
-      setRequiredIfSave(schema).test('nameIsCorrect', 'Введите корректное ФИО', clientNameIsCorrect),
+    then: schema => setRequiredIfSave(schema),
   }),
-
+  clientFormerFirstName: Yup.string().when('hasNameChanged', {
+    is: true,
+    then: schema => setRequiredIfSave(schema),
+  }),
+  clientFormerMiddleName: Yup.string().when('hasNameChanged', {
+    is: true,
+    then: schema => setRequiredIfSave(schema),
+  }),
   numOfChildren: setRequiredIfSave(Yup.number().nullable()),
   familyStatus: setRequiredIfSave(Yup.number().nullable()),
   passport: Yup.string().required('Поле обязательно для заполнения').min(10, 'Введите данные полностью'),

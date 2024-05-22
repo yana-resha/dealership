@@ -5,9 +5,9 @@ import { configInitialValues } from '../config/clientFormInitialValues'
 
 /** Помогает сформировать валидные данные для формы */
 export const makeClientForm = (wetClientForm: RootState['order']['order']): ClientData => {
-  const clientName = `${wetClientForm?.lastName ?? ''} ${wetClientForm?.firstName ?? ''} ${
-    wetClientForm?.middleName ?? ''
-  }`.trim()
+  const clientLastName = wetClientForm?.lastName ?? ''
+  const clientFirstName = wetClientForm?.firstName ?? ''
+  const clientMiddleName = wetClientForm?.middleName ?? ''
 
   const isPassport = wetClientForm?.passportSeries && wetClientForm?.passportNumber
   const passport = isPassport
@@ -17,5 +17,13 @@ export const makeClientForm = (wetClientForm: RootState['order']['order']): Clie
   const birthDate = wetClientForm?.birthDate ? new Date(wetClientForm?.birthDate) : null
   const mobileNumber = wetClientForm?.phoneNumber || ''
 
-  return { ...configInitialValues, clientName, passport, birthDate, mobileNumber }
+  return {
+    ...configInitialValues,
+    clientFirstName,
+    clientLastName,
+    clientMiddleName,
+    passport,
+    birthDate,
+    mobileNumber,
+  }
 }

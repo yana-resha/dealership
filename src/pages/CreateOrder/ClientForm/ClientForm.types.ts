@@ -36,9 +36,13 @@ export enum SubmitAction {
 }
 
 export interface ClientData {
-  clientName: string
+  clientFirstName: string
+  clientLastName: string
+  clientMiddleName: string
   hasNameChanged: boolean
-  clientFormerName: string
+  clientFormerLastName: string
+  clientFormerFirstName: string
+  clientFormerMiddleName: string
   numOfChildren: number | null
   familyStatus: number | null
   passport: string
