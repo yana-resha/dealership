@@ -8,13 +8,6 @@ import { ThemeProviderMock } from 'tests/mocks'
 
 import { DossierIdArea } from '../DossierIdArea'
 
-const mockedClientDossier = {
-  status: StatusCode.INITIAL,
-  applicationNumber: '545544',
-  clientName: 'Терентьев Михаил Павлович',
-  passport: '0604060423',
-}
-
 jest.mock('@mui/material/IconButton', () => ({ onClick }: any) => (
   <div data-testid="backButton" onClick={onClick} />
 ))
@@ -26,6 +19,7 @@ const mockedOnBackButton = jest.fn()
 
 const dossierIdAreaProps = {
   dcAppId: '545544',
+  appId: '4444444',
   clientName: 'Терентьев Михаил Павлович',
   passport: '06 04 060423',
   status: StatusCode.INITIAL,
@@ -52,7 +46,11 @@ describe('DossierIdTest', () => {
     })
 
     it('Отображается номер заявки', () => {
-      expect(screen.getByText('№ 545544')).toBeInTheDocument()
+      expect(screen.getByText('545544')).toBeInTheDocument()
+    })
+
+    it('Отображается номер appId', () => {
+      expect(screen.getByText('4444444')).toBeInTheDocument()
     })
 
     it('Отображается статус', () => {
