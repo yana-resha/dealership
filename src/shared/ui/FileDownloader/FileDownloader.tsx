@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Avatar, IconButton, Link } from '@mui/material'
 import { Box } from '@mui/system'
@@ -46,6 +46,8 @@ export const FileDownloader = ({
   const styles = useStyles()
 
   const [isLoading, setIsLoading] = useState(false)
+  // Локальное хранение файла сделано для того,
+  // чтобы можно было скачивать его без повторного запроса к бэку (пока мы не уйдем со страницы)
   const [file, setFile] = useState<FileOrMetadata | undefined>(fileOrMetadata)
 
   const isFileObject = (input: FileOrMetadata | undefined): input is File => input instanceof File
@@ -81,6 +83,12 @@ export const FileDownloader = ({
     }
     setFile(fileOrMetadata)
   }, [onClickRemove, fileOrMetadata, index])
+
+  // Необходим, чтобы при смене пропса, менялся и локальный стэйт file.
+  // В противном случае будет отображаться и скачиваться старый файл
+  useEffect(() => {
+    setFile(fileOrMetadata)
+  }, [fileOrMetadata])
 
   const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
   const message = loadingMessage ? loadingMessage : 'Файл загружается...'
