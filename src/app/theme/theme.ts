@@ -75,8 +75,7 @@ export const theme = createTheme({
             color: '#ffffff',
           },
           '&.Mui-disabled + .MuiSwitch-track': {
-            opacity: 0.3,
-            backgroundColor: '#9CA8B4',
+            opacity: 0.5,
           },
         },
       },
