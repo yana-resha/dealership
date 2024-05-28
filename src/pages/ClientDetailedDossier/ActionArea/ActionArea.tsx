@@ -25,10 +25,15 @@ import { DcConfirmationModal } from '../EditConfirmationModal/DcConfirmationModa
 import { useStyles } from './ActionArea.styles'
 import { AgreementArea } from './AgreementArea/AgreementArea'
 
+enum Source {
+  DC = 'DC',
+}
+
 type Props = {
   status: StatusCode
   application: ApplicationFrontdc
   moratoryEndDate?: string
+  source?: string
   targetDcAppId?: string
   applicationForScore: SendApplicationToScoringRequest
   returnToList: () => void
@@ -37,20 +42,21 @@ type Props = {
   setIsEditRequisitesMode: (value: boolean) => void
 }
 
-export function ActionArea(props: Props) {
+export function ActionArea({
+  status,
+  application,
+  moratoryEndDate,
+  source,
+  targetDcAppId,
+  applicationForScore,
+  returnToList,
+  goToTargetApplication,
+  updateApplicationStatusLocally,
+  setIsEditRequisitesMode,
+}: Props) {
   const classes = useStyles()
   const dispatch = useAppDispatch()
-  const {
-    status,
-    application,
-    moratoryEndDate,
-    targetDcAppId,
-    applicationForScore,
-    returnToList,
-    goToTargetApplication,
-    updateApplicationStatusLocally,
-    setIsEditRequisitesMode,
-  } = props
+
   const preparedStatus = getStatus(status)
 
   const [isVisibleModal, setVisibleModal] = useState(false)
@@ -158,6 +164,14 @@ export function ActionArea(props: Props) {
     sendToScore(applicationForScore)
   }, [applicationForScore, sendToScore])
 
+  const isShouldShowRecreateButton =
+    preparedStatus === PreparedStatus.canceled ||
+    preparedStatus === PreparedStatus.canceledDeal ||
+    ((preparedStatus === PreparedStatus.rejected || preparedStatus === PreparedStatus.clientRejected) &&
+      ((moratoryEndDate && new Date() > new Date(moratoryEndDate)) ||
+        source !== Source.DC ||
+        !!targetDcAppId))
+
   const shownBlock = useMemo(() => {
     if (preparedStatus == PreparedStatus.initial) {
       return (
@@ -187,12 +201,7 @@ export function ActionArea(props: Props) {
         </Box>
       )
     }
-    if (
-      preparedStatus === PreparedStatus.canceled ||
-      preparedStatus === PreparedStatus.canceledDeal ||
-      ((preparedStatus === PreparedStatus.rejected || preparedStatus === PreparedStatus.clientRejected) &&
-        ((moratoryEndDate && new Date() > new Date(moratoryEndDate)) || targetDcAppId))
-    ) {
+    if (isShouldShowRecreateButton) {
       return (
         <Box className={classes.actionButtons}>
           <>
@@ -262,11 +271,11 @@ export function ActionArea(props: Props) {
     extendApplicationWithApprovedStatus,
     getToNewApplication,
     isConfirmationModalVisible,
-    moratoryEndDate,
     preparedStatus,
     recreateApplication,
     sendApplicationToScore,
     setIsEditRequisitesMode,
+    isShouldShowRecreateButton,
     status,
     targetDcAppId,
     updateApplicationStatusLocally,

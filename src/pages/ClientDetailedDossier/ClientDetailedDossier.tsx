@@ -187,6 +187,7 @@ export function ClientDetailedDossier() {
                     <ActionArea
                       application={application}
                       moratoryEndDate={fullApplicationData?.moratoryEndDate}
+                      source={fullApplicationData?.source}
                       targetDcAppId={fullApplicationData?.targetDcAppId}
                       applicationForScore={prepareApplicationForScore()}
                       returnToList={onBackButton}
