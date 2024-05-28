@@ -243,7 +243,7 @@ export const maskFolderName = (value: string, unmasked?: boolean) => {
 
 export const maskDriverLicenseIssuedCode = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
-    mask: '0000',
+    mask: '00000',
   })
   masked.resolve(`${value}`)
 
