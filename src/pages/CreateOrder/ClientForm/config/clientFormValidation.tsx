@@ -262,7 +262,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     .nullable()
     .when('secondDocumentType', {
       is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.DRIVERLICENSE,
-      then: schema => setRequiredIfSave(schema.min(4, 'Введите код полностью')),
+      then: schema => setRequiredIfSave(schema.min(3, 'Введите код полностью')),
     }),
   occupation: setRequiredIfSave(Yup.number().nullable()).when('isIncomeProofUploaderTouched', {
     is: (isIncomeProofUploaderTouched: boolean, submitAction: string) =>
