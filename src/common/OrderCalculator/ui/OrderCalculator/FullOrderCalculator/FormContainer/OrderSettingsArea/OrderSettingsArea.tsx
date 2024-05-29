@@ -8,8 +8,6 @@ import {
   BankAdditionalOption,
   useGetVendorOptionsQuery,
 } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
-import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPayment'
-import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { checkIsNumber } from 'shared/lib/helpers'
@@ -18,6 +16,10 @@ import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaConta
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
+import { useCreditProductsData } from '../../../../../hooks/useCreditProductsData'
+import { useCreditProductsLimits } from '../../../../../hooks/useCreditProductsLimits'
+import { useCreditProductsTerms } from '../../../../../hooks/useCreditProductsTerms'
+import { useCreditProductsValidations } from '../../../../../hooks/useCreditProductsValidations'
 import { AdditionalBankService } from './AdditionalBankService/AdditionalBankService'
 import { AdditionalEquipment } from './AdditionalEquipment/AdditionalEquipment'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
@@ -43,17 +45,30 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
   })
 
   const {
+    initialPaymentData,
+    creditProductsData,
+    creditDurationData,
+    durationMaxFromAge,
+    isGetCarsLoading,
+    isGetCarsSuccess,
     clientAge,
-    creditProducts,
-    initialPaymentHelperText,
-    initialPaymentPercentHelperText,
-    loanTerms,
-    commonErrors,
-    isNecessaryCasco,
-    isLoadedCreditProducts,
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
-  } = useLimits(vendorCodeNumber)
+    isLoadedCreditProducts,
+  } = useCreditProductsData(vendorCodeNumber)
+  const { creditProducts, initialPaymentHelperText, initialPaymentPercentHelperText } =
+    useCreditProductsLimits(
+      initialPaymentData,
+      creditProductsData,
+      durationMaxFromAge,
+      isGetCarsLoading,
+      isGetCarsSuccess,
+    )
+  const { loanTerms } = useCreditProductsTerms(creditDurationData, creditProductsData, durationMaxFromAge)
+  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(
+    initialPaymentData,
+    creditProductsData.currentProduct,
+  )
 
   const additionalEquipments = useMemo(
     () =>

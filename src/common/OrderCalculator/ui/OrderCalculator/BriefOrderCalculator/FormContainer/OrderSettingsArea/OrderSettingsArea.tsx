@@ -9,7 +9,6 @@ import {
   useGetVendorOptionsQuery,
 } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPayment'
-import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
@@ -24,6 +23,10 @@ import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
+import { useCreditProductsData } from '../../../../../hooks/useCreditProductsData'
+import { useCreditProductsLimits } from '../../../../../hooks/useCreditProductsLimits'
+import { useCreditProductsTerms } from '../../../../../hooks/useCreditProductsTerms'
+import { useCreditProductsValidations } from '../../../../../hooks/useCreditProductsValidations'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
 import useStyles from './OrderSettingsArea.styles'
 
@@ -36,6 +39,7 @@ type Props = {
 export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit }: Props) {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
+  const vendorCodeNumber = stringToNumber(vendorCode)
 
   const {
     data: vendorOptions,
@@ -46,16 +50,29 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
   })
 
   const {
+    initialPaymentData,
+    creditProductsData,
+    creditDurationData,
+    durationMaxFromAge,
+    isGetCarsLoading,
+    isGetCarsSuccess,
     clientAge,
-    creditProducts,
-    initialPaymentHelperText,
-    initialPaymentPercentHelperText,
-    loanTerms,
-    commonErrors,
-    isNecessaryCasco,
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
-  } = useLimits(stringToNumber(vendorCode))
+  } = useCreditProductsData(vendorCodeNumber)
+  const { creditProducts, initialPaymentHelperText, initialPaymentPercentHelperText } =
+    useCreditProductsLimits(
+      initialPaymentData,
+      creditProductsData,
+      durationMaxFromAge,
+      isGetCarsLoading,
+      isGetCarsSuccess,
+    )
+  const { loanTerms } = useCreditProductsTerms(creditDurationData, creditProductsData, durationMaxFromAge)
+  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(
+    initialPaymentData,
+    creditProductsData.currentProduct,
+  )
 
   const {
     handleInitialPaymentFocus,
