@@ -35,8 +35,6 @@ export const validateFiltersFields = (
   const applicationUpdateDate = updateDate ? DateTime.fromJSDate(updateDate).toISODate() : undefined
   const noSpacing = findApplication.replace(/ /g, '')
 
-  console.log('values', values)
-
   if (lastName !== '' && firstName !== '') {
     onSubmit({
       ...onlyUserApplications,
