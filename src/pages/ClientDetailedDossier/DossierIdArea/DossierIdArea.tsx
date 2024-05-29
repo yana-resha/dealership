@@ -4,20 +4,21 @@ import { Box, IconButton } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
+import { ApplicationStatus } from 'entities/application/ApplicationStatus/ApplicationStatus'
 import SberTypography from 'shared/ui/SberTypography'
 
-import { ApplicationStatus } from '../../../entities/application/ApplicationStatus/ApplicationStatus'
 import { useStyles } from './DossierIdArea.styles'
 
 type Props = {
   dcAppId: string
+  appId?: string
   clientName: string
   passport: string
   status: StatusCode
   onBackButton: () => void
 }
 
-export function DossierIdArea({ dcAppId, clientName, passport, status, onBackButton }: Props) {
+export function DossierIdArea({ dcAppId, appId, clientName, passport, status, onBackButton }: Props) {
   const classes = useStyles()
 
   return (
@@ -28,10 +29,23 @@ export function DossierIdArea({ dcAppId, clientName, passport, status, onBackBut
       <Box className={classes.infoContainer}>
         <Box className={classes.infoLine}>
           <SberTypography sberautoVariant="h2" component="p" className={classes.dossierNumber}>
-            № {dcAppId}
+            №
           </SberTypography>
-          <ApplicationStatus status={status} />
+          <Box className={classes.idContainer}>
+            <SberTypography sberautoVariant="h2" component="p" className={classes.dossierNumber}>
+              {dcAppId}
+            </SberTypography>
+            {!!appId && (
+              <SberTypography sberautoVariant="h6" component="p" className={classes.appIdNumber}>
+                {appId}
+              </SberTypography>
+            )}
+          </Box>
+          <Box className={classes.statusContainer}>
+            <ApplicationStatus status={status} />
+          </Box>
         </Box>
+        <Box className={classes.infoLine} />
         <Box className={classes.infoLine}>
           <SberTypography sberautoVariant="h6" component="p">
             {clientName}

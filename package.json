@@ -22,7 +22,7 @@
     "@sberauto/dadata-proto": "1.2.1",
     "@sberauto/dictionarydc-proto": "1.2.0",
     "@sberauto/filestoragedc-proto": "0.2.6",
-    "@sberauto/loanapplifecycledc-proto": "1.4.0",
+    "@sberauto/loanapplifecycledc-proto": "1.6.1",
     "camelcase-keys": "8.0.2",
     "classnames": "2.3.2",
     "copy-to-clipboard": "3.3.1",

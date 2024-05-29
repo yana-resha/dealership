@@ -161,6 +161,7 @@ export function ClientDetailedDossier() {
                 <Box className={classes.container}>
                   <DossierIdArea
                     dcAppId={application.dcAppId || ''}
+                    appId={fullApplicationData.appId}
                     clientName={clientName}
                     passport={passport}
                     onBackButton={onBackButton}
