@@ -29,23 +29,19 @@ export function DossierIdArea({ dcAppId, appId, clientName, passport, status, on
       <Box className={classes.infoContainer}>
         <Box className={classes.infoLine}>
           <SberTypography sberautoVariant="h2" component="p" className={classes.dossierNumber}>
-            №
+            № {dcAppId}
           </SberTypography>
-          <Box className={classes.idContainer}>
-            <SberTypography sberautoVariant="h2" component="p" className={classes.dossierNumber}>
-              {dcAppId}
-            </SberTypography>
-            {!!appId && (
-              <SberTypography sberautoVariant="h6" component="p" className={classes.appIdNumber}>
-                {appId}
-              </SberTypography>
-            )}
-          </Box>
-          <Box className={classes.statusContainer}>
-            <ApplicationStatus status={status} />
-          </Box>
+          <ApplicationStatus status={status} />
         </Box>
-        <Box className={classes.infoLine} />
+
+        {!!appId && (
+          <Box className={classes.infoLine}>
+            <SberTypography sberautoVariant="body1" component="p" className={classes.appIdNumber}>
+              {appId}
+            </SberTypography>
+          </Box>
+        )}
+
         <Box className={classes.infoLine}>
           <SberTypography sberautoVariant="h6" component="p">
             {clientName}
