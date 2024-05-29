@@ -19,13 +19,8 @@ export const useStyles = makeStyles(theme => ({
 
   infoLine: {
     display: 'flex',
-    gap: theme.spacing(1.5),
-  },
-
-  idContainer: {
-    display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
+    gap: theme.spacing(1.5),
   },
 
   appIdNumber: {
@@ -33,10 +28,6 @@ export const useStyles = makeStyles(theme => ({
       marginTop: `-${theme.spacing(1)}`,
       color: theme.palette.text.secondary,
     },
-  },
-
-  statusContainer: {
-    padding: theme.spacing(1, 0),
   },
 
   dossierNumber: {

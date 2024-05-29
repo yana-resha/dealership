@@ -46,7 +46,7 @@ describe('DossierIdTest', () => {
     })
 
     it('Отображается номер заявки', () => {
-      expect(screen.getByText('545544')).toBeInTheDocument()
+      expect(screen.getByText('№ 545544')).toBeInTheDocument()
     })
 
     it('Отображается номер appId', () => {
