@@ -26,6 +26,7 @@ const mockedUseGetPreliminaryPaymentScheduleFormMutationMutation = jest.spyOn(
 
 const informationAreaProps = {
   statusCode: StatusCode.INITIAL,
+  errorDescription: undefined,
   vendorCode: '2003023272',
   vendorInfo: 'ANEX TOUR, Хорошёвское шоссе, д.16, стр.3 ТЦ «На Беговой», 2 этаж',
   carBrand: 'KIA',

@@ -65,6 +65,7 @@ export function ClientDetailedDossier() {
   const appInfo = useMemo(
     () => ({
       statusCode: application?.status ?? StatusCode.ERROR,
+      errorDescription: fullApplicationData?.errorDescription,
       vendorCode: application?.vendor?.vendorCode,
       vendorInfo: compact([application?.vendor?.vendorName, application?.vendor?.address]).join(', '),
       carBrand: application?.loanCar?.brand || '',
@@ -99,6 +100,7 @@ export function ClientDetailedDossier() {
       application?.loanData?.overpayment,
       application?.loanData?.incomeProduct,
       application?.scans,
+      fullApplicationData?.errorDescription,
     ],
   )
 
