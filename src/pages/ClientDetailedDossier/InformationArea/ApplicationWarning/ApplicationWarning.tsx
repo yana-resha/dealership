@@ -6,8 +6,9 @@ import { useStyles } from '../InformationArea.styles'
 
 type Props = {
   statusCode: StatusCode
+  errorDescription: string | undefined
 }
-export function ApplicationWarning({ statusCode }: Props) {
+export function ApplicationWarning({ statusCode, errorDescription }: Props) {
   const classes = useStyles()
 
   return (
@@ -21,6 +22,13 @@ export function ApplicationWarning({ statusCode }: Props) {
       {statusCode === StatusCode.CLIENT_REJECTED && (
         <Box className={cx(classes.textButtonContainer, classes.warningTextContainer)} gridColumn="1/-1">
           Клиенту необходимо обратиться в отделение банка для актуализации данных.
+        </Box>
+      )}
+
+      {/* Вся логика заполнения этого поля на Бэке. Фронт просто ориентируется на его наличие */}
+      {!!errorDescription && (
+        <Box className={cx(classes.textButtonContainer, classes.warningTextContainer)} gridColumn="1/-1">
+          {errorDescription}
         </Box>
       )}
     </>

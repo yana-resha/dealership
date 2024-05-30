@@ -31,6 +31,7 @@ import { useStyles } from './InformationArea.styles'
 
 type Props = {
   statusCode: StatusCode
+  errorDescription: string | undefined
   vendorCode: string | undefined
   vendorInfo: string
   carBrand: string
@@ -50,6 +51,7 @@ type Props = {
 
 export function InformationArea({
   statusCode,
+  errorDescription,
   vendorCode,
   vendorInfo,
   autoPrice,
@@ -230,7 +232,7 @@ export function InformationArea({
               </Box>
             </Downloader>
           )}
-          <ApplicationWarning statusCode={statusCode} />
+          <ApplicationWarning statusCode={statusCode} errorDescription={errorDescription} />
 
           <Box className={classes.infoTextContainer} gridColumn="span 7">
             <InfoText label="ДЦ">

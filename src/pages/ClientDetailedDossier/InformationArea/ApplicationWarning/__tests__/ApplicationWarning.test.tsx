@@ -11,7 +11,9 @@ const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{c
 
 describe('ApplicationWarning', () => {
   it('Отображается предупреждение о Устаревании данных', () => {
-    render(<ApplicationWarning statusCode={StatusCode.NEED_REFORMATION} />, { wrapper: createWrapper })
+    render(<ApplicationWarning statusCode={StatusCode.NEED_REFORMATION} errorDescription={undefined} />, {
+      wrapper: createWrapper,
+    })
     expect(
       screen.getByText(
         'Данные индивидуальных условий кредитования могли устареть. Требуется переформировать печатные формы.',
@@ -20,9 +22,28 @@ describe('ApplicationWarning', () => {
   })
 
   it('Отображается предупреждение об Актуализации данных', () => {
-    render(<ApplicationWarning statusCode={StatusCode.CLIENT_REJECTED} />, { wrapper: createWrapper })
+    render(<ApplicationWarning statusCode={StatusCode.CLIENT_REJECTED} errorDescription={undefined} />, {
+      wrapper: createWrapper,
+    })
     expect(
       screen.getByText('Клиенту необходимо обратиться в отделение банка для актуализации данных.'),
     ).toBeInTheDocument()
+  })
+
+  it('Если есть errorDescription, он отображается', () => {
+    render(
+      <ApplicationWarning statusCode={StatusCode.CLIENT_REJECTED} errorDescription="errorDescription" />,
+      {
+        wrapper: createWrapper,
+      },
+    )
+    expect(screen.getByText('errorDescription')).toBeInTheDocument()
+  })
+
+  it('Если нет errorDescription, он не отображается', () => {
+    render(<ApplicationWarning statusCode={StatusCode.CLIENT_REJECTED} errorDescription={undefined} />, {
+      wrapper: createWrapper,
+    })
+    expect(screen.queryByText('errorDescription')).not.toBeInTheDocument()
   })
 })
