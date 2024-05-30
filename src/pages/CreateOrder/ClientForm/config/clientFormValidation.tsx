@@ -264,7 +264,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     .nullable()
     .when('secondDocumentType', {
       is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.DRIVERLICENSE,
-      then: schema => setRequiredIfSave(schema.min(3, 'Введите код полностью')),
+      then: schema => setRequiredIfSave(schema.min(3, FieldMessages.enterFullData)),
     }),
   occupation: setRequiredIfSave(Yup.number().nullable()).when('isIncomeProofUploaderTouched', {
     is: (isIncomeProofUploaderTouched: boolean, submitAction: string) =>
@@ -285,7 +285,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     }),
   employerInn: Yup.string().when('occupation', {
     is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-    otherwise: schema => setRequiredIfSave(schema),
+    otherwise: schema => setRequiredIfSave(schema.min(10, FieldMessages.enterFullData)),
   }),
   employerPhone: Yup.string()
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
