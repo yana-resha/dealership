@@ -6,10 +6,12 @@ import { AnyObject, InternalOptions } from 'yup/lib/types'
 import { FileInfo } from 'features/ApplicationFileLoader'
 import { getMaxBirthDate, getMinBirthDate } from 'pages/CreateOrder/CreateOrder.utils'
 import { MIN_AGE } from 'shared/config/client.config'
+import { FieldMessages } from 'shared/constants/fieldMessages'
 
 import { SubmitAction } from '../ClientForm.types'
 
 export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
+export const QUESTIONNAIRE_FILE_IS_REQUIRED = 'Необходимо загрузить анкету'
 
 function validatePassportDate(value: Date | null | undefined, context: Yup.TestContext<AnyObject>) {
   const birthDate = (context.options as InternalOptions)?.from?.[0].value.birthDate as Date | null
@@ -108,13 +110,13 @@ function isJobDisabled(
 function setRequiredIfSave<T extends Yup.BaseSchema<any, AnyObject, any>>(schema: T, message?: string) {
   return schema.when(['submitAction'], {
     is: (submitAction: string) => submitAction === SubmitAction.Save,
-    then: schema => schema.required(message || 'Поле обязательно для заполнения'),
+    then: schema => schema.required(message || FieldMessages.required),
   })
 }
 
 export const clientAddressValidationSchema = Yup.object().shape(
   {
-    regCode: Yup.string().nullable().required('Поле обязательно для заполнения'),
+    regCode: Yup.string().nullable().required(FieldMessages.required),
     settlement: Yup.string().when('city', {
       is: undefined,
       then: schema => schema.required('Необходимо указать город или населенный пункт'),
@@ -143,15 +145,15 @@ export const clientAddressValidationSchema = Yup.object().shape(
         then: schema => schema.required('Необходимо указать тип района'),
       }),
 
-    streetType: Yup.string().nullable().required('Поле обязательно для заполнения'),
-    house: Yup.string().required('Поле обязательно для заполнения'),
+    streetType: Yup.string().nullable().required(FieldMessages.required),
+    house: Yup.string().required(FieldMessages.required),
   },
   [['settlement', 'city']],
 )
 
 export const clientFormValidationSchema = Yup.object().shape({
-  clientLastName: Yup.string().required('Поле обязательно для заполнения'),
-  clientFirstName: Yup.string().required('Поле обязательно для заполнения'),
+  clientLastName: Yup.string().required(FieldMessages.required),
+  clientFirstName: Yup.string().required(FieldMessages.required),
   clientFormerLastName: Yup.string().when('hasNameChanged', {
     is: true,
     then: schema => setRequiredIfSave(schema),
@@ -166,10 +168,10 @@ export const clientFormValidationSchema = Yup.object().shape({
   }),
   numOfChildren: setRequiredIfSave(Yup.number().nullable()),
   familyStatus: setRequiredIfSave(Yup.number().nullable()),
-  passport: Yup.string().required('Поле обязательно для заполнения').min(10, 'Введите данные полностью'),
+  passport: Yup.string().required(FieldMessages.required).min(10, 'Введите данные полностью'),
   birthDate: Yup.date()
     .nullable()
-    .required('Поле обязательно для заполнения')
+    .required(FieldMessages.required)
     .min(getMinBirthDate(), 'Превышен максимальный возраст')
     .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`),
   birthPlace: setRequiredIfSave(Yup.string()),
@@ -186,7 +188,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     is: false,
     then: schema => setRequiredIfSave(schema),
   }),
-  mobileNumber: Yup.string().required('Поле обязательно для заполнения').min(11, 'Введите номер полностью'),
+  mobileNumber: Yup.string().required(FieldMessages.required).min(11, FieldMessages.enterFullData),
   additionalNumber: Yup.string()
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
       const { mobileNumber, employerPhone } = (context.options as InternalOptions)?.from?.[0].value || {}
@@ -195,11 +197,11 @@ export const clientFormValidationSchema = Yup.object().shape({
     })
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation),
-      then: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
+      then: schema => setRequiredIfSave(schema).min(11, FieldMessages.enterFullData),
       otherwise: schema =>
         schema.test(
           'additionalNumber',
-          'Введите номер полностью',
+          FieldMessages.enterFullData,
           (value: string | undefined) => value === undefined || value.trim().length == 11,
         ),
     }),
@@ -235,11 +237,11 @@ export const clientFormValidationSchema = Yup.object().shape({
       .when('secondDocumentType', {
         is: (secondDocumentType: number | null) =>
           secondDocumentType === ApplicantDocsType.PENSIONCERTIFICATE,
-        then: schema => schema.min(11, 'Введите номер полностью'),
+        then: schema => schema.min(11, FieldMessages.enterFullData),
       })
       .when('secondDocumentType', {
         is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.INN,
-        then: schema => schema.min(12, 'Введите номер полностью'),
+        then: schema => schema.min(12, FieldMessages.enterFullData),
       }),
   ),
   secondDocumentDate: Yup.date()
@@ -293,7 +295,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     })
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-      otherwise: schema => setRequiredIfSave(schema).min(11, 'Введите номер полностью'),
+      otherwise: schema => setRequiredIfSave(schema).min(11, FieldMessages.enterFullData),
     }),
   employerAddressString: Yup.string().when('occupation', {
     is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
@@ -308,6 +310,6 @@ export const clientFormValidationSchema = Yup.object().shape({
     .when(['submitAction', 'isDifferentVendor'], {
       is: (submitAction: string, isDifferentVendor: boolean) =>
         submitAction === SubmitAction.Save || isDifferentVendor,
-      then: schema => schema.required('Необходимо загрузить анкету'),
+      then: schema => schema.required(QUESTIONNAIRE_FILE_IS_REQUIRED),
     }),
 })

@@ -7,12 +7,14 @@ import isEqual from 'lodash/isEqual'
 import { useOrderContext } from 'common/OrderCalculator'
 import { ApplicationProvider } from 'entities/application/ApplicationProvider'
 import { FraudDialog } from 'entities/SpecialMark'
+import { FieldMessages } from 'shared/constants/fieldMessages'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
 import { useStyles } from './ClientForm.styles'
 import { ClientData, SubmitAction } from './ClientForm.types'
+import { QUESTIONNAIRE_FILE_IS_REQUIRED } from './config/clientFormValidation'
 import { CommunicationArea } from './FormAreas/CommunicationArea/CommunicationArea'
 import { IncomesArea } from './FormAreas/IncomesArea/IncomesArea'
 import { JobArea } from './FormAreas/JobArea/JobArea'
@@ -46,17 +48,20 @@ export function FormContainer({
   saveValuesToStore,
 }: Props) {
   const classes = useStyles()
-  const { values, handleSubmit, setFieldValue, isValid } = useFormikContext<ClientData>()
+  const { values, handleSubmit, setFieldValue, isValid, validateForm } = useFormikContext<ClientData>()
   useScrollToErrorField()
 
   const { onChangeForm } = useOrderContext()
   const [isShouldSubmit, setShouldSubmit] = useState(false)
+  const [isShouldValidate, setShouldValidate] = useState(false)
+  const prevIsShouldValidate = usePrevious(isShouldValidate)
+  const prevIsDifferentVendor = usePrevious(isDifferentVendor)
 
   const handleDraftClick = useCallback(() => {
-    setFieldValue('isFormComplete', isValid)
+    setFieldValue('isFormComplete', false)
     setFieldValue('submitAction', SubmitAction.Draft)
-    setShouldSubmit(true)
-  }, [isValid, setFieldValue])
+    setShouldValidate(true)
+  }, [setFieldValue])
 
   const handleSaveClick = useCallback(() => {
     setFieldValue('isFormComplete', isValid)
@@ -65,19 +70,38 @@ export function FormContainer({
   }, [isValid, setFieldValue])
 
   const handlePrintClick = useCallback(() => {
-    setFieldValue('isFormComplete', isValid)
+    setFieldValue('isFormComplete', false)
     setFieldValue('submitAction', SubmitAction.Print)
-    setShouldSubmit(true)
-  }, [isValid, setFieldValue])
+    setShouldValidate(true)
+  }, [setFieldValue])
 
   const onGetOrderId = useCallback(() => getOrderId(values), [getOrderId, values])
 
   // Передаем информацию о совпадении ДЦ для валидации
   useEffect(() => {
-    setFieldValue('isDifferentVendor', isDifferentVendor)
-    // setFieldValue удален из зависимостей, чтобы избежать ререндера
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDifferentVendor])
+    if (prevIsDifferentVendor !== isDifferentVendor) {
+      setFieldValue('isDifferentVendor', isDifferentVendor)
+    }
+  }, [isDifferentVendor, prevIsDifferentVendor, setFieldValue])
+
+  // Промежуточная валидация перед дальнейшим сохранением черновика.
+  // Производится проверка заполнения всех обязательных полей и анкеты,
+  // потому подменяем submitAction: SubmitAction.Save на этапе валидации.
+  // Если валидация прошла успешно, то присваиваем isFormComplete true
+  // Стандартная валидация формы (черновика) не отменяется и будет штатно производиться дальше
+  useEffect(() => {
+    if (isShouldValidate && prevIsShouldValidate !== isShouldValidate) {
+      setShouldValidate(false)
+      // Подменяем submitAction: SubmitAction.Save для валидации обязательных полей
+      validateForm({ ...values, submitAction: SubmitAction.Save }).then(error => {
+        const isFormComplete = Object.values(error).every(
+          v => v !== FieldMessages.required && v !== QUESTIONNAIRE_FILE_IS_REQUIRED,
+        )
+        isFormComplete && setFieldValue('isFormComplete', true)
+        setShouldSubmit(true)
+      })
+    }
+  }, [isShouldValidate, prevIsShouldValidate, setFieldValue, validateForm, values])
 
   useEffect(() => {
     if (isShouldSubmit) {
