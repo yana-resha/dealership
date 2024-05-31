@@ -219,6 +219,110 @@ describe('ActionAreaTest', () => {
       })
     })
 
+    describe('Статус Rejected (Отказ)', () => {
+      it('Отображается кнопка "Пересоздать новую заявку"', () => {
+        render(
+          <ActionArea
+            status={StatusCode.REJECTED}
+            goToTargetApplication={jest.fn}
+            application={fullApplicationData.application as ApplicationFrontdc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
+            updateApplicationStatusLocally={jest.fn}
+            setIsEditRequisitesMode={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
+
+        expect(screen.getByText('Пересоздать новую заявку')).toBeInTheDocument()
+      })
+
+      it('Если source="DC", и есть дата маротория и она не вышла, то не отображается кнопка "Пересоздать новую заявку"', () => {
+        render(
+          <ActionArea
+            status={StatusCode.REJECTED}
+            goToTargetApplication={jest.fn}
+            application={fullApplicationData.application as ApplicationFrontdc}
+            moratoryEndDate="3970-01-01"
+            source="DC"
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
+            updateApplicationStatusLocally={jest.fn}
+            setIsEditRequisitesMode={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
+
+        expect(screen.queryByText('Пересоздать новую заявку')).not.toBeInTheDocument()
+      })
+
+      it('Если source!="DC", отображается кнопка "Пересоздать новую заявку", независимо от даты маратория', () => {
+        render(
+          <ActionArea
+            status={StatusCode.REJECTED}
+            goToTargetApplication={jest.fn}
+            application={fullApplicationData.application as ApplicationFrontdc}
+            moratoryEndDate="3970-01-01"
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
+            updateApplicationStatusLocally={jest.fn}
+            setIsEditRequisitesMode={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
+
+        expect(screen.getByText('Пересоздать новую заявку')).toBeInTheDocument()
+      })
+
+      it('Если есть targetDcAppId, отображается кнопка "Перейти на новую заявку"', () => {
+        render(
+          <ActionArea
+            status={StatusCode.REJECTED}
+            goToTargetApplication={jest.fn}
+            application={fullApplicationData.application as ApplicationFrontdc}
+            moratoryEndDate="3970-01-01"
+            targetDcAppId="123"
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
+            updateApplicationStatusLocally={jest.fn}
+            setIsEditRequisitesMode={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
+
+        expect(screen.getByText('Перейти на новую заявку')).toBeInTheDocument()
+      })
+    })
+
+    describe('Статус clientRejected (Отказ)', () => {
+      it('Отображается кнопка "Пересоздать новую заявку"', () => {
+        render(
+          <ActionArea
+            status={StatusCode.CLIENT_REJECTED}
+            goToTargetApplication={jest.fn}
+            application={fullApplicationData.application as ApplicationFrontdc}
+            applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
+            returnToList={jest.fn}
+            updateApplicationStatusLocally={jest.fn}
+            setIsEditRequisitesMode={jest.fn}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
+
+        expect(screen.getByText('Пересоздать новую заявку')).toBeInTheDocument()
+      })
+    })
+
     describe('Статус Signed (КД подписан)', () => {
       it('Отображается блок "AgreementArea"', () => {
         render(
