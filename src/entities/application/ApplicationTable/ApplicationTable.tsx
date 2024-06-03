@@ -73,8 +73,10 @@ export const ApplicationTable = (props: Props) => {
             <CustomTooltip
               key={header}
               arrow
-              title={header}
-              disableHoverListener={header !== ApplicationHeaders.PermitTerm}
+              title={header == ApplicationHeaders.Data ? 'Дата обновления заявки' : header}
+              disableHoverListener={
+                header !== ApplicationHeaders.PermitTerm && header !== ApplicationHeaders.Data
+              }
             >
               <TableCell
                 align="left"

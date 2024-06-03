@@ -17,6 +17,7 @@ import {
   maskNoRestrictions,
   maskElectronicСarPassportId,
   maskСarPassportId,
+  maskMileage,
 } from 'shared/masks/InputMasks'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
@@ -91,9 +92,9 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
           />
           <MaskedInputFormik
             name={FormFieldNameMap.carMileage}
-            label="Пробег"
+            label="Пробег, тыс. км"
             placeholder="-"
-            mask={maskOnlyDigitsWithSeparator}
+            mask={maskMileage}
             gridColumn="span 1"
           />
           <SelectInputFormik

@@ -5,7 +5,9 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
 import { ApplicationStatus } from 'entities/application/ApplicationStatus/ApplicationStatus'
+import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
+import { convertedDateToString } from 'shared/utils/dateTransform'
 
 import { useStyles } from './DossierIdArea.styles'
 
@@ -14,11 +16,12 @@ type Props = {
   appId?: string
   clientName: string
   passport: string
+  data: string
   status: StatusCode
   onBackButton: () => void
 }
 
-export function DossierIdArea({ dcAppId, appId, clientName, passport, status, onBackButton }: Props) {
+export function DossierIdArea({ dcAppId, appId, clientName, passport, data, status, onBackButton }: Props) {
   const classes = useStyles()
 
   return (
@@ -50,6 +53,16 @@ export function DossierIdArea({ dcAppId, appId, clientName, passport, status, on
             {passport}
           </SberTypography>
         </Box>
+      </Box>
+
+      <Box className={classes.dateContainer}>
+        <CustomTooltip arrow title={<span>Дата создания заявки</span>}>
+          <Box>
+            <SberTypography sberautoVariant="h6" component="p" className={classes.date}>
+              {convertedDateToString(new Date(data), 'dd.LL.yyyy')}
+            </SberTypography>
+          </Box>
+        </CustomTooltip>
       </Box>
     </Box>
   )

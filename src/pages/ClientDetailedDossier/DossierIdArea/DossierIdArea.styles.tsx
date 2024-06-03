@@ -17,6 +17,18 @@ export const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
   },
 
+  dateContainer: {
+    alignSelf: 'flex-start',
+    marginLeft: 'auto',
+    marginRight: 0,
+  },
+
+  date: {
+    '&.MuiTypography-root': {
+      lineHeight: 1.38,
+    },
+  },
+
   infoLine: {
     display: 'flex',
     alignItems: 'center',

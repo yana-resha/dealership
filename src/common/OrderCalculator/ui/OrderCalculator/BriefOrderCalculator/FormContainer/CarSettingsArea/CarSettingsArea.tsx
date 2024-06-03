@@ -1,5 +1,4 @@
 import { Box } from '@mui/material'
-import { useField } from 'formik'
 
 import { CAR_CONDITIONS } from 'common/OrderCalculator/config'
 import { useCarBrands } from 'common/OrderCalculator/hooks/useCarBrands'
@@ -7,7 +6,7 @@ import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
 import { useCarYears } from 'common/OrderCalculator/hooks/useCarYears'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
+import { maskMileage, maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -71,9 +70,9 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
         />
         <MaskedInputFormik
           name={FormFieldNameMap.carMileage}
-          label="Пробег"
+          label="Пробег, тыс. км"
           placeholder="-"
-          mask={maskOnlyDigitsWithSeparator}
+          mask={maskMileage}
           gridColumn="span 1"
         />
 

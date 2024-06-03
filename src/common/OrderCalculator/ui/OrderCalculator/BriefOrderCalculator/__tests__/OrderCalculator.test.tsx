@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 
-import { OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { OptionID } from '@sberauto/dictionarydc-proto/public'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react-dom/test-utils'
 import { MockStore } from 'redux-mock-store'
@@ -24,7 +24,7 @@ import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { BriefOrderCalculator } from '../BriefOrderCalculator'
-import { formFields } from './OrderCalculator.mock'
+import { FORM_FIELDS } from './OrderCalculator.mock'
 
 disableConsole('error')
 jest.mock('shared/hooks/useScrollToErrorField')
@@ -97,7 +97,7 @@ describe('OrderCalculator', () => {
     })
 
     it('Основные поля присутствуют на форме', () => {
-      for (const fieldName of formFields) {
+      for (const fieldName of FORM_FIELDS) {
         switch (fieldName) {
           case 'Стоимость':
             expect(screen.getAllByText(`${fieldName}`)).toHaveLength(4)

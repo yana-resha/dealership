@@ -166,6 +166,7 @@ export function ClientDetailedDossier() {
                     appId={fullApplicationData.appId}
                     clientName={clientName}
                     passport={passport}
+                    data={application.createdDate || ''}
                     onBackButton={onBackButton}
                     status={
                       application.status || application.status === StatusCode.INITIAL
