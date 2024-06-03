@@ -22,6 +22,7 @@ const dossierIdAreaProps = {
   appId: '4444444',
   clientName: 'Терентьев Михаил Павлович',
   passport: '06 04 060423',
+  data: '2022-12-31T00:00:00.000Z',
   status: StatusCode.INITIAL,
   onBackButton: mockedOnBackButton,
 }
@@ -63,6 +64,10 @@ describe('DossierIdTest', () => {
 
     it('Отображается серия и номер паспорта', () => {
       expect(screen.getByText('06 04 060423')).toBeInTheDocument()
+    })
+
+    it('Отображается дата', () => {
+      expect(screen.getByText('31.12.2022')).toBeInTheDocument()
     })
   })
 })
