@@ -209,7 +209,7 @@ export function AgreementArea({
   useEffect(() => {
     if (
       preparedStatus === PreparedStatus.formation &&
-      uploadedAdditionalAgreementScans.length === ADDITIONAL_AGREEMENT_DOC_TYPES.length &&
+      uploadedAdditionalAgreementScans.length &&
       docsStatus.length === AGREEMENT_DOC_TYPES.length
     ) {
       setDocsStatus(prevDocStatus => [
