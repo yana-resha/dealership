@@ -41,6 +41,8 @@ export const BodyRow = ({ row, onClick }: Props) => {
         overpayment: row.overpayment,
         servicesInCreditPrice: row.servicesInCreditPrice,
         equipmentInCreditPrice: row.equipmentInCreditPrice,
+        bankOptionsInCreditPrice: row.bankOptionsInCreditPrice,
+        pskPrc: row.pskPrc,
       })
       if (blob) {
         return new File(

@@ -118,6 +118,7 @@ export function useOrderSettings(nextStep: () => void) {
           rateNonGrnty: condition?.rateNonGrnty,
         },
         overpayment: bankOffer.overpayment,
+        pskPrc: bankOffer.pskPrc,
       }
       dispatch(updateFillingProgress({ isFilledLoanData: true }))
       dispatch(updateApplication({ loanData }))
