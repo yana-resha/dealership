@@ -20,7 +20,7 @@ export const useStyles = makeStyles(theme => ({
   orderForm: {
     gap: theme.spacing(3),
     display: 'grid',
-    gridTemplateColumns: 'repeat(25, 1fr)',
+    gridTemplateColumns: 'repeat(3, 1fr)',
   },
 
   formTitleContainer: {

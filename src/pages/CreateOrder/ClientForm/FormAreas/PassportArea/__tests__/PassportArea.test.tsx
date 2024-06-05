@@ -57,8 +57,6 @@ const mockedUseGetFmsUnitSuggestions = jest.spyOn(daDataQueryModule, 'useGetFmsU
 const mockSuggestions: SuggestionGetAddressSuggestions[] = []
 
 const formFields = [
-  'clientLastName',
-  'clientFirstName',
   'numOfChildren',
   'familyStatus',
   'passport',

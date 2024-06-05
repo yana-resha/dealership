@@ -29,6 +29,23 @@ export const maskCyrillicAndDigits = (value: string, unmasked?: boolean) => {
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
+export const maskName = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: /^[а-яА-ЯёЁ '-.,IV)(]*$/,
+    // Если вводится первый символ, делаем его прописным.
+    prepare: (appended: string, masked: { value: string }) => {
+      if (!masked.value.length) {
+        return appended.toUpperCase()
+      }
+
+      return appended
+    },
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
 export const maskDigitsOnly = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: /^[0-9]+$/,

@@ -12,11 +12,12 @@ import {
   maskNoRestrictions,
   maskPassport,
   maskCyrillicAndDigits,
-  maskOnlyCyrillicNoDigits,
+  maskName,
 } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
 import { AutocompleteInputFormik } from 'shared/ui/AutocompleteInput/AutocompleteInputFormik'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
+import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
@@ -38,6 +39,9 @@ export function PassportArea() {
 
   const { values, setFieldValue } = useFormikContext<ClientData>()
   const {
+    clientLastName,
+    clientFirstName,
+    clientMiddleName,
     registrationAddress,
     registrationAddressString,
     livingAddress,
@@ -150,30 +154,15 @@ export function PassportArea() {
         <Typography className={classes.areaLabel}>Паспортные данные</Typography>
       </Box>
 
-      <MaskedInputFormik
-        name="clientLastName"
-        label="Фамилия"
-        placeholder="Фамилия"
-        mask={maskOnlyCyrillicNoDigits}
-        gridColumn="span 4"
-        disabled
-      />
-      <MaskedInputFormik
-        name="clientFirstName"
-        label="Имя"
-        placeholder="Имя"
-        mask={maskOnlyCyrillicNoDigits}
-        gridColumn="span 4"
-        disabled
-      />
-      <MaskedInputFormik
-        name="clientMiddleName"
-        label="Отчество"
-        placeholder="Отчество"
-        mask={maskOnlyCyrillicNoDigits}
-        gridColumn="span 4"
-        disabled
-      />
+      <Box width="auto" gridColumn="span 12">
+        <MaskedInput
+          label="ФИО"
+          mask={maskName}
+          value={`${clientLastName} ${clientFirstName} ${clientMiddleName}`}
+          disabled
+        />
+      </Box>
+
       <SwitchInputFormik name="hasNameChanged" label="Менялось" gridColumn="span 4" centered />
 
       {hasNameChanged && (
@@ -182,21 +171,21 @@ export function PassportArea() {
             name="clientFormerLastName"
             label="Фамилия до смены"
             placeholder="Фамилия до смены"
-            mask={maskOnlyCyrillicNoDigits}
+            mask={maskName}
             gridColumn="span 4"
           />
           <MaskedInputFormik
             name="clientFormerFirstName"
             label="Имя до смены"
             placeholder="Имя до смены"
-            mask={maskOnlyCyrillicNoDigits}
+            mask={maskName}
             gridColumn="span 4"
           />
           <MaskedInputFormik
             name="clientFormerMiddleName"
             label="Отчество до смены"
             placeholder="Отчество до смены"
-            mask={maskOnlyCyrillicNoDigits}
+            mask={maskName}
             gridColumn="span 4"
           />
         </>

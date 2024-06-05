@@ -6,7 +6,7 @@ import { Form, Formik } from 'formik'
 
 import { ReactComponent as OrderListLargeIcon } from 'assets/icons/orderListLarge.svg'
 import { ReactComponent as WarningIcon } from 'assets/icons/warning.svg'
-import { maskMobilePhoneNumber, maskOnlyCyrillicNoDigits, maskPassport } from 'shared/masks/InputMasks'
+import { maskMobilePhoneNumber, maskName, maskPassport } from 'shared/masks/InputMasks'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -84,41 +84,36 @@ function OrderForm({
           </Box>
 
           <MaskedInputFormik
-            name="passport"
-            label="Серия и номер паспорта"
-            placeholder="-"
-            mask={maskPassport}
-            gridColumn="span 4"
-            disabled={disabledFields.includes('passport')}
-          />
-          <MaskedInputFormik
             name="clientLastName"
-            mask={maskOnlyCyrillicNoDigits}
+            mask={maskName}
             placeholder="Фамилия"
-            gridColumn="span 4"
             label="Фамилия"
             disabled={disabledFields.includes('clientLastName')}
           />
           <MaskedInputFormik
             name="clientFirstName"
-            mask={maskOnlyCyrillicNoDigits}
+            mask={maskName}
             placeholder="Имя"
-            gridColumn="span 4"
             label="Имя"
             disabled={disabledFields.includes('clientFirstName')}
           />
           <MaskedInputFormik
             name="clientMiddleName"
-            mask={maskOnlyCyrillicNoDigits}
+            mask={maskName}
             placeholder="Отчество"
-            gridColumn="span 4"
             label="Отчество"
             disabled={disabledFields.includes('clientMiddleName')}
+          />
+          <MaskedInputFormik
+            name="passport"
+            label="Серия и номер паспорта"
+            placeholder="-"
+            mask={maskPassport}
+            disabled={disabledFields.includes('passport')}
           />
           <DateInputFormik
             name="birthDate"
             label="Дата рождения"
-            gridColumn="span 4"
             disabled={disabledFields.includes('birthDate')}
           />
           <MaskedInputFormik
@@ -126,7 +121,6 @@ function OrderForm({
             label="Телефон"
             placeholder="-"
             mask={maskMobilePhoneNumber}
-            gridColumn="span 5"
             disabled={disabledFields.includes('phoneNumber')}
           />
 
