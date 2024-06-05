@@ -8,7 +8,6 @@ import {
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { ProductsMap } from 'entities/reduxStore/orderSlice'
-import { checkIsNumber } from 'shared/lib/helpers'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import {
@@ -23,8 +22,7 @@ const mapAdditionalOptions = (
   vendorOptionsMap: Record<string, AdditionalOption>,
 ): AdditionalOptionCalculateCredit[] => {
   const filteredOptions = additionalOptions.filter(
-    (option): option is Omit<typeof option, 'productType'> & { productType: number } =>
-      checkIsNumber(option.productType),
+    (option): option is Omit<typeof option, 'productType'> & { productType: string } => !!option.productType,
   )
 
   const additionalOptionsFormatted: AdditionalOptionCalculateCredit[] = filteredOptions.map(filterOption => {
@@ -75,7 +73,7 @@ export const mapValuesForCalculateCreditRequest = (
   }
 
   const calculateCreditRequest: CalculateCreditRequest = {
-    vendorCode: stringToNumber(vendorCode),
+    vendorCode,
     productId: values[FormFieldNameMap.creditProduct] || undefined,
     productCodeName: productsMap?.[`${values[FormFieldNameMap.creditProduct]}`]?.productCodeName,
     productName: productsMap?.[`${values[FormFieldNameMap.creditProduct]}`]?.productName,

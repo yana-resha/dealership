@@ -5,6 +5,7 @@ import { Form, useFormikContext } from 'formik'
 import { initialValueMap } from 'common/OrderCalculator/config'
 import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProducts'
 import { useFormChanging } from 'common/OrderCalculator/hooks/useFormChanging'
+import { useScrollToOrderSettingsArea } from 'common/OrderCalculator/hooks/useScrollToOrderSettingsArea'
 import { BriefOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
 
@@ -18,6 +19,8 @@ type Props = {
   remapApplicationValues: (values: BriefOrderCalculatorFields) => void
   isDisabledFormSubmit: boolean
   enableFormSubmit: () => void
+  creditProductId: string | undefined
+  resetCreditProductId: () => void
 }
 
 export function FormContainer({
@@ -27,9 +30,12 @@ export function FormContainer({
   remapApplicationValues,
   isDisabledFormSubmit,
   enableFormSubmit,
+  creditProductId,
+  resetCreditProductId,
 }: Props) {
   const { values } = useFormikContext<BriefOrderCalculatorFields>()
   useScrollToErrorField()
+  const orderSettingsAreaRef = useScrollToOrderSettingsArea(creditProductId)
 
   const formFields = useMemo(
     () => ({
@@ -54,6 +60,8 @@ export function FormContainer({
     shouldFetchProductsOnStart,
     formFields,
     initialValueMap,
+    creditProductId,
+    resetCreditProductId,
   })
   useFormChanging({ remapApplicationValues, onChangeForm, enableFormSubmit })
 
@@ -65,6 +73,7 @@ export function FormContainer({
         isLoading={isLoading}
       />
       <OrderSettingsArea
+        ref={orderSettingsAreaRef}
         disabled={!shouldShowOrderSettings}
         isSubmitLoading={isSubmitLoading}
         isDisabledSubmit={isDisabledFormSubmit}

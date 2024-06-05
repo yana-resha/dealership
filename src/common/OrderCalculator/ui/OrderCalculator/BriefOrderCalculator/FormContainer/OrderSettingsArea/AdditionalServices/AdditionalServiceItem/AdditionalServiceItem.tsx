@@ -18,7 +18,7 @@ import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 import useStyles from './AdditionalServiceItem.styles'
 
 interface Props {
-  options: { value: number; label: string }[]
+  options: { value: string; label: string }[]
   parentName: ServicesGroupName
   isNecessaryCasco: boolean
   index: number
@@ -50,7 +50,7 @@ export function AdditionalServiceItem({
     changeIds,
     initialValues: INITIAL_ADDITIONAL_SERVICE,
   })
-  const [productTypeField] = useField<number | null>(namePrefix + FormFieldNameMap.productType)
+  const [productTypeField] = useField<string | null>(namePrefix + FormFieldNameMap.productType)
   const { values, submitCount } = useFormikContext<BriefOrderCalculatorFields>()
 
   const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({

@@ -30,7 +30,7 @@ export function BankServicesRequisites({
 }: Props) {
   const classes = useStyles()
 
-  const { setFieldValue, values } = useFormikContext<FullOrderCalculatorFields>()
+  const { setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
   const { productType, provider, productCost } = servicesItem
   const { requisites, isRequisitesFetched } = useRequisitesContext()
   const namePrefix = `${parentName}[${index}].`

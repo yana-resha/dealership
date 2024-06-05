@@ -45,7 +45,13 @@ describe('FullOrderCalculator', () => {
       handleSubmit: jest.fn(),
     }))
     render(
-      <FullOrderCalculator onSubmit={mockedOnSubmit} onChangeForm={jest.fn()} isSubmitLoading={false} />,
+      <FullOrderCalculator
+        onSubmit={mockedOnSubmit}
+        onChangeForm={jest.fn()}
+        isSubmitLoading={false}
+        creditProductId={undefined}
+        resetCreditProductId={() => {}}
+      />,
       {
         wrapper: createWrapper,
       },

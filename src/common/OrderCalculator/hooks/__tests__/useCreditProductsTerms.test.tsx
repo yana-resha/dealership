@@ -64,7 +64,7 @@ describe('useCreditProductTerms', () => {
         {
           wrapper: createWrapper({
             ...initialData,
-            creditProduct: 2,
+            creditProduct: '2',
           }),
         },
       )

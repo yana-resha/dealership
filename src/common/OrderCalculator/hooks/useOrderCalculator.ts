@@ -4,7 +4,6 @@ import { CalculateCreditRequest } from '@sberauto/dictionarydc-proto/public'
 import { FormikProps } from 'formik'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
 import { mapValuesForCalculateCreditRequest } from '../utils/orderFormMapper'
@@ -19,14 +18,13 @@ type Params = {
 }
 export function useOrderCalculator({ onSubmit, remapApplicationValues, remapApplicationFullValues }: Params) {
   const { vendorCode } = getPointOfSaleFromCookies()
-  const vendorCodeNumber = stringToNumber(vendorCode)
   const { data: vendorOptions } = useGetVendorOptionsQuery({
-    vendorCode: vendorCodeNumber,
+    vendorCode,
   })
 
   const formRef = useRef<FormikProps<OrderCalculatorFields>>(null)
   const { data: creditProductListData } = useGetCreditProductListQuery({
-    vendorCode: vendorCodeNumber,
+    vendorCode,
     values: formRef.current?.values as OrderCalculatorFields,
     enabled: false,
   })

@@ -4,8 +4,6 @@ import { OptionType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { checkIsNumber } from 'shared/lib/helpers'
-import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
 import { BriefOrderCalculatorFields, FormFieldNameMap, FullOrderCalculatorFields } from '../types'
@@ -34,7 +32,8 @@ export function useInitialValues<D extends boolean | undefined>(
           }
 
           const additionalServiceBaseData = {
-            [FormFieldNameMap.productType]: cur.type ?? initialData.additionalEquipments[0].productType,
+            [FormFieldNameMap.productType]:
+              `${cur.type || ''}` ?? initialData.additionalEquipments[0].productType,
             [FormFieldNameMap.productCost]: `${cur.price ?? initialData.additionalEquipments[0].productCost}`,
             [FormFieldNameMap.isCredit]: cur.inCreditFlag ?? initialData.additionalEquipments[0].isCredit,
             [FormFieldNameMap.cascoLimit]: `${
@@ -89,10 +88,10 @@ export function useInitialValues<D extends boolean | undefined>(
           const dealerAdditionalServiceData = isFullCalculator
             ? {
                 [FormFieldNameMap.provider]:
-                  stringToNumber(cur.vendor?.vendorCode) ??
+                  cur.vendor?.vendorCode ??
                   (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].provider,
                 [FormFieldNameMap.broker]:
-                  stringToNumber(cur.broker?.vendorCode) ??
+                  cur.broker?.vendorCode ??
                   (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].broker,
                 [FormFieldNameMap.loanTerm]:
                   cur.term ?? (initialData as FullOrderCalculatorFields).dealerAdditionalServices[0].loanTerm,
@@ -112,17 +111,14 @@ export function useInitialValues<D extends boolean | undefined>(
 
           switch (cur.bankOptionType) {
             case OptionType.EQUIPMENT: {
-              if (
-                acc.additionalEquipments.length === 1 &&
-                !checkIsNumber(acc.additionalEquipments[0].productType)
-              ) {
+              if (acc.additionalEquipments.length === 1 && !acc.additionalEquipments[0].productType) {
                 acc.additionalEquipments.shift()
               }
               acc.additionalEquipments.push({
                 ...additionalServiceBaseData,
                 ...initialAdditionalServiceDocInfo,
                 [FormFieldNameMap.broker]:
-                  stringToNumber(cur.broker?.vendorCode) ??
+                  cur.broker?.vendorCode ||
                   (initialData as FullOrderCalculatorFields).additionalEquipments[0].broker,
                 ...additionalServiceRequisitesData,
                 ...additionalEquipmentsData,
@@ -130,10 +126,7 @@ export function useInitialValues<D extends boolean | undefined>(
               break
             }
             case OptionType.DEALER: {
-              if (
-                acc.dealerAdditionalServices.length === 1 &&
-                !checkIsNumber(acc.dealerAdditionalServices[0].productType)
-              ) {
+              if (acc.dealerAdditionalServices.length === 1 && !acc.dealerAdditionalServices[0].productType) {
                 acc.dealerAdditionalServices.shift()
               }
               acc.dealerAdditionalServices.push({
@@ -145,14 +138,12 @@ export function useInitialValues<D extends boolean | undefined>(
               break
             }
             case OptionType.BANK: {
-              if (
-                acc.bankAdditionalServices.length === 1 &&
-                !checkIsNumber(acc.bankAdditionalServices[0].productType)
-              ) {
+              if (acc.bankAdditionalServices.length === 1 && !acc.bankAdditionalServices[0].productType) {
                 acc.bankAdditionalServices.shift()
               }
               acc.bankAdditionalServices.push({
-                [FormFieldNameMap.productType]: cur.type ?? initialData.bankAdditionalServices[0].productType,
+                [FormFieldNameMap.productType]:
+                  `${cur.type}` ?? initialData.bankAdditionalServices[0].productType,
                 [FormFieldNameMap.productCost]: `${
                   cur.price ?? initialData.bankAdditionalServices[0].productCost
                 }`,
@@ -201,8 +192,7 @@ export function useInitialValues<D extends boolean | undefined>(
           ? new Date(loanCar.dkpDate)
           : (initialData as FullOrderCalculatorFields).salesContractDate,
         [FormFieldNameMap.legalPersonCode]:
-          stringToNumber(vendor?.broker?.vendorCode) ??
-          (initialData as FullOrderCalculatorFields).legalPersonCode,
+          vendor?.broker?.vendorCode ?? (initialData as FullOrderCalculatorFields).legalPersonCode,
         [FormFieldNameMap.loanAmount]: `${
           loanData?.amount ?? (initialData as FullOrderCalculatorFields).loanAmount
         }`,
@@ -241,7 +231,7 @@ export function useInitialValues<D extends boolean | undefined>(
           [FormFieldNameMap.carYear]: loanCar?.autoCreateYear ?? initialData.carYear,
           [FormFieldNameMap.carCost]: `${loanCar?.autoPrice ?? initialData.carCost}`,
           [FormFieldNameMap.carMileage]: loanCar?.mileage ?? initialData.carMileage,
-          [FormFieldNameMap.creditProduct]: loanData?.productId ?? initialData.creditProduct,
+          [FormFieldNameMap.creditProduct]: loanData?.productId || initialData.creditProduct,
           [FormFieldNameMap.initialPayment]: `${loanData?.downpayment ?? initialData.initialPayment}`,
           [FormFieldNameMap.initialPaymentPercent]: `${
             loanData?.downpaymentInPercent ?? initialData.initialPaymentPercent

@@ -1,20 +1,21 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 
 import { Box } from '@mui/material'
 import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
+import { FULL_INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/constants'
 import {
   BankAdditionalOption,
   useGetVendorOptionsQuery,
 } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+import { useRequiredService } from 'common/OrderCalculator/hooks/useRequiredService'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { checkIsNumber } from 'shared/lib/helpers'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
-import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { useCreditProductsData } from '../../../../../hooks/useCreditProductsData'
 import { useCreditProductsLimits } from '../../../../../hooks/useCreditProductsLimits'
@@ -32,17 +33,14 @@ type Props = {
   disabledSubmit: boolean
 }
 
-export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }: Props) {
+export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, disabledSubmit }: Props, ref) => {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
-  const vendorCodeNumber = stringToNumber(vendorCode)
   const {
     data: vendorOptions,
     isLoading: isVendorOptionsLoading,
     isSuccess: isVendorOptionsSuccess,
-  } = useGetVendorOptionsQuery({
-    vendorCode: vendorCodeNumber,
-  })
+  } = useGetVendorOptionsQuery({ vendorCode })
 
   const {
     initialPaymentData,
@@ -55,7 +53,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
     isLoadedCreditProducts,
-  } = useCreditProductsData(vendorCodeNumber)
+  } = useCreditProductsData(vendorCode)
   const { creditProducts, initialPaymentHelperText, initialPaymentPercentHelperText } =
     useCreditProductsLimits(
       initialPaymentData,
@@ -65,10 +63,13 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
       isGetCarsSuccess,
     )
   const { loanTerms } = useCreditProductsTerms(creditDurationData, creditProductsData, durationMaxFromAge)
-  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(
-    initialPaymentData,
-    creditProductsData.currentProduct,
-  )
+  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(initialPaymentData)
+  const { selectedRequiredOptionsMap } = useRequiredService({
+    creditProductsData,
+    additionalOptionsMap: vendorOptions?.additionalOptionsMap,
+    isVendorOptionsSuccess,
+    initialBankAdditionalService: FULL_INITIAL_BANK_ADDITIONAL_SERVICE,
+  })
 
   const additionalEquipments = useMemo(
     () =>
@@ -137,7 +138,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
       )}
 
       {isSectionLoaded && (
-        <Box className={classes.gridWrapper} data-testid="fullOrderSettingsArea">
+        <Box className={classes.gridWrapper} ref={ref} data-testid="fullOrderSettingsArea">
           <CommonOrderSettings
             disabled={disabled}
             creditProducts={creditProducts}
@@ -152,7 +153,11 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
             isNecessaryCasco={isNecessaryCasco}
             isLoadedCreditProducts={isLoadedCreditProducts}
           />
-          <AdditionalBankService additionalServices={bankAdditionalServices} clientAge={clientAge} />
+          <AdditionalBankService
+            additionalServices={bankAdditionalServices}
+            clientAge={clientAge}
+            selectedRequiredOptionsMap={selectedRequiredOptionsMap}
+          />
 
           {!!commonErrors.length && (
             <Box className={classes.errorList}>
@@ -182,4 +187,4 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
       )}
     </CollapsibleFormAreaContainer>
   )
-}
+})

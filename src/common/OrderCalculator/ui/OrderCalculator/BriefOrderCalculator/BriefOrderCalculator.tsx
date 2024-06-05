@@ -15,9 +15,17 @@ type Props = {
   isSubmitLoading: boolean
   onSubmit: (data: CalculateCreditRequest, onSuccess: () => void) => void
   onChangeForm: (saveValuesToStoreCb: () => void) => void
+  creditProductId: string | undefined
+  resetCreditProductId: () => void
 }
 
-export function BriefOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }: Props) {
+export function BriefOrderCalculator({
+  isSubmitLoading,
+  onSubmit,
+  onChangeForm,
+  creditProductId,
+  resetCreditProductId,
+}: Props) {
   const classes = useStyles()
 
   const { initialValues, hasCustomInitialValues } = useInitialValues(initialValueMap, undefined)
@@ -43,6 +51,8 @@ export function BriefOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }
           remapApplicationValues={remapApplicationValues}
           isDisabledFormSubmit={isDisabled}
           enableFormSubmit={enableFormSubmit}
+          creditProductId={creditProductId}
+          resetCreditProductId={resetCreditProductId}
         />
       </Formik>
     </Box>

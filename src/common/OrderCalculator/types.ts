@@ -1,7 +1,8 @@
-import { Car } from '@sberauto/dictionarydc-proto/public'
+import { Car, CreditProduct } from '@sberauto/dictionarydc-proto/public'
 import { DocType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ProductsMap, RequiredProduct } from 'entities/reduxStore/orderSlice'
 
 export enum FormFieldNameMap {
   carCondition = 'carCondition', //Состояние
@@ -72,7 +73,7 @@ export interface OrderCalculatorBankAdditionalService
     OrderCalculatorAdditionalService,
     `${FormFieldNameMap.isCredit}` | `${FormFieldNameMap.cascoLimit}`
   > {
-  [FormFieldNameMap.tariff]: number | null
+  [FormFieldNameMap.tariff]: string | null
   [FormFieldNameMap.loanTerm]: number | null
 }
 
@@ -99,7 +100,7 @@ export interface FullInitialAdditionalEquipments
   extends OrderCalculatorAdditionalService,
     OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
-  [FormFieldNameMap.broker]: number | null
+  [FormFieldNameMap.broker]: string | null
   [FormFieldNameMap.brokerName]?: string
   [FormFieldNameMap.taxValue]?: number
   [FormFieldNameMap.taxPercent]?: number
@@ -109,9 +110,9 @@ export interface FullInitialAdditionalService
   extends OrderCalculatorAdditionalService,
     OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
-  [FormFieldNameMap.provider]: number | null
+  [FormFieldNameMap.provider]: string | null
   [FormFieldNameMap.providerName]?: string
-  [FormFieldNameMap.broker]: number | null
+  [FormFieldNameMap.broker]: string | null
   [FormFieldNameMap.brokerName]?: string
   [FormFieldNameMap.loanTerm]: number | null
   [FormFieldNameMap.taxValue]?: number
@@ -119,9 +120,9 @@ export interface FullInitialAdditionalService
 }
 
 export interface FullInitialBankAdditionalService extends OrderCalculatorBankAdditionalService {
-  [FormFieldNameMap.provider]: number | null
+  [FormFieldNameMap.provider]: string | null
   [FormFieldNameMap.providerName]?: string
-  [FormFieldNameMap.broker]?: number
+  [FormFieldNameMap.broker]?: string
   [FormFieldNameMap.brokerName]?: string
   [FormFieldNameMap.taxValue]?: number
   [FormFieldNameMap.taxPercent]?: number
@@ -157,7 +158,7 @@ export interface BriefOrderCalculatorFields {
   [FormFieldNameMap.carYear]: number | null
   [FormFieldNameMap.carCost]: string
   [FormFieldNameMap.carMileage]: string
-  [FormFieldNameMap.creditProduct]: number | null
+  [FormFieldNameMap.creditProduct]: string | null
   [FormFieldNameMap.initialPayment]: string
   [FormFieldNameMap.initialPaymentPercent]: string
   [FormFieldNameMap.loanTerm]: number | null
@@ -183,7 +184,7 @@ export interface FullOrderCalculatorFields
   [FormFieldNameMap.carId]: string
   [FormFieldNameMap.salesContractId]: string
   [FormFieldNameMap.salesContractDate]: Date | null
-  [FormFieldNameMap.legalPersonCode]?: number
+  [FormFieldNameMap.legalPersonCode]?: string
   [FormFieldNameMap.legalPersonName]?: string
   [FormFieldNameMap.loanAmount]: string
   [FormFieldNameMap.taxValue]?: number
@@ -237,4 +238,31 @@ export interface NormalizedCar extends Car {
 export type NormalizedCars = {
   newCars: Record<string, NormalizedCar>
   usedCars: Record<string, NormalizedCar>
+}
+
+export type UseGetCreditProductListQueryData = {
+  products: RequiredProduct[]
+  productsMap: ProductsMap
+  fullDownpaymentMin?: number
+  fullDownpaymentMax?: number
+  fullDurationMin?: number
+  fullDurationMax?: number
+  creditProducts?: CreditProduct[] | null
+}
+
+export interface InitialPaymentData {
+  minInitialPaymentPercent: number
+  maxInitialPaymentPercent: number
+  minInitialPayment: number
+  maxInitialPayment: number
+}
+
+export interface CreditProductsData {
+  creditProductListData: UseGetCreditProductListQueryData | undefined
+  currentProduct: RequiredProduct | undefined
+}
+
+export interface CreditDurationData {
+  currentDurationMin: number | undefined
+  currentDurationMax: number | undefined
 }

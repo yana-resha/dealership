@@ -10,7 +10,7 @@ import * as useCarSectionModule from 'common/OrderCalculator/hooks/useCarSection
 import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
-import { prepareCreditProduct } from 'common/OrderCalculator/utils/prepareCreditProductListData'
+import { prepareCreditProducts } from 'common/OrderCalculator/utils/prepareCreditProductListData'
 import {
   CAR_BRANDS,
   creditProductListRsData,
@@ -27,6 +27,7 @@ import { FORM_FIELDS } from './OrderCalculator.mock'
 
 disableConsole('error')
 jest.mock('shared/hooks/useScrollToErrorField')
+jest.mock('common/OrderCalculator/hooks/useScrollToOrderSettingsArea')
 
 const createWrapper = ({ store, children }: PropsWithChildren<{ store?: MockStore }>) => (
   <MockProviders mockStore={store}>{children}</MockProviders>
@@ -48,7 +49,7 @@ const getCreditProductListData = {
   fullDownpaymentMax: creditProductListRsData.fullDownpaymentMax
     ? creditProductListRsData.fullDownpaymentMax * 100
     : undefined,
-  ...prepareCreditProduct(creditProductListRsData.creditProducts),
+  ...prepareCreditProducts(creditProductListRsData.creditProducts),
 }
 
 const mockedUseInitialValues = jest.spyOn(useInitialValuesModule, 'useInitialValues')
@@ -90,9 +91,18 @@ describe('OrderCalculator', () => {
 
   describe('Форма отображается корректно', () => {
     beforeEach(() => {
-      render(<BriefOrderCalculator isSubmitLoading={false} onSubmit={fn} onChangeForm={fn} />, {
-        wrapper: createWrapper,
-      })
+      render(
+        <BriefOrderCalculator
+          isSubmitLoading={false}
+          onSubmit={fn}
+          onChangeForm={fn}
+          creditProductId={undefined}
+          resetCreditProductId={() => {}}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
     })
 
     it('Основные поля присутствуют на форме', () => {
@@ -117,9 +127,18 @@ describe('OrderCalculator', () => {
 
   describe('Валидация основных полей формы работает корректно', () => {
     beforeEach(() => {
-      render(<BriefOrderCalculator isSubmitLoading={false} onSubmit={fn} onChangeForm={fn} />, {
-        wrapper: createWrapper,
-      })
+      render(
+        <BriefOrderCalculator
+          isSubmitLoading={false}
+          onSubmit={fn}
+          onChangeForm={fn}
+          creditProductId={undefined}
+          resetCreditProductId={() => {}}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
       userEvent.click(screen.getByText('Рассчитать'))
     })
 
@@ -130,9 +149,18 @@ describe('OrderCalculator', () => {
 
   describe('Дополнительные поля', () => {
     beforeEach(() => {
-      render(<BriefOrderCalculator isSubmitLoading={false} onSubmit={fn} onChangeForm={fn} />, {
-        wrapper: createWrapper,
-      })
+      render(
+        <BriefOrderCalculator
+          isSubmitLoading={false}
+          onSubmit={fn}
+          onChangeForm={fn}
+          creditProductId={undefined}
+          resetCreditProductId={() => {}}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
     })
 
     it('Item добавляется и удаляется, но не последний', async () => {
@@ -151,56 +179,67 @@ describe('OrderCalculator', () => {
     })
   })
 
-  describe('Валидация логики обязательного КАСКО', () => {
-    beforeEach(() => {
-      mockedUseInitialValues.mockImplementation(
-        () =>
-          ({
-            isShouldShowLoading: false,
-            initialValues: {
-              ...initialValueMap,
-              carBrand: CAR_BRANDS.KIA.brand,
-              // Выбран кредитный продукт с cascoFlag=true
-              creditProduct: creditProductListRsData.creditProducts?.[0].productId,
-            },
-          } as any),
-      )
-      render(<BriefOrderCalculator isSubmitLoading={false} onSubmit={fn} onChangeForm={fn} />, {
-        wrapper: createWrapper,
-      })
-      userEvent.click(screen.getByText('Рассчитать'))
-    })
+  // TODO DCB-2027 Удалить логику по обязательности КАСКО
+  // describe('Валидация логики обязательного КАСКО', () => {
+  //   beforeEach(() => {
+  //     mockedUseInitialValues.mockImplementation(
+  //       () =>
+  //         ({
+  //           isShouldShowLoading: false,
+  //           initialValues: {
+  //             ...initialValueMap,
+  //             carBrand: CAR_BRANDS.KIA.brand,
+  //             // Выбран кредитный продукт с cascoFlag=true
+  //             creditProduct: creditProductListRsData.creditProducts?.[0].productId,
+  //           },
+  //         } as any),
+  //     )
+  //     render(
+  //       <BriefOrderCalculator
+  //         isSubmitLoading={false}
+  //         onSubmit={fn}
+  //         onChangeForm={fn}
+  //         creditProductId={undefined}
+  //         resetCreditProductId={() => {}}
+  //       />,
+  //       {
+  //         wrapper: createWrapper,
+  //       },
+  //     )
+  //     userEvent.click(screen.getByText('Рассчитать'))
+  //   })
 
-    it('Если выбран продукт с cascoFlag=true, то появляется предупреждение', async () => {
-      expect(
-        await screen.findByText(
-          'Выбран кредитный продукт с обязательным КАСКО. Необходимо добавить дополнительную услугу КАСКО',
-        ),
-      ).toBeInTheDocument()
-    })
+  //   it('Если выбран продукт с cascoFlag=true, то появляется предупреждение', async () => {
+  //     expect(
+  //       await screen.findByText(
+  //         'Выбран кредитный продукт с обязательным КАСКО. Необходимо добавить дополнительную услугу КАСКО',
+  //       ),
+  //     ).toBeInTheDocument()
+  //   })
 
-    it('Если выбрана опция КАСКО, то предупреждение не появляется, появляется поле Сумма покрытия КАСКО', async () => {
-      expect(await screen.queryByText('Сумма покрытия КАСКО')).not.toBeInTheDocument()
+  //   it('Если выбрана опция КАСКО, то предупреждение не появляется, появляется поле Сумма покрытия КАСКО',
+  //    async () => {
+  //     expect(await screen.queryByText('Сумма покрытия КАСКО')).not.toBeInTheDocument()
 
-      userEvent.click(
-        screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
-      )
-      await act(async () =>
-        userEvent.click(
-          await screen.findByText(
-            mockGetVendorOptionsResponse?.additionalOptions?.find(o => o.optionId === 15)
-              ?.optionName as string,
-          ),
-        ),
-      )
+  //     userEvent.click(
+  //       screen.getByTestId('dealerAdditionalServices[0].productType').firstElementChild as Element,
+  //     )
+  //     await act(async () =>
+  //       userEvent.click(
+  //         await screen.findByText(
+  //           mockGetVendorOptionsResponse?.additionalOptions?.find(o => o.optionId === 15)
+  //             ?.optionName as string,
+  //         ),
+  //       ),
+  //     )
 
-      expect(
-        await screen.queryByText(
-          'Выбран кредитный продукт с обязательным КАСКО. Необходимо добавить дополнительную услугу КАСКО',
-        ),
-      ).not.toBeInTheDocument()
+  //     expect(
+  //       await screen.queryByText(
+  //         'Выбран кредитный продукт с обязательным КАСКО. Необходимо добавить дополнительную услугу КАСКО',
+  //       ),
+  //     ).not.toBeInTheDocument()
 
-      expect(await screen.queryByText('Сумма покрытия КАСКО')).toBeInTheDocument()
-    })
-  })
+  //     expect(await screen.queryByText('Сумма покрытия КАСКО')).toBeInTheDocument()
+  //   })
+  // })
 })

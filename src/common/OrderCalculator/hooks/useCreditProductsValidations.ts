@@ -4,18 +4,17 @@ import { useField, useFormikContext } from 'formik'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 
-import { RequiredProduct } from '../../../entities/reduxStore/orderSlice'
 import { CASCO_OPTION_ID, formMessages } from '../config'
 import {
   BriefOrderCalculatorFields,
   CommonError,
   FormFieldNameMap,
   FormMessages,
+  InitialPaymentData,
   OrderCalculatorAdditionalService,
   OrderCalculatorBankAdditionalService,
   ValidationParams,
 } from '../types'
-import { InitialPaymentData } from './useCreditProductsData'
 
 const ADDITIONAL_EQUIPMENT_FROM_CAR_COST_SETPOINT = 0.3
 const DEALER_ADDITIONAL_SERVICES_FROM_CAR_COST_SETPOINT = 0.45
@@ -29,7 +28,7 @@ export function getServicesTotalCost(
 ) {
   return services.reduce((acc, cur) => {
     const isCredit = isBankServices ? true : (cur as OrderCalculatorAdditionalService).isCredit
-    if (typeof cur.productType !== 'number' || !cur.productCost || (onlyCredit && !isCredit)) {
+    if (typeof cur.productType !== 'string' || !cur.productCost || (onlyCredit && !isCredit)) {
       return acc
     }
     const productCost = parseFloat(cur.productCost)
@@ -49,10 +48,7 @@ export function checkIfExceededServicesLimit(carCost: number, criterion: boolean
   return criterion
 }
 
-export function useCreditProductsValidations(
-  initialPayment: InitialPaymentData,
-  currentProduct: RequiredProduct | undefined,
-) {
+export function useCreditProductsValidations(initialPayment: InitialPaymentData) {
   const [validationParamsField, , { setValue: setValidationParams }] = useField<ValidationParams>(
     FormFieldNameMap.validationParams,
   )
@@ -172,22 +168,23 @@ export function useCreditProductsValidations(
     isExceededServicesTotalLimit,
   ])
 
-  const isNecessaryCasco = !!currentProduct?.cascoFlag
+  // TODO DCB-2027 Удалить логику по обязательности КАСКО
+  const isNecessaryCasco = false
   /*
   В initialValues формика прописано свойство validationParams. Поля для него нет,
   оно служит для передачи внешних данных (isNecessaryCasco...) в схему валидации.
   В данном эффекте это и производится, если значение изменилось
   */
   useEffect(() => {
-    if (validationParamsField.value.isNecessaryCasco !== !!currentProduct?.cascoFlag) {
+    if (validationParamsField.value.isNecessaryCasco !== isNecessaryCasco) {
       setValidationParams({
         ...validationParamsField.value,
-        isNecessaryCasco: !!currentProduct?.cascoFlag,
+        isNecessaryCasco: isNecessaryCasco,
       })
     }
     // Исключили setValidationParams что бы избежать случайного перерендера
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentProduct?.cascoFlag, validationParamsField.value])
+  }, [isNecessaryCasco, validationParamsField.value])
 
   const isHasCasco = dealerAdditionalServices.some(e => e.productType === CASCO_OPTION_ID)
 
@@ -214,7 +211,7 @@ export function useCreditProductsValidations(
     }
     // Исключили setCommonErrors что бы избежать случайного перерендера
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [commonErrorsField.value, currentProduct?.cascoFlag, isHasCasco])
+  }, [commonErrorsField.value, isNecessaryCasco, isHasCasco])
 
   /*
   Если поля были предзаполнены, и кнопка submit не нажималась,

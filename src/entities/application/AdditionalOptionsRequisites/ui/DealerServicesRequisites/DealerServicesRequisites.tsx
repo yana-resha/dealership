@@ -39,7 +39,7 @@ type Props = {
   isLoadedCreditProducts?: boolean
   isRequisiteEditable: boolean
   productOptions?: {
-    value: number
+    value: string
     label: string
   }[]
   arrayHelpers?: ArrayHelpers

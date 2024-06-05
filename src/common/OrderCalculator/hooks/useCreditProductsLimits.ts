@@ -6,8 +6,12 @@ import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { formatMoney, formatNumber } from 'shared/lib/utils'
 
-import { BriefOrderCalculatorFields, FormFieldNameMap } from '../types'
-import { CreditProductsData, InitialPaymentData } from './useCreditProductsData'
+import {
+  BriefOrderCalculatorFields,
+  CreditProductsData,
+  FormFieldNameMap,
+  InitialPaymentData,
+} from '../types'
 
 export function useCreditProductsLimits(
   initialPaymentData: InitialPaymentData,
@@ -61,7 +65,7 @@ export function useCreditProductsLimits(
           creditProducts: [],
           isValidCreditProduct: false,
         } as {
-          creditProducts: { value: number; label: string }[]
+          creditProducts: { value: string; label: string }[]
           isValidCreditProduct: boolean
         },
       ),

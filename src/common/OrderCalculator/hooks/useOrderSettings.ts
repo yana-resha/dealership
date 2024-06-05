@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { CalculateCreditRequest, CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
+import {
+  CalculateCreditRequest,
+  CalculatedProduct,
+  RequiredServiceFlag,
+} from '@sberauto/dictionarydc-proto/public'
 import { LoanDataFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 
@@ -10,7 +14,6 @@ import { ErrorAlias, ErrorCode, getErrorMessage } from 'shared/api/errors'
 import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { checkIsNumber } from 'shared/lib/helpers'
 
 import { useOrderContext } from '../ui/OrderContext'
 
@@ -23,6 +26,7 @@ export function useOrderSettings(nextStep: () => void) {
   const { enqueueSnackbar } = useSnackbar()
 
   const [bankOffers, setBankOffers] = useState<CalculatedProduct[] | null>(null)
+  const [creditProductId, setCreditProductId] = useState<string>()
   const {
     mutate: calculateCreditMutate,
     isError: isOfferError,
@@ -46,6 +50,8 @@ export function useOrderSettings(nextStep: () => void) {
     },
     [clearBankOfferList, dispatch, onChangeForm],
   )
+
+  const resetCreditProductId = useCallback(() => setCreditProductId(undefined), [])
 
   const calculateCredit = useCallback(
     async (data: CalculateCreditRequest, onSuccess: () => void) =>
@@ -74,8 +80,14 @@ export function useOrderSettings(nextStep: () => void) {
   const handleCreditProductClick = useCallback(
     (bankOffer: CalculatedProduct) => {
       const creditProduct = productsMap?.[`${bankOffer.productId}`]
-
       const condition = creditProduct?.conditions?.find(c => c.id === bankOffer.conditionId)
+
+      if (bankOffer.requiredServiceFlag === RequiredServiceFlag.REQUIRED) {
+        clearBankOfferList()
+        setCreditProductId(bankOffer.productId)
+
+        return
+      }
 
       const loanData: LoanDataFrontdc = {
         ...orderData?.application?.loanData,
@@ -98,15 +110,12 @@ export function useOrderSettings(nextStep: () => void) {
         term: bankOffer?.term,
         amount: bankOffer?.amountWithoutPercent,
         amountWithoutOptions: bankOffer?.amountWithoutOptions,
-        cascoInProduct: bankOffer?.cascoFlag,
         incomeProduct: bankOffer?.incomeFlag,
         productRates: {
           baseRate: condition?.baseRate,
           rateGrntyPeriod: condition?.rateGrntyPeriod,
           rateNewGrnty: condition?.rateNewGrnty,
           rateNonGrnty: condition?.rateNonGrnty,
-          rateDiscountCpi: condition?.rateDiscountCpi,
-          ratePenaltyCasco: condition?.ratePenaltyCasco,
         },
         overpayment: bankOffer.overpayment,
       }
@@ -115,7 +124,7 @@ export function useOrderSettings(nextStep: () => void) {
 
       nextStep()
     },
-    [productsMap, dispatch, nextStep, orderData],
+    [clearBankOfferList, dispatch, nextStep, orderData?.application?.loanData, productsMap],
   )
 
   useEffect(() => {
@@ -139,5 +148,7 @@ export function useOrderSettings(nextStep: () => void) {
     calculateCredit,
     handleFormChange,
     handleCreditProductClick,
+    creditProductId,
+    resetCreditProductId,
   }
 }

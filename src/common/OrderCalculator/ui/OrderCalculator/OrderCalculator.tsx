@@ -28,6 +28,8 @@ export function OrderCalculator({ nextStep }: Props) {
     calculateCredit,
     handleFormChange,
     handleCreditProductClick,
+    creditProductId,
+    resetCreditProductId,
   } = useOrderSettings(nextStep)
 
   return (
@@ -37,12 +39,16 @@ export function OrderCalculator({ nextStep }: Props) {
           isSubmitLoading={isOfferLoading}
           onSubmit={calculateCredit}
           onChangeForm={handleFormChange}
+          creditProductId={creditProductId}
+          resetCreditProductId={resetCreditProductId}
         />
       ) : (
         <BriefOrderCalculator
           isSubmitLoading={isOfferLoading}
           onSubmit={calculateCredit}
           onChangeForm={handleFormChange}
+          creditProductId={creditProductId}
+          resetCreditProductId={resetCreditProductId}
         />
       )}
       {isOfferError && (

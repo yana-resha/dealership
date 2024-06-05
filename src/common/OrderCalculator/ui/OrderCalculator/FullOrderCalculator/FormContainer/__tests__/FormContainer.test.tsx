@@ -7,6 +7,8 @@ import { MockProviders } from 'tests/mocks'
 
 import { FormContainer } from '../FormContainer'
 
+jest.mock('common/OrderCalculator/hooks/useScrollToOrderSettingsArea')
+
 const createWrapper = ({ children }: PropsWithChildren) => (
   <MockProviders>
     <Formik
@@ -68,6 +70,8 @@ describe('FormContainer', () => {
         remapApplicationValues={mockedRemapApplicationValues}
         isDisabledFormSubmit={false}
         enableFormSubmit={mockedEnableFormSubmit}
+        creditProductId={undefined}
+        resetCreditProductId={() => {}}
       />,
       {
         wrapper: createWrapper,

@@ -2,35 +2,28 @@ import { PropsWithChildren } from 'react'
 
 import { renderHook } from '@testing-library/react-hooks'
 import { Form, Formik } from 'formik'
-import { UseQueryResult } from 'react-query'
 import configureMockStore from 'redux-mock-store'
 
-import { Order } from '../../../../entities/reduxStore/orderSlice'
-import { MockProviders } from '../../../../tests/mocks'
+import { Order } from 'entities/reduxStore/orderSlice'
+import { MockProviders } from 'tests/mocks'
+
 import { BriefOrderCalculatorFields } from '../../types'
 import {
   checkIfExceededServicesLimit,
   getServicesTotalCost,
   useCreditProductsValidations,
 } from '../useCreditProductsValidations'
-import * as useGetCreditProductListQueryModule from '../useGetCreditProductListQuery'
 import { mockedUseGetCarsListQueryData } from './useGetCarsListQuery.mock'
-import { mockedUseGetCreditProductListQueryResponseData } from './useGetCreditProductListQuery.mock'
 import {
   BANK_ADDITIONAL_SERVICES,
   DEALER_ADDITIONAL_SERVICES,
   EXPECTED_ADDITIONAL_EQUIPMENTS,
   initialData,
-  MOCKED_CREDIT_PRODUCTS_DATA,
   MOCKED_INITIAL_PAYMENT_DATA,
   MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
   MOCKED_STATE_WITH_DATA,
 } from './useLimits.mock'
 
-const mockedUseGetCreditProductListQuery = jest.spyOn(
-  useGetCreditProductListQueryModule,
-  'useGetCreditProductListQuery',
-)
 jest.mock('common/OrderCalculator/hooks/useCarSection', () => ({
   useCarSection: () => ({
     cars: mockedUseGetCarsListQueryData.usedCars,
@@ -55,162 +48,140 @@ const createWrapper =
 
 describe('useCreditProductValidations', () => {
   describe('Хук возвращает корректные данные', () => {
-    it('Возвращается корректный isNecessaryCasco выбранного продукта', async () => {
+    // TODO DCB-2027 Удалить логику по обязательности КАСКО
+    // it('Возвращается корректный isNecessaryCasco выбранного продукта', async () => {
+    //   const { result } = renderHook(
+    //     () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT),
+    //     {
+    //       wrapper: createWrapper({
+    //         ...initialData,
+    //         creditProduct: 2,
+    //       }),
+    //     },
+    //   )
+    //   const { isNecessaryCasco } = result.current
+    //   expect(isNecessaryCasco).toEqual(true)
+    // })
+    it('Если суммы доп. оборудования или дилерских услуг, или банковских услуг превышают от определенный процент от стоимости автомобиля, то возвращаются ошибки в commonErrors', async () => {
       const { result } = renderHook(
-        () =>
-          useCreditProductsValidations(
-            MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-            MOCKED_CREDIT_PRODUCTS_DATA.currentProduct,
-          ),
+        () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT),
         {
           wrapper: createWrapper({
             ...initialData,
-            creditProduct: 2,
+            additionalEquipments: [
+              ...EXPECTED_ADDITIONAL_EQUIPMENTS,
+              { productType: '1', productCost: '1', isCredit: false, cascoLimit: '' },
+            ],
+            dealerAdditionalServices: [
+              ...DEALER_ADDITIONAL_SERVICES,
+              { productType: '1', productCost: '1', isCredit: false, cascoLimit: '' },
+            ],
+            bankAdditionalServices: [
+              ...BANK_ADDITIONAL_SERVICES,
+              { productType: '1', productCost: '1', tariff: '1', loanTerm: null },
+            ],
           }),
         },
       )
-      const { isNecessaryCasco } = result.current
-      expect(isNecessaryCasco).toEqual(true)
+      const { commonErrors } = result.current
+      expect(
+        commonErrors.includes(
+          'Общая стоимость дополнительного оборудования не должна превышать 30% от стоимости авто',
+        ),
+      ).toEqual(true)
+      expect(
+        commonErrors.includes(
+          'Общая стоимость дополнительных услуг дилера не должна превышать 45% от стоимости авто',
+        ),
+      ).toEqual(true)
+      expect(
+        commonErrors.includes(
+          'Общая стоимость дополнительных услуг банка не должна превышать 30% от стоимости авто',
+        ),
+      ).toEqual(true)
     })
-  })
-  it('Если суммы доп. оборудования или дилерских услуг, или банковских услуг превышают от определенный процент от стоимости автомобиля, то возвращаются ошибки в commonErrors', async () => {
-    const { result } = renderHook(
-      () =>
-        useCreditProductsValidations(
-          MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-          MOCKED_CREDIT_PRODUCTS_DATA.currentProduct,
+    it('Если суммы доп. оборудования или дилерских услуг, или банковских услуг не превышают от определенный процент от стоимости автомобиля, то соответствующих ошибок в commonErrors нет', async () => {
+      const { result } = renderHook(
+        () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT),
+        {
+          wrapper: createWrapper({
+            ...initialData,
+            additionalEquipments: EXPECTED_ADDITIONAL_EQUIPMENTS,
+            dealerAdditionalServices: DEALER_ADDITIONAL_SERVICES,
+            bankAdditionalServices: BANK_ADDITIONAL_SERVICES,
+          }),
+        },
+      )
+      const { commonErrors } = result.current
+      expect(
+        commonErrors.includes(
+          'Общая стоимость дополнительного оборудования не должна превышать 30% от стоимости авто',
         ),
-      {
-        wrapper: createWrapper({
-          ...initialData,
-          additionalEquipments: [
-            ...EXPECTED_ADDITIONAL_EQUIPMENTS,
-            { productType: 1, productCost: '1', isCredit: false, cascoLimit: '' },
-          ],
-          dealerAdditionalServices: [
-            ...DEALER_ADDITIONAL_SERVICES,
-            { productType: 1, productCost: '1', isCredit: false, cascoLimit: '' },
-          ],
-          bankAdditionalServices: [
-            ...BANK_ADDITIONAL_SERVICES,
-            { productType: 1, productCost: '1', tariff: 1, loanTerm: null },
-          ],
-        }),
-      },
-    )
-    const { commonErrors } = result.current
-    expect(
-      commonErrors.includes(
-        'Общая стоимость дополнительного оборудования не должна превышать 30% от стоимости авто',
-      ),
-    ).toEqual(true)
-    expect(
-      commonErrors.includes(
-        'Общая стоимость дополнительных услуг дилера не должна превышать 45% от стоимости авто',
-      ),
-    ).toEqual(true)
-    expect(
-      commonErrors.includes(
-        'Общая стоимость дополнительных услуг банка не должна превышать 30% от стоимости авто',
-      ),
-    ).toEqual(true)
-  })
-  it('Если суммы доп. оборудования или дилерских услуг, или банковских услуг не превышают от определенный процент от стоимости автомобиля, то соответствующих ошибок в commonErrors нет', async () => {
-    const { result } = renderHook(
-      () =>
-        useCreditProductsValidations(
-          MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-          MOCKED_CREDIT_PRODUCTS_DATA.currentProduct,
+      ).toEqual(false)
+      expect(
+        commonErrors.includes(
+          'Общая стоимость дополнительных услуг дилера не должна превышать 45% от стоимости авто',
         ),
-      {
-        wrapper: createWrapper({
-          ...initialData,
-          additionalEquipments: EXPECTED_ADDITIONAL_EQUIPMENTS,
-          dealerAdditionalServices: DEALER_ADDITIONAL_SERVICES,
-          bankAdditionalServices: BANK_ADDITIONAL_SERVICES,
-        }),
-      },
-    )
-    const { commonErrors } = result.current
-    expect(
-      commonErrors.includes(
-        'Общая стоимость дополнительного оборудования не должна превышать 30% от стоимости авто',
-      ),
-    ).toEqual(false)
-    expect(
-      commonErrors.includes(
-        'Общая стоимость дополнительных услуг дилера не должна превышать 45% от стоимости авто',
-      ),
-    ).toEqual(false)
-    expect(
-      commonErrors.includes(
-        'Общая стоимость дополнительных услуг банка не должна превышать 30% от стоимости авто',
-      ),
-    ).toEqual(false)
-  })
-  it('Если сумма сумм доп. оборудования, дилерских услуг, банковских услуг превышает 45% от стоимости автомобиля, то возвращается соответствующая ошибка в commonErrors', async () => {
-    const { result } = renderHook(
-      () =>
-        useCreditProductsValidations(
-          MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-          MOCKED_CREDIT_PRODUCTS_DATA.currentProduct,
+      ).toEqual(false)
+      expect(
+        commonErrors.includes(
+          'Общая стоимость дополнительных услуг банка не должна превышать 30% от стоимости авто',
         ),
-      {
-        wrapper: createWrapper({
-          ...initialData,
-          additionalEquipments: [EXPECTED_ADDITIONAL_EQUIPMENTS[0]],
-          dealerAdditionalServices: [DEALER_ADDITIONAL_SERVICES[0]],
-          bankAdditionalServices: [
-            BANK_ADDITIONAL_SERVICES[1],
-            {
-              productType: 1,
-              productCost: '1',
-              tariff: 1,
-              loanTerm: null,
-            },
-          ],
-        }),
-      },
-    )
-    const { commonErrors } = result.current
-    expect(
-      commonErrors.includes(
-        'Общая стоимость дополнительных услуг и оборудования не должна превышать 45% от стоимости авто',
-      ),
-    ).toEqual(true)
-  })
-  it('Если сумма сумм доп. оборудования, дилерских услуг, банковских услуг не превышает 45% от стоимости автомобиля, то соответствующей ошибки в commonErrors нет', async () => {
-    const { result } = renderHook(
-      () =>
-        useCreditProductsValidations(
-          MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-          MOCKED_CREDIT_PRODUCTS_DATA.currentProduct,
+      ).toEqual(false)
+    })
+    it('Если сумма сумм доп. оборудования, дилерских услуг, банковских услуг превышает 45% от стоимости автомобиля, то возвращается соответствующая ошибка в commonErrors', async () => {
+      const { result } = renderHook(
+        () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT),
+        {
+          wrapper: createWrapper({
+            ...initialData,
+            additionalEquipments: [EXPECTED_ADDITIONAL_EQUIPMENTS[0]],
+            dealerAdditionalServices: [DEALER_ADDITIONAL_SERVICES[0]],
+            bankAdditionalServices: [
+              BANK_ADDITIONAL_SERVICES[1],
+              {
+                productType: '1',
+                productCost: '1',
+                tariff: '1',
+                loanTerm: null,
+              },
+            ],
+          }),
+        },
+      )
+      const { commonErrors } = result.current
+      expect(
+        commonErrors.includes(
+          'Общая стоимость дополнительных услуг и оборудования не должна превышать 45% от стоимости авто',
         ),
-      {
-        wrapper: createWrapper({
-          ...initialData,
-          additionalEquipments: [EXPECTED_ADDITIONAL_EQUIPMENTS[0]],
-          dealerAdditionalServices: [DEALER_ADDITIONAL_SERVICES[0]],
-          bankAdditionalServices: [BANK_ADDITIONAL_SERVICES[1]],
-        }),
-      },
-    )
-    const { commonErrors } = result.current
-    expect(
-      commonErrors.includes(
-        'Общая стоимость дополнительных услуг и оборудования не должна превышать 45% от стоимости авто',
-      ),
-    ).toEqual(false)
+      ).toEqual(true)
+    })
+    it('Если сумма сумм доп. оборудования, дилерских услуг, банковских услуг не превышает 45% от стоимости автомобиля, то соответствующей ошибки в commonErrors нет', async () => {
+      const { result } = renderHook(
+        () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT),
+        {
+          wrapper: createWrapper({
+            ...initialData,
+            additionalEquipments: [EXPECTED_ADDITIONAL_EQUIPMENTS[0]],
+            dealerAdditionalServices: [DEALER_ADDITIONAL_SERVICES[0]],
+            bankAdditionalServices: [BANK_ADDITIONAL_SERVICES[1]],
+          }),
+        },
+      )
+      const { commonErrors } = result.current
+      expect(
+        commonErrors.includes(
+          'Общая стоимость дополнительных услуг и оборудования не должна превышать 45% от стоимости авто',
+        ),
+      ).toEqual(false)
+    })
   })
 
   describe('Эффекты', () => {
     it('Если кредитный продукт не выбран, то параметры валидации соответствуют дефолтным значения из ручки GetCreditProductList', async () => {
-      const { result } = renderHook(
-        () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA, undefined),
-        {
-          wrapper: createWrapper(initialData),
-        },
-      )
+      const { result } = renderHook(() => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA), {
+        wrapper: createWrapper(initialData),
+      })
       const { values } = result.current
       expect(values.validationParams).toEqual({
         isNecessaryCasco: false,
@@ -223,50 +194,42 @@ describe('useCreditProductValidations', () => {
   })
   it('Если КП выбран, то параметры валидации соответствуют данным из КП', async () => {
     const { result } = renderHook(
-      () =>
-        useCreditProductsValidations(
-          MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-          MOCKED_CREDIT_PRODUCTS_DATA.currentProduct,
-        ),
+      () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT),
       {
-        wrapper: createWrapper({ ...initialData, creditProduct: 2 }),
+        wrapper: createWrapper({ ...initialData, creditProduct: '2' }),
       },
     )
     const { values } = result.current
     expect(values.validationParams).toEqual({
-      isNecessaryCasco: true,
+      isNecessaryCasco: false,
       maxInitialPayment: 80,
       maxInitialPaymentPercent: 80,
       minInitialPayment: 20,
       minInitialPaymentPercent: 20,
     })
   })
-  it('Если в выбранном КП КАСКО обязателено, а оно не выбрано, то есть ошибка isHasNotCascoOption', async () => {
-    const { result } = renderHook(
-      () =>
-        useCreditProductsValidations(
-          MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-          MOCKED_CREDIT_PRODUCTS_DATA.currentProduct,
-        ),
-      {
-        wrapper: createWrapper({ ...initialData, creditProduct: 2 }),
-      },
-    )
-    const { values } = result.current
-    expect(values.commonError.isHasNotCascoOption).toEqual(true)
-  })
+  // TODO DCB-2027 Удалить логику по обязательности КАСКО
+  // it('Если в выбранном КП КАСКО обязателено, а оно не выбрано, то есть ошибка isHasNotCascoOption',
+  // async () => {
+  //   const { result } = renderHook(
+  //     () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT),
+  //     {
+  //       wrapper: createWrapper({ ...initialData, creditProduct: 2 }),
+  //     },
+  //   )
+  //   const { values } = result.current
+  //   expect(values.commonError.isHasNotCascoOption).toEqual(true)
+  // })
   it('Если в выбранном КП КАСКО обязателено, и оно выбрано, то нет ошибки isHasNotCascoOption', async () => {
     const { result } = renderHook(
-      () =>
-        useCreditProductsValidations(
-          MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-          MOCKED_CREDIT_PRODUCTS_DATA.currentProduct,
-        ),
+      () => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT),
       {
         wrapper: createWrapper({
           ...initialData,
-          creditProduct: 1,
-          dealerAdditionalServices: [{ productType: 15, productCost: '1', isCredit: false, cascoLimit: '' }],
+          creditProduct: '1',
+          dealerAdditionalServices: [
+            { productType: '15', productCost: '1', isCredit: false, cascoLimit: '' },
+          ],
         }),
       },
     )
@@ -285,7 +248,7 @@ describe('getServicesTotalCost', () => {
         [
           ...DEALER_ADDITIONAL_SERVICES,
           {
-            productType: 1,
+            productType: '1',
             productCost: '30',
             isCredit: false,
             cascoLimit: '',

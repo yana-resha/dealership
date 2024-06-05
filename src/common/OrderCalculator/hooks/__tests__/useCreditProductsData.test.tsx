@@ -8,7 +8,7 @@ import configureMockStore from 'redux-mock-store'
 import { Order } from 'entities/reduxStore/orderSlice'
 
 import { MockProviders } from '../../../../tests/mocks'
-import { BriefOrderCalculatorFields } from '../../types'
+import { BriefOrderCalculatorFields, UseGetCreditProductListQueryData } from '../../types'
 import { useCreditProductsData } from '../useCreditProductsData'
 import * as useGetCreditProductListQueryModule from '../useGetCreditProductListQuery'
 import { mockedUseGetCarsListQueryData } from './useGetCarsListQuery.mock'
@@ -49,10 +49,7 @@ describe('useCreditProductData', () => {
           data: mockedUseGetCreditProductListQueryResponseData,
           isSuccess: true,
           isLoading: false,
-        } as unknown as UseQueryResult<
-          useGetCreditProductListQueryModule.useGetCreditProductListQueryData,
-          unknown
-        >),
+        } as unknown as UseQueryResult<UseGetCreditProductListQueryData, unknown>),
     )
   })
 
@@ -64,12 +61,9 @@ describe('useCreditProductData', () => {
             data: mockedUseGetCreditProductListQueryResponseData,
             isSuccess: true,
             isLoading: true,
-          } as unknown as UseQueryResult<
-            useGetCreditProductListQueryModule.useGetCreditProductListQueryData,
-            unknown
-          >),
+          } as unknown as UseQueryResult<UseGetCreditProductListQueryData, unknown>),
       )
-      const { result } = renderHook(() => useCreditProductsData(1), {
+      const { result } = renderHook(() => useCreditProductsData('1'), {
         wrapper: createWrapper(initialData),
       })
       const { isLoadedCreditProducts } = result.current
@@ -82,12 +76,9 @@ describe('useCreditProductData', () => {
             data: mockedUseGetCreditProductListQueryResponseData,
             isSuccess: false,
             isLoading: false,
-          } as unknown as UseQueryResult<
-            useGetCreditProductListQueryModule.useGetCreditProductListQueryData,
-            unknown
-          >),
+          } as unknown as UseQueryResult<UseGetCreditProductListQueryData, unknown>),
       )
-      const { result } = renderHook(() => useCreditProductsData(1), {
+      const { result } = renderHook(() => useCreditProductsData('1'), {
         wrapper: createWrapper(initialData),
       })
       const { isLoadedCreditProducts } = result.current

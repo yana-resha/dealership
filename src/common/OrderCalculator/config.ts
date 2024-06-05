@@ -19,7 +19,7 @@ import {
 export const CAR_YEARS_LENGTH = 20
 const CAR_YEARS_LENGTH_FOR_NEW_CAR = 2
 export const MIN_LOAN_YEAR_TERM = 1
-export const CASCO_OPTION_ID = 15
+export const CASCO_OPTION_ID = '15'
 
 export function getCarYears(isNewCar = false) {
   const currentYear = new Date().getFullYear()

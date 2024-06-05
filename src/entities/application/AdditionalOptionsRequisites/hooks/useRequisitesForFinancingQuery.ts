@@ -19,14 +19,14 @@ export interface RequiredRequisite extends Requisite {
   bankName: string
 }
 export interface PreparedBroker extends Broker {
-  brokerCode: number
+  brokerCode: string
   requisites: RequiredRequisite[]
 }
 export interface PreparedBrokerMap extends PreparedBroker {
   requisitesMap: Record<string, RequiredRequisite>
 }
 export interface PreparedProviderBroker extends ProviderBroker {
-  providerCode: number
+  providerCode: string
   brokers: PreparedBroker[]
 }
 export interface PreparedProviderBrokerMap extends PreparedProviderBroker {
@@ -48,7 +48,7 @@ export interface PreparedVendor extends VendorRequisites {
 }
 export interface RequisitesForFinancing extends GetRequisitesForFinancingResponse {
   vendor: PreparedVendor
-  dealerOptionsMap: Record<string, PreparedAdditionalOptions> // dima + id. а он нужен?
+  dealerOptionsMap: Record<string, PreparedAdditionalOptions>
   additionalEquipmentsMap: Record<string, PreparedAdditionalEquipment>
   bankOptionsMap: Record<string, PreparedAdditionalOptions>
 }

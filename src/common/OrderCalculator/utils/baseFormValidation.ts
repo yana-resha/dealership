@@ -2,7 +2,6 @@ import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { FieldMessages } from 'shared/constants/fieldMessages'
-import { checkIsNumber } from 'shared/lib/helpers'
 
 import { CASCO_OPTION_ID } from '../config'
 import {
@@ -24,9 +23,9 @@ export function checkBankAdditionalServicesLimit(commonError: CommonError) {
 }
 
 export const additionalServiceBaseValidation = (checkFn: (commonError: CommonError) => void) => ({
-  [FormFieldNameMap.productType]: Yup.number().nullable(),
+  [FormFieldNameMap.productType]: Yup.string().nullable(),
   [FormFieldNameMap.productCost]: Yup.string().when([FormFieldNameMap.productType], {
-    is: (productType: string) => checkIsNumber(productType),
+    is: (productType: string) => !!productType,
     then: schema =>
       schema.required(FieldMessages.required).test(
         'isExceededLimit',
@@ -39,7 +38,7 @@ export const additionalServiceBaseValidation = (checkFn: (commonError: CommonErr
 
 export const bankAdditionalServiceBaseValidation = (checkFn: (commonError: CommonError) => void) => ({
   ...additionalServiceBaseValidation(checkFn),
-  [FormFieldNameMap.tariff]: setRequiredIfHasProductType(Yup.number().nullable()),
+  [FormFieldNameMap.tariff]: setRequiredIfHasProductType(Yup.string().nullable()),
   [FormFieldNameMap.loanTerm]: setRequiredIfHasProductType(Yup.number().nullable()),
 })
 
@@ -49,7 +48,7 @@ export function setRequiredIfNecessaryCasco<T extends YupBaseSchema<string | num
   message?: string,
 ) {
   return schema.when([FormFieldNameMap.productType], {
-    is: (productType: number) => productType === CASCO_OPTION_ID,
+    is: (productType: string) => productType === CASCO_OPTION_ID,
     then: schema =>
       schema.test(
         'isHasNotCascoLimit',
@@ -77,7 +76,7 @@ export function checkIsLowCascoLimit<T extends YupBaseSchema<string | undefined>
             | BriefOrderCalculatorFields
             | FullOrderCalculatorFields) || {}
         const additionalEquipmentsPrice = additionalEquipments.reduce(
-          (acc, cur) => (checkIsNumber(cur.productType) ? acc + parseFloat(cur.productCost || '0') : acc),
+          (acc, cur) => (cur.productType ? acc + parseFloat(cur.productCost || '0') : acc),
           0,
         )
 

@@ -38,7 +38,7 @@ type Props = {
   parentName: ServicesGroupName
   isRequisiteEditable: boolean
   productOptions?: {
-    value: number
+    value: string
     label: string
   }[]
   arrayHelpers?: ArrayHelpers

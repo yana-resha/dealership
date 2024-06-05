@@ -20,23 +20,27 @@ export const HeaderCell = memo(({ header, sortParams, onClick }: Props) => {
   const handleCellClick = () => onClick(header.key)
 
   return (
-    <TableCell className={classes.headerCell}>
+    <TableCell
+      className={cx(classes.headerCell, {
+        [classes.shortHeaderCell]: header.key === HeaderCellKey.REQUIRED_SERVICE_FLAG,
+      })}
+    >
       <Box
         className={cx(classes.headerCellWrapper, {
-          [classes.leftAlignHeaderCellWrapper]: header.key === HeaderCellKey.ProductName,
+          [classes.leftAlignHeaderCellWrapper]: header.key === HeaderCellKey.PRODUCT_NAME,
         })}
       >
         <Box
           className={cx(classes.headerCellContainer, {
             [classes.headerCellContainerForSort]: header.isCanSort,
             [classes.sortedHeaderCellContainer]: sortParams.has(header.key),
-            [classes.leftAlignHeaderCellContainer]: header.key === HeaderCellKey.ProductName,
+            [classes.leftAlignHeaderCellContainer]: header.key === HeaderCellKey.PRODUCT_NAME,
           })}
           onClick={header.isCanSort ? handleCellClick : undefined}
         >
           {header.label?.toUpperCase()}
-          {sortParams.get(header.key) === SortOrder.Asc && <SouthIcon className={classes.sortIcon} />}
-          {sortParams.get(header.key) === SortOrder.Desc && <NorthIcon className={classes.sortIcon} />}
+          {sortParams.get(header.key) === SortOrder.ASC && <SouthIcon className={classes.sortIcon} />}
+          {sortParams.get(header.key) === SortOrder.DESC && <NorthIcon className={classes.sortIcon} />}
         </Box>
       </Box>
     </TableCell>

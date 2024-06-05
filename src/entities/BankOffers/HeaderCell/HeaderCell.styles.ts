@@ -8,6 +8,12 @@ export default makeStyles(theme => ({
     },
   },
 
+  shortHeaderCell: {
+    '&.MuiTableCell-root': {
+      width: '10%',
+    },
+  },
+
   headerCellWrapper: {
     display: 'flex',
     alignItems: 'center',

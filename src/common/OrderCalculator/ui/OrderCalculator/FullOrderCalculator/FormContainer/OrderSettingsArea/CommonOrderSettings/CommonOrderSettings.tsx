@@ -11,7 +11,7 @@ import useStyles from './CommonOrderSettings.styles'
 type Props = {
   disabled: boolean
   creditProducts: {
-    value: number
+    value: string
     label: string
   }[]
   initialPaymentPercentHelperText: string

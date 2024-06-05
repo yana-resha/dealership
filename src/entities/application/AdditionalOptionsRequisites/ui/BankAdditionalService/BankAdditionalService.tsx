@@ -24,7 +24,7 @@ import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
 import useStyles from './BankAdditionalService.styles'
 
 type Props = {
-  options: { value: number; label: string }[]
+  options: { value: string; label: string }[]
   additionalServices: BankAdditionalOption[]
   parentName: ServicesGroupName
   index: number
@@ -35,6 +35,7 @@ type Props = {
   changeIds: (idx: number, changingOption: string, minItems?: number) => void
   isError: boolean
   clientAge: number
+  selectedRequiredOptionsMap: Record<string, boolean>
 }
 
 export function BankAdditionalService({
@@ -49,6 +50,7 @@ export function BankAdditionalService({
   isError,
   servicesItem,
   clientAge,
+  selectedRequiredOptionsMap,
 }: Props) {
   const classes = useStyles()
 
@@ -77,7 +79,7 @@ export function BankAdditionalService({
         .find(service => service.optionId === productType)
         ?.tariffs.filter(
           tariff =>
-            checkIsNumber(tariff.tariffId) &&
+            !!tariff.tariffId &&
             tariff.tariff &&
             checkIsNumber(tariff?.maxClientAge) &&
             checkIsNumber(tariff?.maxTerm),
@@ -113,6 +115,8 @@ export function BankAdditionalService({
     return loanTerms
   }, [clientAge, currentTariff])
 
+  const isRequired = !!selectedRequiredOptionsMap[productType ?? '']
+
   useEffect(() => {
     if (!tariffOptions.some(option => option.value === currentTariffId)) {
       setFieldValue(namePrefix + FormFieldNameMap.tariff, INITIAL_BANK_ADDITIONAL_SERVICE.tariff)
@@ -141,7 +145,7 @@ export function BankAdditionalService({
         placeholder="-"
         options={filteredOptions}
         gridColumn="span 3"
-        disabled={isError}
+        disabled={isError || isRequired}
       />
 
       <SelectInputFormik
@@ -150,7 +154,7 @@ export function BankAdditionalService({
         placeholder="-"
         options={tariffOptions}
         gridColumn="span 3"
-        disabled={!tariffOptions.length || isError}
+        disabled={!tariffOptions.length || isError || isRequired}
       />
 
       <Box gridColumn="span 3" className={classes.bankCostContainer}>
@@ -174,7 +178,7 @@ export function BankAdditionalService({
       {!isError && (
         <Box className={classes.btnContainer} gridColumn="span 1">
           {isLastItem && <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />}
-          <CloseSquareBtn onClick={removeItem} />
+          <CloseSquareBtn onClick={removeItem} disabled={isRequired} />
         </Box>
       )}
     </Box>

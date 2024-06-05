@@ -16,8 +16,16 @@ type Props = {
   isSubmitLoading: boolean
   onSubmit: (data: CalculateCreditRequest, onSuccess: () => void) => void
   onChangeForm: (saveValuesToStore: () => void) => void
+  creditProductId: string | undefined
+  resetCreditProductId: () => void
 }
-export function FullOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }: Props) {
+export function FullOrderCalculator({
+  isSubmitLoading,
+  onSubmit,
+  onChangeForm,
+  creditProductId,
+  resetCreditProductId,
+}: Props) {
   const classes = useStyles()
 
   const { initialValues, hasCustomInitialValues } = useInitialValues(fullInitialValueMap, true)
@@ -43,6 +51,8 @@ export function FullOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }:
           remapApplicationValues={remapApplicationValues}
           isDisabledFormSubmit={isDisabled}
           enableFormSubmit={enableFormSubmit}
+          creditProductId={creditProductId}
+          resetCreditProductId={resetCreditProductId}
         />
       </Formik>
     </Box>

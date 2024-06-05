@@ -46,7 +46,7 @@ type MapCommonValueParams = {
   additionalOptionsMap: Record<string, NonNullableAdditionalOption> | undefined
   bankOptionType: OptionType
   isCredit: boolean
-  provider: number | string | null
+  provider: string | null
   providerName: string | undefined
   isCustomFields?: boolean
   loanTerm?: number | null
@@ -85,11 +85,11 @@ const mapCommonValues = ({
     price: stringToNumber(productCost),
     term: loanTerm ?? undefined,
     vendor: {
-      vendorCode: `${provider ?? ''}` || undefined,
+      vendorCode: provider || undefined,
       vendorName: providerName,
     },
     broker: {
-      vendorCode: `${broker ?? ''}` || undefined,
+      vendorCode: broker || undefined,
       vendorName: brokerName,
       requisites: {
         accountRequisite: {
@@ -118,12 +118,8 @@ export function useMapApplicationFromFullCalculator() {
   const dispatch = useDispatch()
 
   const { vendorCode, vendorName } = getPointOfSaleFromCookies()
-  const vendorCodeNumber = stringToNumber(vendorCode)
-  const { data: vendorOptions } = useGetVendorOptionsQuery(
-    { vendorCode: vendorCodeNumber },
-    { enabled: false },
-  )
-  const { data: carsData } = useGetCarsListQuery({ vendorCode: vendorCodeNumber }, { enabled: false })
+  const { data: vendorOptions } = useGetVendorOptionsQuery({ vendorCode }, { enabled: false })
+  const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
 
   const applicationData = initialOrder?.orderData
 

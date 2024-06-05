@@ -6,7 +6,7 @@ import { Form, Formik } from 'formik'
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
-import { prepareCreditProduct } from 'common/OrderCalculator/utils/prepareCreditProductListData'
+import { prepareCreditProducts } from 'common/OrderCalculator/utils/prepareCreditProductListData'
 import { creditProductListRsData } from 'shared/api/requests/dictionaryDc.mock'
 import { MockProviders } from 'tests/mocks'
 
@@ -21,7 +21,7 @@ const getCreditProductListData = {
   ...creditProductListRsData,
   fullDownpaymentMin: (creditProductListRsData.fullDownpaymentMin as number) * 100,
   fullDownpaymentMax: (creditProductListRsData.fullDownpaymentMax as number) * 100,
-  ...prepareCreditProduct(creditProductListRsData.creditProducts),
+  ...prepareCreditProducts(creditProductListRsData.creditProducts),
 }
 
 const createWrapper =
@@ -56,6 +56,8 @@ describe('useCreditProducts', () => {
           shouldFetchProductsOnStart: false,
           formFields: {},
           initialValueMap: fullInitialValueMap,
+          creditProductId: undefined,
+          resetCreditProductId: () => {},
         }),
       {
         wrapper: createWrapper({
@@ -77,6 +79,8 @@ describe('useCreditProducts', () => {
           shouldFetchProductsOnStart: true,
           formFields: {},
           initialValueMap: fullInitialValueMap,
+          creditProductId: undefined,
+          resetCreditProductId: () => {},
         }),
       {
         wrapper: createWrapper({
@@ -98,6 +102,8 @@ describe('useCreditProducts', () => {
           shouldFetchProductsOnStart: false,
           formFields: {},
           initialValueMap: fullInitialValueMap,
+          creditProductId: undefined,
+          resetCreditProductId: () => {},
         }),
       {
         wrapper: createWrapper({
@@ -136,6 +142,8 @@ describe('useCreditProducts', () => {
           shouldFetchProductsOnStart: false,
           formFields: {},
           initialValueMap: fullInitialValueMap,
+          creditProductId: undefined,
+          resetCreditProductId: () => {},
         }),
       {
         wrapper: createWrapper({

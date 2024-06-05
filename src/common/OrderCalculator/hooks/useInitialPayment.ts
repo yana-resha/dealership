@@ -4,7 +4,6 @@ import { useFormikContext } from 'formik'
 import debounce from 'lodash/debounce'
 
 import { usePrevious } from 'shared/hooks/usePrevious'
-import { checkIsNumber } from 'shared/lib/helpers'
 
 import {
   BriefOrderCalculatorFields,
@@ -61,7 +60,7 @@ export function useInitialPayment(isDisabledForm: boolean) {
 
   const creditEquipmentsCost = (additionalEquipments as OrderCalculatorAdditionalService[]).reduce(
     (acc, cur) =>
-      cur.productType && cur.isCredit && cur.productCost ? acc + parseFloat(cur.productCost) : acc,
+      !!cur.productType && cur.isCredit && cur.productCost ? acc + parseFloat(cur.productCost) : acc,
     0,
   )
   /* Значение процентов отсчитывается от суммы стоимости автомобиля + сумма тех едениц доп. оборудования,

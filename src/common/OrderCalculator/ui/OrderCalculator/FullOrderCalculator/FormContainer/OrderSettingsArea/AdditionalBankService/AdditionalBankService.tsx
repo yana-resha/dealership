@@ -5,6 +5,7 @@ import { FieldArray, useField } from 'formik'
 
 import { FULL_INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
+import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
 import { BankAdditionalOption } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
@@ -21,6 +22,7 @@ type Props = {
   isError?: boolean
   errorMessage?: string
   disabled?: boolean
+  selectedRequiredOptionsMap: Record<string, boolean>
 }
 
 export function AdditionalBankService({
@@ -29,12 +31,16 @@ export function AdditionalBankService({
   isError = false,
   errorMessage,
   disabled = false,
+  selectedRequiredOptionsMap,
 }: Props) {
   const classes = useStyles()
   const [field] = useField(ServicesGroupName.bankAdditionalServices)
 
   const { ids, changeIds } = useAdditionalServiceIds()
-  const isInitialExpanded = !!field.value.length && !!field.value[0].productType
+  const { isInitialExpanded, isShouldExpanded, resetShouldExpanded } = useAdditionalServicesGroupe(
+    ServicesGroupName.bankAdditionalServices,
+    FULL_INITIAL_BANK_ADDITIONAL_SERVICE,
+  )
 
   const options = useMemo(
     () =>
@@ -50,6 +56,8 @@ export function AdditionalBankService({
       title="Дополнительные услуги банка"
       name={ServicesGroupName.bankAdditionalServices}
       initialValues={FULL_INITIAL_BANK_ADDITIONAL_SERVICE}
+      isShouldExpanded={isShouldExpanded}
+      resetShouldExpanded={resetShouldExpanded}
       disabled={disabled}
       isError={isError}
       errorMessage={errorMessage}
@@ -74,6 +82,7 @@ export function AdditionalBankService({
                   // Если clientAge отсутствует, то банковские опции = пустой массив,
                   // потому clientAge можно ставить как number
                   clientAge={clientAge as number}
+                  selectedRequiredOptionsMap={selectedRequiredOptionsMap}
                 />
                 <BankServicesRequisites
                   index={index}

@@ -11,7 +11,7 @@ import { getVendorOptionsList } from 'shared/api/requests/dictionaryDc.api'
 import { compareStrings } from 'shared/utils/compareStrings'
 
 export interface NonNullableTariff extends Tariff {
-  tariffId: number
+  tariffId: string
   tariff: string
   minClientAge: number
   maxClientAge: number
@@ -23,7 +23,7 @@ export interface NonNullableTariff extends Tariff {
 export interface NonNullableAdditionalOption extends AdditionalOption {
   optionType: OptionType
   optionName: string
-  optionId: number
+  optionId: string
   tariffs?: NonNullableTariff[] | null
 }
 

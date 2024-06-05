@@ -1,14 +1,16 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 
 import { Box } from '@mui/material'
 import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
+import { INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/constants'
 import {
   BankAdditionalOption,
   useGetVendorOptionsQuery,
 } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPayment'
+import { useRequiredService } from 'common/OrderCalculator/hooks/useRequiredService'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
@@ -21,7 +23,6 @@ import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaConta
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
-import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { useCreditProductsData } from '../../../../../hooks/useCreditProductsData'
 import { useCreditProductsLimits } from '../../../../../hooks/useCreditProductsLimits'
@@ -36,17 +37,16 @@ type Props = {
   isDisabledSubmit: boolean
 }
 
-export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit }: Props) {
+export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisabledSubmit }: Props, ref) => {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
-  const vendorCodeNumber = stringToNumber(vendorCode)
 
   const {
     data: vendorOptions,
     isLoading: isVendorOptionsLoading,
     isSuccess: isVendorOptionsSuccess,
   } = useGetVendorOptionsQuery({
-    vendorCode: stringToNumber(vendorCode),
+    vendorCode,
   })
 
   const {
@@ -59,7 +59,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
     clientAge,
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
-  } = useCreditProductsData(vendorCodeNumber)
+  } = useCreditProductsData(vendorCode)
   const { creditProducts, initialPaymentHelperText, initialPaymentPercentHelperText } =
     useCreditProductsLimits(
       initialPaymentData,
@@ -69,10 +69,14 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
       isGetCarsSuccess,
     )
   const { loanTerms } = useCreditProductsTerms(creditDurationData, creditProductsData, durationMaxFromAge)
-  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(
-    initialPaymentData,
-    creditProductsData.currentProduct,
-  )
+  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(initialPaymentData)
+
+  const { selectedRequiredOptionsMap } = useRequiredService({
+    creditProductsData,
+    additionalOptionsMap: vendorOptions?.additionalOptionsMap,
+    isVendorOptionsSuccess,
+    initialBankAdditionalService: INITIAL_BANK_ADDITIONAL_SERVICE,
+  })
 
   const {
     handleInitialPaymentFocus,
@@ -137,7 +141,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
       )}
 
       {isSectionLoaded && (
-        <Box className={classes.gridWrapper}>
+        <Box className={classes.gridWrapper} ref={ref}>
           <Box className={classes.gridContainer}>
             <SelectInputFormik
               name={FormFieldNameMap.creditProduct}
@@ -196,6 +200,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
             name={ServicesGroupName.bankAdditionalServices}
             productLabel="Тип продукта"
             clientAge={clientAge}
+            selectedRequiredOptionsMap={selectedRequiredOptionsMap}
           />
 
           {!!commonErrors.length && (
@@ -228,4 +233,4 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
       )}
     </CollapsibleFormAreaContainer>
   )
-}
+})

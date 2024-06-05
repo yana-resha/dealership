@@ -3,14 +3,13 @@ import { useMemo } from 'react'
 import { useField } from 'formik'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { FormFieldNameMap } from '../types'
 import { useGetCarsListQuery } from './useGetCarsListQuery'
 
 export function useCarSection() {
   const { vendorCode } = getPointOfSaleFromCookies()
-  const { data, isLoading, isSuccess } = useGetCarsListQuery({ vendorCode: stringToNumber(vendorCode) })
+  const { data, isLoading, isSuccess } = useGetCarsListQuery({ vendorCode })
   const [carConditionField] = useField<number>(FormFieldNameMap.carCondition)
   const cars = useMemo(
     () => ({ ...(carConditionField.value ? data?.newCars : data?.usedCars) }),

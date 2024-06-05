@@ -1,10 +1,11 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { FieldArray, useField, useFormikContext } from 'formik'
 
 import { INITIAL_ADDITIONAL_SERVICE, INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
+import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
 import {
   BankAdditionalOption,
   NonNullableAdditionalOption,
@@ -16,8 +17,6 @@ import {
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { BankAdditionalService } from 'entities/application/AdditionalOptionsRequisites/ui'
-import { usePrevious } from 'shared/hooks/usePrevious'
-import { checkIsNumber } from 'shared/lib/helpers'
 
 import { AdditionalServiceItem } from './AdditionalServiceItem/AdditionalServiceItem'
 import useStyles from './AdditionalServices.styles'
@@ -32,6 +31,7 @@ type Props = {
   errorMessage?: string
   disabled?: boolean
   clientAge?: number
+  selectedRequiredOptionsMap?: Record<string, boolean>
 }
 
 export function AdditionalServices({
@@ -44,20 +44,15 @@ export function AdditionalServices({
   errorMessage,
   disabled = false,
   clientAge,
+  selectedRequiredOptionsMap = {},
 }: Props) {
   const classes = useStyles()
   const initialAdditionalService =
     name === ServicesGroupName.bankAdditionalServices
       ? INITIAL_BANK_ADDITIONAL_SERVICE
       : INITIAL_ADDITIONAL_SERVICE
-  const [field, , { setValue: setServices }] =
-    useField<(OrderCalculatorAdditionalService | OrderCalculatorBankAdditionalService)[]>(name)
+  const [field] = useField<(OrderCalculatorAdditionalService | OrderCalculatorBankAdditionalService)[]>(name)
   const { ids, changeIds } = useAdditionalServiceIds()
-
-  const isInitialExpanded = !!field.value.length && checkIsNumber(field.value[0].productType)
-
-  const { submitCount } = useFormikContext()
-  const prevSubmitCount = usePrevious(submitCount)
 
   const options = useMemo(
     () =>
@@ -68,19 +63,18 @@ export function AdditionalServices({
     [additionalServices],
   )
 
-  useEffect(() => {
-    if (prevSubmitCount === submitCount) {
-      return
-    }
-    const newValue = field.value.filter(v => checkIsNumber(v.productType))
-    setServices(newValue.length ? newValue : [initialAdditionalService])
-  }, [field.value, initialAdditionalService, prevSubmitCount, setServices, submitCount])
+  const { isInitialExpanded, isShouldExpanded, resetShouldExpanded } = useAdditionalServicesGroupe(
+    name,
+    initialAdditionalService,
+  )
 
   return (
     <AdditionalServicesContainer
       title={title}
       name={name}
       initialValues={initialAdditionalService}
+      isShouldExpanded={isShouldExpanded}
+      resetShouldExpanded={resetShouldExpanded}
       disabled={disabled}
       isError={isError}
       errorMessage={errorMessage}
@@ -106,6 +100,7 @@ export function AdditionalServices({
                     // Если clientAge отсутствует, то банковские опции = пустой массив,
                     // потому clientAge можно ставить как number
                     clientAge={clientAge as number}
+                    selectedRequiredOptionsMap={selectedRequiredOptionsMap}
                   />
                 ))
               : field.value.map((v, i, arr) => (

@@ -6,35 +6,19 @@ import { DateTime, Interval } from 'luxon'
 import { MAX_AGE, MIN_AGE } from 'shared/config/client.config'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
-import { RequiredProduct } from '../../../entities/reduxStore/orderSlice'
 import { MONTH_OF_YEAR_COUNT } from '../constants'
-import { BriefOrderCalculatorFields } from '../types'
+import {
+  BriefOrderCalculatorFields,
+  CreditDurationData,
+  CreditProductsData,
+  InitialPaymentData,
+} from '../types'
 import { getMinMaxValueFromPercent, RoundOption } from '../utils/getValueFromPercent'
 import { useCarSection } from './useCarSection'
 import { getServicesTotalCost } from './useCreditProductsValidations'
-import {
-  useGetCreditProductListQuery,
-  useGetCreditProductListQueryData,
-} from './useGetCreditProductListQuery'
+import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 
-export interface InitialPaymentData {
-  minInitialPaymentPercent: number
-  maxInitialPaymentPercent: number
-  minInitialPayment: number
-  maxInitialPayment: number
-}
-
-export interface CreditProductsData {
-  creditProductListData: useGetCreditProductListQueryData | undefined
-  currentProduct: RequiredProduct | undefined
-}
-
-export interface CreditDurationData {
-  currentDurationMin: number | undefined
-  currentDurationMax: number | undefined
-}
-
-export function useCreditProductsData(vendorCode: number | undefined) {
+export function useCreditProductsData(vendorCode: string | undefined) {
   const { values } = useFormikContext<BriefOrderCalculatorFields>()
   const { creditProduct, carBrand, carYear, additionalEquipments } = values
   const carCost = parseFloat(values.carCost)
@@ -52,7 +36,6 @@ export function useCreditProductsData(vendorCode: number | undefined) {
     isSuccess: isCreditProductListSuccess,
   } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
   const { cars, isLoading: isGetCarsLoading, isSuccess: isGetCarsSuccess } = useCarSection()
-
   const currentProduct = useMemo(
     () => creditProductListData?.productsMap?.[`${creditProduct}`],
     [creditProduct, creditProductListData?.productsMap],

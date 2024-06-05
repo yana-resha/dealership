@@ -71,7 +71,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
       ),
       [FormFieldNameMap.documentNumber]: setRequiredIfInCredit(Yup.string().nullable()),
       [FormFieldNameMap.documentDate]: setRequiredIfInCredit(Yup.string().nullable()),
-      [FormFieldNameMap.broker]: setRequiredIfInCredit(Yup.number().nullable()),
+      [FormFieldNameMap.broker]: setRequiredIfInCredit(Yup.string().nullable()),
 
       ...bankDetailsFormValidation,
     }),
@@ -93,12 +93,12 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
         setRequiredIfInCredit(Yup.string().nullable()),
       ),
       [FormFieldNameMap.provider]: setRequiredIfInCredit(
-        Yup.number().when([FormFieldNameMap.productType], {
-          is: (productType: number) => productType === CASCO_OPTION_ID,
+        Yup.string().when([FormFieldNameMap.productType], {
+          is: (productType: string) => productType === CASCO_OPTION_ID,
           then: schema => schema.required(FieldMessages.required),
         }),
       ),
-      [FormFieldNameMap.broker]: setRequiredIfInCredit(Yup.number().nullable()),
+      [FormFieldNameMap.broker]: setRequiredIfInCredit(Yup.string().nullable()),
       [FormFieldNameMap.loanTerm]: setRequiredIfNecessaryCasco(
         setRequiredIfInCredit(Yup.number().nullable()),
       ),
@@ -112,7 +112,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
   [ServicesGroupName.bankAdditionalServices]: Yup.array().of(
     Yup.object().shape({
       ...bankAdditionalServiceBaseValidation(checkBankAdditionalServicesLimit),
-      [FormFieldNameMap.provider]: setRequiredIfHasProductType(Yup.number().nullable()),
+      [FormFieldNameMap.provider]: setRequiredIfHasProductType(Yup.string().nullable()),
     }),
   ),
 })

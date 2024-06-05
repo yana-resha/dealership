@@ -1,11 +1,6 @@
 import { useCallback } from 'react'
 
-import {
-  AdditionalOptionsFrontdc,
-  OptionType,
-  LoanCarFrontdc,
-  LoanDataFrontdc,
-} from '@sberauto/loanapplifecycledc-proto/public'
+import { AdditionalOptionsFrontdc, OptionType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useDispatch } from 'react-redux'
 
 import { AnketaType } from 'entities/application/application.utils'
@@ -47,12 +42,8 @@ export function useMapApplicationFromBriefCalculator() {
   const dispatch = useDispatch()
 
   const { vendorCode } = getPointOfSaleFromCookies()
-  const vendorCodeNumber = stringToNumber(vendorCode)
-  const { data: vendorOptions } = useGetVendorOptionsQuery(
-    { vendorCode: vendorCodeNumber },
-    { enabled: false },
-  )
-  const { data: carsData } = useGetCarsListQuery({ vendorCode: vendorCodeNumber }, { enabled: false })
+  const { data: vendorOptions } = useGetVendorOptionsQuery({ vendorCode }, { enabled: false })
+  const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
 
   const applicationData = initialOrder?.orderData
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { CreditProduct } from '@sberauto/dictionarydc-proto/public'
+import { CreditProduct, ProductCondition, RateMod } from '@sberauto/dictionarydc-proto/public'
 import { ApplicationFrontdc, GetFullApplicationResponse } from '@sberauto/loanapplifecycledc-proto/public'
 import merge from 'lodash/merge'
 
@@ -8,8 +8,15 @@ interface FillingProgress {
   isFilledLoanData?: boolean
 }
 
-export type RequiredProduct = Omit<CreditProduct, 'productId' | 'productName'> &
-  Required<Pick<CreditProduct, 'productId' | 'productName'>>
+export type RequiredProduct = Omit<CreditProduct, 'productId' | 'productName' | 'conditions'> &
+  Required<Pick<CreditProduct, 'productId' | 'productName'>> & {
+    conditions: RequiredProductCondition[]
+  }
+
+export type RequiredProductCondition = Omit<ProductCondition, 'rateMods'> & { rateMods: RequiredRateMods[] }
+
+export type RequiredRateMods = Omit<RateMod, 'optionId' | 'tariffId' | 'requiredService'> &
+  Required<Pick<RateMod, 'optionId' | 'tariffId' | 'requiredService'>>
 
 export type ProductsMap = Record<string, RequiredProduct>
 

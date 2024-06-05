@@ -44,7 +44,7 @@ describe('useCreditProductLimits', () => {
       )
       const { creditProducts } = result.current
       expect(creditProducts.length).toEqual(1)
-      expect(creditProducts[0].value).toEqual(1)
+      expect(creditProducts[0].value).toEqual('1')
     })
     it('Если durationMaxFromClientAge больше durationMin КП, то данный КП отфильтровывается из creditProducts', async () => {
       const { result } = renderHook(
@@ -64,7 +64,7 @@ describe('useCreditProductLimits', () => {
       )
       const { creditProducts } = result.current
       expect(creditProducts.length).toEqual(1)
-      expect(creditProducts[0].value).toEqual(1)
+      expect(creditProducts[0].value).toEqual('1')
     })
     it('Если КП не выбран, то подсказки ПВ берутся из fullDownpaymentMin и fullDownpaymentMax', async () => {
       const { result } = renderHook(
@@ -91,7 +91,7 @@ describe('useCreditProductLimits', () => {
         {
           wrapper: createWrapper({
             ...initialData,
-            creditProduct: 1,
+            creditProduct: '1',
           }),
         },
       )
@@ -118,7 +118,7 @@ describe('useCreditProductLimits', () => {
         {
           wrapper: createWrapper({
             ...initialData,
-            creditProduct: 2,
+            creditProduct: '2',
             carBrand: 'Skoda',
             carYear: currentYear - 1,
           }),

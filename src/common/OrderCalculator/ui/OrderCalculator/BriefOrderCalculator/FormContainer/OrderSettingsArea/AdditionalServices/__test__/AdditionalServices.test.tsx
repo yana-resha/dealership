@@ -19,11 +19,11 @@ disableConsole('warn')
 const mockedInitialValues = {
   [FormFieldNameMap.carCost]: '1000',
   [ServicesGroupName.additionalEquipments]: [
-    { productType: 1, productCost: '100', isCredit: true },
-    { productType: 2, productCost: '200', isCredit: true },
+    { productType: '1', productCost: '100', isCredit: true },
+    { productType: '2', productCost: '200', isCredit: true },
   ],
   [ServicesGroupName.dealerAdditionalServices]: [
-    { productType: 15, productCost: '', isCredit: false, cascoLimit: '1299' },
+    { productType: '15', productCost: '', isCredit: false, cascoLimit: '1299' },
   ],
   [FormFieldNameMap.commonError]: { isExceededServicesTotalLimit: false },
   [FormFieldNameMap.validationParams]: { isNecessaryCasco: true },
@@ -84,7 +84,7 @@ describe('BriefAdditionalServices', () => {
         {
           wrapper: createWrapper({
             [ServicesGroupName.dealerAdditionalServices]: [
-              { productType: 15, productCost: '', isCredit: false, cascoLimit: '1300' },
+              { productType: '15', productCost: '', isCredit: false, cascoLimit: '1300' },
             ],
           }),
         },

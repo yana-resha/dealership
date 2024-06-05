@@ -5,6 +5,7 @@ import { Form, useFormikContext } from 'formik'
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProducts'
 import { useFormChanging } from 'common/OrderCalculator/hooks/useFormChanging'
+import { useScrollToOrderSettingsArea } from 'common/OrderCalculator/hooks/useScrollToOrderSettingsArea'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import {
   RequisitesForFinancing,
@@ -13,8 +14,6 @@ import {
 import { RequisitesContextProvider } from 'entities/application/AdditionalOptionsRequisites/ui/RequisitesContext'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
-import { checkIsNumber } from 'shared/lib/helpers'
-import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
 import { OrderSettingsArea } from './OrderSettingsArea/OrderSettingsArea'
@@ -26,6 +25,8 @@ type Props = {
   remapApplicationValues: (values: FullOrderCalculatorFields) => void
   isDisabledFormSubmit: boolean
   enableFormSubmit: () => void
+  creditProductId: string | undefined
+  resetCreditProductId: () => void
 }
 
 export function FormContainer({
@@ -35,23 +36,26 @@ export function FormContainer({
   remapApplicationValues,
   isDisabledFormSubmit,
   enableFormSubmit,
+  creditProductId,
+  resetCreditProductId,
 }: Props) {
   const { values } = useFormikContext<FullOrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
   useScrollToErrorField()
+  const orderSettingsAreaRef = useScrollToOrderSettingsArea(creditProductId)
 
   const [requisites, setRequisites] = useState<RequisitesForFinancing | undefined>()
 
   const additionalEquipmentsIds = useMemo(
-    () => values.additionalEquipments.map(s => s.productType).filter(s => checkIsNumber(s)) as number[],
+    () => values.additionalEquipments.map(s => s.productType).filter(s => !!s) as string[],
     [values.additionalEquipments],
   )
   const additionalOptionsIds = useMemo(
-    () => values.dealerAdditionalServices.map(s => s.productType).filter(s => checkIsNumber(s)) as number[],
+    () => values.dealerAdditionalServices.map(s => s.productType).filter(s => !!s) as string[],
     [values.dealerAdditionalServices],
   )
   const bankAdditionalOptionsIds = useMemo(
-    () => values.bankAdditionalServices.map(s => s.productType).filter(s => checkIsNumber(s)) as number[],
+    () => values.bankAdditionalServices.map(s => s.productType).filter(s => !!s) as string[],
     [values.bankAdditionalServices],
   )
 
@@ -61,7 +65,7 @@ export function FormContainer({
     isLoading: isRequisitesQueryLoading,
     isSuccess: isRequisitesQuerySuccess,
   } = useRequisitesForFinancingQuery({
-    vendorCode: stringToNumber(vendorCode),
+    vendorCode,
     additionalEquipment: additionalEquipmentsIds,
     additionalOptions: additionalOptionsIds,
     bankOptions: bankAdditionalOptionsIds,
@@ -135,6 +139,8 @@ export function FormContainer({
     shouldFetchProductsOnStart,
     formFields,
     initialValueMap: fullInitialValueMap,
+    creditProductId,
+    resetCreditProductId,
   })
   useFormChanging({ remapApplicationValues, onChangeForm, enableFormSubmit })
 
@@ -147,6 +153,7 @@ export function FormContainer({
           isLoading={isLoading}
         />
         <OrderSettingsArea
+          ref={orderSettingsAreaRef}
           disabled={!shouldShowOrderSettings}
           disabledSubmit={isRequisitesQueryLoading || isDisabledFormSubmit}
           isSubmitLoading={isSubmitLoading}

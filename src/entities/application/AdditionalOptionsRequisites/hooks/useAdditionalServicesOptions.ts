@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { ServicesGroupName } from '../configs/additionalOptionsRequisites.config'
 
 interface AdditionalServiceItem {
-  productType: number | null
+  productType: string | null
 }
 
 type Values = {
@@ -18,7 +18,7 @@ type Params = {
   parentName: ServicesGroupName
   options:
     | {
-        value: number
+        value: string
         label: string
       }[]
     | undefined

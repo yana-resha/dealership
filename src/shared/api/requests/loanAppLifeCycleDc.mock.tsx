@@ -163,7 +163,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       dkpDate: '2021-05-10',
     },
     loanData: {
-      productId: 3,
+      productId: '3',
       productCode: 3,
       productName: 'Купи сейчас плати потом',
       downpayment: 410000,
@@ -193,7 +193,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       amountWithoutOptions: 3242.2342,
       additionalOptions: [
         {
-          type: OptionType.EQUIPMENT,
+          type: '2',
           name: 'Ароматная елочка',
           vendor: {
             vendorCode: '123',
@@ -250,7 +250,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           dateEnd: '2025-04-23',
         },
         {
-          type: OptionType.DEALER,
+          type: '1',
           name: 'ОСАГО',
           vendor: {
             vendorCode: '123',

@@ -12,8 +12,8 @@ type Params = {
   isRequisitesFetched: boolean
   namePrefix: string
   requisites: RequisitesForFinancing | undefined
-  productType: number | null
-  broker: number | null
+  productType: string | null
+  broker: string | null
   beneficiaryBank: string
   productCost: string
   isCredit: boolean

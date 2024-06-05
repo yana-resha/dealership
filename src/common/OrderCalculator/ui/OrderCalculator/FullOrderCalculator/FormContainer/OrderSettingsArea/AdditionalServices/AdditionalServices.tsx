@@ -5,16 +5,16 @@ import { FieldArray, useField } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
+import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { DealerServicesRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
-import { checkIsNumber } from 'shared/lib/helpers'
 
 import useStyles from './AdditionalServices.styles'
 
 type Props = {
   options: {
-    productType: { value: number; label: string }[]
+    productType: { value: string; label: string }[]
     loanTerms: { value: number }[]
   }
   isNecessaryCasco?: boolean
@@ -36,13 +36,18 @@ export function AdditionalServices({
   const [field] = useField(ServicesGroupName.dealerAdditionalServices)
 
   const { ids, changeIds } = useAdditionalServiceIds()
-  const isInitialExpanded = !!field.value.length && checkIsNumber(field.value[0].productType)
+  const { isInitialExpanded, isShouldExpanded, resetShouldExpanded } = useAdditionalServicesGroupe(
+    ServicesGroupName.dealerAdditionalServices,
+    FULL_INITIAL_ADDITIONAL_SERVICE,
+  )
 
   return (
     <AdditionalServicesContainer
       title="Дополнительные услуги дилера"
       name={ServicesGroupName.dealerAdditionalServices}
       initialValues={FULL_INITIAL_ADDITIONAL_SERVICE}
+      isShouldExpanded={isShouldExpanded}
+      resetShouldExpanded={resetShouldExpanded}
       disabled={disabled}
       isError={isError}
       errorMessage={errorMessage}

@@ -9,6 +9,7 @@ import { OrderCalculator } from '../OrderCalculator'
 
 disableConsole('error')
 jest.mock('shared/hooks/useScrollToErrorField')
+jest.mock('common/OrderCalculator/hooks/useScrollToOrderSettingsArea')
 
 describe('Calculator', () => {
   it('Изначально отображается только форма Малого калькулятора калькулятора', () => {

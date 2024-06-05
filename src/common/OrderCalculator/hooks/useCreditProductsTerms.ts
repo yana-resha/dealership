@@ -3,8 +3,12 @@ import { useEffect, useMemo } from 'react'
 import { useField, useFormikContext } from 'formik'
 
 import { LOAN_TERM_GRADUATION_VALUE, MONTH_OF_YEAR_COUNT } from '../constants'
-import { BriefOrderCalculatorFields, FormFieldNameMap } from '../types'
-import { CreditDurationData, CreditProductsData } from './useCreditProductsData'
+import {
+  BriefOrderCalculatorFields,
+  CreditDurationData,
+  CreditProductsData,
+  FormFieldNameMap,
+} from '../types'
 
 export function useCreditProductsTerms(
   creditDurationData: CreditDurationData,

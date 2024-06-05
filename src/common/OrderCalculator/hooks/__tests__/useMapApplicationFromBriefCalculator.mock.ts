@@ -154,14 +154,14 @@ export const EXPECTED_REMAPPED_BRIEF_DATA: Order = {
         type: '1',
       },
       loanData: {
-        productId: 3,
+        productId: '3',
         downpayment: 410000,
         downpaymentInPercent: undefined,
         term: 36,
         additionalOptions: [
           {
             bankOptionType: 2,
-            type: 2,
+            type: '2',
             name: 'Перекрасить авто',
             inCreditFlag: true,
             price: 20,
@@ -169,7 +169,7 @@ export const EXPECTED_REMAPPED_BRIEF_DATA: Order = {
           },
           {
             bankOptionType: 1,
-            type: 1,
+            type: '1',
             name: 'ОСАГО',
             inCreditFlag: true,
             price: 21,
