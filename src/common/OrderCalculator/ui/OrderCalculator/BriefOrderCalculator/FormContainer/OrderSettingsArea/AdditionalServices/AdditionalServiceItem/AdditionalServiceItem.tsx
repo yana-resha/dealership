@@ -9,7 +9,7 @@ import { FormFieldNameMap, BriefOrderCalculatorFields } from 'common/OrderCalcul
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { useAdditionalServices } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServices'
 import { useAdditionalServicesOptions } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
-import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
+import { maskPrice } from 'shared/masks/InputMasks'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { AddingSquareBtn } from 'shared/ui/SquareBtn/AddingSquareBtn'
@@ -92,7 +92,7 @@ export function AdditionalServiceItem({
           name={namePrefix + FormFieldNameMap.productCost}
           label="Стоимость"
           placeholder="-"
-          mask={maskOnlyDigitsWithSeparator}
+          mask={maskPrice}
           disabled={isError}
         />
         {isShouldShowCascoLimitField && (
@@ -100,7 +100,7 @@ export function AdditionalServiceItem({
             name={namePrefix + FormFieldNameMap.cascoLimit}
             label="Сумма покрытия КАСКО"
             placeholder="-"
-            mask={maskOnlyDigitsWithSeparator}
+            mask={maskPrice}
             disabled={isError}
           />
         )}

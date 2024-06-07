@@ -10,6 +10,7 @@ import {
   maskBankIdentificationCode,
   maskNoRestrictions,
   maskOnlyDigitsWithSeparator,
+  maskPrice,
 } from 'shared/masks/InputMasks'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -133,7 +134,7 @@ export function AdditionalEquipmentRequisites({
         name={`${namePrefix}productCost`}
         label="Стоимость"
         placeholder="-"
-        mask={maskOnlyDigitsWithSeparator}
+        mask={maskPrice}
         gridColumn="span 3"
         disabled={!isRequisiteEditable}
       />

@@ -152,12 +152,31 @@ export const maskOnlyDigitsWithSeparator = (value: string, unmasked?: boolean) =
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
-export const maskVin = (value: string, unmasked?: boolean) => {
+// Число с сотыми после запятой
+export const maskPrice = (value: string, unmasked?: boolean) => {
+  const SEPARATOR = '.'
+
   const masked = IMask.createMask({
-    mask: /^[A-Z0-9\s]{1,17}$/,
-    prepare: (str: string) => str.toUpperCase(),
+    mask: /^(0|([1-9]+\d*))?(\.\d{0,2})?$/,
   })
   masked.resolve(`${value}`)
+
+  const sections = masked.unmaskedValue.split(SEPARATOR)
+  const isLastCharDot = masked.unmaskedValue[masked.unmaskedValue.length - 1] === '.'
+  const { length: integerPartLength } = sections[0]
+  // Lобавляем пробелы для разделения разрядов
+  if (integerPartLength > 3) {
+    const strWithSpaces = sections[0].split('').reduceRight((acc, char, i) => {
+      const spaceOrNothing = (integerPartLength - i) % 3 === 0 ? ' ' : ''
+
+      return spaceOrNothing + char + acc
+    }, '')
+
+    const suffix = sections[1] ? '.' + sections[1] : isLastCharDot ? '.' : ''
+    const maskedString = `${strWithSpaces.trimStart()}${suffix}`
+
+    return unmasked ? masked.unmaskedValue : maskedString
+  }
 
   return unmasked ? masked.unmaskedValue : masked.value
 }
@@ -192,6 +211,16 @@ export const maskPercent = (value: string) => {
   }
 
   return sections.join(SEPARATOR)
+}
+
+export const maskVin = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: /^[A-Z0-9\s]{1,17}$/,
+    prepare: (str: string) => str.toUpperCase(),
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
 }
 
 export const maskBankIdentificationCode = (value: string, unmasked?: boolean) => {
