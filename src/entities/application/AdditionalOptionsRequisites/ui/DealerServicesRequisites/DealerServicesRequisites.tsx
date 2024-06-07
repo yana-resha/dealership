@@ -15,6 +15,7 @@ import {
   maskBankIdentificationCode,
   maskNoRestrictions,
   maskOnlyDigitsWithSeparator,
+  maskPrice,
 } from 'shared/masks/InputMasks'
 import { DateInputFormik } from 'shared/ui/DateInput/DateInputFormik'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
@@ -292,7 +293,7 @@ export function DealerServicesRequisites({
           name={namePrefix + FormFieldNameMap.productCost}
           label="Стоимость"
           placeholder="-"
-          mask={maskOnlyDigitsWithSeparator}
+          mask={maskPrice}
           gridColumn="span 3"
         />
       )}
@@ -330,7 +331,7 @@ export function DealerServicesRequisites({
             name={namePrefix + FormFieldNameMap.productCost}
             label="Стоимость"
             placeholder="-"
-            mask={maskOnlyDigitsWithSeparator}
+            mask={maskPrice}
             gridColumn="span 3"
           />
 
@@ -339,7 +340,7 @@ export function DealerServicesRequisites({
               name={`${namePrefix}cascoLimit`}
               label="Сумма покрытия КАСКО"
               placeholder="-"
-              mask={maskOnlyDigitsWithSeparator}
+              mask={maskPrice}
               gridColumn="span 4"
               disabled={!isRequisiteEditable}
             />
@@ -368,7 +369,7 @@ export function DealerServicesRequisites({
             name={`${namePrefix}productCost`}
             label="Стоимость"
             placeholder="-"
-            mask={maskOnlyDigitsWithSeparator}
+            mask={maskPrice}
             gridColumn="span 3"
             disabled={!isRequisiteEditable}
           />
@@ -377,7 +378,7 @@ export function DealerServicesRequisites({
               name={`${namePrefix}cascoLimit`}
               label="Сумма покрытия КАСКО"
               placeholder="-"
-              mask={maskOnlyDigitsWithSeparator}
+              mask={maskPrice}
               gridColumn="span 3"
               disabled={!isRequisiteEditable}
             />
