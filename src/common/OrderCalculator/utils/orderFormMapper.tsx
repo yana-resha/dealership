@@ -34,12 +34,12 @@ const mapAdditionalOptions = (
       optionType: option.optionType,
       optionName: option.optionName,
       cascoType: option.cascoType,
-      cascoLimit: filterOption.cascoLimit ? parseInt(filterOption.cascoLimit, 10) : undefined,
+      cascoLimit: filterOption.cascoLimit ? parseFloat(filterOption.cascoLimit) : undefined,
       franchise: option.franchise,
       inServicePackageFlag: option.inServicePackageFlag,
       tariff: option.tariff,
 
-      price: parseInt(filterOption?.productCost || '0', 10),
+      price: parseFloat(filterOption?.productCost || '0'),
       inCreditFlag: filterOption.isCredit,
     }
 

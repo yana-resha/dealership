@@ -104,7 +104,7 @@ export function useAdditionalEquipmentRequisites({
   useEffect(() => {
     if (currentBroker?.tax) {
       setFieldValue(namePrefix + 'taxPercent', currentBroker.tax)
-      setFieldValue(namePrefix + 'taxValue', currentBroker.tax * parseInt(productCost || '0', 10))
+      setFieldValue(namePrefix + 'taxValue', currentBroker.tax * parseFloat(productCost || '0'))
     } else {
       setFieldValue(namePrefix + 'taxPercent', null)
       setFieldValue(namePrefix + 'taxValue', null)

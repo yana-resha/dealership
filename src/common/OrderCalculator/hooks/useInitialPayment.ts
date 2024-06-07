@@ -64,7 +64,7 @@ export function useInitialPayment(isDisabledForm: boolean) {
 
   const creditEquipmentsCost = additionalEquipments.value.reduce(
     (acc, cur) =>
-      cur.productType && cur.isCredit && cur.productCost ? acc + parseInt(cur.productCost, 10) : acc,
+      cur.productType && cur.isCredit && cur.productCost ? acc + parseFloat(cur.productCost) : acc,
     0,
   )
   /* Значение процентов отсчитывается от суммы стоимости автомобиля + сумма тех едениц доп. оборудования,

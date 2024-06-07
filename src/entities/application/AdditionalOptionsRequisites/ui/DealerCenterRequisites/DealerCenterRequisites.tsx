@@ -93,14 +93,14 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   const priceOfAdditionalOptionsInCredit = useMemo(() => {
     const equipmentCost = additionalEquipments?.reduce((acc, option) => {
       if (option[FormFieldNameMap.isCredit]) {
-        acc += parseInt(option[FormFieldNameMap.productCost], 10)
+        acc += parseFloat(option[FormFieldNameMap.productCost])
       }
 
       return acc
     }, 0)
     const dealerServicesConst = dealerAdditionalServices?.reduce((acc, option) => {
       if (option[FormFieldNameMap.isCredit]) {
-        acc += parseInt(option[FormFieldNameMap.productCost], 10)
+        acc += parseFloat(option[FormFieldNameMap.productCost])
       }
 
       return acc

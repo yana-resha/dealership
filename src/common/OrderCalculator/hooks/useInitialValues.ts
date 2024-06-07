@@ -256,8 +256,8 @@ export function useInitialValues<D extends boolean | undefined>(
                 ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
                 : undefined,
               inCreditFlag: isCredit,
-              price: parseInt(productCost, 10),
-              cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
+              price: parseFloat(productCost),
+              cascoLimit: cascoLimit ? parseFloat(cascoLimit) : undefined,
             }
             if (additionalOption.type) {
               acc.push(additionalOption)
@@ -308,7 +308,7 @@ export function useInitialValues<D extends boolean | undefined>(
               ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
               : undefined,
             inCreditFlag: isCredit,
-            price: parseInt(productCost, 10),
+            price: parseFloat(productCost),
             vendor: isCredit
               ? {
                   vendorCode,
@@ -387,7 +387,7 @@ export function useInitialValues<D extends boolean | undefined>(
               ? vendorOptions?.additionalOptionsMap[parseFloat(productType as unknown as string)].optionName
               : undefined,
             inCreditFlag: isCredit,
-            price: parseInt(productCost, 10),
+            price: parseFloat(productCost),
             vendor: {
               vendorCode: provider,
               vendorName: providerName,
@@ -417,7 +417,7 @@ export function useInitialValues<D extends boolean | undefined>(
             docDate,
             dateStart: docDate,
             dateEnd,
-            cascoLimit: cascoLimit ? parseInt(cascoLimit, 10) : undefined,
+            cascoLimit: cascoLimit ? parseFloat(cascoLimit) : undefined,
           }
           if (additionalOption.type) {
             acc.push(additionalOption)
