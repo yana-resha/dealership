@@ -3,6 +3,7 @@ import {
   AdditionalOptionCalculateCredit,
   CalculateCreditRequest,
   LoanCar,
+  OptionType,
 } from '@sberauto/dictionarydc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
@@ -15,7 +16,18 @@ import {
   FullOrderCalculatorFields,
   OrderCalculatorAdditionalService,
   BriefOrderCalculatorFields,
+  OrderCalculatorBankAdditionalService,
 } from '../types'
+
+const mapAdditionalOption = (
+  option: AdditionalOption,
+  orderFormOption: OrderCalculatorAdditionalService | OrderCalculatorBankAdditionalService,
+) => ({
+  optionId: option.optionId,
+  optionType: option.optionType,
+  optionName: option.optionName,
+  price: stringToNumber(orderFormOption?.productCost),
+})
 
 const mapAdditionalOptions = (
   additionalOptions: OrderCalculatorAdditionalService[],
@@ -25,22 +37,32 @@ const mapAdditionalOptions = (
     (option): option is Omit<typeof option, 'productType'> & { productType: string } => !!option.productType,
   )
 
-  const additionalOptionsFormatted: AdditionalOptionCalculateCredit[] = filteredOptions.map(filterOption => {
+  return filteredOptions.map(filterOption => {
     const option = vendorOptionsMap[filterOption.productType]
-
     const additionalOption: AdditionalOptionCalculateCredit = {
-      optionId: option.optionId,
-      optionType: option.optionType,
-      optionName: option.optionName,
-      tariffId: option.tariff,
-      price: parseFloat(filterOption?.productCost || '0'),
+      ...mapAdditionalOption(option, filterOption),
       inCreditFlag: filterOption.isCredit,
     }
 
     return additionalOption
   })
+}
 
-  return additionalOptionsFormatted
+const mapBankAdditionalOptions = (
+  additionalOptions: OrderCalculatorBankAdditionalService[],
+  vendorOptionsMap: Record<string, AdditionalOption>,
+): AdditionalOptionCalculateCredit[] => {
+  const filteredOptions = additionalOptions.filter(option => !!option.productType)
+
+  return filteredOptions.map(filterOption => {
+    const option = vendorOptionsMap[filterOption.productType || '']
+    const additionalOption: AdditionalOptionCalculateCredit = {
+      ...mapAdditionalOption(option, filterOption),
+      tariffId: filterOption.tariff ?? undefined,
+    }
+
+    return additionalOption
+  })
 }
 
 const getAdditionalOptionsPrice = (options: AdditionalOptionCalculateCredit[]) =>
@@ -59,6 +81,7 @@ export const mapValuesForCalculateCreditRequest = (
   const additionalOptions: AdditionalOptionCalculateCredit[] = [
     ...mapAdditionalOptions(values[ServicesGroupName.additionalEquipments], vendorOptionsMap),
     ...mapAdditionalOptions(values[ServicesGroupName.dealerAdditionalServices], vendorOptionsMap),
+    ...mapBankAdditionalOptions(values[ServicesGroupName.bankAdditionalServices], vendorOptionsMap),
   ]
 
   const loanCar: LoanCar = {

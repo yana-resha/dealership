@@ -28,17 +28,47 @@ import { mapCommonApplicationValues } from '../utils/mapApplication'
 import { useGetCarsListQuery } from './useGetCarsListQuery'
 import { NonNullableAdditionalOption, useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
-// Значения прописаны в статье https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1064175258
+enum BankOptionProductType {
+  FIRST = '26',
+  SECOND = '27',
+  THIRD = '28',
+  FOURTH = '29',
+}
+enum BankOptionTariffId {
+  FIRST = '100',
+  SECOND = '101',
+  THIRD = '102',
+  FOURTH = '103',
+  FIFTH = '104',
+}
+// Значения прописаны в статье https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1071122571
 const INSURED_AMOUNT_VALUE_MAP: Record<string, Record<string, number>> = {
-  26: {
-    100: 700000,
-    101: 1200000,
+  [BankOptionProductType.FIRST]: {
+    [BankOptionTariffId.FIRST]: 700000,
+    [BankOptionTariffId.SECOND]: 1200000,
   },
-  27: {
-    102: 300000,
-    103: 750000,
-    104: 1150000,
+  [BankOptionProductType.SECOND]: {
+    [BankOptionTariffId.THIRD]: 510000,
   },
+  [BankOptionProductType.THIRD]: {
+    [BankOptionTariffId.FOURTH]: 1200000,
+  },
+  [BankOptionProductType.FOURTH]: {
+    [BankOptionTariffId.FIFTH]: 510000,
+  },
+}
+
+const getBankOptionDocNumber = (optionType: string | null, dcAppId: string | undefined) => {
+  switch (optionType) {
+    case BankOptionProductType.FIRST:
+    case BankOptionProductType.THIRD:
+      return '007SE056' + (dcAppId || '').slice(0, 18)
+    case BankOptionProductType.SECOND:
+    case BankOptionProductType.FOURTH:
+      return '077SE680' + (dcAppId || '').slice(0, 18)
+    default:
+      return ''
+  }
 }
 
 type MapCommonValueParams = {
@@ -217,9 +247,11 @@ export function useMapApplicationFromFullCalculator() {
             ...commonValues,
             tariffId: tariff ?? undefined,
             tariff: vendorOption?.tariffs?.find(t => t.tariffId === tariff)?.tariff,
+            // insuredAmount: INSURED_AMOUNT_VALUE_MAP[productType ?? '']?.[tariff ?? ''],
             insuredAmount: INSURED_AMOUNT_VALUE_MAP[productType ?? '']?.[tariff ?? ''],
             docType: 2, // Для услуг OptionType.BANK, всегда 2 (из аналитики)
-            docNumber: '007SE056' + (dcAppId || '').slice(0, 18), // Для услуг OptionType.BANK, фронт заполняет сам, по шаблону
+            // Для услуг OptionType.BANK, фронт заполняет сам, по шаблону
+            docNumber: getBankOptionDocNumber(productType, dcAppId),
           }
 
           if (additionalOption.type) {

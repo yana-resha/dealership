@@ -5,6 +5,7 @@ import { DateTime, Interval } from 'luxon'
 
 import { MAX_AGE, MIN_AGE } from 'shared/config/client.config'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { MONTH_OF_YEAR_COUNT } from '../constants'
 import {
@@ -21,7 +22,7 @@ import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 export function useCreditProductsData(vendorCode: string | undefined) {
   const { values } = useFormikContext<BriefOrderCalculatorFields>()
   const { creditProduct, carBrand, carYear, additionalEquipments } = values
-  const carCost = parseFloat(values.carCost)
+  const carCost = stringToNumber(values.carCost) ?? 0
   const isFilledElementaryClientData = useAppSelector(
     state => state.order.order?.fillingProgress?.isFilledElementaryClientData,
   )

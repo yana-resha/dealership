@@ -60,7 +60,7 @@ export function useInitialPayment(isDisabledForm: boolean) {
 
   const creditEquipmentsCost = (additionalEquipments as OrderCalculatorAdditionalService[]).reduce(
     (acc, cur) =>
-      !!cur.productType && cur.isCredit && cur.productCost ? acc + parseFloat(cur.productCost) : acc,
+      !!cur.productType && cur.isCredit && cur.productCost ? acc + parseFloat(cur.productCost || '0') : acc,
     0,
   )
   /* Значение процентов отсчитывается от суммы стоимости автомобиля + сумма тех едениц доп. оборудования,

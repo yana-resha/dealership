@@ -2,6 +2,7 @@ import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { FieldMessages } from 'shared/constants/fieldMessages'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { CASCO_OPTION_ID } from '../config'
 import {
@@ -76,11 +77,11 @@ export function checkIsLowCascoLimit<T extends YupBaseSchema<string | undefined>
             | BriefOrderCalculatorFields
             | FullOrderCalculatorFields) || {}
         const additionalEquipmentsPrice = additionalEquipments.reduce(
-          (acc, cur) => (cur.productType ? acc + parseFloat(cur.productCost || '0') : acc),
+          (acc, cur) => (cur.productType ? acc + (stringToNumber(cur.productCost) ?? 0) : acc),
           0,
         )
 
-        return parseFloat(value) >= parseFloat(carCost) + additionalEquipmentsPrice
+        return parseFloat(value) >= (stringToNumber(carCost) ?? 0) + additionalEquipmentsPrice
       },
     ),
   )

@@ -15,6 +15,7 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { useRequisites } from '../../hooks/useRequisites'
 import { useRequisitesContext } from '../RequisitesContext'
@@ -95,14 +96,14 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   const priceOfAdditionalOptionsInCredit = useMemo(() => {
     const equipmentCost = additionalEquipments?.reduce((acc, option) => {
       if (option[FormFieldNameMap.isCredit]) {
-        acc += parseFloat(option[FormFieldNameMap.productCost])
+        acc += stringToNumber(option[FormFieldNameMap.productCost]) ?? 0
       }
 
       return acc
     }, 0)
     const dealerServicesConst = dealerAdditionalServices?.reduce((acc, option) => {
       if (option[FormFieldNameMap.isCredit]) {
-        acc += parseFloat(option[FormFieldNameMap.productCost])
+        acc += stringToNumber(option[FormFieldNameMap.productCost]) ?? 0
       }
 
       return acc
@@ -130,7 +131,10 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   useEffect(() => {
     if (currentLegalPerson?.tax) {
       setFieldValue(namePrefix + 'taxPercent', currentLegalPerson?.tax)
-      setFieldValue(namePrefix + 'taxValue', (currentLegalPerson?.tax * parseFloat(loanAmount)) / 100)
+      setFieldValue(
+        namePrefix + 'taxValue',
+        (currentLegalPerson?.tax * (stringToNumber(loanAmount) ?? 0)) / 100,
+      )
     } else {
       setFieldValue(namePrefix + 'taxPercent', FULL_INITIAL_ADDITIONAL_SERVICE[FormFieldNameMap.taxPercent])
       setFieldValue(namePrefix + 'taxValue', FULL_INITIAL_ADDITIONAL_SERVICE[FormFieldNameMap.taxValue])

@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { useField, useFormikContext } from 'formik'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { CASCO_OPTION_ID, formMessages } from '../config'
 import {
@@ -31,12 +32,9 @@ export function getServicesTotalCost(
     if (typeof cur.productType !== 'string' || !cur.productCost || (onlyCredit && !isCredit)) {
       return acc
     }
-    const productCost = parseFloat(cur.productCost)
-    if (Number.isNaN(productCost)) {
-      return acc
-    }
+    const productCost = stringToNumber(cur.productCost)
 
-    return acc + productCost
+    return acc + (productCost ?? 0)
   }, 0)
 }
 

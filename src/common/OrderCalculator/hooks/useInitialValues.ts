@@ -32,8 +32,7 @@ export function useInitialValues<D extends boolean | undefined>(
           }
 
           const additionalServiceBaseData = {
-            [FormFieldNameMap.productType]:
-              `${cur.type || ''}` ?? initialData.additionalEquipments[0].productType,
+            [FormFieldNameMap.productType]: cur.type ?? initialData.additionalEquipments[0].productType,
             [FormFieldNameMap.productCost]: `${cur.price ?? initialData.additionalEquipments[0].productCost}`,
             [FormFieldNameMap.isCredit]: cur.inCreditFlag ?? initialData.additionalEquipments[0].isCredit,
             [FormFieldNameMap.cascoLimit]: `${
