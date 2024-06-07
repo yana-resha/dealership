@@ -73,7 +73,7 @@ export function checkIsLowCascoLimit<T extends YupBaseSchema<string | undefined>
           0,
         )
 
-        return parseInt(value, 10) >= parseInt(carCost, 10) + additionalEquipmentsPrice
+        return parseFloat(value) >= parseFloat(carCost) + additionalEquipmentsPrice
       },
     ),
   )

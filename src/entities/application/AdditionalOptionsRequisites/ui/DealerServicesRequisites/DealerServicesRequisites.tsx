@@ -72,7 +72,7 @@ export function DealerServicesRequisites({
 }: Props) {
   const classes = useStyles()
 
-  const { values, setFieldValue, submitCount, errors } = useFormikContext<FullOrderCalculatorFields>()
+  const { values, setFieldValue, submitCount } = useFormikContext<FullOrderCalculatorFields>()
   const { provider, agent, beneficiaryBank, taxPresence, productCost, productType, cascoLimit, isCredit } =
     servicesItem
   const [isCustomFields, setCustomFields] = useState(false)
@@ -207,7 +207,7 @@ export function DealerServicesRequisites({
   useEffect(() => {
     if (currentBroker?.tax) {
       setFieldValue(namePrefix + 'agentTaxPercent', currentBroker.tax)
-      setFieldValue(namePrefix + 'agentTaxValue', currentBroker.tax * parseInt(productCost || '0', 10))
+      setFieldValue(namePrefix + 'agentTaxValue', currentBroker.tax * parseFloat(productCost || '0'))
     } else {
       setFieldValue(namePrefix + 'agentTaxPercent', 0)
       setFieldValue(namePrefix + 'agentTaxValue', 0)
