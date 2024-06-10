@@ -298,7 +298,9 @@ export const maskDriverLicenseIssuedCode = (value: string, unmasked?: boolean) =
 
 export const maskMileage = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
-    mask: '0 000',
+    mask: Number,
+    thousandsSeparator: ' ',
+    max: 9999,
   })
   masked.resolve(`${value}`)
 
