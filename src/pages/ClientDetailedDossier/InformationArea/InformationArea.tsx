@@ -71,10 +71,14 @@ export function InformationArea({
   const classes = useStyles()
   const { applicationId = '' } = useParams()
 
-  const { mutateAsync: getShareFormMutate } = useGetShareFormMutation({ dcAppId: applicationId })
+  const { mutateAsync: getShareFormMutate, isLoading: isGetShareFormLoading } = useGetShareFormMutation({
+    dcAppId: applicationId,
+  })
   const { mutateAsync: downloadDocument } = useDownloadDocumentMutation()
-  const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
-    useGetPreliminaryPaymentScheduleFormMutation()
+  const {
+    mutateAsync: getPreliminaryPaymentScheduleFormMutate,
+    isLoading: isGetPreliminaryPaymentScheduleFormLoading,
+  } = useGetPreliminaryPaymentScheduleFormMutation()
 
   const {
     additionalEquipment,
@@ -223,7 +227,7 @@ export function InformationArea({
           </SberTypography>
 
           {(status === PreparedStatus.approved || status === PreparedStatus.finallyApproved) && (
-            <Downloader onDownloadFile={handleShareClick}>
+            <Downloader onDownloadFile={handleShareClick} disabled={isGetShareFormLoading}>
               <Box className={classes.textButtonContainer}>
                 <DownloadIcon />
                 <SberTypography sberautoVariant="body3" component="p">
@@ -268,7 +272,10 @@ export function InformationArea({
             />
           )}
           {isShowScheduleBtn && !isHasFeeScheduleInScans && (
-            <FeeScheduleBtn onClick={handlePreliminaryFeeScheduleClick} disabled={isDisableScheduleBtn} />
+            <FeeScheduleBtn
+              onClick={handlePreliminaryFeeScheduleClick}
+              disabled={isDisableScheduleBtn || isGetPreliminaryPaymentScheduleFormLoading}
+            />
           )}
         </Box>
       </DossierAreaContainer>

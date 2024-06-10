@@ -212,8 +212,8 @@ export const useSendApplicationToScore = ({ onSuccess }: { onSuccess: () => void
   )
 }
 
-export const useCheckIfSberClient = (params: IsClientRequest) =>
-  useMutation(['checkIfSberClient'], () => checkIfSberClient(params))
+export const useCheckIfSberClient = () =>
+  useMutation(['checkIfSberClient'], (params: IsClientRequest) => checkIfSberClient(params))
 
 export const useSaveDraftApplicationMutation = (onSuccess: (value: string) => void) => {
   const { enqueueSnackbar } = useSnackbar()

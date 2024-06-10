@@ -24,7 +24,8 @@ import { SecondDocArea } from './FormAreas/SecondDocArea/SecondDocArea'
 
 interface Props {
   getOrderId: (application: ClientData) => Promise<string | undefined>
-  isDraftLoading: boolean
+  isSaveDraftBtnLoading: boolean
+  isNextBtnLoading: boolean
   saveDraftDisabled: boolean
   disabledButtons: boolean
   isDifferentVendor: boolean
@@ -37,7 +38,8 @@ interface Props {
 
 export function FormContainer({
   getOrderId,
-  isDraftLoading,
+  isSaveDraftBtnLoading,
+  isNextBtnLoading,
   disabledButtons,
   saveDraftDisabled,
   isDifferentVendor,
@@ -141,17 +143,17 @@ export function FormContainer({
               <Button
                 className={classes.button}
                 variant="outlined"
-                disabled={disabledButtons}
+                disabled={disabledButtons || isShouldSubmit}
                 onClick={handleDraftClick}
               >
                 Сохранить черновик
-                {isDraftLoading && <CircularProgressWheel size="small" />}
+                {isSaveDraftBtnLoading && <CircularProgressWheel size="small" />}
               </Button>
             )}
             {/* <Button
               className={classes.button}
               variant="outlined"
-              disabled={disabledButtons}
+              disabled={disabledButtons || isShouldSubmit}
               onClick={handlePrintClick}
             >
               Распечатать
@@ -159,10 +161,11 @@ export function FormContainer({
             <Button
               className={classes.button}
               variant="contained"
-              disabled={disabledButtons}
+              disabled={disabledButtons || isShouldSubmit}
               onClick={handleSaveClick}
             >
               {saveDraftDisabled ? 'Отправить на решение' : 'Далее'}
+              {isNextBtnLoading && <CircularProgressWheel size="small" />}
             </Button>
           </Box>
         </Box>

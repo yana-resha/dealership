@@ -54,7 +54,7 @@ export const FileDownloader = ({
 
   /** Скачиваем файл полученный при запросе по метаинформации о нем */
   const handleDownload = async () => {
-    if (isFileObject(file)) {
+    if (isFileObject(file) || isLoading) {
       return
     }
 
