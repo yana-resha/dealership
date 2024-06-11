@@ -23,10 +23,18 @@ export default makeStyles(theme => ({
   smallHeaderCell: {
     '&.MuiTableCell-root': {
       maxWidth: '50px',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
     },
+  },
+
+  headerCellInner: {
+    width: 'auto',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+
+  smallHeaderCellInner: {
+    width: 'min-content',
   },
 
   alignedCell: {
@@ -43,16 +51,23 @@ export default makeStyles(theme => ({
       paddingRight: theme.spacing(2),
     },
   },
+
+  tooltip: {
+    marginBottom: `${theme.spacing(1)}!important`,
+  },
+
   tableBody: {
     flexGrow: 1,
     flexShrink: 0,
   },
+
   bodyCell: {
     '&.MuiTableCell-root': {
       padding: theme.spacing(2, 1),
       borderBottom: 'none',
     },
   },
+
   bodyRow: {
     '& > td:first-child': {
       paddingLeft: theme.spacing(2),

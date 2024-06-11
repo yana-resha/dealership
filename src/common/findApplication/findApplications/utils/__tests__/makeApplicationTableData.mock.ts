@@ -3,7 +3,7 @@ import { StatusCode, Application } from '@sberauto/loanapplifecycledc-proto/publ
 export const dataMock: Application[] = [
   {
     applicationNumber: '1',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Михаил',
     lastName: 'Терентьев',
     middleName: 'Павлович',
@@ -18,7 +18,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '2',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Мелания',
     lastName: 'Карасева',
     middleName: 'Данииловна',
@@ -33,7 +33,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '3',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Александр',
     lastName: 'Смирнов',
     middleName: 'Александрович',
@@ -48,7 +48,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '4',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Али',
     lastName: 'Медведев',
     middleName: 'Денисович',
@@ -63,7 +63,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '5',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Виктор',
     lastName: 'Поляков',
     middleName: 'Николаевич',
@@ -78,7 +78,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '6',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Галина',
     lastName: 'Смирнова',
     middleName: 'Васильевна',
@@ -93,7 +93,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '7',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Елена',
     lastName: 'Крылова',
     middleName: 'Сергеевна',
@@ -108,7 +108,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '8',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Максим',
     lastName: 'Морозов',
     middleName: 'Петрович',
@@ -123,7 +123,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '9',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Мария',
     lastName: 'Вершинина',
     middleName: 'Владимировна',
@@ -138,7 +138,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '10',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Иван',
     lastName: 'Афанасьев',
     middleName: 'Савельевич',
@@ -153,7 +153,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '11',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Илья',
     lastName: 'Шевцов',
     middleName: 'Иванович',
@@ -168,7 +168,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '12',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Маргарита',
     lastName: 'Реброва',
     middleName: 'Александровна',
@@ -183,7 +183,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '13',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Анна',
     lastName: 'Сомова',
     middleName: 'Павловна',
@@ -198,7 +198,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '14',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Игорь',
     lastName: 'Ребров',
     middleName: 'Семенович',
@@ -213,7 +213,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '15',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Антон',
     lastName: 'Зимовский',
     middleName: 'Владимирович',
@@ -228,7 +228,7 @@ export const dataMock: Application[] = [
   },
   {
     applicationNumber: '16',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     firstName: 'Андрей',
     lastName: 'Калугин',
     middleName: 'Николаевич',
@@ -245,7 +245,7 @@ export const dataMock: Application[] = [
 export const preparedMock = [
   {
     applicationNumber: '1',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 10,
     fullName: 'Терентьев Михаил Павлович',
     source: 'Сайт',
@@ -254,7 +254,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '2',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 44,
     fullName: 'Карасева Мелания Данииловна',
     source: 'Сайт',
@@ -263,7 +263,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '3',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 16,
     fullName: 'Смирнов Александр Александрович',
     source: 'PortalDA',
@@ -272,7 +272,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '4',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 10,
     fullName: 'Медведев Али Денисович',
     source: 'ЕРКЦ',
@@ -281,7 +281,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '5',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 44,
     fullName: 'Поляков Виктор Николаевич',
     source: 'RBC',
@@ -290,7 +290,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '6',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 16,
     fullName: 'Смирнова Галина Васильевна',
     source: 'СберАвто',
@@ -299,7 +299,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '7',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 10,
     fullName: 'Крылова Елена Сергеевна',
     source: 'СберАвто',
@@ -308,7 +308,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '8',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 44,
     fullName: 'Морозов Максим Петрович',
     source: 'СберАвто',
@@ -317,7 +317,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '9',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 16,
     fullName: 'Вершинина Мария Владимировна',
     source: 'Автотека',
@@ -326,7 +326,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '10',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 10,
     fullName: 'Афанасьев Иван Савельевич',
     source: 'Auto.ru',
@@ -335,7 +335,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '11',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 44,
     fullName: 'Шевцов Илья Иванович',
     source: 'Avito',
@@ -344,7 +344,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '12',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 16,
     fullName: 'Реброва Маргарита Александровна',
     source: 'Дром',
@@ -353,7 +353,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '13',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 10,
     fullName: 'Сомова Анна Павловна',
     source: 'СберАвто',
@@ -362,7 +362,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '14',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 44,
     fullName: 'Ребров Игорь Семенович',
     source: 'ДЦ',
@@ -371,7 +371,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '15',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 16,
     fullName: 'Зимовский Антон Владимирович',
     source: 'SBOL',
@@ -380,7 +380,7 @@ export const preparedMock = [
   },
   {
     applicationNumber: '16',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 10,
     fullName: 'Калугин Андрей Николаевич',
     source: '',

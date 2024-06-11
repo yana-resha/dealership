@@ -13,18 +13,4 @@ export default makeStyles(theme => ({
     height: '20px',
     padding: theme.spacing(0) + '!important',
   },
-
-  tooltip: {
-    padding: theme.spacing(1) + '!important',
-    maxWidth: '150px!important',
-    fontSize: '12px',
-    lineHeight: '14px',
-    backgroundColor: theme.palette.background.default + '!important',
-    color: theme.palette.text.primary + '!important',
-    boxShadow: theme.shadows[3],
-  },
-
-  tooltipArrow: {
-    color: theme.palette.background.default + '!important',
-  },
 }))

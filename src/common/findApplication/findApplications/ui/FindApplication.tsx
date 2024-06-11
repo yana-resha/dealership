@@ -24,7 +24,6 @@ export const FindApplication = () => {
     firstName: '',
     middleName: '',
     lastName: '',
-    // statuses: [],
   })
   const [page, setPage] = useState(1)
 
@@ -38,14 +37,6 @@ export const FindApplication = () => {
     setRequest(newValue)
   }
 
-  /* TODO: DCB-387 Решили не делать до старта MVP
-      const setStatuses = (statusValues: StatusCode[]) => {
-        const newValue = { ...request, statuses: statusValues }
-
-        setRequest(newValue)
-      }
-    */
-
   const getDetailedDossier = (applicationId: string, page: number) => {
     setPage(page)
     navigate(appRoutes.order(applicationId))
@@ -54,8 +45,6 @@ export const FindApplication = () => {
   return (
     <>
       <ApplicationFilters onSubmitClick={onSubmit} />
-      {/* TODO: DCB-387 Решили не делать до старта MVP */}
-      {/* <StatusFilter onChange={setStatuses} /> */}
       <Box className={classes.divider} />
       <ApplicationTable
         data={data || []}

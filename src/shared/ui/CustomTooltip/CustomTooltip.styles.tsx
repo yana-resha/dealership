@@ -9,6 +9,10 @@ export default makeStyles(theme => ({
     backgroundColor: theme.palette.background.default + '!important',
     color: theme.palette.text.primary + '!important',
     boxShadow: theme.shadows[3],
+
+    '.makeStyles-tooltip': {
+      backgroundColor: theme.palette.background.default,
+    },
   },
 
   tooltipArrow: {
