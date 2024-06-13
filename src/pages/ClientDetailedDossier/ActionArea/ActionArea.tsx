@@ -118,6 +118,20 @@ export function ActionArea({
     })
   }, [navigate])
 
+  const editApplicationWithErrorStatus = useCallback(() => {
+    const isFullCalculator =
+      application.vendor?.vendorCode === vendorCode && application.anketaType === 2 ? true : false
+    navigate(appRoutePaths.createOrder, {
+      state: { isExistingApplication: true, isFullCalculator, saveDraftDisabled: true },
+    })
+  }, [application.vendor?.vendorCode, vendorCode, application.anketaType, navigate])
+
+  const editApplicationWithApprovedStatus = useCallback(() => {
+    navigate(appRoutePaths.createOrder, {
+      state: { isExistingApplication: true, isFullCalculator: false, saveDraftDisabled: true },
+    })
+  }, [navigate])
+
   const extendApplicationWithApprovedStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
       state: { isExistingApplication: true, isFullCalculator: true, saveDraftDisabled: true },
@@ -163,38 +177,13 @@ export function ActionArea({
         source !== Source.DC ||
         !!targetDcAppId))
 
-  const editingBtn = useMemo(
-    () => (
-      <Button variant="contained" onClick={() => editApplication(editApplicationWithInitialStatus)}>
-        Редактировать
-      </Button>
-    ),
-    [editApplication, editApplicationWithInitialStatus],
-  )
-
-  const goingToNewApplicationBtn = useMemo(
-    () => (
-      <Button variant="contained" onClick={getToNewApplication}>
-        Перейти на новую заявку
-      </Button>
-    ),
-    [getToNewApplication],
-  )
-
-  const creationApplicationBtn = useMemo(
-    () => (
-      <Button variant="contained" onClick={recreateApplication} disabled={isCheckIfSberClientLoading}>
-        {isShouldShowRecreateButton ? 'Пересоздать новую заявку' : 'Создать новую заявку'}
-      </Button>
-    ),
-    [isCheckIfSberClientLoading, isShouldShowRecreateButton, recreateApplication],
-  )
-
   const shownBlock = useMemo(() => {
     if (preparedStatus == PreparedStatus.initial) {
       return (
         <Box className={classes.actionButtons}>
-          {editingBtn}
+          <Button variant="contained" onClick={() => editApplication(editApplicationWithInitialStatus)}>
+            Редактировать
+          </Button>
           {application.anketaType == AnketaType.Complete && (
             <Button variant="contained" onClick={sendApplicationToScore} disabled={isSendToScoreLoading}>
               Отправить на решение
@@ -206,7 +195,9 @@ export function ActionArea({
     if (preparedStatus == PreparedStatus.approved) {
       return (
         <Box className={classes.actionButtons}>
-          {editingBtn}
+          <Button variant="contained" onClick={() => editApplication(editApplicationWithApprovedStatus)}>
+            Редактировать
+          </Button>
           {application.vendor?.vendorCode === vendorCode && (
             <Button
               variant="contained"
@@ -222,12 +213,26 @@ export function ActionArea({
     if (isShouldShowRecreateButton || preparedStatus == PreparedStatus.financed) {
       return (
         <Box className={classes.actionButtons}>
-          {targetDcAppId ? goingToNewApplicationBtn : creationApplicationBtn}
+          {targetDcAppId ? (
+            <Button variant="contained" onClick={getToNewApplication}>
+              Перейти на новую заявку
+            </Button>
+          ) : (
+            <Button variant="contained" onClick={recreateApplication} disabled={isCheckIfSberClientLoading}>
+              {isShouldShowRecreateButton ? 'Пересоздать новую заявку' : 'Создать новую заявку'}
+            </Button>
+          )}
         </Box>
       )
     }
     if (preparedStatus == PreparedStatus.error) {
-      return <Box className={classes.actionButtons}>{editingBtn}</Box>
+      return (
+        <Box className={classes.actionButtons}>
+          <Button variant="contained" onClick={() => editApplication(editApplicationWithErrorStatus)}>
+            Редактировать
+          </Button>
+        </Box>
+      )
     }
     if (
       [PreparedStatus.finallyApproved, PreparedStatus.formation, PreparedStatus.signed].includes(
@@ -251,15 +256,18 @@ export function ActionArea({
     application.vendor?.vendorCode,
     classes.actionButtons,
     closeConfirmationModal,
-    creationApplicationBtn,
     editApplication,
-    editingBtn,
+    editApplicationWithApprovedStatus,
+    editApplicationWithErrorStatus,
+    editApplicationWithInitialStatus,
     extendApplicationWithApprovedStatus,
-    goingToNewApplicationBtn,
+    getToNewApplication,
+    isCheckIfSberClientLoading,
     isConfirmationModalVisible,
     isSendToScoreLoading,
     isShouldShowRecreateButton,
     preparedStatus,
+    recreateApplication,
     sendApplicationToScore,
     setIsEditRequisitesMode,
     status,
