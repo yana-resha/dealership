@@ -27,7 +27,7 @@ export function Downloader({
   const [file, setFile] = useState<File | undefined>()
 
   const handleDownload = async () => {
-    if (disabled) {
+    if (disabled || isLoading) {
       return
     }
     if (onDownloadFile && !file) {

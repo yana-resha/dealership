@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { NoMatchesModal } from 'pages/CreateOrder/OrderSearching/components/NoMatchesModal/NoMatchesModal'
-import { checkIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
+import { useCheckIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { appRoutePaths } from 'shared/navigation/routerPath'
@@ -65,7 +65,12 @@ export function ActionArea({
   const navigate = useNavigate()
   const { applicant } = application
   const { vendorCode } = getPointOfSaleFromCookies()
-  const { mutateAsync: sendToScore } = useSendApplicationToScore({ onSuccess: returnToList })
+  const { mutateAsync: sendToScoreMutate, isLoading: isSendToScoreLoading } = useSendApplicationToScore({
+    onSuccess: returnToList,
+  })
+  const { mutateAsync: checkIfSberClientMutate, isLoading: isCheckIfSberClientLoading } =
+    useCheckIfSberClient()
+
   const passport = applicant?.documents?.find(document => document.type === ApplicantDocsType.PASSPORT)
   const phoneNumber = applicant?.phones?.find(document => document.type === PhoneType.MOBILE)
 
@@ -113,20 +118,6 @@ export function ActionArea({
     })
   }, [navigate])
 
-  const editApplicationWithErrorStatus = useCallback(() => {
-    const isFullCalculator =
-      application.vendor?.vendorCode === vendorCode && application.anketaType === 2 ? true : false
-    navigate(appRoutePaths.createOrder, {
-      state: { isExistingApplication: true, isFullCalculator, saveDraftDisabled: true },
-    })
-  }, [application.vendor?.vendorCode, vendorCode, application.anketaType, navigate])
-
-  const editApplicationWithApprovedStatus = useCallback(() => {
-    navigate(appRoutePaths.createOrder, {
-      state: { isExistingApplication: true, isFullCalculator: false, saveDraftDisabled: true },
-    })
-  }, [navigate])
-
   const extendApplicationWithApprovedStatus = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
       state: { isExistingApplication: true, isFullCalculator: true, saveDraftDisabled: true },
@@ -149,7 +140,7 @@ export function ActionArea({
   )
 
   const recreateApplication = useCallback(async () => {
-    const response = await checkIfSberClient(clientData)
+    const response = await checkIfSberClientMutate(clientData)
     if (response.isClient) {
       deleteLoanDataFromApplication()
       navigate(appRoutePaths.createOrder, {
@@ -158,11 +149,11 @@ export function ActionArea({
     } else {
       openModal()
     }
-  }, [clientData, deleteLoanDataFromApplication, navigate, openModal])
+  }, [checkIfSberClientMutate, clientData, deleteLoanDataFromApplication, navigate, openModal])
 
   const sendApplicationToScore = useCallback(() => {
-    sendToScore(applicationForScore)
-  }, [applicationForScore, sendToScore])
+    sendToScoreMutate(applicationForScore)
+  }, [applicationForScore, sendToScoreMutate])
 
   const isShouldShowRecreateButton =
     preparedStatus === PreparedStatus.canceled ||
@@ -172,15 +163,40 @@ export function ActionArea({
         source !== Source.DC ||
         !!targetDcAppId))
 
+  const editingBtn = useMemo(
+    () => (
+      <Button variant="contained" onClick={() => editApplication(editApplicationWithInitialStatus)}>
+        Редактировать
+      </Button>
+    ),
+    [editApplication, editApplicationWithInitialStatus],
+  )
+
+  const goingToNewApplicationBtn = useMemo(
+    () => (
+      <Button variant="contained" onClick={getToNewApplication}>
+        Перейти на новую заявку
+      </Button>
+    ),
+    [getToNewApplication],
+  )
+
+  const creationApplicationBtn = useMemo(
+    () => (
+      <Button variant="contained" onClick={recreateApplication} disabled={isCheckIfSberClientLoading}>
+        {isShouldShowRecreateButton ? 'Пересоздать новую заявку' : 'Создать новую заявку'}
+      </Button>
+    ),
+    [isCheckIfSberClientLoading, isShouldShowRecreateButton, recreateApplication],
+  )
+
   const shownBlock = useMemo(() => {
     if (preparedStatus == PreparedStatus.initial) {
       return (
         <Box className={classes.actionButtons}>
-          <Button variant="contained" onClick={() => editApplication(editApplicationWithInitialStatus)}>
-            Редактировать
-          </Button>
+          {editingBtn}
           {application.anketaType == AnketaType.Complete && (
-            <Button variant="contained" onClick={sendApplicationToScore}>
+            <Button variant="contained" onClick={sendApplicationToScore} disabled={isSendToScoreLoading}>
               Отправить на решение
             </Button>
           )}
@@ -190,57 +206,28 @@ export function ActionArea({
     if (preparedStatus == PreparedStatus.approved) {
       return (
         <Box className={classes.actionButtons}>
-          <Button variant="contained" onClick={() => editApplication(editApplicationWithApprovedStatus)}>
-            Редактировать
-          </Button>
+          {editingBtn}
           {application.vendor?.vendorCode === vendorCode && (
-            <Button variant="contained" onClick={extendApplicationWithApprovedStatus}>
+            <Button
+              variant="contained"
+              onClick={extendApplicationWithApprovedStatus}
+              disabled={isSendToScoreLoading}
+            >
               Дозаполнить анкету
             </Button>
           )}
         </Box>
       )
     }
-    if (isShouldShowRecreateButton) {
+    if (isShouldShowRecreateButton || preparedStatus == PreparedStatus.financed) {
       return (
         <Box className={classes.actionButtons}>
-          <>
-            {targetDcAppId ? (
-              <Button variant="contained" onClick={getToNewApplication}>
-                Перейти на новую заявку
-              </Button>
-            ) : (
-              <Button variant="contained" onClick={recreateApplication}>
-                Пересоздать новую заявку
-              </Button>
-            )}
-          </>
-        </Box>
-      )
-    }
-    if (preparedStatus == PreparedStatus.financed) {
-      return (
-        <Box className={classes.actionButtons}>
-          {targetDcAppId ? (
-            <Button variant="contained" onClick={getToNewApplication}>
-              Перейти на новую заявку
-            </Button>
-          ) : (
-            <Button variant="contained" onClick={recreateApplication}>
-              Создать новую заявку
-            </Button>
-          )}
+          {targetDcAppId ? goingToNewApplicationBtn : creationApplicationBtn}
         </Box>
       )
     }
     if (preparedStatus == PreparedStatus.error) {
-      return (
-        <Box className={classes.actionButtons}>
-          <Button variant="contained" onClick={() => editApplication(editApplicationWithErrorStatus)}>
-            Редактировать
-          </Button>
-        </Box>
-      )
+      return <Box className={classes.actionButtons}>{editingBtn}</Box>
     }
     if (
       [PreparedStatus.finallyApproved, PreparedStatus.formation, PreparedStatus.signed].includes(
@@ -264,18 +251,17 @@ export function ActionArea({
     application.vendor?.vendorCode,
     classes.actionButtons,
     closeConfirmationModal,
+    creationApplicationBtn,
     editApplication,
-    editApplicationWithApprovedStatus,
-    editApplicationWithErrorStatus,
-    editApplicationWithInitialStatus,
+    editingBtn,
     extendApplicationWithApprovedStatus,
-    getToNewApplication,
+    goingToNewApplicationBtn,
     isConfirmationModalVisible,
+    isSendToScoreLoading,
+    isShouldShowRecreateButton,
     preparedStatus,
-    recreateApplication,
     sendApplicationToScore,
     setIsEditRequisitesMode,
-    isShouldShowRecreateButton,
     status,
     targetDcAppId,
     updateApplicationStatusLocally,

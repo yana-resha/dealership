@@ -59,18 +59,16 @@ export function ClientForm() {
     closeConfirmationModal,
   } = useConfirmationForm(formRef)
 
-  const { mutateAsync: saveDraft, isLoading: isDraftLoading } = useSaveDraftApplicationMutation(
+  const { mutateAsync: saveDraftMutate, isLoading: isDraftLoading } = useSaveDraftApplicationMutation(
     (dcAppId: string) => dcAppId && dispatch(setAppId({ dcAppId })),
   )
 
-  const { mutate: sendToScore } = useSendApplicationToScore({
+  const { mutate: sendToScoreMutate, isLoading: isSendToScoreLoading } = useSendApplicationToScore({
     onSuccess: () => {
       dispatch(clearOrder())
       navigate(appRoutePaths.orderList)
     },
   })
-
-  const disabledButtons = isDraftLoading
 
   const handleSubmit = useCallback(
     (application: ApplicationFrontdc) => {
@@ -85,10 +83,10 @@ export function ClientForm() {
 
       confirmActionWrapper(() => {
         updateOrderData(newApplication)
-        sendToScore(applicationForScoring)
+        sendToScoreMutate(applicationForScoring)
       }, 'Заявка будет отправлена на скоринг под ДЦ:')
     },
-    [sendToScore, setAnketaType, confirmActionWrapper, updateOrderData],
+    [sendToScoreMutate, setAnketaType, confirmActionWrapper, updateOrderData],
   )
 
   const goToOrderPage = useCallback(
@@ -109,10 +107,10 @@ export function ClientForm() {
 
       confirmActionWrapper(() => {
         updateOrderData(newApplication)
-        saveDraft(newApplication).then(goToOrderPage)
+        saveDraftMutate(newApplication).then(goToOrderPage)
       }, 'Заявка будет сохранена под ДЦ:')
     },
-    [formRef, goToOrderPage, saveDraft, setAnketaType, confirmActionWrapper, updateOrderData],
+    [formRef, goToOrderPage, saveDraftMutate, setAnketaType, confirmActionWrapper, updateOrderData],
   )
 
   const saveDraftAndPrint = useCallback(
@@ -127,14 +125,14 @@ export function ClientForm() {
         }
         confirmActionWrapper(() => {
           updateOrderData(newApplication)
-          saveDraft(newApplication).then(() => {
+          saveDraftMutate(newApplication).then(() => {
             console.log('application saved')
             console.log('Print application')
           })
         }, 'Заявка будет сохранена под ДЦ:')
       }
     },
-    [dcAppId, formRef, saveDraft, setAnketaType, confirmActionWrapper, updateOrderData],
+    [dcAppId, formRef, saveDraftMutate, setAnketaType, confirmActionWrapper, updateOrderData],
   )
 
   /** Сохраняем заявку чтобы сформировать ID заявки */
@@ -152,9 +150,9 @@ export function ClientForm() {
       const newApplication = setAnketaType(application, formRef.current?.values?.isFormComplete ?? false)
       updateOrderData(newApplication)
 
-      return (await saveDraft(newApplication)).dcAppId
+      return (await saveDraftMutate(newApplication)).dcAppId
     },
-    [dcAppId, formRef, remapApplicationValues, saveDraft, setAnketaType, updateOrderData],
+    [dcAppId, formRef, remapApplicationValues, saveDraftMutate, setAnketaType, updateOrderData],
   )
 
   const getSubmitAction = useCallback(
@@ -193,6 +191,16 @@ export function ClientForm() {
     ],
   )
 
+  const isDisabledButtons = isDraftLoading || isSendToScoreLoading
+  const isSaveDraftBtnLoading =
+    formRef.current?.values.submitAction === SubmitAction.Draft ? isDraftLoading : false
+  const isNextBtnLoading =
+    formRef.current?.values.submitAction === SubmitAction.Save
+      ? saveDraftDisabled
+        ? isSendToScoreLoading
+        : isDraftLoading
+      : false
+
   return (
     <Box className={classes.formContainer}>
       {isShouldShowLoading ? (
@@ -209,8 +217,9 @@ export function ClientForm() {
           >
             <FormContainer
               getOrderId={getOrderId}
-              isDraftLoading={isDraftLoading}
-              disabledButtons={disabledButtons}
+              isSaveDraftBtnLoading={isSaveDraftBtnLoading}
+              isNextBtnLoading={isNextBtnLoading}
+              disabledButtons={isDisabledButtons}
               saveDraftDisabled={saveDraftDisabled}
               isDifferentVendor={isDifferentVendor}
               isReuploadedQuestionnaire={isReuploadedQuestionnaire}

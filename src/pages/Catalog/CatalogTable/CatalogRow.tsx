@@ -14,6 +14,7 @@ import { ReactComponent as TextFileIcon } from 'assets/icons/textFile.svg'
 import { useUserRoles } from 'entities/user'
 import { RequiredCatalog, useDownloadFileMutation } from 'shared/api/requests/fileStorageDc.api'
 import { DEFAULT_FILE_NAME } from 'shared/config/fileLoading.config'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 
 import { imageExtensions, tableExtensions, textExtensions } from '../Catalog.config'
 import useStyles from './CatalogTable.styles'
@@ -29,7 +30,7 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
   const styles = useStyles()
   const { isContentManager } = useUserRoles()
 
-  const { mutateAsync: downloadFileMutate } = useDownloadFileMutation()
+  const { mutateAsync: downloadFileMutate, isLoading: isDownloadFileLoading } = useDownloadFileMutation()
 
   const isFile = data.type === ObjectType.FILE
 
@@ -64,6 +65,9 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
 
   const downloadFile = useCallback(async () => {
     try {
+      if (isDownloadFileLoading) {
+        return
+      }
       const downloadedBlob = await downloadFileMutate({ id: data.id })
       const downloadedFile = new File([downloadedBlob], data.name || DEFAULT_FILE_NAME)
       const downloadURL = URL.createObjectURL(downloadedFile)
@@ -75,7 +79,7 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
     } catch (error) {
       console.error('Error downloading the file:', error)
     }
-  }, [data.id, data.name, downloadFileMutate])
+  }, [data.id, data.name, downloadFileMutate, isDownloadFileLoading])
 
   const handleItemClick = useCallback(() => {
     if (isFile) {
@@ -92,7 +96,9 @@ const CatalogRow = ({ data, onRowClick, onRemove }: Props) => {
   return (
     <TableRow key={data.name} className={styles.bodyRow}>
       <TableCell align="left" className={cx(styles.bodyCell, styles.iconCell)} onClick={handleItemClick}>
-        <Box className={styles.iconContainer}>{icon}</Box>
+        <Box className={styles.iconContainer}>
+          {isDownloadFileLoading ? <CircularProgressWheel size="small" /> : icon}
+        </Box>
       </TableCell>
       <TableCell align="left" className={styles.bodyCell} onClick={handleItemClick}>
         <Box className={styles.nameContainer}>{data.name || 'Без имени'}</Box>

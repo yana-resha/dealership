@@ -20,7 +20,7 @@ export const RemoveModal = ({ currentFolderId, removedFile, closeModal }: Props)
 
   const { refetch: refetchGetCatalog } = useGetCatalogQuery({ folderId: currentFolderId }, { enabled: false })
 
-  const { mutate: removeCatalogMutate } = useRemoveCatalogMutation()
+  const { mutate: removeCatalogMutate, isLoading: isRemoveCatalogLoading } = useRemoveCatalogMutation()
 
   const submitRemove = useCallback(() => {
     if (removedFile?.id) {
@@ -45,7 +45,12 @@ export const RemoveModal = ({ currentFolderId, removedFile, closeModal }: Props)
       </SberTypography>
 
       <Box className={styles.btnContainer}>
-        <Button variant="contained" className={styles.btn} onClick={submitRemove}>
+        <Button
+          variant="contained"
+          className={styles.btn}
+          onClick={submitRemove}
+          disabled={isRemoveCatalogLoading}
+        >
           Да
         </Button>
         <Button variant="outlined" className={styles.btn} onClick={closeModal}>
