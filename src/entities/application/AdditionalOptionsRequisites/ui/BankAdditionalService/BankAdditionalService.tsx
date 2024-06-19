@@ -22,6 +22,7 @@ import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { AddingSquareBtn } from 'shared/ui/SquareBtn/AddingSquareBtn'
 import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import useStyles from './BankAdditionalService.styles'
 
@@ -132,12 +133,13 @@ export function BankAdditionalService({
   }, [loanTerm, loanTermOptions, namePrefix, setFieldValue])
 
   useEffect(() => {
-    if (currentTariff) {
-      setFieldValue(namePrefix + FormFieldNameMap.productCost, currentTariff.price)
+    const price = stringToNumber(currentTariff?.price)
+    if (price && loanTerm !== null) {
+      setFieldValue(namePrefix + FormFieldNameMap.productCost, `${(price * loanTerm) / MONTH_OF_YEAR_COUNT}`)
     } else {
       setFieldValue(namePrefix + FormFieldNameMap.productCost, INITIAL_BANK_ADDITIONAL_SERVICE.productCost)
     }
-  }, [currentTariff, namePrefix, setFieldValue])
+  }, [currentTariff?.price, loanTerm, namePrefix, setFieldValue])
 
   return (
     <Box className={classes.gridContainer}>
