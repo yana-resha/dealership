@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
+import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { SquareBtn } from 'shared/ui/SquareBtn/SquareBtn'
 

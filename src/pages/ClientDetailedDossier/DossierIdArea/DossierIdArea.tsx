@@ -5,7 +5,7 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
 import { ApplicationStatus } from 'entities/application/ApplicationStatus/ApplicationStatus'
-import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
+import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 

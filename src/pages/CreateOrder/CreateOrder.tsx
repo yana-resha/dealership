@@ -9,7 +9,7 @@ import { OrderCalculator } from 'common/OrderCalculator'
 import { OrderContext } from 'common/OrderCalculator'
 import { clearOrder, setCurrentStep, updateApplication, updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
+import { CustomTooltip } from 'shared/ui/CustomTooltip'
 
 import { ClientForm } from './ClientForm'
 import { useStyles } from './CreateOrder.styles'

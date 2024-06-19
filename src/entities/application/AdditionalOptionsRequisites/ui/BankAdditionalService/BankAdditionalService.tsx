@@ -16,10 +16,12 @@ import { useAdditionalServices } from 'entities/application/AdditionalOptionsReq
 import { useAdditionalServicesOptions } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServicesOptions'
 import { checkIsNumber } from 'shared/lib/helpers'
 import { maskOnlyDigitsWithSeparator } from 'shared/masks/InputMasks'
+import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { AddingSquareBtn } from 'shared/ui/SquareBtn/AddingSquareBtn'
 import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
+import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 
 import useStyles from './BankAdditionalService.styles'
 
@@ -153,7 +155,7 @@ export function BankAdditionalService({
         label="Tариф"
         placeholder="-"
         options={tariffOptions}
-        gridColumn="span 3"
+        gridColumn="span 2"
         disabled={!tariffOptions.length || isError || isRequired}
       />
 
@@ -173,6 +175,15 @@ export function BankAdditionalService({
           mask={maskOnlyDigitsWithSeparator}
           disabled
         />
+      </Box>
+
+      {/* всегда в кредит */}
+      <Box className={classes.switchContainer} gridColumn="span 1">
+        <CustomTooltip arrow title={<span>Услуги банка всегда оформляются в кредит</span>}>
+          <Box>
+            <SwitchInput label="В кредит" value={true} disabled />
+          </Box>
+        </CustomTooltip>
       </Box>
 
       {!isError && (

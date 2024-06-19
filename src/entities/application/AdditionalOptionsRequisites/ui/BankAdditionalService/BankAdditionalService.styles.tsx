@@ -20,4 +20,8 @@ export default makeStyles(theme => ({
     gap: theme.spacing(0.5),
     marginTop: theme.spacing(3.6),
   },
+
+  switchContainer: {
+    marginTop: theme.spacing(4),
+  },
 }))
