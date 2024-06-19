@@ -93,10 +93,12 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
         setRequiredIfInCredit(Yup.string().nullable()),
       ),
       [FormFieldNameMap.provider]: setRequiredIfInCredit(
-        Yup.string().when([FormFieldNameMap.productType], {
-          is: (productType: string) => productType === CASCO_OPTION_ID,
-          then: schema => schema.required(FieldMessages.required),
-        }),
+        Yup.string()
+          .nullable()
+          .when([FormFieldNameMap.productType], {
+            is: (productType: string) => productType === CASCO_OPTION_ID,
+            then: schema => schema.required(FieldMessages.required),
+          }),
       ),
       [FormFieldNameMap.broker]: setRequiredIfInCredit(Yup.string().nullable()),
       [FormFieldNameMap.loanTerm]: setRequiredIfNecessaryCasco(
