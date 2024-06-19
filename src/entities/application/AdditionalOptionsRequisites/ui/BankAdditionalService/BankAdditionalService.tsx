@@ -100,14 +100,14 @@ export function BankAdditionalService({
     if (!currentTariff) {
       return []
     }
-    const maxLoanTermByClientAge = (currentTariff.maxClientAge + 1 - clientAge) * MONTH_OF_YEAR_COUNT
+    const maxLoanTermByClientAge = (currentTariff.maxClientAge - clientAge) * MONTH_OF_YEAR_COUNT
     const maxLoanTerm =
       currentTariff.maxTerm <= maxLoanTermByClientAge ? currentTariff.maxTerm : maxLoanTermByClientAge
 
     if (currentTariff.minTerm > maxLoanTerm || maxLoanTerm <= 0) {
       return []
     }
-    const scaleLength = (maxLoanTerm - currentTariff.minTerm) / LOAN_TERM_GRADUATION_VALUE + 1
+    const scaleLength = Math.floor((maxLoanTerm - currentTariff.minTerm) / LOAN_TERM_GRADUATION_VALUE + 1)
     const loanTerms = [...new Array(scaleLength)].map((v, i) => ({
       value: (i + 1) * LOAN_TERM_GRADUATION_VALUE + currentTariff.minTerm - LOAN_TERM_GRADUATION_VALUE,
     }))
