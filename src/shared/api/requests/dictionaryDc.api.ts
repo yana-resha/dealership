@@ -8,12 +8,13 @@ import {
   GetRequisitesForFinancingRequest,
   CalculateCreditResponse,
   GetVendorsListRequest,
+  RequiredServiceFlag,
 } from '@sberauto/dictionarydc-proto/public'
 import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
 import { CustomFetchError, Rest } from 'shared/api/client'
-import { prepareOptionType } from 'shared/lib/helpers'
+import { prepareOptionType, prepareRequiredServiceFlag } from 'shared/lib/helpers'
 
 import { Service } from '../constants'
 
@@ -37,7 +38,20 @@ export const getVendorOptionsList = (params: GetVendorOptionsListRequest) =>
   })
 
 export const calculateCredit = (params: CalculateCreditRequest) =>
-  dictionaryDcApi.calculateCredit({ data: params }).then(res => res.data ?? {})
+  dictionaryDcApi.calculateCredit({ data: params }).then(res => {
+    const data = {
+      ...res.data,
+      products: res.data?.products?.map(product => ({
+        ...product,
+        requiredServiceFlag: prepareRequiredServiceFlag(
+          product.requiredServiceFlag as unknown as keyof typeof RequiredServiceFlag,
+        ),
+      })),
+    }
+
+    return data
+  })
+// .then(res => res.data ?? {})
 
 export const useCalculateCreditMutation = () =>
   useMutation<CalculateCreditResponse, CustomFetchError, CalculateCreditRequest, unknown>(

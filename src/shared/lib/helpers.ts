@@ -1,4 +1,4 @@
-import { OptionType } from '@sberauto/dictionarydc-proto/public'
+import { OptionType, RequiredServiceFlag } from '@sberauto/dictionarydc-proto/public'
 import { EmailStatusCode, GetEmailsResponse } from '@sberauto/emailappdc-proto/public'
 
 export const exhaustiveCheck = (value: never) => value
@@ -43,6 +43,14 @@ export function downloadBlob(blob: Blob, fileName: string) {
  * поэтому приводим к изначальному виду */
 export function prepareOptionType(type: keyof typeof OptionType): OptionType | undefined {
   return OptionType[type] ?? undefined
+}
+
+/** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,
+ * поэтому приводим к изначальному виду */
+export function prepareRequiredServiceFlag(
+  type: keyof typeof RequiredServiceFlag,
+): RequiredServiceFlag | undefined {
+  return RequiredServiceFlag[type] ?? undefined
 }
 
 export const getLocalStorage = <T>(key: string): T | undefined => {
