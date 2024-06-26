@@ -191,7 +191,20 @@ export function BankAdditionalService({
       {!isError && (
         <Box className={classes.btnContainer} gridColumn="span 1">
           {isLastItem && <AddingSquareBtn onClick={addItem} disabled={shouldDisableAdding} />}
-          <CloseSquareBtn onClick={removeItem} disabled={isRequired} />
+          <CustomTooltip
+            arrow
+            title={
+              <span>
+                Выбран кредитный продукт с обязательной услугой, для отказа от услуги - выберите другой
+                кредитный продукт
+              </span>
+            }
+            disableHoverListener={!isRequired}
+          >
+            <Box>
+              <CloseSquareBtn onClick={removeItem} disabled={isRequired} />
+            </Box>
+          </CustomTooltip>
         </Box>
       )}
     </Box>
