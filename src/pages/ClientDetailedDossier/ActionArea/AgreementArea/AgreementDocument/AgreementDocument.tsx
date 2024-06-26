@@ -3,8 +3,8 @@ import { ChangeEvent, Dispatch, SetStateAction, useCallback } from 'react'
 import { Box, Divider } from '@mui/material'
 import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { DocumentDownloader } from 'entities/downloader/DocumentsDownloader/DocumentDownloader'
 import { useDownloadDocument } from 'features/ApplicationFileLoader/hooks/useDownloadDocument'
-import { FileDownloader } from 'shared/ui/FileDownloader/FileDownloader'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import SberTypography from 'shared/ui/SberTypography'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
@@ -70,14 +70,14 @@ export function AgreementDocument({
   return (
     <Box key={document?.name} className={classes.documentContainer} data-testid="agreementDocument">
       <Box className={classes.document}>
-        <FileDownloader
+        <DocumentDownloader
           dcAppId={document.dcAppId}
           documentType={document.documentType}
           fileOrMetadata={document}
           index={index}
           loadingMessage="Файл загружается"
           onClick={setDocumentToDownloaded}
-          onDownloadFile={downloadFile}
+          onDownloadDocuments={downloadFile}
         />
 
         {docsStatus[index] !== DocsStatus.Received && (

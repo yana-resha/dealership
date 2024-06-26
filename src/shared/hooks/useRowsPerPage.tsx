@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 
-type Props = {
-  data: any[]
+type Props<T> = {
+  data: T[]
   startPage?: number
   rowsPerPage?: number
 }
@@ -16,7 +16,7 @@ const ROW_HEIGHT = 56
 height: 100% (для корневого элемента),
 flexGrow: 1 (для остальных родителей),
 не забыть про  boxSizing: 'border-box' при необходимости */
-export const useRowsPerPage = ({ data, startPage = 1, rowsPerPage: rowsPerPageProp }: Props) => {
+export const useRowsPerPage = <T,>({ data, startPage = 1, rowsPerPage: rowsPerPageProp }: Props<T>) => {
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null)
 
   const initialRowsPerPage = rowsPerPageProp ? rowsPerPageProp : ROWS_PER_PAGE

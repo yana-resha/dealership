@@ -3,9 +3,8 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
+import { DocumentDownloader } from 'entities/downloader/DocumentsDownloader/DocumentDownloader'
 import { MockProviders } from 'tests/mocks'
-
-import { FileDownloader } from '../FileDownloader'
 
 const blob = new Blob([''], { type: 'text/html' })
 const file: File = new File([blob], 'file')
@@ -21,7 +20,7 @@ describe('FileDownloader', () => {
 
     render(
       <MockProviders>
-        <FileDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
+        <DocumentDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
       </MockProviders>,
     )
 
@@ -33,7 +32,7 @@ describe('FileDownloader', () => {
   it('при клике на крестик вызывается onClickDelete', () => {
     render(
       <MockProviders>
-        <FileDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
+        <DocumentDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
       </MockProviders>,
     )
 
@@ -45,7 +44,7 @@ describe('FileDownloader', () => {
   it('если нет превью то показываем CircularProgress', () => {
     render(
       <MockProviders>
-        <FileDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
+        <DocumentDownloader fileOrMetadata={file} index={0} onClickRemove={deleteFn} />
       </MockProviders>,
     )
 

@@ -14,6 +14,7 @@ import cx from 'classnames'
 import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
 import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
+import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
 import { ApplicationStatus } from '../ApplicationStatus/ApplicationStatus'
@@ -26,7 +27,6 @@ import {
 import useStyles from './ApplicationTable.styles'
 import { PreparedTableData } from './ApplicationTable.types'
 import { getCellsChildren } from './ApplicationTable.utils'
-import { TablePaginationActions } from './TablePaginationActions/TablePaginationActions'
 
 type Props = {
   data: PreparedTableData[]

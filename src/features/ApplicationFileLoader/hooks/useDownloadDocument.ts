@@ -5,7 +5,7 @@ import {
   useGetApplicationDocumentsListMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
 import { DEFAULT_FILE_NAME } from 'shared/config/fileLoading.config'
-import { FileMetadata } from 'shared/ui/FileDownloader/FileDownloader'
+import { DocumentsFileMetadata } from 'shared/ui/FileDownloader/FileDownloader'
 
 /** Загружает файл с сервера */
 const useDownloadDocument = () => {
@@ -13,7 +13,7 @@ const useDownloadDocument = () => {
   const { mutateAsync: getApplicationDocumentsList } = useGetApplicationDocumentsListMutation()
 
   const downloadFile = useCallback(
-    async (fileMeta: FileMetadata) => {
+    async (fileMeta: DocumentsFileMetadata) => {
       const { dcAppId, documentType, name } = fileMeta
       const file = await downloadDocument({ dcAppId, documentType })
 

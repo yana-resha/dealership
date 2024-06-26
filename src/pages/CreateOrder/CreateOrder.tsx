@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 
 import { OrderCalculator } from 'common/OrderCalculator'
 import { OrderContext } from 'common/OrderCalculator'
-import { clearOrder, setCurrentStep, updateOrder } from 'entities/reduxStore/orderSlice'
+import { clearOrder, setCurrentStep, updateApplication, updateOrder } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 
@@ -35,12 +35,35 @@ const STEPS = [
     title: 'Анкета клиента',
   },
 ]
+const getTitle = ({
+  isExistingApplication,
+  isFullCalculator,
+  isHasEmailId,
+}: {
+  isExistingApplication: boolean
+  isFullCalculator: boolean
+  isHasEmailId: boolean
+}) => {
+  if (isHasEmailId) {
+    return 'Заявка на кредит (из письма)'
+  }
+  if (isExistingApplication) {
+    if (isFullCalculator) {
+      return 'Дополнение заявки на кредит'
+    } else {
+      return 'Редактирование заявки на кредит'
+    }
+  }
+
+  return 'Заявка на кредит'
+}
 
 export interface CreateOrderPageState {
   isFullCalculator: boolean
   saveDraftDisabled?: boolean
   isHasLoanData?: boolean
   isExistingApplication?: boolean
+  emailId?: number
 }
 
 export function CreateOrder() {
@@ -51,17 +74,16 @@ export function CreateOrder() {
   const { isFilledElementaryClientData = false, isFilledLoanData = false } = useAppSelector(
     state => state.order.order?.fillingProgress || {},
   )
-
   // Если locationState определено, значит на страницу попали из существующей заявки
   const locationState = (location.state || {}) as CreateOrderPageState
-  const { isExistingApplication = false, isHasLoanData = false, isFullCalculator = false } = locationState
+  const {
+    isExistingApplication = false,
+    isHasLoanData = false,
+    isFullCalculator = false,
+    emailId,
+  } = locationState
 
-  const title = isExistingApplication
-    ? isFullCalculator
-      ? 'Дополнение заявки на кредит'
-      : 'Редактирование заявки на кредит'
-    : 'Заявка на кредит'
-
+  const title = getTitle({ isExistingApplication, isFullCalculator, isHasEmailId: !!emailId })
   const steps = useMemo(() => (isExistingApplication ? STEPS.slice(1) : STEPS), [isExistingApplication])
   const currentStepIdx = order?.currentStep ?? 0
   const saveValueToStoreRef = useRef<(() => void) | null>(null)
@@ -113,6 +135,13 @@ export function CreateOrder() {
   useEffect(() => {
     dispatch(updateOrder({ currentStep: currentStepIdx }))
   }, [currentStepIdx, dispatch])
+
+  // Если есть emailId, значит пришли на страницу из письма, добавляем emailId в заявку
+  useEffect(() => {
+    if (emailId) {
+      dispatch(updateApplication({ emailId }))
+    }
+  }, [dispatch, emailId])
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
 

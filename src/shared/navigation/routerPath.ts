@@ -11,6 +11,8 @@ export const appRoutes = {
   documentStorage: () => '/document_storage',
   documentStorageFolder: (folderId = '') => `/document_storage/${folderId}`,
   helpdesk: () => '/helpdesk',
+  emailList: () => '/email_list',
+  detailedEmail: (emailId = '') => `/email_list/${emailId}`,
 }
 
 export const appRoutePaths = {
@@ -26,5 +28,7 @@ export const appRoutePaths = {
   documentStorage: appRoutes.documentStorage(),
   documentStorageFolder: appRoutes.documentStorageFolder(':folderId'),
   helpdesk: appRoutes.helpdesk(),
+  emailList: appRoutes.emailList(),
+  detailedEmail: appRoutes.detailedEmail(':emailId'),
 }
 export const defaultRoute = appRoutePaths.orderList

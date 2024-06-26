@@ -9,6 +9,13 @@ export const useStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
 
+  actionsContainer: {
+    display: 'flex',
+    justifyContent: 'end',
+    alignItems: 'center',
+    gap: theme.spacing(3),
+  },
+
   infoTextContainer: {
     alignSelf: 'start',
     minWidth: 'min-content',
@@ -23,5 +30,23 @@ export const useStyles = makeStyles(theme => ({
 
   warningTextContainer: {
     color: theme.palette.error.main,
+  },
+
+  sendEmailBtn: {
+    '&.MuiButton-root:hover': {
+      backgroundColor: 'transparent',
+      '& .MuiTypography-root': {
+        textDecoration: 'underline',
+      },
+    },
+    '& .MuiButton-startIcon': {
+      marginLeft: 0,
+      marginRight: theme.spacing(2),
+    },
+  },
+
+  sendEmailBtnIcon: {
+    width: '21px',
+    fill: theme.palette.icon.main,
   },
 }))

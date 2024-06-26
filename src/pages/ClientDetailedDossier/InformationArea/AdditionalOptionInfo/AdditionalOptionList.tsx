@@ -4,7 +4,7 @@ import { Box, IconButton } from '@mui/material'
 
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
 import { ReactComponent as KeyboardArrowUp } from 'assets/icons/keyboardArrowUp.svg'
-import { DossierAreaContainer } from 'pages/ClientDetailedDossier/DossierAreaContainer/DossierAreaContainer'
+import { AreaContainer } from 'shared/ui/DossierAreaContainer'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { AdditionalOptionItem } from './AdditionalOptionItem'
@@ -29,7 +29,7 @@ export function AdditionalOptionList({ title, options }: Props) {
   }, [])
 
   return options.length ? (
-    <DossierAreaContainer>
+    <AreaContainer>
       <Box className={classes.optionsWrapper}>
         <SberTypography sberautoVariant="body2" component="p" gridColumn="span 6">
           {title}
@@ -52,6 +52,6 @@ export function AdditionalOptionList({ title, options }: Props) {
           </>
         )}
       </Box>
-    </DossierAreaContainer>
+    </AreaContainer>
   ) : null
 }

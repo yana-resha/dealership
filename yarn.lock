@@ -2230,6 +2230,14 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
+"@sberauto/emailappdc-proto@1.0.0":
+  version "1.0.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/emailappdc-proto/-/emailappdc-proto-1.0.0.tgz#cacaa94f348857eea4e20cb5381a34705b132d82"
+  integrity sha512-HrASMv3xjLggI6k7etUyI1trhQBuDtuvsh8aGkdhwfyCo7Q1/zR4dE0u3XhZZp6/sWwpHLvnxp1ASIRKlFqBkw==
+  dependencies:
+    camelcase-keys "^6.2.2"
+    snakecase-keys "^3.2.1"
+
 "@sberauto/eslint-plugin@1.0.1-alpha.2":
   version "1.0.1-alpha.2"
   resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/eslint-plugin/-/eslint-plugin-1.0.1-alpha.2.tgz#1682b66e38374d4ab331a1c8944080ae03ec18ca"
@@ -2245,10 +2253,10 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
-"@sberauto/loanapplifecycledc-proto@1.6.3":
-  version "1.6.3"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-1.6.3.tgz#c459ba996db1179a0510e35692139c07b5ea4e67"
-  integrity sha512-/a4vv2km4dZHmUhwTFKu/A6CXQ4G5fiyMz9U3LES+qYcLO3gxDb4qvIorK+OmYXv/c9tMXIIbD4TPJLmnuPNxw==
+"@sberauto/loanapplifecycledc-proto@1.7.0":
+  version "1.7.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-1.7.0.tgz#e2a642047f3da4ed84534455ab565cc11fc2d1a1"
+  integrity sha512-coT02g8dN0pvkShk+Cd+G3YFIQRy/nKi3Qm5daHslfg0QVJ4LWhopQsKtr4SGGOEbdLzj8lIwLjWdl8h9EUSEg==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"

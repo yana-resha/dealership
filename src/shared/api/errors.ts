@@ -31,6 +31,11 @@ const serviceErrors: ServiceErrors = {
       default: 'Ошибка. Не удалось удалить каталог/файл',
     },
   },
+  [Service.EMAILAPPDC]: {
+    [ServiceApi.SEND_EMAIL_DECISION]: {
+      default: 'Ошибка. Не удалось отправить решение',
+    },
+  },
 }
 /* В случае, если кода ошибки недостаточно, чтобы получить описание ошибки
 (например одна и таже ручка возвращает InvalidArgument по различным ошибкам),
@@ -45,6 +50,7 @@ export enum ErrorAlias {
   AuthorizeUser_UserBlockedBySmsCount = 'AuthorizeUser_UserBlockedBySmsCount',
   CheckUserByLogin_EarlyResetPasswordCode = 'CheckUserByLogin_EarlyResetPasswordCode',
   ChangePassword_MismatchResetCode = 'ChangePassword_MismatchResetCode',
+  GetEmails_VendorNotFound = 'GetEmails_VendorNotFound',
 }
 export const errorAliasMap = {
   [ErrorAlias.RemoveCatalog_catalogIsNotEmpty]: 'Ошибка. Невозможно удалить папку, так как в ней есть файлы',
@@ -58,6 +64,7 @@ export const errorAliasMap = {
     'Учетная запись заблокирована, превышено количество запрошенных СМС-кодов, обратитесь в тех.поддержку',
   [ErrorAlias.CheckUserByLogin_EarlyResetPasswordCode]: '',
   [ErrorAlias.ChangePassword_MismatchResetCode]: 'Неверный код восстановления пароля',
+  [ErrorAlias.GetEmails_VendorNotFound]: 'Дилерский центр не найден',
 }
 
 type GetErrorMessageParams = {

@@ -197,7 +197,7 @@ describe('ApplicationFileUploader', () => {
           wrapper: createWrapper,
         },
       )
-      fireEvent.click(screen.getByTestId('uploadFileRemove'))
+      fireEvent.click(screen.getByTestId('deleteFileButton'))
       expect(mockedOnRemoveDocument).toBeCalledWith('ndfl2File')
     })
 
@@ -213,7 +213,7 @@ describe('ApplicationFileUploader', () => {
           wrapper: createWrapper,
         },
       )
-      fireEvent.click(screen.getByTestId('uploadFileRemove'))
+      fireEvent.click(screen.getByTestId('deleteFileButton'))
       expect(mockedOnRemoveDocument).not.toBeCalled()
     })
 

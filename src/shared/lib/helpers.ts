@@ -1,4 +1,5 @@
 import { OptionID, OptionType } from '@sberauto/dictionarydc-proto/public'
+import { EmailStatusCode, GetEmailsResponse } from '@sberauto/emailappdc-proto/public'
 
 export const exhaustiveCheck = (value: never) => value
 
@@ -68,3 +69,22 @@ export const getLocalStorage = <T>(key: string): T | undefined => {
 export const setLocalStorage = <T>(key: string, data: T) => localStorage.setItem(key, JSON.stringify(data))
 
 export const removeLocalStorage = (key: string) => localStorage.removeItem(key)
+
+export function prepareEmailStatus(response: GetEmailsResponse) {
+  const emails = response.emails?.map(email => {
+    const emailStatus = email.status
+      ? prepareEmailStatusCode(email.status as unknown as keyof typeof EmailStatusCode)
+      : undefined
+
+    return {
+      ...email,
+      status: emailStatus,
+    }
+  })
+
+  return { emails } as GetEmailsResponse
+}
+
+export function prepareEmailStatusCode(code: keyof typeof EmailStatusCode): EmailStatusCode {
+  return EmailStatusCode[code] ?? EmailStatusCode.INITIAL
+}

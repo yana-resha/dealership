@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 
+import { SendEmailDecisionRequest, SendEmailDecisionResponse } from '@sberauto/emailappdc-proto/public'
 import {
   DocumentType,
   DownloadDocumentRequest,
@@ -9,6 +10,8 @@ import {
 import { render, screen } from '@testing-library/react'
 import { UseMutationResult } from 'react-query'
 
+import { CustomFetchError } from 'shared/api/client'
+import * as emailAppDcModule from 'shared/api/requests/emailAppDc.api'
 import * as loanAppLifeCycleDcModule from 'shared/api/requests/loanAppLifeCycleDc'
 import { ThemeProviderMock } from 'tests/mocks'
 
@@ -23,6 +26,7 @@ const mockedUseGetPreliminaryPaymentScheduleFormMutationMutation = jest.spyOn(
   loanAppLifeCycleDcModule,
   'useGetPreliminaryPaymentScheduleFormMutation',
 )
+const mockedUseSendEmailDecisionMutation = jest.spyOn(emailAppDcModule, 'useSendEmailDecisionMutation')
 
 const informationAreaProps = {
   statusCode: StatusCode.INITIAL,
@@ -55,6 +59,7 @@ const informationAreaProps = {
   overpayment: 1000.1,
   incomeProduct: true,
   scans: [],
+  emailId: undefined,
 }
 
 describe('InformationAreaTest', () => {
@@ -76,6 +81,18 @@ describe('InformationAreaTest', () => {
         ({
           mutateAsync: () => Promise.resolve(blob as File),
         } as unknown as UseMutationResult<File, unknown, GetPreliminaryPaymentScheduleFormRequest, unknown>),
+    )
+    mockedUseSendEmailDecisionMutation.mockImplementation(
+      () =>
+        ({
+          mutate: () => ({}),
+          isLoading: false,
+        } as unknown as UseMutationResult<
+          SendEmailDecisionResponse,
+          CustomFetchError,
+          SendEmailDecisionRequest,
+          unknown
+        >),
     )
   })
   describe('Отображаются вся информация о заявке', () => {

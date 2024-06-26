@@ -5,6 +5,7 @@ export enum Service {
   Dadata = 'dadata',
   Dictionarydc = 'dictionarydc',
   Loanapplifecycledc = 'loanapplifecycledc',
+  EMAILAPPDC = 'emailappdc',
 }
 
 export enum ServiceApi {
@@ -15,4 +16,6 @@ export enum ServiceApi {
   CheckCode = 'checkCode',
   CHECK_USER_BY_LOGIN = 'checkUserByLogin',
   CHANGE_PASSWORD = 'changePassword',
+  GET_EMAILS = 'getEmails',
+  SEND_EMAIL_DECISION = 'sendEmailDecision',
 }

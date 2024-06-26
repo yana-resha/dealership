@@ -4,6 +4,8 @@ import { Box } from '@mui/material'
 import { DocumentType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useParams } from 'react-router-dom'
 
+import { PreparedStatus, getStatus } from 'entities/application/application.utils'
+import { DocumentDownloader } from 'entities/downloader/DocumentsDownloader/DocumentDownloader'
 import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { FileInfo, UploaderConfig, DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { Uploader } from 'features/ApplicationFileLoader/ApplicationFileUploader'
@@ -11,11 +13,9 @@ import { useDownloadDocument } from 'features/ApplicationFileLoader/hooks/useDow
 import { UPLOADED_DOCUMENTS } from 'pages/CreateOrder/ClientForm/config/clientFormInitialValues'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { FileDownloader } from 'shared/ui/FileDownloader/FileDownloader'
+import { AreaContainer } from 'shared/ui/DossierAreaContainer'
 import SberTypography from 'shared/ui/SberTypography'
 
-import { PreparedStatus, getStatus } from '../../../entities/application/application.utils'
-import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
 import { useAgreementDocs } from '../hooks/useAgreementDocs'
 import { useStyles } from './DocumentsArea.styles'
 
@@ -101,7 +101,7 @@ export function DocumentsArea({ status }: Props) {
   }
 
   return (
-    <DossierAreaContainer>
+    <AreaContainer>
       <Box className={classes.blockContainer}>
         <SberTypography sberautoVariant="h5" component="p">
           Документы
@@ -120,19 +120,19 @@ export function DocumentsArea({ status }: Props) {
         {isShowDownloadLoanAgreement && (
           <Box gridColumn="1 / -1" className={classes.documentsBlock}>
             {agreementDocs.map((document, index) => (
-              <FileDownloader
+              <DocumentDownloader
                 key={index}
                 fileOrMetadata={document}
                 index={index}
                 dcAppId={document.dcAppId}
                 documentType={document.documentType}
                 loadingMessage="Файл загружается"
-                onDownloadFile={downloadFile}
+                onDownloadDocuments={downloadFile}
               />
             ))}
           </Box>
         )}
       </Box>
-    </DossierAreaContainer>
+    </AreaContainer>
   )
 }

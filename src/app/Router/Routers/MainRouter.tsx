@@ -7,6 +7,8 @@ import { Catalog } from 'pages/Catalog'
 import { ClientDetailedDossier } from 'pages/ClientDetailedDossier'
 import { CreateOrder } from 'pages/CreateOrder'
 import { DealershipPage } from 'pages/Dealership'
+import { DetailedEmail } from 'pages/DetailedEmail'
+import { Emails } from 'pages/Emails'
 import { Helpdesk } from 'pages/Helpdesk'
 import { NotFoundPage } from 'pages/NotFound'
 import { appRoutePaths, defaultRoute } from 'shared/navigation/routerPath'
@@ -25,6 +27,8 @@ export function MainRouter(): JSX.Element {
     calculator,
     order,
     fakeAuth,
+    emailList: email,
+    detailedEmail,
   } = appRoutePaths
   const { isCreditExpert, isContentManager } = useUserRoles()
   const isOnlyContentManager = !isCreditExpert && isContentManager
@@ -65,6 +69,8 @@ export function MainRouter(): JSX.Element {
         <Route path={documentStorage} element={<Catalog />} />
         <Route path={documentStorageFolder} element={<Catalog />} />
         <Route path={helpdesk} element={<Helpdesk />} />
+        <Route path={email} element={<Emails />} />
+        <Route path={detailedEmail} element={<DetailedEmail />} />
       </Route>
     </Routes>
   )

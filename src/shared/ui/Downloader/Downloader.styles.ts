@@ -30,4 +30,11 @@ export default makeStyles(theme => ({
       textDecoration: 'none',
     },
   },
+
+  contentContainer: {
+    display: 'flex',
+    gap: theme.spacing(2),
+    alignSelf: 'center',
+    userSelect: 'none',
+  },
 }))

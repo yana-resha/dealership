@@ -17,10 +17,10 @@ import { useCheckIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { appRoutePaths } from 'shared/navigation/routerPath'
+import { AreaContainer } from 'shared/ui/DossierAreaContainer'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { AnketaType, getStatus, PreparedStatus } from '../../../entities/application/application.utils'
-import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
 import { DcConfirmationModal } from '../EditConfirmationModal/DcConfirmationModal'
 import { useStyles } from './ActionArea.styles'
 import { AgreementArea } from './AgreementArea/AgreementArea'
@@ -279,14 +279,14 @@ export function ActionArea({
   return (
     <>
       {!!shownBlock && (
-        <DossierAreaContainer>
+        <AreaContainer>
           <Box className={classes.blockContainer}>
             <SberTypography gridColumn="span 6" sberautoVariant="h5" component="p">
               Действие
             </SberTypography>
             {shownBlock}
           </Box>
-        </DossierAreaContainer>
+        </AreaContainer>
       )}
 
       <DcConfirmationModal
