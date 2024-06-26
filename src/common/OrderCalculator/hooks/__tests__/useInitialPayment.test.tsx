@@ -62,13 +62,6 @@ describe('useInitialPayment', () => {
     result.current.setFieldValue('additionalEquipments[0].isCredit', true)
     expect(result.current.values.initialPaymentPercent).toEqual('5')
   })
-
-  it('При первом рендере initialPaymentPercent высчитывается из carCost и initialPayment', async () => {
-    const { result } = renderHook(() => useInitialPayment(false), {
-      wrapper: createWrapper(initialData),
-    })
-    expect(result.current.values.initialPaymentPercent).toEqual('10')
-  })
 })
 
 describe('getPercentFromValue', () => {

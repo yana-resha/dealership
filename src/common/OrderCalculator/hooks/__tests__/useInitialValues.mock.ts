@@ -85,7 +85,7 @@ export const EXPECTED_FULL_DATA = {
     },
   ],
   initialPayment: '410000',
-  initialPaymentPercent: '',
+  initialPaymentPercent: '30.48',
   isCustomFields: false,
   legalPersonCode: '2000000',
   loanAmount: '12121.33',
@@ -253,7 +253,7 @@ export const EXPECTED_REMAPPED_FULL_DATA = {
   loanData: {
     productId: '3',
     downpayment: 410000,
-    downpaymentInPercent: undefined,
+    downpaymentInPercent: 30.48,
     term: 36,
     amount: 12121,
     additionalOptions: [
@@ -498,7 +498,7 @@ export const EXPECTED_REMAPPED_BRIEF_DATA = {
   loanData: {
     productId: '3',
     downpayment: 410000,
-    downpaymentInPercent: undefined,
+    downpaymentInPercent: 30.48,
     term: 36,
     additionalOptions: [
       {
