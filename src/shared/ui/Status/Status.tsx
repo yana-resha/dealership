@@ -7,9 +7,10 @@ import { theme } from 'app/theme'
 type Props = {
   bgColor?: string
   color?: string
+  dataTestId?: string
 }
 
-export const Status = ({ bgColor, color, children }: PropsWithChildren<Props>) => (
+export const Status = ({ bgColor, color, dataTestId, children }: PropsWithChildren<Props>) => (
   <Box
     bgcolor={bgColor ?? theme.palette.sber.main}
     py={0.625}
@@ -19,6 +20,7 @@ export const Status = ({ bgColor, color, children }: PropsWithChildren<Props>) =
     borderRadius={1}
     color={color ?? theme.palette.common.white}
     whiteSpace="nowrap"
+    data-testid={dataTestId}
   >
     {children}
   </Box>

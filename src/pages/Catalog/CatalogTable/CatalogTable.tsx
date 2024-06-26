@@ -10,18 +10,17 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material'
-import { ObjectType } from '@sberauto/filestoragedc-proto/public'
 
 import { RequiredCatalog, useGetCatalogQuery } from 'shared/api/requests/fileStorageDc.api'
+import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
 import SberTypography from 'shared/ui/SberTypography'
+import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
 
-import { useRowsPerPage } from '../../../shared/hooks/useRowsPerPage'
 import { CatalogRow } from './CatalogRow'
 import { catalogTableHeaders } from './CatalogTable.config'
 import useStyles from './CatalogTable.styles'
 import { RemovedFile } from './CatalogTable.types'
 import { RemoveModal } from './RemoveModal/RemoveModal'
-import { TablePaginationActions } from './TablePaginationActions/TablePaginationActions'
 
 type Props = {
   currentFolderId: number

@@ -5,6 +5,7 @@ import { Box } from '@mui/system'
 import cx from 'classnames'
 import { useSnackbar } from 'notistack'
 
+import { FILE_DOWNLOAD_ERROR } from '../../constants/constants'
 import { CircularProgressWheel } from '../CircularProgressWheel/CircularProgressWheel'
 import useStyles from './Downloader.styles'
 
@@ -12,12 +13,14 @@ type DownloaderIconProps = {
   onDownloadFile: () => Promise<File | undefined>
   gridColumn?: string
   disabled?: boolean
+  icon?: React.ReactNode
 }
 
 export function Downloader({
   onDownloadFile,
   gridColumn,
   disabled = false,
+  icon,
   children,
 }: React.PropsWithChildren<DownloaderIconProps>) {
   const classes = useStyles()
@@ -26,8 +29,10 @@ export function Downloader({
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | undefined>()
 
+  const isDisabled = disabled || isLoading
+
   const handleDownload = async () => {
-    if (disabled || isLoading) {
+    if (isDisabled) {
       return
     }
     if (onDownloadFile && !file) {
@@ -49,7 +54,7 @@ export function Downloader({
         setFile(downloadedFile)
       } catch (error) {
         console.error('Error downloading the file:', error)
-        enqueueSnackbar('Ошибка. Не удалось скачать файл', {
+        enqueueSnackbar(FILE_DOWNLOAD_ERROR, {
           variant: 'error',
         })
       }
@@ -65,20 +70,25 @@ export function Downloader({
         <Link
           data-testid="downloaderLink"
           href={disabled ? undefined : preview}
-          className={cx(classes.fileLink, { [classes.disabledFileLink]: disabled })}
+          className={cx(classes.fileLink, { [classes.disabledFileLink]: isDisabled })}
           target="_blank"
           download={file?.name}
         >
-          {children}
+          <Box className={classes.contentContainer}>
+            {icon}
+            {children}
+          </Box>
         </Link>
       ) : (
         <Link
           data-testid="downloaderLinkDownloader"
-          className={cx(classes.fileLink, { [classes.disabledFileLink]: disabled })}
+          className={cx(classes.fileLink, { [classes.disabledFileLink]: isDisabled })}
           onClick={handleDownload}
         >
-          {!isLoading && children}
-          {isLoading && <CircularProgressWheel />}
+          <Box className={classes.contentContainer}>
+            {isLoading ? <CircularProgressWheel /> : icon}
+            {children}
+          </Box>
         </Link>
       )}
     </Box>

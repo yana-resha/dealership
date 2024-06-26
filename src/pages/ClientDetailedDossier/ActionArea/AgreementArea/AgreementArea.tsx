@@ -11,7 +11,6 @@ import { useCheckDocumentsList } from 'features/ApplicationFileLoader/hooks/useC
 import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'
 import { useAgreementDocs } from 'pages/ClientDetailedDossier/hooks/useAgreementDocs'
 import {
-  RequiredScan,
   useFormContractMutation,
   useSendToFinancingMutation,
   useUpdateApplicationStatusMutation,
@@ -22,7 +21,7 @@ import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularP
 import { ProgressBar } from 'shared/ui/ProgressBar/ProgressBar'
 import SberTypography from 'shared/ui/SberTypography'
 
-import { ADDITIONAL_AGREEMENT_DOC_TYPES, AGREEMENT_DOC_TYPES, progressBarConfig } from '../../config'
+import { AGREEMENT_DOC_TYPES, progressBarConfig } from '../../config'
 import { useGetFullApplicationQuery } from '../../hooks/useGetFullApplicationQuery'
 import { DocsStatus, ProgressBarSteps } from './AgreementArea.config'
 import { useStyles } from './AgreementArea.styles'

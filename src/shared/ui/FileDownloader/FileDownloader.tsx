@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Avatar, IconButton, Link } from '@mui/material'
 import { Box } from '@mui/system'
@@ -14,38 +14,43 @@ import { useStyles } from './FileDownloader.styles'
 
 /** Данные о файле по которым его можно подтянуть с бэка,
  * файл прилетает в base64  а не в виде url, поэтому грузить сразу расточительно */
-export type FileMetadata = {
+export type DocumentsFileMetadata = {
   dcAppId: string
   documentType: number
   name?: string
 }
 
-type FileOrMetadata = File | FileMetadata
+export type EmailFileMetadata = {
+  fileId: number
+  name?: string
+}
+
+type FileOrMetadata = File | DocumentsFileMetadata | EmailFileMetadata
 
 type FileDownloaderProps = {
-  fileOrMetadata: FileOrMetadata | undefined
   index: number
   loadingMessage?: string
   dcAppId?: string
   documentType?: DocumentType
   onClick?: () => void
   onClickRemove?: (index: number) => void
-  onDownloadFile?: (metadata: FileMetadata) => Promise<File>
+  isLoading: boolean
+  fileOrMetadata: FileOrMetadata | undefined
+  onDownloadFile?: () => Promise<void>
 }
 
 export const FileDownloader = ({
+  index,
   dcAppId,
   documentType,
-  fileOrMetadata,
-  index,
   onClick,
   loadingMessage,
   onClickRemove,
+  isLoading,
+  fileOrMetadata,
   onDownloadFile,
 }: FileDownloaderProps) => {
   const styles = useStyles()
-
-  const [isLoading, setIsLoading] = useState(false)
   // Локальное хранение файла сделано для того,
   // чтобы можно было скачивать его без повторного запроса к бэку (пока мы не уйдем со страницы)
   const [file, setFile] = useState<FileOrMetadata | undefined>(fileOrMetadata)
@@ -58,37 +63,16 @@ export const FileDownloader = ({
       return
     }
 
-    if (onDownloadFile && !isFileObject(file) && file) {
-      setIsLoading(true)
-      try {
-        const downloadedFile = await onDownloadFile(file)
-
-        const downloadURL = URL.createObjectURL(downloadedFile)
-        const simulateLink = document.createElement('a')
-        simulateLink.href = downloadURL
-        simulateLink.download = transformFileName(documentType, dcAppId) || downloadedFile.name
-        simulateLink.click()
-        URL.revokeObjectURL(downloadURL)
-        setFile(downloadedFile)
-      } catch (error) {
-        console.error('Error downloading the file:', error)
-      }
-      setIsLoading(false)
+    if (onDownloadFile) {
+      await onDownloadFile()
     }
   }
-
-  const removeFile = useCallback(() => {
-    if (onClickRemove) {
-      onClickRemove(index)
-    }
-    setFile(fileOrMetadata)
-  }, [onClickRemove, fileOrMetadata, index])
 
   // Необходим, чтобы при смене пропса, менялся и локальный стэйт file.
   // В противном случае будет отображаться и скачиваться старый файл
   useEffect(() => {
-    setFile(fileOrMetadata)
-  }, [fileOrMetadata])
+    setFile(file)
+  }, [file])
 
   const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
   const message = loadingMessage ? loadingMessage : 'Файл загружается...'
@@ -146,7 +130,7 @@ export const FileDownloader = ({
       )}
 
       {onClickRemove && (
-        <IconButton data-testid="deleteFileButton" size="small" onClick={removeFile}>
+        <IconButton data-testid="deleteFileButton" size="small" onClick={() => onClickRemove(index)}>
           <Close />
         </IconButton>
       )}

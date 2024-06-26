@@ -16,6 +16,7 @@ import { UseQueryOptions, useMutation, useQuery } from 'react-query'
 import { appConfig } from 'config'
 import { CustomFetchError, Rest } from 'shared/api/client'
 
+import { FILE_DOWNLOAD_ERROR } from '../../constants/constants'
 import { Service, ServiceApi } from '../constants'
 import { ErrorAlias, ErrorCode, getErrorMessage } from '../errors'
 
@@ -179,7 +180,7 @@ export const useDownloadFileMutation = () => {
 
   return useMutation(['downloadFile'], downloadFile, {
     onError: () => {
-      enqueueSnackbar('Ошибка. Не удалось скачать файл', {
+      enqueueSnackbar(FILE_DOWNLOAD_ERROR, {
         variant: 'error',
       })
     },

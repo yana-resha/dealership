@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
+import { Button } from '@mui/material'
 import Box from '@mui/material/Box'
+import { ApplicationStatusCode } from '@sberauto/emailappdc-proto/public'
 import {
   AdditionalOptionsFrontdc,
   DocumentType,
@@ -11,23 +13,32 @@ import {
 import { useParams } from 'react-router-dom'
 
 import { ReactComponent as DownloadIcon } from 'assets/icons/download.svg'
+import { ReactComponent as MailIcon } from 'assets/icons/mail.svg'
+import { getStatus, PreparedStatus } from 'entities/application/application.utils'
+import { useSendEmailDecisionMutation } from 'shared/api/requests/emailAppDc.api'
 import {
   useDownloadDocumentMutation,
   useGetPreliminaryPaymentScheduleFormMutation,
   useGetShareFormMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
 import { formatMoney, formatTerm } from 'shared/lib/utils'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
+import { AreaContainer } from 'shared/ui/DossierAreaContainer'
 import { Downloader } from 'shared/ui/Downloader'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
 import { transformFileName } from 'shared/utils/fileLoading'
 
-import { getStatus, PreparedStatus } from '../../../entities/application/application.utils'
-import { DossierAreaContainer } from '../DossierAreaContainer/DossierAreaContainer'
 import { AdditionalOptionInfo, AdditionalOptionList } from './AdditionalOptionInfo/AdditionalOptionList'
 import { ApplicationWarning } from './ApplicationWarning/ApplicationWarning'
 import { FeeScheduleBtn } from './FeeScheduleBtn/FeeScheduleBtn'
 import { useStyles } from './InformationArea.styles'
+
+const ApplicationStatusCodesMap: Partial<Record<StatusCode, ApplicationStatusCode>> = {
+  [StatusCode.APPROVED]: ApplicationStatusCode.APPROVED,
+  [StatusCode.FINALLY_APPROVED]: ApplicationStatusCode.FINALLY_APPROVED,
+  [StatusCode.REJECTED]: ApplicationStatusCode.REJECTED,
+}
 
 type Props = {
   statusCode: StatusCode
@@ -47,6 +58,7 @@ type Props = {
   overpayment: number | undefined
   incomeProduct: boolean
   scans: Scan[]
+  emailId: number | undefined
 }
 
 export function InformationArea({
@@ -67,18 +79,19 @@ export function InformationArea({
   overpayment,
   incomeProduct,
   scans,
+  emailId,
 }: Props) {
   const classes = useStyles()
   const { applicationId = '' } = useParams()
 
-  const { mutateAsync: getShareFormMutate, isLoading: isGetShareFormLoading } = useGetShareFormMutation({
+  const { mutateAsync: getShareFormMutate } = useGetShareFormMutation({
     dcAppId: applicationId,
   })
-  const { mutateAsync: downloadDocument } = useDownloadDocumentMutation()
-  const {
-    mutateAsync: getPreliminaryPaymentScheduleFormMutate,
-    isLoading: isGetPreliminaryPaymentScheduleFormLoading,
-  } = useGetPreliminaryPaymentScheduleFormMutation()
+  const { mutateAsync: downloadDocumentMutate } = useDownloadDocumentMutation()
+  const { mutate: sendEmailDecisionMutate, isLoading: isSendEmailDecisionLoading } =
+    useSendEmailDecisionMutation()
+  const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
+    useGetPreliminaryPaymentScheduleFormMutation()
 
   const {
     additionalEquipment,
@@ -158,6 +171,14 @@ export function InformationArea({
       PreparedStatus.financed,
     ].includes(status) && !isHasFeeScheduleInScans
 
+  const handleSendEmailBtnClick = useCallback(() => {
+    sendEmailDecisionMutate({
+      emailId,
+      dcAppId: applicationId,
+      status: ApplicationStatusCodesMap[statusCode],
+    })
+  }, [applicationId, emailId, sendEmailDecisionMutate, statusCode])
+
   const handleShareClick = useCallback(async () => {
     const blob = await getShareFormMutate()
     if (blob) {
@@ -170,7 +191,7 @@ export function InformationArea({
   }, [applicationId, getShareFormMutate])
 
   const handleSavedPreliminaryFeeScheduleClick = useCallback(async () => {
-    const blob = await downloadDocument({
+    const blob = await downloadDocumentMutate({
       dcAppId: applicationId,
       documentType: DocumentType.ESTIMATED_FEE_SCHEDULE,
     })
@@ -181,7 +202,7 @@ export function InformationArea({
         { type: blob.type },
       )
     }
-  }, [applicationId, downloadDocument])
+  }, [applicationId, downloadDocumentMutate])
 
   const handlePreliminaryFeeScheduleClick = useCallback(async () => {
     const blob = await getPreliminaryPaymentScheduleFormMutate({
@@ -220,22 +241,42 @@ export function InformationArea({
 
   return (
     <>
-      <DossierAreaContainer>
+      <AreaContainer>
         <Box className={classes.blockContainer}>
-          <SberTypography gridColumn="span 6" sberautoVariant="h5" component="p">
+          <SberTypography gridColumn="span 2" sberautoVariant="h5" component="p">
             Информация
           </SberTypography>
-
-          {(status === PreparedStatus.approved || status === PreparedStatus.finallyApproved) && (
-            <Downloader onDownloadFile={handleShareClick} disabled={isGetShareFormLoading}>
-              <Box className={classes.textButtonContainer}>
-                <DownloadIcon />
+          <Box className={classes.actionsContainer} gridColumn="span 5">
+            {(statusCode === StatusCode.APPROVED ||
+              statusCode === StatusCode.FINALLY_APPROVED ||
+              statusCode === StatusCode.REJECTED) &&
+              !!emailId && (
+                <Button
+                  variant="text"
+                  onClick={handleSendEmailBtnClick}
+                  className={classes.sendEmailBtn}
+                  disabled={isSendEmailDecisionLoading}
+                  startIcon={
+                    isSendEmailDecisionLoading ? (
+                      <CircularProgressWheel />
+                    ) : (
+                      <MailIcon className={classes.sendEmailBtnIcon} />
+                    )
+                  }
+                >
+                  <SberTypography sberautoVariant="body3" component="p">
+                    Отправить решение
+                  </SberTypography>
+                </Button>
+              )}
+            {(status === PreparedStatus.approved || status === PreparedStatus.finallyApproved) && (
+              <Downloader onDownloadFile={handleShareClick} icon={<DownloadIcon />}>
                 <SberTypography sberautoVariant="body3" component="p">
                   Скачать
                 </SberTypography>
-              </Box>
-            </Downloader>
-          )}
+              </Downloader>
+            )}
+          </Box>
           <ApplicationWarning statusCode={statusCode} errorDescription={errorDescription} />
 
           <Box className={classes.infoTextContainer} gridColumn="span 7">
@@ -272,13 +313,10 @@ export function InformationArea({
             />
           )}
           {isShowScheduleBtn && !isHasFeeScheduleInScans && (
-            <FeeScheduleBtn
-              onClick={handlePreliminaryFeeScheduleClick}
-              disabled={isDisableScheduleBtn || isGetPreliminaryPaymentScheduleFormLoading}
-            />
+            <FeeScheduleBtn onClick={handlePreliminaryFeeScheduleClick} disabled={isDisableScheduleBtn} />
           )}
         </Box>
-      </DossierAreaContainer>
+      </AreaContainer>
 
       <AdditionalOptionList title="Дополнительное оборудование" options={additionalEquipment} />
       <AdditionalOptionList title="Дополнительные услуги дилера" options={dealerServices} />

@@ -3,8 +3,8 @@ import { memo, useCallback, useEffect, useMemo } from 'react'
 import { Box, FormHelperText } from '@mui/material'
 import { Stack } from '@mui/system'
 
+import { DocumentDownloader } from 'entities/downloader/DocumentsDownloader/DocumentDownloader'
 import { DragAndDropWrapper } from 'shared/ui/DragAndDropWrapper'
-import { FileDownloader } from 'shared/ui/FileDownloader'
 import { FileUploadButton } from 'shared/ui/FileUploadButton'
 import SberTypography from 'shared/ui/SberTypography'
 
@@ -99,12 +99,12 @@ const Uploader: React.FC<UploaderProps> = ({
             </SberTypography>
           )}
 
-          <FileDownloader
+          <DocumentDownloader
             fileOrMetadata={documentFile?.file}
             loadingMessage={loadingMessage}
             index={0}
             onClickRemove={handleRemove}
-            onDownloadFile={downloadFile}
+            onDownloadDocuments={downloadFile}
           />
         </Box>
         {isError && (
@@ -139,12 +139,12 @@ const Uploader: React.FC<UploaderProps> = ({
           <Stack direction="row" className={classes.stack}>
             <Box gridColumn="1 / -1" className={classes.item} display="flex" alignItems="center">
               {documentFile?.file && !isLoading ? (
-                <FileDownloader
+                <DocumentDownloader
                   fileOrMetadata={documentFile?.file}
                   loadingMessage={loadingMessage}
                   index={0}
                   onClickRemove={handleRemove}
-                  onDownloadFile={downloadFile}
+                  onDownloadDocuments={downloadFile}
                 />
               ) : (
                 <FileUploadButton

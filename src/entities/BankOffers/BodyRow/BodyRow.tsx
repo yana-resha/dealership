@@ -25,10 +25,8 @@ export const BodyRow = ({ row, onClick }: Props) => {
   const autoPrice = useAppSelector(state => state.order.order?.orderData?.application?.loanCar?.autoPrice)
   const dcAppId = useAppSelector(state => state.order.order?.orderData?.application?.dcAppId)
 
-  const {
-    mutateAsync: getPreliminaryPaymentScheduleFormMutate,
-    isLoading: isGetPreliminaryPaymentScheduleFormLoading,
-  } = useGetPreliminaryPaymentScheduleFormMutation()
+  const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
+    useGetPreliminaryPaymentScheduleFormMutation()
 
   const handleAttachmentClick = useCallback(
     async (row: CalculatedProduct) => {
@@ -70,10 +68,8 @@ export const BodyRow = ({ row, onClick }: Props) => {
             {cell.type === TableCellType.Icon && cell.name === HeaderCellKey.Attachment && (
               <Downloader
                 onDownloadFile={async () => await handleAttachmentClick(row)}
-                disabled={isGetPreliminaryPaymentScheduleFormLoading}
-              >
-                <ScheduleIcon />
-              </Downloader>
+                icon={<ScheduleIcon />}
+              />
             )}
 
             {cell.type !== TableCellType.Icon && cell.value}

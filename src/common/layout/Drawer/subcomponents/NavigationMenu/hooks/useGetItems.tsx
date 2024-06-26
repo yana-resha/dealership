@@ -5,6 +5,7 @@ import cx from 'classnames'
 import { useDispatch } from 'react-redux'
 
 import { ReactComponent as HelpdeskIcon } from 'assets/icons/helpdesk.svg'
+import { ReactComponent as MailIcon } from 'assets/icons/mail.svg'
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
 import { ReactComponent as OrderListIcon } from 'assets/icons/orderList.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
@@ -51,6 +52,12 @@ export const useGetItems = (): MenuItem[] => {
             <CalculateOutlinedIcon className={getClassName(isSelected)} viewBox="3 3 18 18" />
           ),
           path: appRoutePaths.calculator,
+          disabled: !isCreditExpert,
+        },
+        {
+          label: 'Письма',
+          icon: ({ isSelected }: IconParams) => <MailIcon className={getClassName(isSelected)} />,
+          path: appRoutePaths.emailList,
           disabled: !isCreditExpert,
         },
         {

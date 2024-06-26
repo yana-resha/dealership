@@ -28,6 +28,11 @@ describe('useGetItems', () => {
         path: '/calculator',
       },
       {
+        label: 'Письма',
+        icon: expect.any(Function),
+        path: '/email_list',
+      },
+      {
         label: 'Документы',
         icon: expect.any(Function),
         path: '/document_storage',

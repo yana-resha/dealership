@@ -1,15 +1,18 @@
 import { Pagination, PaginationItem } from '@mui/material'
 import { TablePaginationActionsProps } from '@mui/material/TablePagination/TablePaginationActions'
 
-import useStyles from '../CatalogTable.styles'
+import useStyles from './TablePaginationActions.styles'
 
-export const TablePaginationActions = (props: TablePaginationActionsProps) => {
-  const { count, page, rowsPerPage, onPageChange } = props
-  const styles = useStyles()
+export const TablePaginationActions = ({
+  count,
+  page,
+  rowsPerPage,
+  onPageChange,
+}: TablePaginationActionsProps) => {
+  const classes = useStyles()
 
   const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
-    //@ts-expect-error типы евентов не совпадают, но далее сам евент не используется
-    onPageChange(event, page)
+    onPageChange(null, page)
   }
 
   return (
@@ -19,8 +22,8 @@ export const TablePaginationActions = (props: TablePaginationActionsProps) => {
         <PaginationItem
           {...item}
           classes={{
-            previousNext: styles.prevNext,
-            selected: styles.selectedPaginationItem,
+            previousNext: classes.prevNext,
+            selected: classes.selectedPaginationItem,
           }}
         />
       )}

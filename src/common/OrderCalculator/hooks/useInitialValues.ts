@@ -3,19 +3,17 @@ import { useCallback, useMemo } from 'react'
 import {
   AdditionalOptionsFrontdc,
   OptionType,
-  GetFullApplicationResponse,
   LoanCarFrontdc,
   LoanDataFrontdc,
   VendorFrontdc,
 } from '@sberauto/loanapplifecycledc-proto/public'
-import { ApplicationFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime } from 'luxon'
 import { useDispatch } from 'react-redux'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { AnketaType } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateOrder } from 'entities/reduxStore/orderSlice'
+import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 
@@ -43,12 +41,12 @@ export function useInitialValues<D extends boolean | undefined>(
   const { data: vendorOptions } = useGetVendorOptionsQuery({ vendorCode }, { enabled: false })
   const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
 
-  const fullApplicationData = initialOrder?.orderData
-
-  const { loanCar, loanData, vendor } = useMemo(
-    () => fullApplicationData?.application || ({} as ApplicationFrontdc),
-    [fullApplicationData?.application],
+  const application = useMemo(
+    () => initialOrder?.orderData?.application || {},
+    [initialOrder?.orderData?.application],
   )
+
+  const { loanCar, loanData, vendor } = useMemo(() => application, [application])
 
   const { additionalEquipments, dealerAdditionalServices, bankAdditionalServices } = useMemo(
     () =>
@@ -462,9 +460,6 @@ export function useInitialValues<D extends boolean | undefined>(
         loanTerm,
         creditProduct,
       } = values
-
-      const fullApplication: GetFullApplicationResponse = fullApplicationData ? fullApplicationData : {}
-      const application = fullApplication.application ? fullApplication.application : {}
       const newLoanCar: LoanCarFrontdc = {
         brand: carBrand ?? undefined,
         isCarNew: !!carCondition,
@@ -491,9 +486,9 @@ export function useInitialValues<D extends boolean | undefined>(
         Потому тут изначально ставим 0, а на этапе сохранения выбираем 0 или 1 */
         anketaType: AnketaType.Incomplete,
       }
-      dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
+      dispatch(updateApplication(updatedApplication))
     },
-    [fullApplicationData, getCarCountryData, remapAdditionalOptionsForSmallCalculator, dispatch],
+    [application, getCarCountryData, remapAdditionalOptionsForSmallCalculator, dispatch],
   )
 
   const remapApplicationValuesForFullCalculator = useCallback(
@@ -528,8 +523,6 @@ export function useInitialValues<D extends boolean | undefined>(
         salesContractDate,
         salesContractId,
       } = values
-      const fullApplication: GetFullApplicationResponse = fullApplicationData ? fullApplicationData : {}
-      const application = fullApplication.application ? fullApplication.application : {}
       const newLoanCar: LoanCarFrontdc = {
         brand: carBrand ?? undefined,
         isCarNew: !!carCondition,
@@ -587,9 +580,9 @@ export function useInitialValues<D extends boolean | undefined>(
         // большого калькулятора и анкеты, а это как раз anketaType=2
         anketaType: AnketaType.Full,
       }
-      dispatch(updateOrder({ orderData: { ...fullApplicationData, application: updatedApplication } }))
+      dispatch(updateApplication(updatedApplication))
     },
-    [fullApplicationData, getCarCountryData, remapAdditionalOptionsForFullCalculator, dispatch],
+    [getCarCountryData, remapAdditionalOptionsForFullCalculator, dispatch, application],
   )
 
   const remapApplicationValues = useCallback(
@@ -605,8 +598,8 @@ export function useInitialValues<D extends boolean | undefined>(
 
   return {
     remapApplicationValues,
-    hasCustomInitialValues: !!fullApplicationData?.application?.loanCar,
-    initialValues: fullApplicationData?.application
+    hasCustomInitialValues: !!application?.loanCar,
+    initialValues: application
       ? ({
           [FormFieldNameMap.carCondition]: loanCar?.isCarNew ?? initialData.carCondition ? 1 : 0,
           [FormFieldNameMap.carBrand]: loanCar?.brand ?? initialData.carBrand,

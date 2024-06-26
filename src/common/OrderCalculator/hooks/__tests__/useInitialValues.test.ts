@@ -29,7 +29,7 @@ jest.mock('react-redux', () => ({
 
 const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
 const mockedUseMemo = jest.spyOn(React, 'useMemo')
-const mockedUpdateOrder = jest.spyOn(orderSlice, 'updateOrder')
+const mockedUpdateApplication = jest.spyOn(orderSlice, 'updateApplication')
 const mockedUseGetVendorOptions = jest.spyOn(useGetVendorOptionsQueryModule, 'useGetVendorOptionsQuery')
 const mockedGetCarsList = jest.spyOn(useGetCarsListQueryModule, 'useGetCarsListQuery')
 
@@ -86,7 +86,7 @@ describe('useInitialValues', () => {
       })
       const result = renderHook(() => useInitialValues(fullInitialValueMap, true))
       result.result.current.remapApplicationValues(EXPECTED_FULL_DATA)
-      expect(mockedUpdateOrder).toBeCalledWith(EXPECTED_REMAPPED_FULL_DATA)
+      expect(mockedUpdateApplication).toBeCalledWith(EXPECTED_REMAPPED_FULL_DATA)
     })
 
     it('Мапинг заявки короткого калькулятора работает корректно', () => {
@@ -97,7 +97,7 @@ describe('useInitialValues', () => {
       })
       const result = renderHook(() => useInitialValues(fullInitialValueMap))
       result.result.current.remapApplicationValues(EXPECTED_FULL_DATA)
-      expect(mockedUpdateOrder).toBeCalledWith(EXPECTED_REMAPPED_BRIEF_DATA)
+      expect(mockedUpdateApplication).toBeCalledWith(EXPECTED_REMAPPED_BRIEF_DATA)
     })
   })
 })
