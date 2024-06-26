@@ -294,11 +294,13 @@ export const clientFormValidationSchema = Yup.object().shape({
       return !value || (value !== mobileNumber && value !== additionalNumber)
     })
     .when('occupation', {
-      is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
+      is: (occupation: number | null) =>
+        isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED, OccupationType.INDIVIDUAL_ENTREPRENEUR]),
       otherwise: schema => setRequiredIfSave(schema).min(11, FieldMessages.enterFullData),
     }),
   employerAddressString: Yup.string().when('occupation', {
-    is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
+    is: (occupation: number | null) =>
+      isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED, OccupationType.INDIVIDUAL_ENTREPRENEUR]),
     otherwise: schema => setRequiredIfSave(schema),
   }),
 
