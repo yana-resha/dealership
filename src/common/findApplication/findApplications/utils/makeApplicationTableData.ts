@@ -27,7 +27,7 @@ export const makeApplicationTableData = (data: Application[]): PreparedTableData
   data.map(application => {
     const {
       applicationNumber,
-      applicationUpdateDate,
+      applicationCreatedDate,
       firstName,
       lastName,
       middleName,
@@ -39,7 +39,7 @@ export const makeApplicationTableData = (data: Application[]): PreparedTableData
 
     return {
       applicationNumber: applicationNumber ?? '',
-      applicationUpdateDate: applicationUpdateDate ?? '',
+      applicationCreatedDate: applicationCreatedDate ?? '',
       fullName: getFullName(lastName, firstName, middleName),
       vendorCode: vendorCode ?? '',
       source: sourceMap[(source || '').toLowerCase() as keyof typeof sourceMap] || source || '',

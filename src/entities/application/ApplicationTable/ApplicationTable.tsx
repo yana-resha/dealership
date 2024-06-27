@@ -1,4 +1,5 @@
 import {
+  Box,
   Skeleton,
   Table,
   TableBody,
@@ -36,8 +37,13 @@ type Props = {
   rowsPerPage?: number
 }
 
-export const ApplicationTable = (props: Props) => {
-  const { data, onClickRow, startPage = 1, isLoading, rowsPerPage: rowsPerPageProp } = props
+export const ApplicationTable = ({
+  data,
+  onClickRow,
+  startPage = 1,
+  isLoading,
+  rowsPerPage: rowsPerPageProp,
+}: Props) => {
   const classes = useStyles()
 
   const {
@@ -70,25 +76,35 @@ export const ApplicationTable = (props: Props) => {
       <TableHead className={classes.header}>
         <TableRow className={classes.headerRow}>
           {APPLICATION_HEADERS.map(header => (
-            <CustomTooltip
+            <TableCell
+              align="left"
               key={header}
-              arrow
-              title={header == ApplicationHeaders.Data ? 'Дата обновления заявки' : header}
-              disableHoverListener={
-                header !== ApplicationHeaders.PermitTerm && header !== ApplicationHeaders.Data
-              }
+              className={cx(classes.headerCell, {
+                [classes.smallHeaderCell]: header === ApplicationHeaders.PermitTerm,
+                [classes.alignedCell]: ALIGNED_CELL.includes(header),
+              })}
             >
-              <TableCell
-                align="left"
+              <CustomTooltip
                 key={header}
-                className={cx(classes.headerCell, {
-                  [classes.smallHeaderCell]: header === ApplicationHeaders.PermitTerm,
-                  [classes.alignedCell]: ALIGNED_CELL.includes(header),
-                })}
+                arrow
+                title={header == ApplicationHeaders.Data ? 'Дата создания заявки' : header}
+                disableHoverListener={
+                  header !== ApplicationHeaders.PermitTerm && header !== ApplicationHeaders.Data
+                }
+                placement="top"
+                classes={{
+                  tooltip: classes.tooltip,
+                }}
               >
-                <>{header}</>
-              </TableCell>
-            </CustomTooltip>
+                <Box
+                  className={cx(classes.headerCellInner, {
+                    [classes.smallHeaderCellInner]: header === ApplicationHeaders.Data,
+                  })}
+                >
+                  {header}
+                </Box>
+              </CustomTooltip>
+            </TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -119,10 +135,10 @@ export const ApplicationTable = (props: Props) => {
                 className={cx(classes.bodyCell, { [classes.alignedCell]: alignedCellIdx.includes(i) })}
               >
                 {cell.name === 'status' && <ApplicationStatus status={cell.value as StatusCode} />}
-                {cell.name === 'applicationUpdateDate' &&
+                {cell.name === 'applicationCreatedDate' &&
                   !!cell.value &&
                   convertedDateToString(new Date(cell.value as string), 'dd.LL.yyyy')}
-                {cell.name !== 'status' && cell.name !== 'applicationUpdateDate' && cell.value}
+                {cell.name !== 'status' && cell.name !== 'applicationCreatedDate' && cell.value}
               </TableCell>
             ))}
           </TableRow>

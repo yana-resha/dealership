@@ -267,7 +267,7 @@ export const formData = {
 export const applicationTabledataMock: PreparedTableData[] = [
   {
     applicationNumber: '1',
-    applicationUpdateDate: '22.02.2023',
+    applicationCreatedDate: '22.02.2023',
     decisionTerm: 10,
     fullName: 'Терентьев Михаил Павлович',
     source: 'Сбол',
