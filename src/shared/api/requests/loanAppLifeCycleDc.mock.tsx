@@ -170,6 +170,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       productCode: 3,
       productName: 'Купи сейчас плати потом',
       downpayment: 410000,
+      downpaymentInPercent: 30.48,
       term: 36,
       monthlyPayment: 32000,
       dateStart: '2000-01-01',

@@ -609,7 +609,9 @@ export function useInitialValues<D extends boolean | undefined>(
           [FormFieldNameMap.carMileage]: loanCar?.mileage ?? initialData.carMileage,
           [FormFieldNameMap.creditProduct]: loanData?.productId ?? initialData.creditProduct,
           [FormFieldNameMap.initialPayment]: `${loanData?.downpayment ?? initialData.initialPayment}`,
-          [FormFieldNameMap.initialPaymentPercent]: initialData.initialPaymentPercent,
+          [FormFieldNameMap.initialPaymentPercent]: `${
+            loanData?.downpaymentInPercent ?? initialData.initialPaymentPercent
+          }`,
           [FormFieldNameMap.loanTerm]: loanData?.term ?? initialData.loanTerm,
 
           ...calculatorValuesPart,
