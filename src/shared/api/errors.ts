@@ -51,6 +51,8 @@ export enum ErrorAlias {
   CheckUserByLogin_EarlyResetPasswordCode = 'CheckUserByLogin_EarlyResetPasswordCode',
   ChangePassword_MismatchResetCode = 'ChangePassword_MismatchResetCode',
   GetEmails_VendorNotFound = 'GetEmails_VendorNotFound',
+  SendEmailDecision_AlreadyAnswered = 'SendEmailDecision_AlreadyAnswered',
+  SendEmailDecision_EmptyText = 'SendEmailDecision_EmptyText',
 }
 export const errorAliasMap = {
   [ErrorAlias.RemoveCatalog_catalogIsNotEmpty]: 'Ошибка. Невозможно удалить папку, так как в ней есть файлы',
@@ -65,6 +67,8 @@ export const errorAliasMap = {
   [ErrorAlias.CheckUserByLogin_EarlyResetPasswordCode]: '',
   [ErrorAlias.ChangePassword_MismatchResetCode]: 'Неверный код восстановления пароля',
   [ErrorAlias.GetEmails_VendorNotFound]: 'Дилерский центр не найден',
+  [ErrorAlias.SendEmailDecision_AlreadyAnswered]: 'По этой заявке решение уже отправлено',
+  [ErrorAlias.SendEmailDecision_EmptyText]: 'Письмо не может быть пустым',
 }
 
 type GetErrorMessageParams = {
