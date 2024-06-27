@@ -33,6 +33,9 @@ export function JobArea() {
   const classes = useStyles()
   const { prepareAddress } = usePrepareAddress()
   const [jobDisabled, setJobDisabled] = useState(false)
+  const [isEmployerNameDisabled, setEmployerNameDisabled] = useState(false)
+  const [isEmployerPhoneDisabled, setEmployerPhoneDisabled] = useState(false)
+  const [isEmployerAddressDisabled, setEmployerAddressDisabled] = useState(false)
   const [isEmplAddressDialogVisible, setIsEmplAddressDialogVisible] = useState(false)
 
   const { values, setFieldValue } = useFormikContext<ClientData>()
@@ -76,13 +79,13 @@ export function JobArea() {
       const currentEmployerNameSuggestion = employerNameSuggestionsMap[value || '']
       if (currentEmployerNameSuggestion) {
         setFieldValue('employerInn', currentEmployerNameSuggestion.data?.inn)
-        setFieldValue('employerPhone', currentEmployerNameSuggestion.data?.phones)
-        if (currentEmployerNameSuggestion.data?.address) {
+        !isEmployerPhoneDisabled && setFieldValue('employerPhone', currentEmployerNameSuggestion.data?.phones)
+        if (currentEmployerNameSuggestion.data?.address && !isEmployerAddressDisabled) {
           setAddressSuggestion(currentEmployerNameSuggestion.data?.address)
         }
       }
     },
-    [employerNameSuggestionsMap, setFieldValue],
+    [employerNameSuggestionsMap, isEmployerAddressDisabled, isEmployerPhoneDisabled, setFieldValue],
   )
 
   const updateListOfSuggestions = useMemo(
@@ -92,6 +95,13 @@ export function JobArea() {
       }, 1000),
     [fetchOrganizationSuggestions],
   )
+
+  const clearAddress = useCallback(() => {
+    setFieldValue('employerAddress', configAddressInitialValues)
+    setAddressSuggestion({})
+    setFieldValue('employerAddressString', '')
+    setFieldValue('emplNotKladr', false)
+  }, [setFieldValue])
 
   useEffect(() => {
     if (employerName && employerName.length > 2) {
@@ -105,15 +115,38 @@ export function JobArea() {
       setFieldValue('employmentDate', '')
       setFieldValue('employerName', '')
       setFieldValue('employerPhone', '')
-      setFieldValue('employerAddress', configAddressInitialValues)
-      setAddressSuggestion({})
-      setFieldValue('employerAddressString', '')
-      setFieldValue('emplNotKladr', false)
       setFieldValue('employerInn', '')
+      clearAddress()
     } else {
       setJobDisabled(false)
     }
-  }, [occupation, setFieldValue, setJobDisabled])
+  }, [clearAddress, occupation, setFieldValue])
+
+  useEffect(() => {
+    if (occupation !== null) {
+      switch (occupation) {
+        case OccupationType.INDIVIDUAL_ENTREPRENEUR:
+          clearAddress()
+          setEmployerPhoneDisabled(false)
+          setEmployerNameDisabled(false)
+          setEmployerAddressDisabled(true)
+          break
+        case OccupationType.SELF_EMPLOYED:
+          setFieldValue('employerName', '')
+          setFieldValue('employerPhone', '')
+          clearAddress()
+          setEmployerPhoneDisabled(true)
+          setEmployerNameDisabled(true)
+          setEmployerAddressDisabled(true)
+          break
+        default:
+          setEmployerPhoneDisabled(false)
+          setEmployerNameDisabled(false)
+          setEmployerAddressDisabled(false)
+          break
+      }
+    }
+  }, [clearAddress, occupation, setFieldValue])
 
   const onCloseAddressDialog = useCallback(
     (addressString: string) => {
@@ -206,7 +239,7 @@ export function JobArea() {
         isCustomValueAllowed
         mask={maskNoRestrictions}
         gridColumn="span 12"
-        disabled={jobDisabled}
+        disabled={jobDisabled || isEmployerNameDisabled}
         onSelectOption={handleEmployerNameSelect}
       />
       <Box gridColumn="span 4" />
@@ -225,7 +258,7 @@ export function JobArea() {
         placeholder="-"
         mask={maskCommonPhoneNumber}
         gridColumn="span 5"
-        disabled={jobDisabled}
+        disabled={jobDisabled || isEmployerPhoneDisabled}
       />
 
       {emplNotKladr ? (
@@ -235,7 +268,7 @@ export function JobArea() {
           placeholder="-"
           mask={maskNoRestrictions}
           gridColumn="span 12"
-          disabled={jobDisabled}
+          disabled={jobDisabled || isEmployerAddressDisabled}
           InputProps={{ readOnly: true }}
         />
       ) : (
@@ -245,7 +278,7 @@ export function JobArea() {
           label="Адрес работодателя (КЛАДР)"
           placeholder="-"
           gridColumn="span 12"
-          disabled={jobDisabled}
+          disabled={jobDisabled || isEmployerAddressDisabled}
           forceValue={addressSuggestion as SuggestionGetAddressSuggestions}
           prepareAddress={prepareAddress}
         />
@@ -256,7 +289,7 @@ export function JobArea() {
         label="Не КЛАДР"
         gridColumn="span 4"
         centered
-        disabled={jobDisabled}
+        disabled={jobDisabled || isEmployerAddressDisabled}
         afterChange={handleKladrChange}
       />
       <AddressDialog
