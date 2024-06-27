@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import {
   AdditionalOptionsFrontdc,
@@ -7,13 +7,12 @@ import {
   LoanDataFrontdc,
   VendorFrontdc,
 } from '@sberauto/loanapplifecycledc-proto/public'
-import { ApplicationFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
 import { DateTime } from 'luxon'
 import { useDispatch } from 'react-redux'
 
 import { AnketaType } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateOrder } from 'entities/reduxStore/orderSlice'
+import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
@@ -144,19 +143,12 @@ const mapCommonValues = ({
 }
 
 export function useMapApplicationFromFullCalculator() {
-  const initialOrder = useAppSelector(state => state.order.order)
+  const dcAppId = useAppSelector(state => state.order.order?.orderData?.application?.dcAppId)
   const dispatch = useDispatch()
 
   const { vendorCode, vendorName } = getPointOfSaleFromCookies()
   const { data: vendorOptions } = useGetVendorOptionsQuery({ vendorCode }, { enabled: false })
   const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
-
-  const applicationData = initialOrder?.orderData
-
-  const { dcAppId } = useMemo(
-    () => applicationData?.application || ({} as ApplicationFrontdc),
-    [applicationData?.application],
-  )
 
   const remapAdditionalOptionsForFullCalculator = useCallback(
     (values: FullOrderCalculatorFields) => {
@@ -336,8 +328,7 @@ export function useMapApplicationFromFullCalculator() {
         additionalOptions: remapAdditionalOptionsForFullCalculator(values),
       }
 
-      const updatedApplication = {
-        ...applicationData?.application,
+      const newApplicationData = {
         loanCar: newLoanCar,
         loanData: newLoanData,
         vendor: newVendor,
@@ -345,9 +336,9 @@ export function useMapApplicationFromFullCalculator() {
         // большого калькулятора и анкеты, а это как раз anketaType=2
         anketaType: AnketaType.Full,
       }
-      dispatch(updateOrder({ orderData: { ...applicationData, application: updatedApplication } }))
+      dispatch(updateApplication(newApplicationData))
     },
-    [applicationData, carsData, dispatch, remapAdditionalOptionsForFullCalculator],
+    [carsData, dispatch, remapAdditionalOptionsForFullCalculator],
   )
 
   return {

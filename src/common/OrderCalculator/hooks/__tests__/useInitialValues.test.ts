@@ -5,7 +5,6 @@ import { renderHook } from '@testing-library/react'
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import * as useGetCarsListQueryModule from 'common/OrderCalculator/hooks/useGetCarsListQuery'
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
-import { Order } from 'entities/reduxStore/orderSlice'
 import { CAR_BRANDS } from 'shared/api/requests/dictionaryDc.mock'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
@@ -43,22 +42,14 @@ describe('useInitialValues', () => {
 
   describe('Преобразование данных работает корректно', () => {
     it('Заменяет начальное значение на данные из запроса', () => {
-      mockedUseAppSelector.mockImplementation(() => {
-        const orderData: Order = { orderData: fullApplicationData }
-
-        return orderData
-      })
+      mockedUseAppSelector.mockImplementation(() => ({ ...fullApplicationData.application }))
       const result = renderHook(() => useInitialValues(fullInitialValueMap, true))
       expect(result.result.current.initialValues).toEqual(EXPECTED_FULL_DATA)
       expect(result.result.current.hasCustomInitialValues).toEqual(true)
     })
 
     it('При отсутствии данных из запроса отдает начальные данные', () => {
-      mockedUseAppSelector.mockImplementation(() => {
-        const orderData: Order = { orderData: undefined }
-
-        return orderData
-      })
+      mockedUseAppSelector.mockImplementation(() => ({}))
       const result = renderHook(() => useInitialValues(fullInitialValueMap, true))
       expect(result.result.current.initialValues.carBrand).toEqual(null)
       expect(result.result.current.initialValues.carModel).toEqual(null)

@@ -14,14 +14,8 @@ export function useInitialValues<D extends boolean | undefined>(
   initialData: CalculatorFields<D>,
   isFullCalculator?: D,
 ) {
-  const initialOrder = useAppSelector(state => state.order.order)
-
-  const application = useMemo(
-    () => initialOrder?.orderData?.application || {},
-    [initialOrder?.orderData?.application],
-  )
-
-  const { loanCar, loanData, vendor } = useMemo(() => application, [application])
+  const application = useAppSelector(state => state.order.order?.orderData?.application || {})
+  const { loanCar, loanData, vendor } = application
 
   const { additionalEquipments, dealerAdditionalServices, bankAdditionalServices } = useMemo(
     () =>

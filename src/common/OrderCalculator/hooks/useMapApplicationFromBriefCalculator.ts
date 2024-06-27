@@ -5,8 +5,7 @@ import { useDispatch } from 'react-redux'
 
 import { AnketaType } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateOrder } from 'entities/reduxStore/orderSlice'
-import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { BriefOrderCalculatorFields, OrderCalculatorAdditionalService } from '../types'
@@ -38,14 +37,11 @@ const mapAdditionalOptionsForBriefCalculator = (
   }, [])
 
 export function useMapApplicationFromBriefCalculator() {
-  const initialOrder = useAppSelector(state => state.order.order)
   const dispatch = useDispatch()
 
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data: vendorOptions } = useGetVendorOptionsQuery({ vendorCode }, { enabled: false })
   const { data: carsData } = useGetCarsListQuery({ vendorCode }, { enabled: false })
-
-  const applicationData = initialOrder?.orderData
 
   const remapAdditionalOptionsForBriefCalculator = useCallback(
     (values: BriefOrderCalculatorFields) => {
@@ -99,9 +95,7 @@ export function useMapApplicationFromBriefCalculator() {
   const remapApplicationValuesForBriefCalculator = useCallback(
     (values: BriefOrderCalculatorFields) => {
       const { commonLoanCar, commonLoanData } = mapCommonApplicationValues(values, carsData)
-
-      const updatedApplication = {
-        ...applicationData?.application,
+      const newApplicationData = {
         loanCar: commonLoanCar,
         loanData: {
           ...commonLoanData,
@@ -112,9 +106,11 @@ export function useMapApplicationFromBriefCalculator() {
         Потому тут изначально ставим 0, а на этапе сохранения выбираем 0 или 1 */
         anketaType: AnketaType.Incomplete,
       }
-      dispatch(updateOrder({ orderData: { ...applicationData, application: updatedApplication } }))
+      console.log('newApplicationData', JSON.stringify(newApplicationData, null, 2))
+
+      dispatch(updateApplication(newApplicationData))
     },
-    [applicationData, carsData, dispatch, remapAdditionalOptionsForBriefCalculator],
+    [carsData, dispatch, remapAdditionalOptionsForBriefCalculator],
   )
 
   return {

@@ -14,7 +14,7 @@ import { useMapApplicationFromFullCalculator } from '../useMapApplicationFromFul
 import { mockedUseGetCarsListQueryData } from './useGetCarsListQuery.mock'
 import { mockedUseGetVendorOptionsQueryResponseData } from './useGetVendorOptionsQuery.mock'
 import { EXPECTED_FULL_DATA } from './useInitialValues.mock'
-import { EXPECTED_REMAPPED_FULL_DATA } from './useMapApplicationFromFullCalculator.mock'
+import { EXPECTED_REMAPPED_APPLICATION } from './useMapApplicationFromFullCalculator.mock'
 
 disableConsole('error')
 
@@ -25,11 +25,11 @@ jest.mock('react-redux', () => ({
 
 const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
 const mockedUseMemo = jest.spyOn(React, 'useMemo')
-const mockedUpdateOrder = jest.spyOn(orderSlice, 'updateOrder')
+const mockedUpdateApplication = jest.spyOn(orderSlice, 'updateApplication')
 const mockedUseGetVendorOptions = jest.spyOn(useGetVendorOptionsQueryModule, 'useGetVendorOptionsQuery')
 const mockedGetCarsList = jest.spyOn(useGetCarsListQueryModule, 'useGetCarsListQuery')
 
-describe('useInitialValues', () => {
+describe('useMapApplicationFromFullCalculator', () => {
   beforeEach(() => {
     mockedUseMemo.mockImplementation(fn => fn())
     mockedUseGetVendorOptions.mockImplementation(
@@ -57,7 +57,7 @@ describe('useInitialValues', () => {
       })
       const result = renderHook(() => useMapApplicationFromFullCalculator())
       result.result.current.remapApplicationValues(EXPECTED_FULL_DATA)
-      expect(mockedUpdateOrder).toBeCalledWith(EXPECTED_REMAPPED_FULL_DATA)
+      expect(mockedUpdateApplication).toBeCalledWith(EXPECTED_REMAPPED_APPLICATION)
     })
   })
 })
