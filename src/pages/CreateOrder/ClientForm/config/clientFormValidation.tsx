@@ -241,7 +241,7 @@ export const clientFormValidationSchema = Yup.object().shape({
       })
       .when('secondDocumentType', {
         is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.INN,
-        then: schema => schema.min(12, FieldMessages.enterFullData),
+        then: schema => schema.length(12, 'Длина ИНН физ.лица должна составлять 12 цифр'),
       }),
   ),
   secondDocumentDate: Yup.date()
@@ -283,10 +283,16 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
       otherwise: schema => setRequiredIfSave(schema),
     }),
-  employerInn: Yup.string().when('occupation', {
-    is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-    otherwise: schema => setRequiredIfSave(schema.min(10, FieldMessages.enterFullData)),
-  }),
+  employerInn: Yup.string()
+    .when('occupation', {
+      is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
+      otherwise: schema => setRequiredIfSave(schema),
+    })
+    .test(
+      'wrongInnLenght',
+      'Длина ИНН должна составлять 10 или 12 цифр',
+      value => !value || value?.length === 10 || value?.length === 12,
+    ),
   employerPhone: Yup.string()
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
       const { mobileNumber, additionalNumber } = (context.options as InternalOptions)?.from?.[0].value || {}
