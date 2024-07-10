@@ -19,13 +19,12 @@ export const EmailFileDownloader = ({
   onDownloadEmailFiles,
 }: EmailFileDownloaderProps) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [file, setFile] = useState<FileOrMetadata | undefined>(fileOrMetadata)
 
   const downloadEmailFile = async () => {
     if (onDownloadEmailFiles) {
       setIsLoading(true)
       try {
-        const downloadedFile = await onDownloadEmailFiles(file as EmailFileMetadata)
+        const downloadedFile = await onDownloadEmailFiles(fileOrMetadata as EmailFileMetadata)
 
         const downloadURL = URL.createObjectURL(downloadedFile)
         const simulateLink = document.createElement('a')
@@ -33,11 +32,13 @@ export const EmailFileDownloader = ({
         simulateLink.download = downloadedFile.name
         simulateLink.click()
         URL.revokeObjectURL(downloadURL)
-        setFile(downloadedFile)
+        setIsLoading(false)
+
+        return downloadedFile
       } catch (error) {
         console.error('Error downloading the file:', error)
+        setIsLoading(false)
       }
-      setIsLoading(false)
     }
   }
 
@@ -45,7 +46,7 @@ export const EmailFileDownloader = ({
     <FileDownloader
       index={index}
       isLoading={isLoading}
-      fileOrMetadata={file}
+      fileOrMetadata={fileOrMetadata}
       loadingMessage={loadingMessage}
       onClick={onClick}
       onDownloadFile={downloadEmailFile}
