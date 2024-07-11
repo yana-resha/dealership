@@ -18,4 +18,6 @@ export enum ServiceApi {
   CHANGE_PASSWORD = 'changePassword',
   GET_EMAILS = 'getEmails',
   SEND_EMAIL_DECISION = 'sendEmailDecision',
+  CALCULATE_CREDIT = 'calculateCredit',
+  GET_CREDIT_PRODUCT_LIST = 'getCreditProductList',
 }

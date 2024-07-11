@@ -5,6 +5,7 @@ import { FieldArray, useField } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
+import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
 import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
@@ -17,8 +18,8 @@ type Props = {
   isError?: boolean
   errorMessage?: string
   options: {
-    productType: { value: string | number; label: string }[]
-    loanTerms: { value: string | number }[]
+    productType: { value: string; label: string }[]
+    loanTerms: { value: number }[]
   }
 }
 
@@ -27,13 +28,18 @@ export function AdditionalEquipment({ disabled = false, options, isError, errorM
   const [field] = useField<FullInitialAdditionalEquipments[]>(ServicesGroupName.additionalEquipments)
 
   const { ids, changeIds } = useAdditionalServiceIds()
-  const isInitialExpanded = !!field.value.length && !!field.value[0].productType
+  const { isInitialExpanded, isShouldExpanded, resetShouldExpanded } = useAdditionalServicesGroupe(
+    ServicesGroupName.additionalEquipments,
+    FULL_INITIAL_ADDITIONAL_EQUIPMENTS,
+  )
 
   return (
     <AdditionalServicesContainer
       title="Дополнительное оборудование"
       name={ServicesGroupName.additionalEquipments}
       initialValues={FULL_INITIAL_ADDITIONAL_EQUIPMENTS}
+      isShouldExpanded={isShouldExpanded}
+      resetShouldExpanded={resetShouldExpanded}
       disabled={disabled}
       isError={isError}
       errorMessage={errorMessage}

@@ -6,6 +6,7 @@ import {
   FullInitialAdditionalEquipments,
   FullInitialAdditionalService,
   OrderCalculatorAdditionalService,
+  OrderCalculatorBankAdditionalService,
 } from 'common/OrderCalculator/types'
 import { useAdditionalServicesContainerContext } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainerProvider'
 
@@ -21,6 +22,7 @@ type Params = {
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
   initialValues:
     | OrderCalculatorAdditionalService
+    | OrderCalculatorBankAdditionalService
     | FullInitialAdditionalEquipments
     | FullInitialAdditionalService
 }

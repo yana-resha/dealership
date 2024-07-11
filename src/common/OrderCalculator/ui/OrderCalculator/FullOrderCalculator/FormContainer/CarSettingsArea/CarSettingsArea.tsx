@@ -3,7 +3,12 @@ import { useEffect } from 'react'
 import { Box } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
-import { CAR_CONDITIONS, CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from 'common/OrderCalculator/config'
+import {
+  CAR_CONDITIONS,
+  CAR_PASSPORT_TYPE,
+  fullInitialValueMap,
+  INITIAL_CAR_ID_TYPE,
+} from 'common/OrderCalculator/config'
 import { useCarBrands } from 'common/OrderCalculator/hooks/useCarBrands'
 import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
 import { useCarYears } from 'common/OrderCalculator/hooks/useCarYears'
@@ -46,7 +51,7 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
 
   useEffect(() => {
     if (carPassportTypeField.value !== prevCarPassportType) {
-      setFieldValue(FormFieldNameMap.carPassportId, '')
+      setFieldValue(FormFieldNameMap.carPassportId, fullInitialValueMap[FormFieldNameMap.carPassportId])
     }
   }, [carPassportTypeField.value, prevCarPassportType, setFieldValue])
 

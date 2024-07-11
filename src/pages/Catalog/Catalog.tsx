@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { useGetCatalogQuery } from 'shared/api/requests/fileStorageDc.api'
 import { appRoutes } from 'shared/navigation/routerPath'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { useStyles } from './Catalog.styles'
 import { CatalogHeader } from './CatalogHeader/CatalogHeader'
@@ -16,7 +17,7 @@ export function Catalog() {
   const navigate = useNavigate()
   const params = useParams()
 
-  const currentFolderId = params.folderId ? parseInt(params.folderId, 10) : 0
+  const currentFolderId = stringToNumber(params.folderId) || 0
   const [foundedFileName, setFoundedFileName] = useState('')
   const [fileName, setFileName] = useState('')
 

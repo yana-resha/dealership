@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { Box } from '@mui/material'
 import { useFormikContext } from 'formik'
 
+import { FULL_INITIAL_ADDITIONAL_SERVICE, fullInitialValueMap } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import {
   maskBankAccountNumber,
@@ -14,6 +15,7 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { RadioGroupInput } from 'shared/ui/RadioGroupInput/RadioGroupInput'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { useRequisites } from '../../hooks/useRequisites'
 import { useRequisitesContext } from '../RequisitesContext'
@@ -29,7 +31,6 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   const { requisites, isRequisitesFetched } = useRequisitesContext()
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
   const {
-    legalPersonCode,
     beneficiaryBank,
     taxPresence,
     isCustomFields,
@@ -42,17 +43,18 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
 
   const legalPersonOptions = useMemo(
     () =>
-      (requisites?.dealerCenterBrokers || []).map(broker => ({
-        value: broker.brokerCode,
-        label: broker.brokerName || '',
-      })),
-    [requisites?.dealerCenterBrokers],
+      requisites?.vendor.vendorCode && requisites?.vendor.vendorName
+        ? [
+            {
+              value: requisites.vendor.vendorCode,
+              label: requisites.vendor.vendorName,
+            },
+          ]
+        : [],
+    [requisites?.vendor.vendorCode, requisites?.vendor.vendorName],
   )
 
-  const currentLegalPerson = useMemo(
-    () => requisites?.dealerCenterBrokersMap[legalPersonCode],
-    [legalPersonCode, requisites?.dealerCenterBrokersMap],
-  )
+  const currentLegalPerson = useMemo(() => requisites?.vendor, [requisites?.vendor])
 
   const banksOptions = useMemo(
     () => (currentLegalPerson?.requisites || []).map(r => ({ value: r.bankName })),
@@ -72,6 +74,7 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   const { toggleTaxInPercentField, resetInitialValues, clearFieldsForManualEntry } = useRequisites({
     namePrefix,
     values,
+    currentBroker: currentLegalPerson,
     currentBank,
     isCustomFields,
     isRequisitesFetched,
@@ -93,14 +96,14 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   const priceOfAdditionalOptionsInCredit = useMemo(() => {
     const equipmentCost = additionalEquipments?.reduce((acc, option) => {
       if (option[FormFieldNameMap.isCredit]) {
-        acc += parseFloat(option[FormFieldNameMap.productCost])
+        acc += stringToNumber(option[FormFieldNameMap.productCost]) ?? 0
       }
 
       return acc
     }, 0)
     const dealerServicesConst = dealerAdditionalServices?.reduce((acc, option) => {
       if (option[FormFieldNameMap.isCredit]) {
-        acc += parseFloat(option[FormFieldNameMap.productCost])
+        acc += stringToNumber(option[FormFieldNameMap.productCost]) ?? 0
       }
 
       return acc
@@ -111,24 +114,30 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
 
   useEffect(() => {
     const loanAmount = parseInt(carCost, 10) + priceOfAdditionalOptionsInCredit - parseInt(initialPayment, 10)
-    setFieldValue(namePrefix + 'loanAmount', loanAmount >= 0 ? loanAmount : 0)
+    setFieldValue(
+      namePrefix + 'loanAmount',
+      loanAmount >= 0 ? `${loanAmount}` : fullInitialValueMap[FormFieldNameMap.loanAmount],
+    )
     // Исключены лишние зависимости, чтобы избежать случайных перерендеров
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carCost, initialPayment, priceOfAdditionalOptionsInCredit])
 
   useEffect(() => {
-    setFieldValue(namePrefix + 'legalPersonName', currentLegalPerson?.brokerName)
+    setFieldValue(namePrefix + 'legalPersonName', currentLegalPerson?.vendorName)
     // Исключен setFieldValue, чтобы избежать случайных перерендеров
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLegalPerson?.brokerName, namePrefix])
+  }, [currentLegalPerson?.vendorName, namePrefix])
 
   useEffect(() => {
     if (currentLegalPerson?.tax) {
       setFieldValue(namePrefix + 'taxPercent', currentLegalPerson?.tax)
-      setFieldValue(namePrefix + 'taxValue', currentLegalPerson?.tax * parseFloat(loanAmount))
+      setFieldValue(
+        namePrefix + 'taxValue',
+        (currentLegalPerson?.tax * (stringToNumber(loanAmount) ?? 0)) / 100,
+      )
     } else {
-      setFieldValue(namePrefix + 'taxPercent', 0)
-      setFieldValue(namePrefix + 'taxValue', 0)
+      setFieldValue(namePrefix + 'taxPercent', FULL_INITIAL_ADDITIONAL_SERVICE[FormFieldNameMap.taxPercent])
+      setFieldValue(namePrefix + 'taxValue', FULL_INITIAL_ADDITIONAL_SERVICE[FormFieldNameMap.taxValue])
     }
   }, [currentLegalPerson?.tax, loanAmount, namePrefix, setFieldValue])
 

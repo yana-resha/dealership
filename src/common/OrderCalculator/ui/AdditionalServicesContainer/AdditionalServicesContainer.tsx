@@ -8,6 +8,7 @@ import {
   FullInitialAdditionalEquipments,
   FullInitialAdditionalService,
   OrderCalculatorAdditionalService,
+  OrderCalculatorBankAdditionalService,
 } from 'common/OrderCalculator/types'
 import { usePrevious } from 'shared/hooks/usePrevious'
 
@@ -18,12 +19,15 @@ const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка при получ
 
 type AdditionalService =
   | OrderCalculatorAdditionalService
+  | OrderCalculatorBankAdditionalService
   | FullInitialAdditionalService
   | FullInitialAdditionalEquipments
 type Props = {
   title: string
   name: string
   initialValues: AdditionalService
+  isShouldExpanded: boolean
+  resetShouldExpanded: () => void
   disabled?: boolean
   isError?: boolean
   errorMessage?: string
@@ -34,6 +38,8 @@ export const AdditionalServicesContainer = React.memo(
     title,
     name,
     initialValues,
+    isShouldExpanded,
+    resetShouldExpanded,
     disabled = false,
     isError = false,
     errorMessage,
@@ -57,10 +63,16 @@ export const AdditionalServicesContainer = React.memo(
       if (prevSubmitCount === submitCount) {
         return
       }
-      const newValue = field.value.filter((value: AdditionalService) => value.productType)
+      const newValue = field.value.filter((value: AdditionalService) => !!value.productType)
       setServices(newValue.length ? newValue : [initialValues])
-      !newValue.length && closeAccordion()
     }, [closeAccordion, field.name, field.value, initialValues, prevSubmitCount, setServices, submitCount])
+
+    useEffect(() => {
+      if (isShouldExpanded) {
+        setExpanded(true)
+        resetShouldExpanded()
+      }
+    }, [isShouldExpanded, resetShouldExpanded])
 
     return (
       <Accordion

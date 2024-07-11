@@ -1,13 +1,20 @@
 import { useCallback } from 'react'
 
-import { BankOption, CreditProduct, GetCreditProductListRequest } from '@sberauto/dictionarydc-proto/public'
+import { GetCreditProductListRequest } from '@sberauto/dictionarydc-proto/public'
 import { useSnackbar } from 'notistack'
 import { UseQueryResult, useQuery } from 'react-query'
 
+import { CustomFetchError } from 'shared/api/client'
+import { Service, ServiceApi } from 'shared/api/constants'
+import { ErrorAlias, ErrorCode, getErrorMessage } from 'shared/api/errors'
 import { getCreditProductList } from 'shared/api/requests/dictionaryDc.api'
 
-import { FullOrderCalculatorFields, BriefOrderCalculatorFields } from '../types'
-import { ProductsMap, RequiredProduct, prepareCreditProduct } from '../utils/prepareCreditProductListData'
+import {
+  FullOrderCalculatorFields,
+  BriefOrderCalculatorFields,
+  UseGetCreditProductListQueryData,
+} from '../types'
+import { prepareCreditProducts } from '../utils/prepareCreditProductListData'
 
 type Params = {
   vendorCode: string | undefined
@@ -15,26 +22,24 @@ type Params = {
   enabled?: boolean
 }
 
-export type useGetCreditProductListQueryData = {
-  products: RequiredProduct[]
-  productsMap: ProductsMap
-  fullDownpaymentMin: number
-  fullDownpaymentMax: number
-  fullDurationMin?: number | undefined
-  fullDurationMax?: number | undefined
-  creditProducts?: CreditProduct[] | null | undefined
-  bankOptions?: BankOption[] | null | undefined
-}
-
 export const useGetCreditProductListQuery = ({
   vendorCode,
   values,
   enabled = true,
-}: Params): UseQueryResult<useGetCreditProductListQueryData, unknown> => {
+}: Params): UseQueryResult<UseGetCreditProductListQueryData, unknown> => {
   const { enqueueSnackbar } = useSnackbar()
 
   const onError = useCallback(
-    () => enqueueSnackbar('Не удалось получить список кредитных продуктов', { variant: 'error' }),
+    (err: CustomFetchError) =>
+      enqueueSnackbar(
+        getErrorMessage({
+          service: Service.Dictionarydc,
+          serviceApi: ServiceApi.GET_CREDIT_PRODUCT_LIST,
+          code: err.code as ErrorCode,
+          alias: err.alias as ErrorAlias,
+        }),
+        { variant: 'error' },
+      ),
     [enqueueSnackbar],
   )
 
@@ -43,7 +48,7 @@ export const useGetCreditProductListQuery = ({
     model: values?.carModel || '',
     brand: values?.carBrand || '',
     isCarNew: !!values?.carCondition,
-    autoCreateYear: values?.carYear,
+    autoCreateYear: values?.carYear ?? undefined,
   }
 
   const res = useQuery(['getCreditProductList', params], () => getCreditProductList(params), {
@@ -51,10 +56,7 @@ export const useGetCreditProductListQuery = ({
     refetchOnWindowFocus: false,
     select: res => ({
       ...res,
-      // С Бэка значение приходит в диапазоне 0...1, а на фронте используются проценты (0...100)
-      fullDownpaymentMin: res.fullDownpaymentMin ? res.fullDownpaymentMin * 100 : 0,
-      fullDownpaymentMax: res.fullDownpaymentMax ? res.fullDownpaymentMax * 100 : 100,
-      ...prepareCreditProduct(res.creditProducts),
+      ...prepareCreditProducts(res.creditProducts),
     }),
     onError,
     enabled,

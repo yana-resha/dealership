@@ -4,6 +4,7 @@ import { Formik } from 'formik'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import { useInitialValues } from 'common/OrderCalculator/hooks/useInitialValues'
+import { useMapApplicationFromFullCalculator } from 'common/OrderCalculator/hooks/useMapApplicationFromFullCalculator'
 import { useOrderCalculator } from 'common/OrderCalculator/hooks/useOrderCalculator'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 
@@ -15,18 +16,25 @@ type Props = {
   isSubmitLoading: boolean
   onSubmit: (data: CalculateCreditRequest, onSuccess: () => void) => void
   onChangeForm: (saveValuesToStore: () => void) => void
+  creditProductId: string | undefined
+  resetCreditProductId: () => void
 }
-export function FullOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }: Props) {
+export function FullOrderCalculator({
+  isSubmitLoading,
+  onSubmit,
+  onChangeForm,
+  creditProductId,
+  resetCreditProductId,
+}: Props) {
   const classes = useStyles()
 
-  const { remapApplicationValues, initialValues, hasCustomInitialValues } = useInitialValues(
-    fullInitialValueMap,
-    true,
-  )
-  const { formRef, isDisabled, enableFormSubmit, handleSubmit } = useOrderCalculator(
-    remapApplicationValues,
+  const { initialValues, hasCustomInitialValues } = useInitialValues(fullInitialValueMap, true)
+  const { remapApplicationValues } = useMapApplicationFromFullCalculator()
+
+  const { formRef, isDisabled, enableFormSubmit, handleSubmit } = useOrderCalculator({
+    remapApplicationFullValues: remapApplicationValues,
     onSubmit,
-  )
+  })
 
   return (
     <Box className={classes.formContainer} data-testid="fullOrderCalculatorForm">
@@ -43,6 +51,8 @@ export function FullOrderCalculator({ isSubmitLoading, onSubmit, onChangeForm }:
           remapApplicationValues={remapApplicationValues}
           isDisabledFormSubmit={isDisabled}
           enableFormSubmit={enableFormSubmit}
+          creditProductId={creditProductId}
+          resetCreditProductId={resetCreditProductId}
         />
       </Formik>
     </Box>

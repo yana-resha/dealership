@@ -5,6 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
@@ -25,15 +26,12 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
 
-const mockedAdditionalEquipmentFields = {
+const mockedAdditionalEquipmentFields: { additionalEquipments: FullInitialAdditionalEquipments[] } = {
   additionalEquipments: [
     {
-      optionType: 'additionalEquipment',
       productType: null,
-      legalPersonCode: '',
-      legalPersonName: undefined,
       productCost: '0',
-      loanTerm: 0,
+      broker: null,
       bankIdentificationCode: '',
       beneficiaryBank: '',
       correspondentAccount: '',
@@ -41,12 +39,11 @@ const mockedAdditionalEquipmentFields = {
       taxPresence: false,
       taxation: '',
       isCredit: true,
-      taxPercent: null,
-      taxValue: null,
       documentNumber: '32ук23к22',
       documentType: 2,
       documentDate: new Date('2023-04-23T00:00:00.000Z'),
       isCustomFields: false,
+      cascoLimit: '',
     },
   ],
 }
@@ -55,6 +52,7 @@ const createWrapper = ({ children }: PropsWithChildren) => (
   <ThemeProviderMock>
     <Formik
       initialValues={mockedAdditionalEquipmentFields}
+      // TODO DCB-1410 переделать тесты - editRequisitesValidationSchema - должен браться из калькулятора
       validationSchema={editRequisitesValidationSchema}
       onSubmit={() => {}}
     >
@@ -97,7 +95,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     })
 
     it('Отображается поле "Юридическое лицо"', () => {
-      expect(screen.getByTestId('additionalEquipments[0].legalPersonCode')).toBeInTheDocument()
+      expect(screen.getByTestId('additionalEquipments[0].broker')).toBeInTheDocument()
     })
 
     it('Отображается поле "Банк получатель"', () => {
@@ -171,9 +169,7 @@ describe('AdditionalEquipmentRequisitesTest', () => {
     })
 
     it('Валидируется поле "Юридическое лицо"', async () => {
-      expect(
-        await screen.findByTestId('additionalEquipments[0].legalPersonCodeErrorMessage'),
-      ).toBeInTheDocument()
+      expect(await screen.findByTestId('additionalEquipments[0].brokerErrorMessage')).toBeInTheDocument()
     })
 
     //Тесты отключены, пока выключен ручной ввод

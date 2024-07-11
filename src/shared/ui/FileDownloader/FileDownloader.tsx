@@ -36,7 +36,7 @@ type FileDownloaderProps = {
   onClickRemove?: (index: number) => void
   isLoading: boolean
   fileOrMetadata: FileOrMetadata | undefined
-  onDownloadFile?: () => Promise<void>
+  onDownloadFile?: () => Promise<File | undefined>
 }
 
 export const FileDownloader = ({
@@ -58,21 +58,23 @@ export const FileDownloader = ({
   const isFileObject = (input: FileOrMetadata | undefined): input is File => input instanceof File
 
   /** Скачиваем файл полученный при запросе по метаинформации о нем */
-  const handleDownload = async () => {
+  const handleDownload = () => {
     if (isFileObject(file) || isLoading) {
       return
     }
 
     if (onDownloadFile) {
-      await onDownloadFile()
+      onDownloadFile().then(file => {
+        !!file && setFile(file)
+      })
     }
   }
 
   // Необходим, чтобы при смене пропса, менялся и локальный стэйт file.
   // В противном случае будет отображаться и скачиваться старый файл
   useEffect(() => {
-    setFile(file)
-  }, [file])
+    setFile(fileOrMetadata)
+  }, [fileOrMetadata])
 
   const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
   const message = loadingMessage ? loadingMessage : 'Файл загружается...'

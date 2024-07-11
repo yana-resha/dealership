@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 
 import { ReactComponent as ConfirmationDocumentIcon } from 'assets/icons/confirmationDocument.svg'
-import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
+import { CustomTooltip } from 'shared/ui/CustomTooltip'
 
 import useStyles from './ButtonsCell.styles'
 

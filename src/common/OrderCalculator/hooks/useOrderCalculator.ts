@@ -11,11 +11,12 @@ import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 import { useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
 export type OrderCalculatorFields = BriefOrderCalculatorFields | FullOrderCalculatorFields
-
-export function useOrderCalculator(
-  remapApplicationValue: (values: OrderCalculatorFields) => void,
-  onSubmit: (data: CalculateCreditRequest, onSuccess: () => void) => void,
-) {
+type Params = {
+  onSubmit: (data: CalculateCreditRequest, onSuccess: () => void) => void
+  remapApplicationValues?: (values: BriefOrderCalculatorFields) => void
+  remapApplicationFullValues?: (values: FullOrderCalculatorFields) => void
+}
+export function useOrderCalculator({ onSubmit, remapApplicationValues, remapApplicationFullValues }: Params) {
   const { vendorCode } = getPointOfSaleFromCookies()
   const { data: vendorOptions } = useGetVendorOptionsQuery({
     vendorCode,
@@ -34,7 +35,8 @@ export function useOrderCalculator(
 
   const handleSubmit = useCallback(
     async (values: OrderCalculatorFields) => {
-      remapApplicationValue(values)
+      remapApplicationValues?.(values)
+      remapApplicationFullValues?.(values as FullOrderCalculatorFields)
       onSubmit(
         mapValuesForCalculateCreditRequest(
           values,
@@ -48,7 +50,8 @@ export function useOrderCalculator(
       creditProductListData?.productsMap,
       disabledFormSubmit,
       onSubmit,
-      remapApplicationValue,
+      remapApplicationFullValues,
+      remapApplicationValues,
       vendorOptions?.additionalOptionsMap,
     ],
   )

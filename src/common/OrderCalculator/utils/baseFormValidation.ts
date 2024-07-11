@@ -1,15 +1,17 @@
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import * as Yup from 'yup'
 import { AnyObject, InternalOptions } from 'yup/lib/types'
 
 import { FieldMessages } from 'shared/constants/fieldMessages'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
+import { CASCO_OPTION_ID } from '../config'
 import {
   CommonError,
   FormFieldNameMap,
   FullOrderCalculatorFields,
   BriefOrderCalculatorFields,
 } from '../types'
+import { setRequiredIfHasProductType } from '../ui/OrderCalculator/FullOrderCalculator/FormContainer/BankDetails/bankDetailsFormValidation.utils'
 
 export function checkAdditionalEquipmentsLimit(commonError: CommonError) {
   return !commonError.isExceededServicesTotalLimit && !commonError.isExceededAdditionalEquipmentsLimit
@@ -35,13 +37,19 @@ export const additionalServiceBaseValidation = (checkFn: (commonError: CommonErr
   }),
 })
 
+export const bankAdditionalServiceBaseValidation = (checkFn: (commonError: CommonError) => void) => ({
+  ...additionalServiceBaseValidation(checkFn),
+  [FormFieldNameMap.tariff]: setRequiredIfHasProductType(Yup.string().nullable()),
+  [FormFieldNameMap.loanTerm]: setRequiredIfHasProductType(Yup.number().nullable()),
+})
+
 type YupBaseSchema<T> = Yup.BaseSchema<T, AnyObject, T>
 export function setRequiredIfNecessaryCasco<T extends YupBaseSchema<string | number | undefined | null>>(
   schema: T,
   message?: string,
 ) {
   return schema.when([FormFieldNameMap.productType], {
-    is: (productType: string) => productType === `${OptionID.CASCO}`,
+    is: (productType: string) => productType === CASCO_OPTION_ID,
     then: schema =>
       schema.test(
         'isHasNotCascoLimit',
@@ -69,11 +77,11 @@ export function checkIsLowCascoLimit<T extends YupBaseSchema<string | undefined>
             | BriefOrderCalculatorFields
             | FullOrderCalculatorFields) || {}
         const additionalEquipmentsPrice = additionalEquipments.reduce(
-          (acc, cur) => (cur.productType ? acc + parseFloat(cur.productCost || '0') : acc),
+          (acc, cur) => (cur.productType ? acc + (stringToNumber(cur.productCost) ?? 0) : acc),
           0,
         )
 
-        return parseFloat(value) >= parseFloat(carCost) + additionalEquipmentsPrice
+        return parseFloat(value) >= (stringToNumber(carCost) ?? 0) + additionalEquipmentsPrice
       },
     ),
   )

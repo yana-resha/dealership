@@ -1,4 +1,4 @@
-import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
+import { CalculatedProduct, RequiredServiceFlag } from '@sberauto/dictionarydc-proto/public'
 
 import { formatNumber } from 'shared/lib/utils'
 import { compareStrings } from 'shared/utils/compareStrings'
@@ -24,9 +24,11 @@ export const prepareRow = (row: CalculatedProduct) => {
     row.amountWithoutPercent !== undefined ? row.amountWithoutPercent : '',
     options,
   )
-  const currentRate = formatNumber(row.currentRate !== undefined ? row.currentRate * 100 : '', {
+  const currentRate = formatNumber(row.currentRate !== undefined ? row.currentRate : '', {
     digits: 2,
   })
+
+  const requiredServiceFlag = row.requiredServiceFlag === RequiredServiceFlag.OPTIONAL ? 'Нет' : 'Да'
 
   return {
     ...row,
@@ -38,15 +40,16 @@ export const prepareRow = (row: CalculatedProduct) => {
     overpayment,
     amountWithoutPercent,
     totalSum,
+    requiredServiceFlag,
   }
 }
 
 export const getCellsChildren = (row: CalculatedProduct) =>
   BANK_OFFERS_TABLE_HEADERS.map(header => {
-    let value: string | boolean | number | undefined = prepareRow(row)[header.key as keyof CalculatedProduct]
+    let value: string | boolean | number | null | undefined =
+      prepareRow(row)[header.key as keyof CalculatedProduct]
     let { type } = header
-
-    if (header.key === HeaderCellKey.IncomeFlag) {
+    if (header.key === HeaderCellKey.INCOME_FLAG) {
       type = value ? type : undefined
       value = ''
     }
@@ -80,7 +83,7 @@ export const sortBankOffersByString = (
       return -1
     }
 
-    return sortOrder === SortOrder.Asc
+    return sortOrder === SortOrder.ASC
       ? compareStrings(a[key] as string, b[key] as string)
       : compareStrings(b[key] as string, a[key] as string)
   })
@@ -102,19 +105,7 @@ export const sortBankOffersByNumber = (
       return -1
     }
 
-    return sortOrder === SortOrder.Asc
+    return sortOrder === SortOrder.ASC
       ? (a[key] as number) - (b[key] as number)
       : (b[key] as number) - (a[key] as number)
-  })
-
-export const sortBankOffersByCasco = (bankOffers: CalculatedProduct[], sortOrder: SortOrder) =>
-  [...bankOffers].sort((a, b) => {
-    if (a.cascoFlag && !b.cascoFlag) {
-      return sortOrder === SortOrder.Desc ? -1 : 1
-    }
-    if (!a.cascoFlag && b.cascoFlag) {
-      return sortOrder === SortOrder.Desc ? 1 : -1
-    }
-
-    return 0
   })

@@ -1,13 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { CreditProduct, ProductCondition, RateMod } from '@sberauto/dictionarydc-proto/public'
 import { ApplicationFrontdc, GetFullApplicationResponse } from '@sberauto/loanapplifecycledc-proto/public'
 import merge from 'lodash/merge'
-
-import { RequiredProduct } from '../../common/OrderCalculator/utils/prepareCreditProductListData'
 
 interface FillingProgress {
   isFilledElementaryClientData?: boolean
   isFilledLoanData?: boolean
 }
+
+export type RequiredProduct = Omit<CreditProduct, 'productId' | 'productName' | 'conditions'> &
+  Required<Pick<CreditProduct, 'productId' | 'productName'>> & {
+    conditions: RequiredProductCondition[]
+  }
+
+export type RequiredProductCondition = Omit<ProductCondition, 'rateMods'> & { rateMods: RequiredRateMods[] }
+
+export type RequiredRateMods = Omit<RateMod, 'optionId' | 'tariffId' | 'requiredService'> &
+  Required<Pick<RateMod, 'optionId' | 'tariffId' | 'requiredService'>>
+
+export type ProductsMap = Record<string, RequiredProduct>
 
 export type Order = {
   currentStep?: number
@@ -19,7 +30,7 @@ export type Order = {
   middleName?: string
   birthDate?: string
   phoneNumber?: string
-  creditProductsList?: RequiredProduct[]
+  productsMap?: ProductsMap
   orderData?: GetFullApplicationResponse | null | undefined
 }
 

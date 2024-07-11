@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { AutocompleteRenderInputParams, Collapse, DialogContentText } from '@mui/material'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { InputAdornment } from '@mui/material'
-import { Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { Vendor } from '@sberauto/dictionarydc-proto/public'
 import cx from 'classnames'
 import { useNavigate } from 'react-router-dom'
 

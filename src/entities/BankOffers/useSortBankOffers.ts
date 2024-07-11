@@ -3,9 +3,9 @@ import { useCallback, useMemo, useState } from 'react'
 import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 
 import { HeaderCellKey, SortOrder } from './BankOffers.config'
-import { sortBankOffersByCasco, sortBankOffersByNumber, sortBankOffersByString } from './BankOffers.utils'
+import { sortBankOffersByNumber, sortBankOffersByString } from './BankOffers.utils'
 
-const DEFAULT_SORT = new Map([[HeaderCellKey.MonthlyPayment, SortOrder.Asc]])
+const DEFAULT_SORT = new Map([[HeaderCellKey.MONTHLY_PAYMENT, SortOrder.ASC]])
 
 export function useSortBankOffers(data: CalculatedProduct[]) {
   const [sortParams, setSortParams] = useState<Map<HeaderCellKey, SortOrder>>(DEFAULT_SORT)
@@ -16,21 +16,19 @@ export function useSortBankOffers(data: CalculatedProduct[]) {
         .reverse()
         .reduce((acc, [curKey, kurValue]) => {
           switch (curKey) {
-            case HeaderCellKey.ProductName: {
+            case HeaderCellKey.PRODUCT_NAME: {
               return sortBankOffersByString(acc, 'productName', kurValue)
             }
-            case HeaderCellKey.MonthlyPayment: {
+            case HeaderCellKey.MONTHLY_PAYMENT: {
               return sortBankOffersByNumber(acc, 'monthlyPayment', kurValue)
             }
-            case HeaderCellKey.Overpayment: {
+            case HeaderCellKey.OVERPAYMENT: {
               return sortBankOffersByNumber(acc, 'overpayment', kurValue)
             }
-            case HeaderCellKey.CurrentRate: {
+            case HeaderCellKey.CURRENT_RATE: {
               return sortBankOffersByNumber(acc, 'currentRate', kurValue)
             }
-            case HeaderCellKey.CascoFlag: {
-              return sortBankOffersByCasco(acc, kurValue)
-            }
+
             default:
               return acc
           }
@@ -47,18 +45,18 @@ export function useSortBankOffers(data: CalculatedProduct[]) {
       // const newSortParams = new Map(sortParams)
 
       switch (currentHeaderCell) {
-        case SortOrder.Asc: {
+        case SortOrder.ASC: {
           // newSortParams.delete(headerCell) // включить для сложной сортировки
-          newSortParams.set(headerCell, SortOrder.Desc)
+          newSortParams.set(headerCell, SortOrder.DESC)
           break
         }
-        case SortOrder.Desc: {
+        case SortOrder.DESC: {
           // newSortParams.delete(headerCell) // включить для сложной сортировки
-          newSortParams.set(headerCell, SortOrder.Asc) // удалить для сложной сортировки
+          newSortParams.set(headerCell, SortOrder.ASC) // удалить для сложной сортировки
           break
         }
         default: {
-          newSortParams.set(headerCell, SortOrder.Asc)
+          newSortParams.set(headerCell, SortOrder.ASC)
           break
         }
       }

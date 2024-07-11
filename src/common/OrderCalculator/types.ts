@@ -1,7 +1,8 @@
-import { Car, OptionID } from '@sberauto/dictionarydc-proto/public'
+import { Car, CreditProduct } from '@sberauto/dictionarydc-proto/public'
 import { DocType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ProductsMap, RequiredProduct } from 'entities/reduxStore/orderSlice'
 
 export enum FormFieldNameMap {
   carCondition = 'carCondition', //Состояние
@@ -27,12 +28,11 @@ export enum FormFieldNameMap {
   legalPersonCode = 'legalPersonCode', //Юридическое лицо (код или id)
   legalPersonName = 'legalPersonName', // Название юридического лица
   loanAmount = 'loanAmount', //Сумма кредита
-  taxValue = 'taxValue', //НДС вендора
-  taxPercent = 'taxPercent', //НДС вендора в %
+  taxValue = 'taxValue', //НДС вендора или брокера
+  taxPercent = 'taxPercent', //НДС вендора или брокера в %
   providerTaxValue = 'providerTaxValue', //НДС страховой компании или поставщика доп. услуги дилера
   providerTaxPercent = 'providerTaxPercent', //НДС страховой компании или поставщика доп. услуги дилера в %
   agentTaxValue = 'agentTaxValue', //НДС агента доп. услуги дилера
-  agentTaxPercent = 'agentTaxPercent', //НДС агента доп. услуги дилера в %
   beneficiaryBank = 'beneficiaryBank', //Банк получатель денежных средств
   bankAccountNumber = 'bankAccountNumber', //Расчетный счет
   documentType = 'documentType', //Тип документа
@@ -43,8 +43,8 @@ export enum FormFieldNameMap {
   taxation = 'taxation', //Налог
   provider = 'provider', //Страховая компания или поставщик (code или id)
   providerName = 'providerName', //Страховая компания или поставщик (название)
-  agent = 'agent', //Агент получатель (code или id)
-  agentName = 'agentName', //Агент получатель (название)
+  broker = 'broker', //Агент получатель (code или id)
+  brokerName = 'brokerName', //Агент получатель (название)
   isCustomFields = 'isCustomFields', //Ручной ввод
   commonError = 'commonError',
   isExceededServicesTotalLimit = 'isExceededServicesTotalLimit',
@@ -58,13 +58,23 @@ export enum FormFieldNameMap {
   inn = 'inn',
   ogrn = 'ogrn',
   kpp = 'kpp',
+  tariff = 'tariff',
 }
 
 export interface OrderCalculatorAdditionalService {
-  [FormFieldNameMap.productType]: OptionID | null
+  [FormFieldNameMap.productType]: string | null
   [FormFieldNameMap.productCost]: string
   [FormFieldNameMap.isCredit]: boolean
-  [FormFieldNameMap.cascoLimit]?: string
+  [FormFieldNameMap.cascoLimit]: string
+}
+
+export interface OrderCalculatorBankAdditionalService
+  extends Omit<
+    OrderCalculatorAdditionalService,
+    `${FormFieldNameMap.isCredit}` | `${FormFieldNameMap.cascoLimit}`
+  > {
+  [FormFieldNameMap.tariff]: string | null
+  [FormFieldNameMap.loanTerm]: number | null
 }
 
 export interface OrderCalculatorAdditionalServiceDocInfo {
@@ -90,23 +100,39 @@ export interface FullInitialAdditionalEquipments
   extends OrderCalculatorAdditionalService,
     OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
-  [FormFieldNameMap.legalPersonCode]: string
-  [FormFieldNameMap.legalPersonName]: string | undefined
-  [FormFieldNameMap.taxValue]: number | null
-  [FormFieldNameMap.taxPercent]: number | null
+  [FormFieldNameMap.broker]: string | null
+  [FormFieldNameMap.brokerName]?: string
+  [FormFieldNameMap.taxValue]?: number
+  [FormFieldNameMap.taxPercent]?: number
 }
 
 export interface FullInitialAdditionalService
   extends OrderCalculatorAdditionalService,
     OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
-  [FormFieldNameMap.provider]: string
-  [FormFieldNameMap.providerName]: string | undefined
-  [FormFieldNameMap.agent]: string
-  [FormFieldNameMap.agentName]: string | undefined
-  [FormFieldNameMap.loanTerm]: number | undefined
-  [FormFieldNameMap.agentTaxValue]: number | null
-  [FormFieldNameMap.agentTaxPercent]: number | null
+  [FormFieldNameMap.provider]: string | null
+  [FormFieldNameMap.providerName]?: string
+  [FormFieldNameMap.broker]: string | null
+  [FormFieldNameMap.brokerName]?: string
+  [FormFieldNameMap.loanTerm]: number | null
+  [FormFieldNameMap.taxValue]?: number
+  [FormFieldNameMap.taxPercent]?: number
+}
+
+export interface FullInitialBankAdditionalService extends OrderCalculatorBankAdditionalService {
+  [FormFieldNameMap.provider]: string | null
+  [FormFieldNameMap.providerName]?: string
+  [FormFieldNameMap.broker]?: string
+  [FormFieldNameMap.brokerName]?: string
+  [FormFieldNameMap.taxValue]?: number
+  [FormFieldNameMap.taxPercent]?: number
+  [FormFieldNameMap.bankAccountNumber]?: string
+  [FormFieldNameMap.correspondentAccount]?: string
+  [FormFieldNameMap.beneficiaryBank]?: string
+  [FormFieldNameMap.bankIdentificationCode]?: string
+  [FormFieldNameMap.inn]?: string
+  [FormFieldNameMap.ogrn]?: string
+  [FormFieldNameMap.kpp]?: string
 }
 
 export interface CommonError {
@@ -129,16 +155,16 @@ export interface BriefOrderCalculatorFields {
   [FormFieldNameMap.carCondition]: number
   [FormFieldNameMap.carBrand]: string | null
   [FormFieldNameMap.carModel]: string | null
-  [FormFieldNameMap.carYear]: number | undefined
+  [FormFieldNameMap.carYear]: number | null
   [FormFieldNameMap.carCost]: string
   [FormFieldNameMap.carMileage]: string
-  [FormFieldNameMap.creditProduct]: string
+  [FormFieldNameMap.creditProduct]: string | null
   [FormFieldNameMap.initialPayment]: string
   [FormFieldNameMap.initialPaymentPercent]: string
-  [FormFieldNameMap.loanTerm]: number | string
+  [FormFieldNameMap.loanTerm]: number | null
   [ServicesGroupName.additionalEquipments]: OrderCalculatorAdditionalService[]
   [ServicesGroupName.dealerAdditionalServices]: OrderCalculatorAdditionalService[]
-  [ServicesGroupName.bankAdditionalServices]: OrderCalculatorAdditionalService[]
+  [ServicesGroupName.bankAdditionalServices]: OrderCalculatorBankAdditionalService[]
   [FormFieldNameMap.commonError]: CommonError
   [FormFieldNameMap.validationParams]: ValidationParams
 }
@@ -151,21 +177,21 @@ export interface FullOrderCalculatorFields
       | ServicesGroupName.dealerAdditionalServices
       | ServicesGroupName.bankAdditionalServices
     > {
-  [FormFieldNameMap.carPassportType]: null
+  [FormFieldNameMap.carPassportType]: number | null
   [FormFieldNameMap.carPassportId]: string
   [FormFieldNameMap.carPassportCreationDate]: Date | null
-  [FormFieldNameMap.carIdType]: null
+  [FormFieldNameMap.carIdType]: number | null
   [FormFieldNameMap.carId]: string
   [FormFieldNameMap.salesContractId]: string
   [FormFieldNameMap.salesContractDate]: Date | null
-  [FormFieldNameMap.legalPersonCode]: string
-  [FormFieldNameMap.legalPersonName]: string | undefined
+  [FormFieldNameMap.legalPersonCode]?: string
+  [FormFieldNameMap.legalPersonName]?: string
   [FormFieldNameMap.loanAmount]: string
-  [FormFieldNameMap.taxValue]: number | null
-  [FormFieldNameMap.taxPercent]: number | null
+  [FormFieldNameMap.taxValue]?: number
+  [FormFieldNameMap.taxPercent]?: number
   [ServicesGroupName.additionalEquipments]: FullInitialAdditionalEquipments[]
   [ServicesGroupName.dealerAdditionalServices]: FullInitialAdditionalService[]
-  [ServicesGroupName.bankAdditionalServices]: FullInitialAdditionalService[]
+  [ServicesGroupName.bankAdditionalServices]: FullInitialBankAdditionalService[]
 }
 
 export type FormMessages = {
@@ -212,4 +238,31 @@ export interface NormalizedCar extends Car {
 export type NormalizedCars = {
   newCars: Record<string, NormalizedCar>
   usedCars: Record<string, NormalizedCar>
+}
+
+export type UseGetCreditProductListQueryData = {
+  products: RequiredProduct[]
+  productsMap: ProductsMap
+  fullDownpaymentMin?: number
+  fullDownpaymentMax?: number
+  fullDurationMin?: number
+  fullDurationMax?: number
+  creditProducts?: CreditProduct[] | null
+}
+
+export interface InitialPaymentData {
+  minInitialPaymentPercent: number
+  maxInitialPaymentPercent: number
+  minInitialPayment: number
+  maxInitialPayment: number
+}
+
+export interface CreditProductsData {
+  creditProductListData: UseGetCreditProductListQueryData | undefined
+  currentProduct: RequiredProduct | undefined
+}
+
+export interface CreditDurationData {
+  currentDurationMin: number | undefined
+  currentDurationMax: number | undefined
 }

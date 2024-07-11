@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react'
 
-import { ApplicationFrontdc, StatusCode, Vendor } from '@sberauto/loanapplifecycledc-proto/public'
+import { Vendor } from '@sberauto/dictionarydc-proto/public'
+import { ApplicationFrontdc, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter } from 'react-router-dom'

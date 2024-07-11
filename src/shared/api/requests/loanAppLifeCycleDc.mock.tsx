@@ -88,7 +88,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
           houseExt: '5',
           unit: 'ж',
           unitNum: '174',
-          office: undefined,
         },
         {
           type: 2,
@@ -108,7 +107,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
           houseExt: '5',
           unit: 'ж',
           unitNum: '174',
-          office: undefined,
         },
         {
           type: 4,
@@ -127,7 +125,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
           house: '17',
           houseExt: '5',
           unit: 'ж',
-          unitNum: undefined,
           office: '15',
         },
       ],
@@ -151,7 +148,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
       tabNumActual: 'employee№1',
     },
     loanCar: {
-      isCarNew: true,
+      isCarNew: false,
       autoCreateYear: 2021,
       mileage: '9',
       brand: 'Skoda',
@@ -186,11 +183,8 @@ export const fullApplicationData: GetFullApplicationResponse = {
       termsLoanCode: 2,
       productRates: {
         baseRate: 7.55,
-        baseRateNew: 2.55,
-        baseRateOld: 5.55,
-        rateGrntyPeriod: '2',
+        rateGrntyPeriod: 2,
         rateNewGrnty: 54.55,
-        rateOldGrnty: 2.55,
         rateNonGrnty: 7.55,
         rateDiscountCpi: 1.35,
       },
@@ -199,12 +193,11 @@ export const fullApplicationData: GetFullApplicationResponse = {
       amountWithoutOptions: 3242.2342,
       additionalOptions: [
         {
-          type: OptionType.EQUIPMENT,
+          type: '2',
           name: 'Ароматная елочка',
           vendor: {
             vendorCode: '123',
             vendorName: 'Arex',
-            address: 'Г Москва ул. Собаки баскервилей д7',
             requisites: {
               accountRequisite: {
                 accountNumber: '40702810038000017241',
@@ -225,7 +218,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
           broker: {
             vendorCode: '123234',
             vendorName: 'Arex2',
-            address: 'Г Москва ул. Собаки баскервилей д7',
             requisites: {
               accountRequisite: {
                 accountNumber: '40702810038000017241',
@@ -249,11 +241,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           tariff: 'string',
           term: 36,
           bankOptionType: OptionType.EQUIPMENT,
-          cascoType: false,
-          franchise: false,
           cascoLimit: 0,
-          minDateOfBirth: '2000-01-01',
-          minDriveExp: 5,
           docType: DocType.INSURANCE_POLICY,
           certNumber: 'ув3а3а3а3м3',
           docNumber: '32ук23к22',
@@ -262,12 +250,11 @@ export const fullApplicationData: GetFullApplicationResponse = {
           dateEnd: '2025-04-23',
         },
         {
-          type: OptionType.DEALER,
+          type: '1',
           name: 'ОСАГО',
           vendor: {
             vendorCode: '123',
             vendorName: 'РосГосСтрах',
-            address: 'Г Москва ул. Собаки баскервилей д7',
             requisites: {
               accountRequisite: {
                 accountNumber: '40702810038000017241',
@@ -288,7 +275,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
           broker: {
             vendorCode: '123234',
             vendorName: 'Почта Банк',
-            address: 'Г Москва ул. Собаки баскервилей д7',
             requisites: {
               accountRequisite: {
                 accountNumber: '40702810038000017241',
@@ -312,11 +298,7 @@ export const fullApplicationData: GetFullApplicationResponse = {
           tariff: 'string',
           term: 24,
           bankOptionType: OptionType.DEALER,
-          cascoType: false,
-          franchise: false,
           cascoLimit: 0,
-          minDateOfBirth: '2011-01-01',
-          minDriveExp: 4,
           docType: DocType.INSURANCE_POLICY,
           certNumber: 'ув3а3а3а3м3',
           docNumber: 'gfdgsdfgf',
@@ -335,7 +317,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
       riskCode: '202/e',
       unit: undefined,
       netCode: '200223',
-      address: 'Г Счастья ул радости дом 7',
       broker: {
         vendorCode: '2000000',
         vendorName: 'Юр лицо Сармата',

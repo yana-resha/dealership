@@ -5,14 +5,16 @@ import {
   GetVendorOptionsListRequest,
   createDictionaryDc,
   OptionType,
-  OptionID,
   GetRequisitesForFinancingRequest,
+  CalculateCreditResponse,
+  GetVendorsListRequest,
+  RequiredServiceFlag,
 } from '@sberauto/dictionarydc-proto/public'
 import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
-import { Rest } from 'shared/api/client'
-import { prepareOptionId, prepareOptionType } from 'shared/lib/helpers'
+import { CustomFetchError, Rest } from 'shared/api/client'
+import { prepareOptionType, prepareRequiredServiceFlag } from 'shared/lib/helpers'
 
 import { Service } from '../constants'
 
@@ -29,17 +31,36 @@ export const getVendorOptionsList = (params: GetVendorOptionsListRequest) =>
     const additionalOptions = response.data.additionalOptions?.map(el => ({
       ...el,
       optionType: prepareOptionType(el.optionType as unknown as keyof typeof OptionType),
-      optionId: prepareOptionId(el.optionId as unknown as keyof typeof OptionID),
+      optionId: el.optionId,
     }))
 
     return { ...(response.data ?? {}), additionalOptions }
   })
 
 export const calculateCredit = (params: CalculateCreditRequest) =>
-  dictionaryDcApi.calculateCredit({ data: params }).then(res => res.data ?? {})
+  dictionaryDcApi.calculateCredit({ data: params }).then(res => {
+    const data = {
+      ...res.data,
+      products: res.data?.products?.map(product => ({
+        ...product,
+        requiredServiceFlag: prepareRequiredServiceFlag(
+          product.requiredServiceFlag as unknown as keyof typeof RequiredServiceFlag,
+        ),
+      })),
+    }
+
+    return data
+  })
+// .then(res => res.data ?? {})
 
 export const useCalculateCreditMutation = () =>
-  useMutation(['calculateCredit'], (params: CalculateCreditRequest) => calculateCredit(params))
+  useMutation<CalculateCreditResponse, CustomFetchError, CalculateCreditRequest, unknown>(
+    ['calculateCredit'],
+    (params: CalculateCreditRequest) => calculateCredit(params),
+  )
 
 export const getRequisitesForFinancing = (params: GetRequisitesForFinancingRequest) =>
   dictionaryDcApi.getRequisitesForFinancing({ data: params }).then(res => res.data ?? {})
+
+export const getVendorsList = (params: GetVendorsListRequest) =>
+  dictionaryDcApi.getVendorsList({ data: params }).then(response => response.data ?? {})

@@ -36,6 +36,14 @@ const serviceErrors: ServiceErrors = {
       default: 'Ошибка. Не удалось отправить решение',
     },
   },
+  [Service.Dictionarydc]: {
+    [ServiceApi.CALCULATE_CREDIT]: {
+      [ErrorCode.NotFound]: 'Подходящие кредитные продукты не найдены. Попробуйте изменить параметры кредита',
+    },
+    [ServiceApi.GET_CREDIT_PRODUCT_LIST]: {
+      [ErrorCode.NotFound]: 'Подходящие кредитные продукты не найдены. Попробуйте изменить параметры Авто',
+    },
+  },
 }
 /* В случае, если кода ошибки недостаточно, чтобы получить описание ошибки
 (например одна и таже ручка возвращает InvalidArgument по различным ошибкам),

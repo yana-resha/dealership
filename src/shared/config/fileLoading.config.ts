@@ -17,4 +17,6 @@ export const FILE_SHORT_NAME_MAP = {
   [DocumentType.PDN_NOTIFICATION_FORM]: 'Уведомление о ПДН',
   [DocumentType.ADD_OPTIONS_APPLICATION]: 'Заявление на ДУ',
   [DocumentType.ADD_OPTIONS_NOTIFICATION]: 'Уведомление о ДУ',
+  [DocumentType.PATH_PROTECTION]: 'Пакет Защита в пути',
+  [DocumentType.MULTIPOLIS]: 'Пакет Мультиполис',
 }

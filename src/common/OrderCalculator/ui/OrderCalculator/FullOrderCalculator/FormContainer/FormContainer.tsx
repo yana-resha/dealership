@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { Form, useFormikContext } from 'formik'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProducts'
 import { useFormChanging } from 'common/OrderCalculator/hooks/useFormChanging'
+import { useScrollToOrderSettingsArea } from 'common/OrderCalculator/hooks/useScrollToOrderSettingsArea'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import {
   RequisitesForFinancing,
@@ -25,6 +25,8 @@ type Props = {
   remapApplicationValues: (values: FullOrderCalculatorFields) => void
   isDisabledFormSubmit: boolean
   enableFormSubmit: () => void
+  creditProductId: string | undefined
+  resetCreditProductId: () => void
 }
 
 export function FormContainer({
@@ -34,24 +36,29 @@ export function FormContainer({
   remapApplicationValues,
   isDisabledFormSubmit,
   enableFormSubmit,
+  creditProductId,
+  resetCreditProductId,
 }: Props) {
   const { values } = useFormikContext<FullOrderCalculatorFields>()
   const { vendorCode } = getPointOfSaleFromCookies()
   useScrollToErrorField()
+  const orderSettingsAreaRef = useScrollToOrderSettingsArea(creditProductId)
 
   const [requisites, setRequisites] = useState<RequisitesForFinancing | undefined>()
 
-  const additionalOptionsIds = useMemo(
-    () =>
-      [...values.bankAdditionalServices, ...values.dealerAdditionalServices]
-        .map(s => s.productType)
-        .filter(s => !!s) as OptionID[],
-    [values.bankAdditionalServices, values.dealerAdditionalServices],
-  )
   const additionalEquipmentsIds = useMemo(
-    () => [...values.additionalEquipments].map(s => s.productType).filter(s => !!s) as OptionID[],
+    () => values.additionalEquipments.map(s => s.productType).filter(s => !!s) as string[],
     [values.additionalEquipments],
   )
+  const additionalOptionsIds = useMemo(
+    () => values.dealerAdditionalServices.map(s => s.productType).filter(s => !!s) as string[],
+    [values.dealerAdditionalServices],
+  )
+  const bankAdditionalOptionsIds = useMemo(
+    () => values.bankAdditionalServices.map(s => s.productType).filter(s => !!s) as string[],
+    [values.bankAdditionalServices],
+  )
+
   const {
     data: requisitesData,
     isError: isRequisitesQueryError,
@@ -59,8 +66,9 @@ export function FormContainer({
     isSuccess: isRequisitesQuerySuccess,
   } = useRequisitesForFinancingQuery({
     vendorCode,
+    additionalEquipment: additionalEquipmentsIds,
     additionalOptions: additionalOptionsIds,
-    additionalEquipments: additionalEquipmentsIds,
+    bankOptions: bankAdditionalOptionsIds,
   })
 
   const isRequisitesFetched = !isRequisitesQueryLoading && requisitesData === requisites
@@ -131,6 +139,8 @@ export function FormContainer({
     shouldFetchProductsOnStart,
     formFields,
     initialValueMap: fullInitialValueMap,
+    creditProductId,
+    resetCreditProductId,
   })
   useFormChanging({ remapApplicationValues, onChangeForm, enableFormSubmit })
 
@@ -143,6 +153,7 @@ export function FormContainer({
           isLoading={isLoading}
         />
         <OrderSettingsArea
+          ref={orderSettingsAreaRef}
           disabled={!shouldShowOrderSettings}
           disabledSubmit={isRequisitesQueryLoading || isDisabledFormSubmit}
           isSubmitLoading={isSubmitLoading}

@@ -6,13 +6,14 @@ import useStyles from './SquareBtn.styles'
 
 type Props = {
   onClick: () => void
+  disabled?: boolean
 }
 
-export const CloseSquareBtn = ({ onClick }: Props) => {
+export const CloseSquareBtn = ({ onClick, disabled = false }: Props) => {
   const classes = useStyles()
 
   return (
-    <SquareBtn onClick={onClick} testId="closeSquareBtn">
+    <SquareBtn onClick={onClick} disabled={disabled} testId="closeSquareBtn">
       <CartIcon className={classes.btnIcon} />
     </SquareBtn>
   )

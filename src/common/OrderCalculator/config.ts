@@ -12,11 +12,14 @@ import {
   ValidationParams,
   OrderCalculatorAdditionalServiceDocInfo,
   AutoCategory,
+  OrderCalculatorBankAdditionalService,
+  FullInitialBankAdditionalService,
 } from './types'
 
 export const CAR_YEARS_LENGTH = 20
 const CAR_YEARS_LENGTH_FOR_NEW_CAR = 2
 export const MIN_LOAN_YEAR_TERM = 1
+export const CASCO_OPTION_ID = '15'
 
 export function getCarYears(isNewCar = false) {
   const currentYear = new Date().getFullYear()
@@ -62,9 +65,17 @@ export const INITIAL_CAR_ID_TYPE = [
 ]
 
 export const INITIAL_ADDITIONAL_SERVICE: OrderCalculatorAdditionalService = {
-  productType: null,
-  productCost: '',
-  isCredit: false,
+  [FormFieldNameMap.productType]: null,
+  [FormFieldNameMap.productCost]: '',
+  [FormFieldNameMap.isCredit]: false,
+  [FormFieldNameMap.cascoLimit]: '',
+}
+
+export const INITIAL_BANK_ADDITIONAL_SERVICE: OrderCalculatorBankAdditionalService = {
+  [FormFieldNameMap.productType]: null,
+  [FormFieldNameMap.productCost]: '',
+  [FormFieldNameMap.loanTerm]: null,
+  [FormFieldNameMap.tariff]: null,
 }
 
 export const INITIAL_ADDITIONAL_SERVICE_DOC_INFO: OrderCalculatorAdditionalServiceDocInfo = {
@@ -73,7 +84,7 @@ export const INITIAL_ADDITIONAL_SERVICE_DOC_INFO: OrderCalculatorAdditionalServi
   [FormFieldNameMap.documentDate]: null,
 }
 
-const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
+export const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
   [FormFieldNameMap.bankIdentificationCode]: '',
   [FormFieldNameMap.beneficiaryBank]: '',
   [FormFieldNameMap.bankAccountNumber]: '',
@@ -86,24 +97,22 @@ const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
 export const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments = {
   ...INITIAL_ADDITIONAL_SERVICE,
   ...INITIAL_ADDITIONAL_SERVICE_DOC_INFO,
-  [FormFieldNameMap.legalPersonCode]: '',
-  [FormFieldNameMap.legalPersonName]: undefined,
-  [FormFieldNameMap.taxValue]: null,
-  [FormFieldNameMap.taxPercent]: null,
   ...INITIAL_BANK_DETAILS_VALUE,
+  [FormFieldNameMap.broker]: null,
 }
 
 export const FULL_INITIAL_ADDITIONAL_SERVICE: FullInitialAdditionalService = {
   ...INITIAL_ADDITIONAL_SERVICE,
   ...INITIAL_ADDITIONAL_SERVICE_DOC_INFO,
-  [FormFieldNameMap.provider]: '',
-  [FormFieldNameMap.providerName]: undefined,
-  [FormFieldNameMap.agent]: '',
-  [FormFieldNameMap.agentName]: undefined,
-  [FormFieldNameMap.loanTerm]: undefined,
-  [FormFieldNameMap.agentTaxValue]: null,
-  [FormFieldNameMap.agentTaxPercent]: null,
+  [FormFieldNameMap.provider]: null,
+  [FormFieldNameMap.broker]: null,
+  [FormFieldNameMap.loanTerm]: null,
   ...INITIAL_BANK_DETAILS_VALUE,
+}
+
+export const FULL_INITIAL_BANK_ADDITIONAL_SERVICE: FullInitialBankAdditionalService = {
+  ...INITIAL_BANK_ADDITIONAL_SERVICE,
+  [FormFieldNameMap.provider]: null,
 }
 
 const INITIAL_COMMON_ERROR: CommonError = {
@@ -125,13 +134,13 @@ export const initialValueMap: BriefOrderCalculatorFields = {
   [FormFieldNameMap.carYear]: getCarYears(!!initialCarCondition)[0].value,
   [FormFieldNameMap.carCost]: '',
   [FormFieldNameMap.carMileage]: '',
-  [FormFieldNameMap.creditProduct]: '',
+  [FormFieldNameMap.creditProduct]: null,
   [FormFieldNameMap.initialPayment]: '',
   [FormFieldNameMap.initialPaymentPercent]: '',
-  [FormFieldNameMap.loanTerm]: '',
+  [FormFieldNameMap.loanTerm]: null,
   [ServicesGroupName.additionalEquipments]: [INITIAL_ADDITIONAL_SERVICE],
   [ServicesGroupName.dealerAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
-  [ServicesGroupName.bankAdditionalServices]: [INITIAL_ADDITIONAL_SERVICE],
+  [ServicesGroupName.bankAdditionalServices]: [INITIAL_BANK_ADDITIONAL_SERVICE],
   [FormFieldNameMap.commonError]: INITIAL_COMMON_ERROR,
   [FormFieldNameMap.validationParams]: INITIAL_VALIDATION_PARAMS,
 }
@@ -145,15 +154,11 @@ export const fullInitialValueMap: FullOrderCalculatorFields = {
   [FormFieldNameMap.carId]: '',
   [FormFieldNameMap.salesContractId]: '',
   [FormFieldNameMap.salesContractDate]: null,
-  [FormFieldNameMap.legalPersonCode]: '',
-  [FormFieldNameMap.legalPersonName]: undefined,
   [FormFieldNameMap.loanAmount]: '',
-  [FormFieldNameMap.taxValue]: null,
-  [FormFieldNameMap.taxPercent]: null,
   ...INITIAL_BANK_DETAILS_VALUE,
   [ServicesGroupName.additionalEquipments]: [FULL_INITIAL_ADDITIONAL_EQUIPMENTS],
   [ServicesGroupName.dealerAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],
-  [ServicesGroupName.bankAdditionalServices]: [FULL_INITIAL_ADDITIONAL_SERVICE],
+  [ServicesGroupName.bankAdditionalServices]: [FULL_INITIAL_BANK_ADDITIONAL_SERVICE],
 }
 
 export const formMessages = {

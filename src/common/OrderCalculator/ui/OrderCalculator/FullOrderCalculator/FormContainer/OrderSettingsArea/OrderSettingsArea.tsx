@@ -1,18 +1,27 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 
 import { Box } from '@mui/material'
 import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
+import { FULL_INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/constants'
-import { useGetVendorOptionsQuery } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
-import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
+import {
+  BankAdditionalOption,
+  useGetVendorOptionsQuery,
+} from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+import { useRequiredService } from 'common/OrderCalculator/hooks/useRequiredService'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { checkIsNumber } from 'shared/lib/helpers'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 
+import { useCreditProductsData } from '../../../../../hooks/useCreditProductsData'
+import { useCreditProductsLimits } from '../../../../../hooks/useCreditProductsLimits'
+import { useCreditProductsTerms } from '../../../../../hooks/useCreditProductsTerms'
+import { useCreditProductsValidations } from '../../../../../hooks/useCreditProductsValidations'
+import { AdditionalBankService } from './AdditionalBankService/AdditionalBankService'
 import { AdditionalEquipment } from './AdditionalEquipment/AdditionalEquipment'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
 import { CommonOrderSettings } from './CommonOrderSettings/CommonOrderSettings'
@@ -24,15 +33,42 @@ type Props = {
   disabledSubmit: boolean
 }
 
-export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }: Props) {
+export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, disabledSubmit }: Props, ref) => {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
   const {
     data: vendorOptions,
     isLoading: isVendorOptionsLoading,
     isSuccess: isVendorOptionsSuccess,
-  } = useGetVendorOptionsQuery({
-    vendorCode,
+  } = useGetVendorOptionsQuery({ vendorCode })
+
+  const {
+    initialPaymentData,
+    creditProductsData,
+    creditDurationData,
+    durationMaxFromAge,
+    isGetCarsLoading,
+    isGetCarsSuccess,
+    clientAge,
+    isLoading: isLimitsLoading,
+    isSuccess: isLimitsSuccess,
+    isLoadedCreditProducts,
+  } = useCreditProductsData(vendorCode)
+  const { creditProducts, initialPaymentHelperText, initialPaymentPercentHelperText } =
+    useCreditProductsLimits(
+      initialPaymentData,
+      creditProductsData,
+      durationMaxFromAge,
+      isGetCarsLoading,
+      isGetCarsSuccess,
+    )
+  const { loanTerms } = useCreditProductsTerms(creditDurationData, creditProductsData, durationMaxFromAge)
+  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(initialPaymentData)
+  const { selectedRequiredOptionsMap } = useRequiredService({
+    creditProductsData,
+    additionalOptionsMap: vendorOptions?.additionalOptionsMap,
+    isVendorOptionsSuccess,
+    initialBankAdditionalService: FULL_INITIAL_BANK_ADDITIONAL_SERVICE,
   })
 
   const additionalEquipments = useMemo(
@@ -56,17 +92,32 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
     [vendorOptions?.additionalOptions],
   )
 
-  const {
-    creditProducts,
-    initialPaymentHelperText,
-    initialPaymentPercentHelperText,
-    loanTerms,
-    commonErrors,
-    isNecessaryCasco,
-    isLoadedCreditProducts,
-    isLoading: isLimitsLoading,
-    isSuccess: isLimitsSuccess,
-  } = useLimits(vendorCode)
+  const bankAdditionalServices = useMemo(
+    () =>
+      (vendorOptions?.additionalOptions?.filter(option => {
+        const isBankOption = option.optionType === OptionType.BANK
+
+        // Если clientAge отсутствует, то банковские опции недоступны
+        if (!checkIsNumber(clientAge)) {
+          return false
+        }
+
+        const isValidClientAge = option.tariffs?.some(tariff => {
+          const { minClientAge, maxClientAge } = tariff
+          if (!checkIsNumber(minClientAge) || !checkIsNumber(maxClientAge)) {
+            return false
+          }
+
+          return (
+            (clientAge as number) >= (minClientAge as number) &&
+            (clientAge as number) <= (maxClientAge as number)
+          )
+        })
+
+        return isBankOption && isValidClientAge
+      }) as BankAdditionalOption[]) || [],
+    [clientAge, vendorOptions?.additionalOptions],
+  )
 
   const isSectionLoading = isLimitsLoading || isVendorOptionsLoading
   const isSectionLoaded = !isSectionLoading && isLimitsSuccess && isVendorOptionsSuccess
@@ -87,7 +138,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
       )}
 
       {isSectionLoaded && (
-        <Box className={classes.gridWrapper} data-testid="fullOrderSettingsArea">
+        <Box className={classes.gridWrapper} ref={ref} data-testid="fullOrderSettingsArea">
           <CommonOrderSettings
             disabled={disabled}
             creditProducts={creditProducts}
@@ -98,17 +149,14 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
 
           <AdditionalEquipment options={{ productType: additionalEquipments, loanTerms }} />
           <AdditionalServices
-            title="Дополнительные услуги дилера"
             options={{ productType: dealerAdditionalServices, loanTerms }}
-            name={ServicesGroupName.dealerAdditionalServices}
             isNecessaryCasco={isNecessaryCasco}
             isLoadedCreditProducts={isLoadedCreditProducts}
           />
-          <AdditionalServices
-            title="Дополнительные услуги банка"
-            options={{ productType: [], loanTerms }}
-            name={ServicesGroupName.bankAdditionalServices}
-            disabled
+          <AdditionalBankService
+            additionalServices={bankAdditionalServices}
+            clientAge={clientAge}
+            selectedRequiredOptionsMap={selectedRequiredOptionsMap}
           />
 
           {!!commonErrors.length && (
@@ -139,4 +187,4 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, disabledSubmit }:
       )}
     </CollapsibleFormAreaContainer>
   )
-}
+})

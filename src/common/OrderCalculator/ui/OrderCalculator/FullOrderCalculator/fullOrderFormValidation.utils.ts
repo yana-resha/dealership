@@ -1,12 +1,13 @@
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import * as Yup from 'yup'
 
-import { CAR_PASSPORT_TYPE } from 'common/OrderCalculator/config'
+import { CAR_PASSPORT_TYPE, CASCO_OPTION_ID } from 'common/OrderCalculator/config'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import {
   additionalServiceBaseValidation,
+  bankAdditionalServiceBaseValidation,
   baseFormValidation,
   checkAdditionalEquipmentsLimit,
+  checkBankAdditionalServicesLimit,
   checkDealerAdditionalServicesLimit,
   checkIsLowCascoLimit,
   setRequiredIfNecessaryCasco,
@@ -17,6 +18,7 @@ import { FieldMessages } from 'shared/constants/fieldMessages'
 import {
   bankDetailsFormValidation,
   requiredBankDetailsFormValidation,
+  setRequiredIfHasProductType,
   setRequiredIfInCredit,
 } from './FormContainer/BankDetails/bankDetailsFormValidation.utils'
 
@@ -62,10 +64,14 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     Yup.object().shape({
       ...additionalServiceBaseValidation(checkAdditionalEquipmentsLimit),
 
-      [FormFieldNameMap.documentType]: setRequiredIfInCredit(Yup.string().nullable()),
-      [FormFieldNameMap.documentNumber]: setRequiredIfInCredit(Yup.string()),
+      [FormFieldNameMap.documentType]: setRequiredIfInCredit(
+        Yup.number()
+          .nullable()
+          .test('', FieldMessages.required, (value: number | null | undefined) => value !== 0),
+      ),
+      [FormFieldNameMap.documentNumber]: setRequiredIfInCredit(Yup.string().nullable()),
       [FormFieldNameMap.documentDate]: setRequiredIfInCredit(Yup.string().nullable()),
-      [FormFieldNameMap.legalPersonCode]: setRequiredIfInCredit(Yup.string()),
+      [FormFieldNameMap.broker]: setRequiredIfInCredit(Yup.string().nullable()),
 
       ...bankDetailsFormValidation,
     }),
@@ -76,24 +82,39 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
       ...additionalServiceBaseValidation(checkDealerAdditionalServicesLimit),
 
       [FormFieldNameMap.documentType]: setRequiredIfNecessaryCasco(
-        setRequiredIfInCredit(Yup.string().nullable()),
+        setRequiredIfInCredit(
+          Yup.number()
+            .nullable()
+            .test('', FieldMessages.required, (value: number | null | undefined) => value !== 0),
+        ),
       ),
       [FormFieldNameMap.documentNumber]: setRequiredIfNecessaryCasco(setRequiredIfInCredit(Yup.string())),
       [FormFieldNameMap.documentDate]: setRequiredIfNecessaryCasco(
         setRequiredIfInCredit(Yup.string().nullable()),
       ),
       [FormFieldNameMap.provider]: setRequiredIfInCredit(
-        Yup.string().when([FormFieldNameMap.productType], {
-          is: (productType: string) => productType === `${OptionID.CASCO}`,
-          then: schema => schema.required(FieldMessages.required),
-        }),
+        Yup.string()
+          .nullable()
+          .when([FormFieldNameMap.productType], {
+            is: (productType: string) => productType === CASCO_OPTION_ID,
+            then: schema => schema.required(FieldMessages.required),
+          }),
       ),
-      [FormFieldNameMap.agent]: setRequiredIfInCredit(Yup.string()),
-      [FormFieldNameMap.loanTerm]: setRequiredIfNecessaryCasco(setRequiredIfInCredit(Yup.number())),
+      [FormFieldNameMap.broker]: setRequiredIfInCredit(Yup.string().nullable()),
+      [FormFieldNameMap.loanTerm]: setRequiredIfNecessaryCasco(
+        setRequiredIfInCredit(Yup.number().nullable()),
+      ),
 
       ...bankDetailsFormValidation,
 
       [FormFieldNameMap.cascoLimit]: checkIsLowCascoLimit(Yup.string()),
+    }),
+  ),
+
+  [ServicesGroupName.bankAdditionalServices]: Yup.array().of(
+    Yup.object().shape({
+      ...bankAdditionalServiceBaseValidation(checkBankAdditionalServicesLimit),
+      [FormFieldNameMap.provider]: setRequiredIfHasProductType(Yup.string().nullable()),
     }),
   ),
 })

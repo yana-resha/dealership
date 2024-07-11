@@ -3,6 +3,8 @@ import { useEffect } from 'react'
 import { Dispatch } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 
+import { stringToNumber } from 'shared/utils/stringToNumber'
+
 import { SESSION_STORAGE_TAB_ID } from '../constants'
 import { addTab, removeTab } from '../model/tabsSlice'
 // Экспортируем этот же модуль чтобы можно было в тестах мокать
@@ -66,7 +68,7 @@ export const useTabManagement = () => {
 
   useEffect(() => {
     const saveStrTabId = sessionStorage.getItem(SESSION_STORAGE_TAB_ID)
-    const saveTabId = saveStrTabId ? parseInt(saveStrTabId, 10) : undefined
+    const saveTabId = stringToNumber(saveStrTabId || undefined)
     const tabId = saveTabId || Date.now()
 
     if (!saveTabId) {

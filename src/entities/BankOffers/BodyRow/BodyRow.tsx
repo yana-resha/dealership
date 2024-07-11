@@ -41,6 +41,8 @@ export const BodyRow = ({ row, onClick }: Props) => {
         overpayment: row.overpayment,
         servicesInCreditPrice: row.servicesInCreditPrice,
         equipmentInCreditPrice: row.equipmentInCreditPrice,
+        bankOptionsInCreditPrice: row.bankOptionsInCreditPrice,
+        pskPrc: row.pskPrc,
       })
       if (blob) {
         return new File(
@@ -60,19 +62,19 @@ export const BodyRow = ({ row, onClick }: Props) => {
           key={cell.name}
           align="left"
           className={classes.bodyCell}
-          onClick={cell.type === TableCellType.Icon ? () => null : () => onClick(row)}
+          onClick={cell.type === TableCellType.ICON ? () => null : () => onClick(row)}
         >
           <>
-            {cell.type === TableCellType.Icon && cell.name === HeaderCellKey.IncomeFlag && <ButtonsCell />}
+            {cell.type === TableCellType.ICON && cell.name === HeaderCellKey.INCOME_FLAG && <ButtonsCell />}
 
-            {cell.type === TableCellType.Icon && cell.name === HeaderCellKey.Attachment && (
+            {cell.type === TableCellType.ICON && cell.name === HeaderCellKey.ATTACHMENT && (
               <Downloader
                 onDownloadFile={async () => await handleAttachmentClick(row)}
                 icon={<ScheduleIcon />}
               />
             )}
 
-            {cell.type !== TableCellType.Icon && cell.value}
+            {cell.type !== TableCellType.ICON && cell.value}
           </>
         </TableCell>
       ))}

@@ -4,7 +4,11 @@ import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
-import { FullInitialAdditionalEquipments, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import {
+  FormFieldNameMap,
+  FullInitialAdditionalEquipments,
+  FullOrderCalculatorFields,
+} from 'common/OrderCalculator/types'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -34,7 +38,7 @@ type Props = {
   parentName: ServicesGroupName
   isRequisiteEditable: boolean
   productOptions?: {
-    value: string | number
+    value: string
     label: string
   }[]
   arrayHelpers?: ArrayHelpers
@@ -55,7 +59,7 @@ export function AdditionalEquipmentRequisites({
 }: Props) {
   const classes = useStyles()
   const { values } = useFormikContext<FullOrderCalculatorFields>()
-  const { productType, legalPersonCode, beneficiaryBank, taxPresence, productCost, isCredit } = equipmentItem
+  const { productType, broker, beneficiaryBank, taxPresence, productCost, isCredit } = equipmentItem
   const [isCustomFields, setCustomFields] = useState(false)
   const { requisites, isRequisitesFetched } = useRequisitesContext()
 
@@ -75,23 +79,23 @@ export function AdditionalEquipmentRequisites({
     options: productOptions,
   })
 
-  const { brokerOptions, banksOptions, currentBank, accountNumberOptions } = useAdditionalEquipmentRequisites(
-    {
+  const { brokerOptions, currentBroker, banksOptions, currentBank, accountNumberOptions } =
+    useAdditionalEquipmentRequisites({
       isCustomFields,
       isRequisitesFetched,
       namePrefix,
       beneficiaryBank,
       productType,
       requisites,
-      legalPersonCode,
+      broker,
       productCost,
       isCredit,
-    },
-  )
+    })
 
   const { toggleTaxInPercentField, resetInitialValues, clearFieldsForManualEntry } = useRequisites({
     namePrefix,
     values: equipmentItem,
+    currentBroker,
     currentBank,
     isCustomFields,
     isRequisitesFetched,
@@ -155,7 +159,7 @@ export function AdditionalEquipmentRequisites({
       {isCredit && (
         <>
           <SelectInputFormik
-            name={`${namePrefix}legalPersonCode`}
+            name={namePrefix + FormFieldNameMap.broker}
             label="Юридическое лицо"
             placeholder="-"
             options={brokerOptions}

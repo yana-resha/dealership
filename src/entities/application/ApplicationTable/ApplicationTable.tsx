@@ -13,7 +13,7 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import cx from 'classnames'
 
 import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
-import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
+import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
 import { convertedDateToString } from 'shared/utils/dateTransform'

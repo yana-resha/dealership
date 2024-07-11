@@ -28,7 +28,7 @@ describe('useSortBankOffers', () => {
       wrapper: MockProviders,
     })
 
-    result.current.handleSortBtnClick(HeaderCellKey.Overpayment)
+    result.current.handleSortBtnClick(HeaderCellKey.OVERPAYMENT)
     expect(result.current.sortedData).toMatchObject([
       mockedCalculatedProducts[2],
       mockedCalculatedProducts[1],
@@ -44,8 +44,8 @@ describe('useSortBankOffers', () => {
       wrapper: MockProviders,
     })
 
-    result.current.handleSortBtnClick(HeaderCellKey.Overpayment)
-    result.current.handleSortBtnClick(HeaderCellKey.Overpayment)
+    result.current.handleSortBtnClick(HeaderCellKey.OVERPAYMENT)
+    result.current.handleSortBtnClick(HeaderCellKey.OVERPAYMENT)
     expect(result.current.sortedData).toMatchObject(
       [
         mockedCalculatedProducts[2],

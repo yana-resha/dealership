@@ -1893,7 +1893,7 @@
 "@jridgewell/resolve-uri@^3.1.0":
   version "3.1.1"
   resolved "https://nexus.x.sberauto.com/repository/npm/@jridgewell/resolve-uri/-/resolve-uri-3.1.1.tgz#c08679063f279615a3326583ba3a90d1d82cc721"
-  integrity sha512-dSYZh7HhCDtCKm4QakX0xFpsRDqjjtZf/kjI/v3T3Nwt5r8/qz/M19F9ySyOqU94SXBmeG9ttTul+YnR4LOxFA==
+  integrity "sha1-wIZ5Bj8nlhWjMmWDujqQ0dgsxyE= sha512-dSYZh7HhCDtCKm4QakX0xFpsRDqjjtZf/kjI/v3T3Nwt5r8/qz/M19F9ySyOqU94SXBmeG9ttTul+YnR4LOxFA=="
 
 "@jridgewell/set-array@^1.0.0", "@jridgewell/set-array@^1.0.1":
   version "1.1.2"
@@ -1911,7 +1911,7 @@
 "@jridgewell/source-map@^0.3.3":
   version "0.3.5"
   resolved "https://nexus.x.sberauto.com/repository/npm/@jridgewell/source-map/-/source-map-0.3.5.tgz#a3bb4d5c6825aab0d281268f47f6ad5853431e91"
-  integrity sha512-UTYAUj/wviwdsMfzoSJspJxbkH5o1snzwX0//0ENX1u/55kkZZkcTZP6u9bwKGkv+dkk9at4m1Cpt0uY80kcpQ==
+  integrity "sha1-o7tNXGglqrDSgSaPR/atWFNDHpE= sha512-UTYAUj/wviwdsMfzoSJspJxbkH5o1snzwX0//0ENX1u/55kkZZkcTZP6u9bwKGkv+dkk9at4m1Cpt0uY80kcpQ=="
   dependencies:
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
@@ -1924,7 +1924,7 @@
 "@jridgewell/sourcemap-codec@^1.4.14":
   version "1.4.15"
   resolved "https://nexus.x.sberauto.com/repository/npm/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.15.tgz#d7c6e6755c78567a951e04ab52ef0fd26de59f32"
-  integrity sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==
+  integrity "sha1-18bmdVx4VnqVHgSrUu8P0m3lnzI= sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg=="
 
 "@jridgewell/trace-mapping@^0.3.12", "@jridgewell/trace-mapping@^0.3.14", "@jridgewell/trace-mapping@^0.3.15", "@jridgewell/trace-mapping@^0.3.9":
   version "0.3.17"
@@ -1937,7 +1937,7 @@
 "@jridgewell/trace-mapping@^0.3.17":
   version "0.3.19"
   resolved "https://nexus.x.sberauto.com/repository/npm/@jridgewell/trace-mapping/-/trace-mapping-0.3.19.tgz#f8a3249862f91be48d3127c3cfe992f79b4b8811"
-  integrity sha512-kf37QtfW+Hwx/buWGMPcR60iF9ziHa6r/CZJIHbmcm4+0qrXiVdxegAH0F6yddEVQ7zdkjcGCgCzUu+BcbhQxw==
+  integrity "sha1-+KMkmGL5G+SNMSfDz+mS95tLiBE= sha512-kf37QtfW+Hwx/buWGMPcR60iF9ziHa6r/CZJIHbmcm4+0qrXiVdxegAH0F6yddEVQ7zdkjcGCgCzUu+BcbhQxw=="
   dependencies:
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
@@ -2222,10 +2222,10 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
-"@sberauto/dictionarydc-proto@1.2.0":
-  version "1.2.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dictionarydc-proto/-/dictionarydc-proto-1.2.0.tgz#08d2cc49af1832451edfb095810b0dae3a8bd550"
-  integrity sha512-SmTym/nH1y4Or8g+vhpKmc0WCiWLQcu1Mj/sjvGQvGhu68z3wOieXgrMYcCRJe0KrTLPlvLhXqKMm1+xZUS2+w==
+"@sberauto/dictionarydc-proto@0.0.0-prm-ii":
+  version "0.0.0-prm-ii"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dictionarydc-proto/-/dictionarydc-proto-0.0.0-prm-ii.tgz#45e1ebcac7a7605302d6f648281bdf28340b065e"
+  integrity sha512-Ug6LNt3F2H54eBWOGJZ9wjNaSAPQjRvdPaeFYxrJCG/N9kHCD1OPKC8BFzIosJ8m1yc59EA+9V6opmqwqk2H1g==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
@@ -2253,10 +2253,10 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
-"@sberauto/loanapplifecycledc-proto@1.7.1":
-  version "1.7.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-1.7.1.tgz#6eb962d6765724237a28891a275a5bb2b1f18884"
-  integrity sha512-+lBPyMW/mPX4XDxJBgy1dDg+B+kkeFfd8YXFzr1oYJaog7uRC9I9Ri1ourIRrty+T6Ex7HCbsShKQncWKVDq+w==
+"@sberauto/loanapplifecycledc-proto@0.0.0-prm-ii":
+  version "0.0.0-prm-ii"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/loanapplifecycledc-proto/-/loanapplifecycledc-proto-0.0.0-prm-ii.tgz#bfa2b31d721afec779744742b4d84f4de8accbd5"
+  integrity sha512-qrthSgGTG3rO75EzFNIWV7/KScjt6TwvjU22iRMGrCfieHcwAijhu4GGNbKR8vPWvNOnnfaKq09Ql6jEiHu7Ow==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
@@ -3061,22 +3061,22 @@
 "@webassemblyjs/floating-point-hex-parser@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/floating-point-hex-parser/-/floating-point-hex-parser-1.11.6.tgz#dacbcb95aff135c8260f77fa3b4c5fea600a6431"
-  integrity sha512-ejAj9hfRJ2XMsNHk/v6Fu2dGS+i4UaXBXGemOfQ/JfQ6mdQg/WXtwleQRLLS4OvfDhv8rYnVwH27YJLMyYsxhw==
+  integrity "sha1-2svLla/xNcgmD3f6O0xf6mAKZDE= sha512-ejAj9hfRJ2XMsNHk/v6Fu2dGS+i4UaXBXGemOfQ/JfQ6mdQg/WXtwleQRLLS4OvfDhv8rYnVwH27YJLMyYsxhw=="
 
 "@webassemblyjs/helper-api-error@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/helper-api-error/-/helper-api-error-1.11.6.tgz#6132f68c4acd59dcd141c44b18cbebbd9f2fa768"
-  integrity sha512-o0YkoP4pVu4rN8aTJgAyj9hC2Sv5UlkzCHhxqWj8butaLvnpdc2jOwh4ewE6CX0txSfLn/UYaV/pheS2Txg//Q==
+  integrity "sha1-YTL2jErNWdzRQcRLGMvrvZ8vp2g= sha512-o0YkoP4pVu4rN8aTJgAyj9hC2Sv5UlkzCHhxqWj8butaLvnpdc2jOwh4ewE6CX0txSfLn/UYaV/pheS2Txg//Q=="
 
 "@webassemblyjs/helper-buffer@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/helper-buffer/-/helper-buffer-1.11.6.tgz#b66d73c43e296fd5e88006f18524feb0f2c7c093"
-  integrity sha512-z3nFzdcp1mb8nEOFFk8DrYLpHvhKC3grJD2ardfKOzmbmJvEf/tPIqCY+sNcwZIY8ZD7IkB2l7/pqhUhqm7hLA==
+  integrity "sha1-tm1zxD4pb9XogAbxhST+sPLHwJM= sha512-z3nFzdcp1mb8nEOFFk8DrYLpHvhKC3grJD2ardfKOzmbmJvEf/tPIqCY+sNcwZIY8ZD7IkB2l7/pqhUhqm7hLA=="
 
 "@webassemblyjs/helper-numbers@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/helper-numbers/-/helper-numbers-1.11.6.tgz#cbce5e7e0c1bd32cf4905ae444ef64cea919f1b5"
-  integrity sha512-vUIhZ8LZoIWHBohiEObxVm6hwP034jwmc9kuq5GdHZH0wiLVLIPcMCdpJzG4C11cHoQ25TFIQj9kaVADVX7N3g==
+  integrity "sha1-y85efgwb0yz0kFrkRO9kzqkZ8bU= sha512-vUIhZ8LZoIWHBohiEObxVm6hwP034jwmc9kuq5GdHZH0wiLVLIPcMCdpJzG4C11cHoQ25TFIQj9kaVADVX7N3g=="
   dependencies:
     "@webassemblyjs/floating-point-hex-parser" "1.11.6"
     "@webassemblyjs/helper-api-error" "1.11.6"
@@ -3085,12 +3085,12 @@
 "@webassemblyjs/helper-wasm-bytecode@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/helper-wasm-bytecode/-/helper-wasm-bytecode-1.11.6.tgz#bb2ebdb3b83aa26d9baad4c46d4315283acd51e9"
-  integrity sha512-sFFHKwcmBprO9e7Icf0+gddyWYDViL8bpPjJJl0WHxCdETktXdmtWLGVzoHbqUcY4Be1LkNfwTmXOJUFZYSJdA==
+  integrity "sha1-uy69s7g6om2bqtTEbUMVKDrNUek= sha512-sFFHKwcmBprO9e7Icf0+gddyWYDViL8bpPjJJl0WHxCdETktXdmtWLGVzoHbqUcY4Be1LkNfwTmXOJUFZYSJdA=="
 
 "@webassemblyjs/helper-wasm-section@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/helper-wasm-section/-/helper-wasm-section-1.11.6.tgz#ff97f3863c55ee7f580fd5c41a381e9def4aa577"
-  integrity sha512-LPpZbSOwTpEC2cgn4hTydySy1Ke+XEu+ETXuoyvuyezHO3Kjdu90KK95Sh9xTbmjrCsUwvWwCOQQNta37VrS9g==
+  integrity "sha1-/5fzhjxV7n9YD9XEGjgene9KpXc= sha512-LPpZbSOwTpEC2cgn4hTydySy1Ke+XEu+ETXuoyvuyezHO3Kjdu90KK95Sh9xTbmjrCsUwvWwCOQQNta37VrS9g=="
   dependencies:
     "@webassemblyjs/ast" "1.11.6"
     "@webassemblyjs/helper-buffer" "1.11.6"
@@ -3100,21 +3100,21 @@
 "@webassemblyjs/ieee754@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/ieee754/-/ieee754-1.11.6.tgz#bb665c91d0b14fffceb0e38298c329af043c6e3a"
-  integrity sha512-LM4p2csPNvbij6U1f19v6WR56QZ8JcHg3QIJTlSwzFcmx6WSORicYj6I63f9yU1kEUtrpG+kjkiIAkevHpDXrg==
+  integrity "sha1-u2ZckdCxT//OsOOCmMMprwQ8bjo= sha512-LM4p2csPNvbij6U1f19v6WR56QZ8JcHg3QIJTlSwzFcmx6WSORicYj6I63f9yU1kEUtrpG+kjkiIAkevHpDXrg=="
   dependencies:
     "@xtuc/ieee754" "^1.2.0"
 
 "@webassemblyjs/leb128@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/leb128/-/leb128-1.11.6.tgz#70e60e5e82f9ac81118bc25381a0b283893240d7"
-  integrity sha512-m7a0FhE67DQXgouf1tbN5XQcdWoNgaAuoULHIfGFIEVKA6tu/edls6XnIlkmS6FrXAquJRPni3ZZKjw6FSPjPQ==
+  integrity "sha1-cOYOXoL5rIERi8JTgaCyg4kyQNc= sha512-m7a0FhE67DQXgouf1tbN5XQcdWoNgaAuoULHIfGFIEVKA6tu/edls6XnIlkmS6FrXAquJRPni3ZZKjw6FSPjPQ=="
   dependencies:
     "@xtuc/long" "4.2.2"
 
 "@webassemblyjs/utf8@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/utf8/-/utf8-1.11.6.tgz#90f8bc34c561595fe156603be7253cdbcd0fab5a"
-  integrity sha512-vtXf2wTQ3+up9Zsg8sa2yWiQpzSsMyXj0qViVP6xKGCUT8p8YJ6HqI7l5eCnWx1T/FYdsv07HQs2wTFbbof/RA==
+  integrity "sha1-kPi8NMVhWV/hVmA75yU8280Pq1o= sha512-vtXf2wTQ3+up9Zsg8sa2yWiQpzSsMyXj0qViVP6xKGCUT8p8YJ6HqI7l5eCnWx1T/FYdsv07HQs2wTFbbof/RA=="
 
 "@webassemblyjs/wasm-edit@^1.11.5":
   version "1.11.6"
@@ -3133,7 +3133,7 @@
 "@webassemblyjs/wasm-gen@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/wasm-gen/-/wasm-gen-1.11.6.tgz#fb5283e0e8b4551cc4e9c3c0d7184a65faf7c268"
-  integrity sha512-3XOqkZP/y6B4F0PBAXvI1/bky7GryoogUtfwExeP/v7Nzwo1QLcq5oQmpKlftZLbT+ERUOAZVQjuNVak6UXjPA==
+  integrity "sha1-+1KD4Oi0VRzE6cPA1xhKZfr3wmg= sha512-3XOqkZP/y6B4F0PBAXvI1/bky7GryoogUtfwExeP/v7Nzwo1QLcq5oQmpKlftZLbT+ERUOAZVQjuNVak6UXjPA=="
   dependencies:
     "@webassemblyjs/ast" "1.11.6"
     "@webassemblyjs/helper-wasm-bytecode" "1.11.6"
@@ -3144,7 +3144,7 @@
 "@webassemblyjs/wasm-opt@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/wasm-opt/-/wasm-opt-1.11.6.tgz#d9a22d651248422ca498b09aa3232a81041487c2"
-  integrity sha512-cOrKuLRE7PCe6AsOVl7WasYf3wbSo4CeOk6PkrjS7g57MFfVUF9u6ysQBBODX0LdgSvQqRiGz3CXvIDKcPNy4g==
+  integrity "sha1-2aItZRJIQiykmLCaoyMqgQQUh8I= sha512-cOrKuLRE7PCe6AsOVl7WasYf3wbSo4CeOk6PkrjS7g57MFfVUF9u6ysQBBODX0LdgSvQqRiGz3CXvIDKcPNy4g=="
   dependencies:
     "@webassemblyjs/ast" "1.11.6"
     "@webassemblyjs/helper-buffer" "1.11.6"
@@ -3166,7 +3166,7 @@
 "@webassemblyjs/wast-printer@1.11.6":
   version "1.11.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/@webassemblyjs/wast-printer/-/wast-printer-1.11.6.tgz#a7bf8dd7e362aeb1668ff43f35cb849f188eff20"
-  integrity sha512-JM7AhRcE+yW2GWYaKeHL5vt4xqee5N2WcezptmgyhNS+ScggqcT1OtXykhAb13Sn5Yas0j2uv9tHgrjwvzAP4A==
+  integrity "sha1-p7+N1+NirrFmj/Q/NcuEnxiO/yA= sha512-JM7AhRcE+yW2GWYaKeHL5vt4xqee5N2WcezptmgyhNS+ScggqcT1OtXykhAb13Sn5Yas0j2uv9tHgrjwvzAP4A=="
   dependencies:
     "@webassemblyjs/ast" "1.11.6"
     "@xtuc/long" "4.2.2"
@@ -3239,7 +3239,7 @@ acorn@^8.2.4, acorn@^8.5.0, acorn@^8.7.1, acorn@^8.8.0:
 acorn@^8.8.2:
   version "8.10.0"
   resolved "https://nexus.x.sberauto.com/repository/npm/acorn/-/acorn-8.10.0.tgz#8be5b3907a67221a81ab23c7889c4c5526b62ec5"
-  integrity sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw==
+  integrity "sha1-i+WzkHpnIhqBqyPHiJxMVSa2LsU= sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw=="
 
 address@^1.0.1, address@^1.1.2:
   version "1.2.1"
@@ -4490,7 +4490,7 @@ dedent@^0.7.0:
 deep-diff@^0.3.5:
   version "0.3.8"
   resolved "https://nexus.x.sberauto.com/repository/npm/deep-diff/-/deep-diff-0.3.8.tgz"
-  integrity sha512-yVn6RZmHiGnxRKR9sJb3iVV2XTF1Ghh2DiWRZ3dMnGc43yUdWWF/kX6lQyk3+P84iprfWKU/8zFTrlkvtFm1ug==
+  integrity "sha1-wB3mPvsO7JeYgB1Ax+Da4ltYLIQ= sha512-yVn6RZmHiGnxRKR9sJb3iVV2XTF1Ghh2DiWRZ3dMnGc43yUdWWF/kX6lQyk3+P84iprfWKU/8zFTrlkvtFm1ug=="
 
 deep-equal@^2.0.5:
   version "2.1.0"
@@ -7501,7 +7501,7 @@ levn@^0.4.1:
 levn@~0.3.0:
   version "0.3.0"
   resolved "https://nexus.x.sberauto.com/repository/npm/levn/-/levn-0.3.0.tgz#3b09924edf9f083c0490fdd4c0bc4421e04764ee"
-  integrity sha512-0OO4y2iOHix2W6ujICbKIaEQXvFQHue65vUG3pb5EUomzPI90z9hsA1VsO/dbIIpC53J8gxM9Q4Oho0jrCM/yA==
+  integrity "sha1-OwmSTt+fCDwEkP3UwLxEIeBHZO4= sha512-0OO4y2iOHix2W6ujICbKIaEQXvFQHue65vUG3pb5EUomzPI90z9hsA1VsO/dbIIpC53J8gxM9Q4Oho0jrCM/yA=="
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
@@ -7908,14 +7908,14 @@ npm-run-path@^4.0.1:
 nth-check@^1.0.2:
   version "1.0.2"
   resolved "https://nexus.x.sberauto.com/repository/npm/nth-check/-/nth-check-1.0.2.tgz#b2bd295c37e3dd58a3bf0700376663ba4d9cf05c"
-  integrity sha512-WeBOdju8SnzPN5vTUJYxYUxLeXpCaVP5i5e0LF8fg7WORF2Wd7wFX/pk0tYZk7s8T+J7VLy0Da6J1+wCT0AtHg==
+  integrity "sha1-sr0pXDfj3VijvwcAN2Zjuk2c8Fw= sha512-WeBOdju8SnzPN5vTUJYxYUxLeXpCaVP5i5e0LF8fg7WORF2Wd7wFX/pk0tYZk7s8T+J7VLy0Da6J1+wCT0AtHg=="
   dependencies:
     boolbase "~1.0.0"
 
 nth-check@^2.0.1:
   version "2.1.1"
   resolved "https://nexus.x.sberauto.com/repository/npm/nth-check/-/nth-check-2.1.1.tgz#c9eab428effce36cd6b92c924bdb000ef1f1ed1d"
-  integrity sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==
+  integrity "sha1-yeq0KO/842zWuSySS9sADvHx7R0= sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w=="
   dependencies:
     boolbase "^1.0.0"
 
@@ -8055,7 +8055,7 @@ open@^8.0.9, open@^8.4.0:
 optionator@^0.8.1:
   version "0.8.3"
   resolved "https://nexus.x.sberauto.com/repository/npm/optionator/-/optionator-0.8.3.tgz#84fa1d036fe9d3c7e21d99884b601167ec8fb495"
-  integrity sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==
+  integrity "sha1-hPodA2/p08fiHZmIS2ARZ+yPtJU= sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA=="
   dependencies:
     deep-is "~0.1.3"
     fast-levenshtein "~2.0.6"
@@ -8806,7 +8806,7 @@ prelude-ls@^1.2.1:
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://nexus.x.sberauto.com/repository/npm/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
-  integrity sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==
+  integrity "sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ= sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w=="
 
 prettier-linter-helpers@^1.0.0:
   version "1.0.0"
@@ -9243,7 +9243,7 @@ redent@^3.0.0:
 redux-logger@3.0.6:
   version "3.0.6"
   resolved "https://nexus.x.sberauto.com/repository/npm/redux-logger/-/redux-logger-3.0.6.tgz"
-  integrity sha512-JoCIok7bg/XpqA1JqCqXFypuqBbQzGQySrhFzewB7ThcnysTO30l4VCst86AuB9T9tuT03MAA56Jw2PNhRSNCg==
+  integrity "sha1-91VZZvMJjzyIYExEnPC69XeCdL8= sha512-JoCIok7bg/XpqA1JqCqXFypuqBbQzGQySrhFzewB7ThcnysTO30l4VCst86AuB9T9tuT03MAA56Jw2PNhRSNCg=="
   dependencies:
     deep-diff "^0.3.5"
 
@@ -9671,7 +9671,7 @@ serialize-javascript@^6.0.0:
 serialize-javascript@^6.0.1:
   version "6.0.1"
   resolved "https://nexus.x.sberauto.com/repository/npm/serialize-javascript/-/serialize-javascript-6.0.1.tgz#b206efb27c3da0b0ab6b52f48d170b7996458e5c"
-  integrity sha512-owoXEFjWRllis8/M1Q+Cw5k8ZH40e3zhp/ovX+Xr/vi1qj6QesbyXXViFbpNvWvPNAD62SutwEXavefrLJWj7w==
+  integrity "sha1-sgbvsnw9oLCra1L0jRcLeZZFjlw= sha512-owoXEFjWRllis8/M1Q+Cw5k8ZH40e3zhp/ovX+Xr/vi1qj6QesbyXXViFbpNvWvPNAD62SutwEXavefrLJWj7w=="
   dependencies:
     randombytes "^2.1.0"
 
@@ -10227,7 +10227,7 @@ terser@^5.0.0, terser@^5.10.0, terser@^5.14.1:
 terser@^5.16.8:
   version "5.19.2"
   resolved "https://nexus.x.sberauto.com/repository/npm/terser/-/terser-5.19.2.tgz#bdb8017a9a4a8de4663a7983f45c506534f9234e"
-  integrity sha512-qC5+dmecKJA4cpYxRa5aVkKehYsQKc+AHeKl0Oe62aYjBL8ZA33tTljktDHJSaxxMnbI5ZYw+o/S2DxxLu8OfA==
+  integrity "sha1-vbgBeppKjeRmOnmD9FxQZTT5I04= sha512-qC5+dmecKJA4cpYxRa5aVkKehYsQKc+AHeKl0Oe62aYjBL8ZA33tTljktDHJSaxxMnbI5ZYw+o/S2DxxLu8OfA=="
   dependencies:
     "@jridgewell/source-map" "^0.3.3"
     acorn "^8.8.2"
@@ -10317,7 +10317,7 @@ toposort@^2.0.2:
 tough-cookie@^4.0.0:
   version "4.1.3"
   resolved "https://nexus.x.sberauto.com/repository/npm/tough-cookie/-/tough-cookie-4.1.3.tgz#97b9adb0728b42280aa3d814b6b999b2ff0318bf"
-  integrity sha512-aX/y5pVRkfRnfmuX+OdbSdXvPe6ieKX/G2s7e98f4poJHnqH3281gDPm/metm6E/WRamfx7WC4HUqkWHfQHprw==
+  integrity "sha1-l7mtsHKLQigKo9gUtrmZsv8DGL8= sha512-aX/y5pVRkfRnfmuX+OdbSdXvPe6ieKX/G2s7e98f4poJHnqH3281gDPm/metm6E/WRamfx7WC4HUqkWHfQHprw=="
   dependencies:
     psl "^1.1.33"
     punycode "^2.1.1"
@@ -10385,7 +10385,7 @@ type-check@^0.4.0, type-check@~0.4.0:
 type-check@~0.3.2:
   version "0.3.2"
   resolved "https://nexus.x.sberauto.com/repository/npm/type-check/-/type-check-0.3.2.tgz#5884cab512cf1d355e3fb784f30804b2b520db72"
-  integrity sha512-ZCmOJdvOWDBYJlzAoFkC+Q0+bUyEOS1ltgp1MGU03fqHG+dbi9tBFU2Rd9QKiDZFAYrhPh2JUf7rZRIuHRKtOg==
+  integrity "sha1-WITKtRLPHTVeP7eE8wgEsrUg23I= sha512-ZCmOJdvOWDBYJlzAoFkC+Q0+bUyEOS1ltgp1MGU03fqHG+dbi9tBFU2Rd9QKiDZFAYrhPh2JUf7rZRIuHRKtOg=="
   dependencies:
     prelude-ls "~1.1.2"
 

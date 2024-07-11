@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 
 import { Box } from '@mui/material'
-import { OptionID } from '@sberauto/dictionarydc-proto/public'
 import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
-import { INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
+import { CASCO_OPTION_ID, INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, BriefOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { useAdditionalServices } from 'entities/application/AdditionalOptionsRequisites/hooks/useAdditionalServices'
@@ -19,7 +18,7 @@ import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
 import useStyles from './AdditionalServiceItem.styles'
 
 interface Props {
-  options: { value: string | number; label: string }[]
+  options: { value: string; label: string }[]
   parentName: ServicesGroupName
   isNecessaryCasco: boolean
   index: number
@@ -51,7 +50,7 @@ export function AdditionalServiceItem({
     changeIds,
     initialValues: INITIAL_ADDITIONAL_SERVICE,
   })
-  const [productTypeField] = useField<OptionID>(namePrefix + FormFieldNameMap.productType)
+  const [productTypeField] = useField<string | null>(namePrefix + FormFieldNameMap.productType)
   const { values, submitCount } = useFormikContext<BriefOrderCalculatorFields>()
 
   const { filteredOptions, shouldDisableAdding } = useAdditionalServicesOptions({
@@ -64,7 +63,7 @@ export function AdditionalServiceItem({
   const isShouldShowCascoLimitField =
     isNecessaryCasco &&
     parentName === ServicesGroupName.dealerAdditionalServices &&
-    productTypeField.value === OptionID.CASCO
+    productTypeField.value === CASCO_OPTION_ID
 
   const [, cascoLimitMeta, { setTouched: setCascoLimitTouched }] = useField<string>(
     namePrefix + FormFieldNameMap.cascoLimit,
@@ -87,6 +86,7 @@ export function AdditionalServiceItem({
         gridColumn="span 2"
         disabled={isError}
       />
+
       <Box gridColumn="span 1" className={classes.costContainer}>
         <MaskedInputFormik
           name={namePrefix + FormFieldNameMap.productCost}

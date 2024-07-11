@@ -1,5 +1,6 @@
 import {
   addSuffix,
+  checkIsNumber,
   exhaustiveCheck,
   filterDigitsFromString,
   getLocaleStringFromNumeric,
@@ -119,6 +120,18 @@ describe('helpers tests', () => {
       const expectedValue = 'СтрокаСПробелами'
 
       expect(removeSpaces(initialValue)).toBe(expectedValue)
+    })
+  })
+
+  describe('checkIsNumber', () => {
+    it('checkIsNumber работает корректно', () => {
+      expect(checkIsNumber({})).toBe(false)
+      expect(checkIsNumber(NaN)).toBe(false)
+      expect(checkIsNumber(0)).toBe(true)
+      expect(checkIsNumber(1.1)).toBe(true)
+      expect(checkIsNumber('1')).toBe(false)
+      expect(checkIsNumber('0')).toBe(false)
+      expect(checkIsNumber('')).toBe(false)
     })
   })
 })

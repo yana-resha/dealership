@@ -3,6 +3,7 @@ import * as Yup from 'yup'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import {
   additionalServiceBaseValidation,
+  bankAdditionalServiceBaseValidation,
   baseFormValidation,
   checkAdditionalEquipmentsLimit,
   checkBankAdditionalServicesLimit,
@@ -27,7 +28,7 @@ export const briefOrderFormValidationSchema = Yup.object({
   ),
   [ServicesGroupName.bankAdditionalServices]: Yup.array().of(
     Yup.object().shape({
-      ...additionalServiceBaseValidation(checkBankAdditionalServicesLimit),
+      ...bankAdditionalServiceBaseValidation(checkBankAdditionalServicesLimit),
     }),
   ),
 })

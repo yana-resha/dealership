@@ -1,17 +1,22 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 
 import { Box } from '@mui/material'
 import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
+import { INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/constants'
-import { useGetVendorOptionsQuery } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+import {
+  BankAdditionalOption,
+  useGetVendorOptionsQuery,
+} from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPayment'
-import { useLimits } from 'common/OrderCalculator/hooks/useLimits'
+import { useRequiredService } from 'common/OrderCalculator/hooks/useRequiredService'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { FraudDialog } from 'entities/SpecialMark'
+import { checkIsNumber } from 'shared/lib/helpers'
 import { maskOnlyDigitsWithSeparator, maskPercent } from 'shared/masks/InputMasks'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
@@ -19,6 +24,10 @@ import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
+import { useCreditProductsData } from '../../../../../hooks/useCreditProductsData'
+import { useCreditProductsLimits } from '../../../../../hooks/useCreditProductsLimits'
+import { useCreditProductsTerms } from '../../../../../hooks/useCreditProductsTerms'
+import { useCreditProductsValidations } from '../../../../../hooks/useCreditProductsValidations'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
 import useStyles from './OrderSettingsArea.styles'
 
@@ -28,7 +37,7 @@ type Props = {
   isDisabledSubmit: boolean
 }
 
-export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit }: Props) {
+export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisabledSubmit }: Props, ref) => {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
 
@@ -37,40 +46,37 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
     isLoading: isVendorOptionsLoading,
     isSuccess: isVendorOptionsSuccess,
   } = useGetVendorOptionsQuery({
-    vendorCode: vendorCode,
+    vendorCode,
   })
 
-  const additionalEquipments = useMemo(
-    () =>
-      vendorOptions?.additionalOptions
-        ?.filter(option => option.optionType === OptionType.EQUIPMENT)
-        .map(option => ({
-          value: option.optionId,
-          label: option.optionName,
-        })) || [],
-    [vendorOptions?.additionalOptions],
-  )
-  const dealerAdditionalServices = useMemo(
-    () =>
-      vendorOptions?.additionalOptions
-        ?.filter(option => option.optionType === OptionType.DEALER)
-        .map(option => ({
-          value: option.optionId,
-          label: option.optionName,
-        })) || [],
-    [vendorOptions?.additionalOptions],
-  )
-
   const {
-    creditProducts,
-    initialPaymentHelperText,
-    initialPaymentPercentHelperText,
-    loanTerms,
-    commonErrors,
-    isNecessaryCasco,
+    initialPaymentData,
+    creditProductsData,
+    creditDurationData,
+    durationMaxFromAge,
+    isGetCarsLoading,
+    isGetCarsSuccess,
+    clientAge,
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
-  } = useLimits(vendorCode)
+  } = useCreditProductsData(vendorCode)
+  const { creditProducts, initialPaymentHelperText, initialPaymentPercentHelperText } =
+    useCreditProductsLimits(
+      initialPaymentData,
+      creditProductsData,
+      durationMaxFromAge,
+      isGetCarsLoading,
+      isGetCarsSuccess,
+    )
+  const { loanTerms } = useCreditProductsTerms(creditDurationData, creditProductsData, durationMaxFromAge)
+  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(initialPaymentData)
+
+  const { selectedRequiredOptionsMap } = useRequiredService({
+    creditProductsData,
+    additionalOptionsMap: vendorOptions?.additionalOptionsMap,
+    isVendorOptionsSuccess,
+    initialBankAdditionalService: INITIAL_BANK_ADDITIONAL_SERVICE,
+  })
 
   const {
     handleInitialPaymentFocus,
@@ -78,6 +84,43 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
     handleInitialPaymentBlur,
     handleInitialPaymentPercentBlur,
   } = useInitialPayment(disabled)
+
+  const additionalEquipments = useMemo(
+    () =>
+      vendorOptions?.additionalOptions?.filter(option => option.optionType === OptionType.EQUIPMENT) || [],
+    [vendorOptions?.additionalOptions],
+  )
+  const dealerAdditionalServices = useMemo(
+    () => vendorOptions?.additionalOptions?.filter(option => option.optionType === OptionType.DEALER) || [],
+    [vendorOptions?.additionalOptions],
+  )
+
+  const bankAdditionalServices = useMemo(
+    () =>
+      (vendorOptions?.additionalOptions?.filter(option => {
+        const isBankOption = option.optionType === OptionType.BANK
+
+        // Если clientAge отсутствует, то банковские опции недоступны
+        if (!checkIsNumber(clientAge)) {
+          return false
+        }
+
+        const isValidClientAge = option.tariffs?.some(tariff => {
+          const { minClientAge, maxClientAge } = tariff
+          if (!checkIsNumber(minClientAge) || !checkIsNumber(maxClientAge)) {
+            return false
+          }
+
+          return (
+            (clientAge as number) >= (minClientAge as number) &&
+            (clientAge as number) <= (maxClientAge as number)
+          )
+        })
+
+        return isBankOption && isValidClientAge
+      }) as BankAdditionalOption[]) || [],
+    [clientAge, vendorOptions?.additionalOptions],
+  )
 
   const isSectionLoading = isLimitsLoading || isVendorOptionsLoading
   const isSectionLoaded = !isSectionLoading && isLimitsSuccess && isVendorOptionsSuccess
@@ -98,7 +141,7 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
       )}
 
       {isSectionLoaded && (
-        <Box className={classes.gridWrapper}>
+        <Box className={classes.gridWrapper} ref={ref}>
           <Box className={classes.gridContainer}>
             <SelectInputFormik
               name={FormFieldNameMap.creditProduct}
@@ -140,23 +183,24 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
 
           <AdditionalServices
             title="Дополнительное оборудование"
-            options={additionalEquipments}
+            additionalServices={additionalEquipments}
             name={ServicesGroupName.additionalEquipments}
             productLabel="Вид оборудования"
           />
           <AdditionalServices
             title="Дополнительные услуги дилера"
-            options={dealerAdditionalServices}
+            additionalServices={dealerAdditionalServices}
             name={ServicesGroupName.dealerAdditionalServices}
-            isNecessaryCasco={isNecessaryCasco}
             productLabel="Тип продукта"
+            isNecessaryCasco={isNecessaryCasco}
           />
           <AdditionalServices
-            disabled
             title="Дополнительные услуги банка"
-            options={[]}
+            additionalServices={bankAdditionalServices}
             name={ServicesGroupName.bankAdditionalServices}
             productLabel="Тип продукта"
+            clientAge={clientAge}
+            selectedRequiredOptionsMap={selectedRequiredOptionsMap}
           />
 
           {!!commonErrors.length && (
@@ -189,4 +233,4 @@ export function OrderSettingsArea({ disabled, isSubmitLoading, isDisabledSubmit 
       )}
     </CollapsibleFormAreaContainer>
   )
-}
+})
