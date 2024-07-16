@@ -19,12 +19,6 @@ export function ApplicationWarning({ statusCode, errorDescription }: Props) {
         </Box>
       )}
 
-      {statusCode === StatusCode.CLIENT_REJECTED && (
-        <Box className={cx(classes.textButtonContainer, classes.warningTextContainer)} gridColumn="1/-1">
-          Клиенту необходимо обратиться в отделение банка для актуализации данных.
-        </Box>
-      )}
-
       {/* Вся логика заполнения этого поля на Бэке. Фронт просто ориентируется на его наличие */}
       {!!errorDescription && (
         <Box className={cx(classes.textButtonContainer, classes.warningTextContainer)} gridColumn="1/-1">

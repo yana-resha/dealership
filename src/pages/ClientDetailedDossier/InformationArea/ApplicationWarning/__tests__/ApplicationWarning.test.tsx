@@ -21,15 +21,6 @@ describe('ApplicationWarning', () => {
     ).toBeInTheDocument()
   })
 
-  it('Отображается предупреждение об Актуализации данных', () => {
-    render(<ApplicationWarning statusCode={StatusCode.CLIENT_REJECTED} errorDescription={undefined} />, {
-      wrapper: createWrapper,
-    })
-    expect(
-      screen.getByText('Клиенту необходимо обратиться в отделение банка для актуализации данных.'),
-    ).toBeInTheDocument()
-  })
-
   it('Если есть errorDescription, он отображается', () => {
     render(
       <ApplicationWarning statusCode={StatusCode.CLIENT_REJECTED} errorDescription="errorDescription" />,
