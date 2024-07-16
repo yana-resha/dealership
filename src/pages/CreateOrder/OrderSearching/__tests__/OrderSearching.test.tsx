@@ -45,9 +45,7 @@ Object.defineProperty(window, 'requestAnimationFrame', { value: (cb: () => any) 
 
 describe('OrderSearching', () => {
   const nextStep = jest.fn()
-  const onApplicationOpen = jest.fn()
   const mockRefetch = jest.fn()
-  const onMount = jest.fn()
   const mockStoreCreator = configureMockStore()
 
   describe('Элементы формы отображаются', () => {
@@ -97,7 +95,7 @@ describe('OrderSearching', () => {
       const phoneNumberInput = orderForm.querySelector('#phoneNumber')!
 
       await act(async () => {
-        userEvent.type(phoneNumberInput, '001231234')
+        userEvent.type(phoneNumberInput, '9001231234')
       })
       const findOrderBtn = screen.getByText('Найти')
 
@@ -163,7 +161,7 @@ describe('OrderSearching', () => {
       const phoneNumberInput = orderForm.querySelector('#phoneNumber')!
 
       await act(async () => {
-        userEvent.type(phoneNumberInput, '001231234')
+        userEvent.type(phoneNumberInput, '9001231234')
       })
       const findOrderBtn = screen.getByText('Найти')
 
@@ -269,7 +267,7 @@ describe('OrderSearching', () => {
     const phoneNumberInput = orderForm.querySelector('#phoneNumber')!
 
     await act(async () => {
-      userEvent.type(phoneNumberInput, '001231234')
+      userEvent.type(phoneNumberInput, '9001231234')
     })
 
     const findOrderBtn = screen.getByText('Найти')

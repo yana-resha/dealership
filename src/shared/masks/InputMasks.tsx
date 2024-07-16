@@ -126,7 +126,7 @@ export const maskCommonPhoneNumber = (
 }
 
 export const maskMobilePhoneNumber = (number: string, unmasked?: boolean) =>
-  maskCommonPhoneNumber(number, unmasked, { '#': '{9}' })
+  maskCommonPhoneNumber(number, unmasked, { '#': /[9]/ })
 
 export const maskEmail = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({

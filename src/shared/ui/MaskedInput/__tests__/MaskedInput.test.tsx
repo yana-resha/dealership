@@ -53,11 +53,11 @@ describe('MaskedInputTest', () => {
 
     it('Текст не вводится, если он не соответствует маске', () => {
       userEvent.type(screen.getByRole('textbox'), 'qwerty')
-      expect(screen.getByRole('textbox')).toHaveValue('+7 9')
+      expect(screen.getByRole('textbox')).toHaveValue('+7')
     })
 
     it('Текст вводится, если он соответствует маске', () => {
-      userEvent.type(screen.getByRole('textbox'), '001234567')
+      userEvent.type(screen.getByRole('textbox'), '9001234567')
       expect(screen.getByRole('textbox')).toHaveValue('+7 900 123 45 67')
     })
   })
