@@ -36,9 +36,11 @@ export const maskName = (value: string, unmasked?: boolean) => {
     prepare: (appended: string, masked: { value: string }) => {
       if (!masked.value.length) {
         return appended.toUpperCase()
+      } else if (appended === 'I' || appended === 'V') {
+        return appended
       }
 
-      return appended
+      return appended.toLowerCase()
     },
   })
   masked.resolve(`${value}`)
