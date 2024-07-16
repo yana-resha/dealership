@@ -40,7 +40,22 @@ export const additionalServiceBaseValidation = (checkFn: (commonError: CommonErr
 export const bankAdditionalServiceBaseValidation = (checkFn: (commonError: CommonError) => void) => ({
   ...additionalServiceBaseValidation(checkFn),
   [FormFieldNameMap.tariff]: setRequiredIfHasProductType(Yup.string().nullable()),
-  [FormFieldNameMap.loanTerm]: setRequiredIfHasProductType(Yup.number().nullable()),
+  [FormFieldNameMap.loanTerm]: setRequiredIfHasProductType(
+    Yup.number()
+      .nullable()
+      .test('isHighTerm', 'Выберите срок меньше или равный сроку кредита', (value, context) => {
+        const { loanTerm } =
+          ((context.options as InternalOptions)?.from?.[1].value as
+            | BriefOrderCalculatorFields
+            | FullOrderCalculatorFields) || {}
+
+        if (!value || !loanTerm) {
+          return true
+        }
+
+        return value <= loanTerm
+      }),
+  ),
 })
 
 type YupBaseSchema<T> = Yup.BaseSchema<T, AnyObject, T>

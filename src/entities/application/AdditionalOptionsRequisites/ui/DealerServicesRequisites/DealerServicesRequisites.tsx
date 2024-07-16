@@ -4,6 +4,7 @@ import { Box } from '@mui/material'
 import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
 import { CASCO_OPTION_ID, FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
+import { LOAN_TERM_GRADUATION_VALUE, MONTH_OF_YEAR_COUNT } from 'common/OrderCalculator/constants'
 import {
   FormFieldNameMap,
   FullInitialAdditionalService,
@@ -48,14 +49,7 @@ type Props = {
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
 }
 
-const terms = [
-  { value: '12' },
-  { value: '24' },
-  { value: '36' },
-  { value: '48' },
-  { value: '60' },
-  { value: '72' },
-]
+const MAX_SERVICES_TERM = 84
 
 export function DealerServicesRequisites({
   index,
@@ -71,9 +65,19 @@ export function DealerServicesRequisites({
 }: Props) {
   const classes = useStyles()
 
-  const { values, setFieldValue, submitCount } = useFormikContext<FullOrderCalculatorFields>()
-  const { provider, broker, beneficiaryBank, taxPresence, productCost, productType, cascoLimit, isCredit } =
-    servicesItem
+  const { values, setFieldValue, setFieldTouched, submitCount } =
+    useFormikContext<FullOrderCalculatorFields>()
+  const {
+    provider,
+    broker,
+    beneficiaryBank,
+    taxPresence,
+    productCost,
+    productType,
+    cascoLimit,
+    isCredit,
+    loanTerm,
+  } = servicesItem
   const [isCustomFields, setCustomFields] = useState(false)
 
   const { requisites, isRequisitesFetched } = useRequisitesContext()
@@ -93,6 +97,16 @@ export function DealerServicesRequisites({
     parentName,
     options: productOptions,
   })
+
+  const terms = useMemo(
+    () =>
+      [...new Array(Math.floor((values.loanTerm ?? MAX_SERVICES_TERM) / LOAN_TERM_GRADUATION_VALUE))].map(
+        (v, i) => ({
+          value: (i + 1) * LOAN_TERM_GRADUATION_VALUE,
+        }),
+      ),
+    [values.loanTerm],
+  )
 
   const optionRequisite = useMemo(
     () => requisites?.dealerOptionsMap?.[productType ?? ''],
@@ -259,6 +273,13 @@ export function DealerServicesRequisites({
       setFieldValue(namePrefix + 'documentDate', null)
     }
   }, [isCascoProductType, isCredit, isShouldShowCascoLimitField, namePrefix, setFieldValue])
+
+  useEffect(() => {
+    if (loanTerm && !terms.some(option => option.value === loanTerm)) {
+      setFieldValue(namePrefix + FormFieldNameMap.loanTerm, FULL_INITIAL_ADDITIONAL_SERVICE.loanTerm)
+      setFieldTouched(namePrefix + FormFieldNameMap.loanTerm, true, true)
+    }
+  }, [loanTerm, namePrefix, setFieldTouched, setFieldValue, terms])
 
   return (
     <Box className={classes.editingAreaContainer}>

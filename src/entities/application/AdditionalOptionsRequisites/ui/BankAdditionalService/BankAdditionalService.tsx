@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { Box } from '@mui/material'
 import { ArrayHelpers, useFormikContext } from 'formik'
@@ -57,7 +57,7 @@ export function BankAdditionalService({
 }: Props) {
   const classes = useStyles()
 
-  const { values, setFieldValue } = useFormikContext<BriefOrderCalculatorFields>()
+  const { values, setFieldValue, setFieldTouched } = useFormikContext<BriefOrderCalculatorFields>()
   const { productType, tariff: currentTariffId, loanTerm } = servicesItem
 
   const { namePrefix, isLastItem, removeItem, addItem } = useAdditionalServices({
@@ -99,13 +99,14 @@ export function BankAdditionalService({
     () => tariffs.find(tariff => tariff.tariffId === currentTariffId),
     [currentTariffId, tariffs],
   )
+
   const loanTermOptions = useMemo(() => {
     if (!currentTariff) {
       return []
     }
     const maxLoanTermByClientAge = (currentTariff.maxClientAge - clientAge) * MONTH_OF_YEAR_COUNT
-    const maxLoanTerm =
-      currentTariff.maxTerm <= maxLoanTermByClientAge ? currentTariff.maxTerm : maxLoanTermByClientAge
+    const maxLoanTermByLoanTerm = values.loanTerm || maxLoanTermByClientAge
+    const maxLoanTerm = Math.min(maxLoanTermByClientAge, maxLoanTermByLoanTerm, currentTariff.maxTerm)
 
     if (currentTariff.minTerm > maxLoanTerm || maxLoanTerm <= 0) {
       return []
@@ -116,21 +117,22 @@ export function BankAdditionalService({
     }))
 
     return loanTerms
-  }, [clientAge, currentTariff])
+  }, [clientAge, currentTariff, values.loanTerm])
 
   const isRequired = !!selectedRequiredOptionsMap[productType ?? '']
 
   useEffect(() => {
-    if (!tariffOptions.some(option => option.value === currentTariffId)) {
+    if (currentTariffId && !tariffOptions.some(option => option.value === currentTariffId)) {
       setFieldValue(namePrefix + FormFieldNameMap.tariff, INITIAL_BANK_ADDITIONAL_SERVICE.tariff)
     }
   }, [currentTariffId, namePrefix, setFieldValue, tariffOptions])
 
   useEffect(() => {
-    if (!loanTermOptions.some(option => option.value === loanTerm)) {
+    if (loanTerm && !loanTermOptions.some(option => option.value === loanTerm)) {
       setFieldValue(namePrefix + FormFieldNameMap.loanTerm, INITIAL_BANK_ADDITIONAL_SERVICE.loanTerm)
+      setFieldTouched(namePrefix + FormFieldNameMap.loanTerm, true, true)
     }
-  }, [loanTerm, loanTermOptions, namePrefix, setFieldValue])
+  }, [loanTerm, loanTermOptions, namePrefix, setFieldTouched, setFieldValue])
 
   useEffect(() => {
     const price = stringToNumber(currentTariff?.price)

@@ -24,7 +24,10 @@ export function SelectInputWithoutMemo<T extends string | number>(props: SelectI
 
   useEffect(() => {
     if (
-      (typeof value === 'string' || (typeof value === 'number' && !isNaN(value)) || value === undefined) &&
+      (typeof value === 'string' ||
+        (typeof value === 'number' && !isNaN(value)) ||
+        value === undefined ||
+        value === null) &&
       value !== fieldValue
     ) {
       setFieldValue(value ?? '')

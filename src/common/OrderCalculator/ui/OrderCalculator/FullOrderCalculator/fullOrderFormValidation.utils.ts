@@ -1,7 +1,8 @@
 import * as Yup from 'yup'
+import { InternalOptions } from 'yup/lib/types'
 
 import { CAR_PASSPORT_TYPE, CASCO_OPTION_ID } from 'common/OrderCalculator/config'
-import { FormFieldNameMap } from 'common/OrderCalculator/types'
+import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import {
   additionalServiceBaseValidation,
   bankAdditionalServiceBaseValidation,
@@ -102,7 +103,20 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
       ),
       [FormFieldNameMap.broker]: setRequiredIfInCredit(Yup.string().nullable()),
       [FormFieldNameMap.loanTerm]: setRequiredIfNecessaryCasco(
-        setRequiredIfInCredit(Yup.number().nullable()),
+        setRequiredIfInCredit(
+          Yup.number()
+            .nullable()
+            .test('isHighTerm', 'Выберите срок меньше или равный сроку кредита', (value, context) => {
+              const { loanTerm } =
+                ((context.options as InternalOptions)?.from?.[1].value as FullOrderCalculatorFields) || {}
+
+              if (!value || !loanTerm) {
+                return true
+              }
+
+              return value <= loanTerm
+            }),
+        ),
       ),
 
       ...bankDetailsFormValidation,
