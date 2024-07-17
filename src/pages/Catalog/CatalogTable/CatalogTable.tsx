@@ -13,6 +13,7 @@ import {
 
 import { RequiredCatalog, useGetCatalogQuery } from 'shared/api/requests/fileStorageDc.api'
 import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
+import { getTablePage, INITIAL_TABLE_PAGE, setTablePage, TableType } from 'shared/tableCurrentPage'
 import SberTypography from 'shared/ui/SberTypography'
 import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
 
@@ -33,16 +34,16 @@ type Props = {
 const CatalogTable = ({
   currentFolderId,
   onFolderClick,
-  startPage = 1,
   rowsPerPage: rowsPerPageProp,
   foundedFileName,
 }: Props) => {
   const styles = useStyles()
 
-  const { data: catalogData, isLoading } = useGetCatalogQuery(
-    { folderId: currentFolderId },
-    { enabled: false },
-  )
+  const {
+    data: catalogData,
+    isLoading,
+    isFetched,
+  } = useGetCatalogQuery({ folderId: currentFolderId }, { enabled: false })
 
   const data = useMemo(
     () =>
@@ -52,20 +53,31 @@ const CatalogTable = ({
     [catalogData?.catalog, foundedFileName],
   )
 
-  const {
-    tableBodyRef,
-    currentRowData,
-    emptyRows,
-    pageCount,
-    page,
-    rowsPerPage,
-    rowHeight,
-    handleChangePage,
-  } = useRowsPerPage({
-    data,
-    startPage,
-    rowsPerPage: rowsPerPageProp,
-  })
+  const startPage = getTablePage(TableType.CATALOG) || INITIAL_TABLE_PAGE
+
+  const { tableBodyRef, currentRowData, emptyRows, pageCount, page, rowsPerPage, rowHeight, changePage } =
+    useRowsPerPage({
+      data,
+      startPage,
+      rowsPerPage: rowsPerPageProp,
+      isDataLoaded: !isLoading && isFetched,
+    })
+
+  const handleChangePage = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+      changePage(newPage)
+      setTablePage(TableType.CATALOG, newPage)
+    },
+    [changePage],
+  )
+
+  const handleFolderClick = useCallback(
+    (folderId: number) => {
+      onFolderClick(folderId)
+      setTablePage(TableType.CATALOG, 1)
+    },
+    [onFolderClick],
+  )
 
   const [removedFile, setRemovedFile] = useState<RemovedFile>()
   const closeModal = useCallback(() => setRemovedFile(undefined), [])
@@ -100,7 +112,7 @@ const CatalogTable = ({
 
         <TableBody className={styles.tableBody} ref={tableBodyRef}>
           {currentRowData.map(row => (
-            <CatalogRow key={row.id} onRowClick={onFolderClick} data={row} onRemove={handleRemove} />
+            <CatalogRow key={row.id} onRowClick={handleFolderClick} data={row} onRemove={handleRemove} />
           ))}
           {emptyRows > 0 && (
             <TableRow style={{ height: rowHeight * emptyRows }}>

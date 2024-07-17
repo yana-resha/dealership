@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import { RequiredEmail } from 'entities/email'
 import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
 import { appRoutes } from 'shared/navigation/routerPath'
+import { getTablePage, INITIAL_TABLE_PAGE, setTablePage, TableType } from 'shared/tableCurrentPage'
 import { CustomTooltip } from 'shared/ui/CustomTooltip/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
@@ -27,34 +28,35 @@ import { useStyles } from './EmailTable.styles'
 type Props = {
   emails: RequiredEmail[]
   isLoading: boolean
-  changeStartPage: (page: number) => void
-  startPage: number
+  isFetched: boolean
 }
 
-function EmailTable({ emails, isLoading, changeStartPage, startPage }: Props) {
+function EmailTable({ emails, isLoading, isFetched }: Props) {
   const classes = useStyles()
   const navigate = useNavigate()
 
-  const {
-    tableBodyRef,
-    currentRowData,
-    emptyRows,
-    pageCount,
-    page,
-    rowsPerPage,
-    rowHeight,
-    handleChangePage,
-  } = useRowsPerPage({
-    data: emails,
-    startPage: startPage,
-  })
+  const initialPage = getTablePage(TableType.EMAIL) || INITIAL_TABLE_PAGE
+
+  const { tableBodyRef, currentRowData, emptyRows, pageCount, page, rowsPerPage, rowHeight, changePage } =
+    useRowsPerPage({
+      data: emails,
+      startPage: initialPage,
+      isDataLoaded: !isLoading && isFetched,
+    })
+
+  const handleChangePage = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+      changePage(newPage)
+      setTablePage(TableType.CATALOG, newPage)
+    },
+    [changePage],
+  )
 
   const onRowClick = useCallback(
     (emailId: number) => {
-      changeStartPage(page)
       navigate(appRoutes.detailedEmail(`${emailId}`))
     },
-    [changeStartPage, navigate, page],
+    [navigate],
   )
 
   const getTooltipTitle = (header: EmailTableHeader) => {

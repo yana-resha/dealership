@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
@@ -15,6 +15,8 @@ import { useStyles } from './FindApplication.styles'
 export const FindApplication = () => {
   const classes = useStyles()
   const navigate = useNavigate()
+  const { vendorCode } = getPointOfSaleFromCookies()
+
   const [request, setRequest] = useState<FindApplicationsReq>({
     passportSeries: '',
     passportNumber: '',
@@ -25,20 +27,15 @@ export const FindApplication = () => {
     middleName: '',
     lastName: '',
   })
-  const [page, setPage] = useState(1)
 
-  const { vendorCode } = getPointOfSaleFromCookies()
+  const { data, isLoading, isFetched } = useFindApplicationsQuery(
+    { vendorCode, ...request },
+    { retry: false },
+  )
 
-  const { data, isLoading } = useFindApplicationsQuery({ vendorCode, ...request }, { retry: false })
+  const onSubmit = useCallback((values: FindApplicationsReq) => setRequest({ ...values }), [])
 
-  const onSubmit = (values: FindApplicationsReq) => {
-    const newValue = { ...values }
-
-    setRequest(newValue)
-  }
-
-  const getDetailedDossier = (applicationId: string, page: number) => {
-    setPage(page)
+  const getDetailedDossier = (applicationId: string) => {
     navigate(appRoutes.order(applicationId))
   }
 
@@ -49,8 +46,8 @@ export const FindApplication = () => {
       <ApplicationTable
         data={data || []}
         isLoading={isLoading}
+        isFetched={isFetched}
         onClickRow={getDetailedDossier}
-        startPage={page}
       />
     </>
   )

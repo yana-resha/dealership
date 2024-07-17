@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 
@@ -6,6 +6,7 @@ type Props<T> = {
   data: T[]
   startPage?: number
   rowsPerPage?: number
+  isDataLoaded: boolean
 }
 
 const ROWS_PER_PAGE = 6
@@ -16,7 +17,12 @@ const ROW_HEIGHT = 56
 height: 100% (для корневого элемента),
 flexGrow: 1 (для остальных родителей),
 не забыть про  boxSizing: 'border-box' при необходимости */
-export const useRowsPerPage = <T,>({ data, startPage = 1, rowsPerPage: rowsPerPageProp }: Props<T>) => {
+export const useRowsPerPage = <T,>({
+  data,
+  startPage = 1,
+  rowsPerPage: rowsPerPageProp,
+  isDataLoaded = true,
+}: Props<T>) => {
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null)
 
   const initialRowsPerPage = rowsPerPageProp ? rowsPerPageProp : ROWS_PER_PAGE
@@ -32,11 +38,12 @@ export const useRowsPerPage = <T,>({ data, startPage = 1, rowsPerPage: rowsPerPa
 
   const currentRowData =
     rowsPerPage >= 0 ? data.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage) : data
-  const pageCount = Math.ceil(data.length / rowsPerPage)
+  const pageCount = Math.ceil(data.length / rowsPerPage) || 1
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const changePage = (newPage: number) => {
     setPage(newPage)
   }
+
   /* Находим начальную высоту элемента. Если родителям были заданы корректные свойства,
   то высота элемента будет подогнана под оставшееся место на экране (но не менее MIN_ROWS_PER_PAGE),
   либо использовано ROWS_PER_PAGE */
@@ -45,6 +52,7 @@ export const useRowsPerPage = <T,>({ data, startPage = 1, rowsPerPage: rowsPerPa
       setTableBodyHeight(tableBodyRef.current?.clientHeight)
     }
   }, [data, tableBodyHeight])
+
   /* Устанавливаем обработчик на изменение размеров экрана:
   сохраняем новую высоту экрана и дельту к предыдущей высоте */
   useEffect(() => {
@@ -57,6 +65,7 @@ export const useRowsPerPage = <T,>({ data, startPage = 1, rowsPerPage: rowsPerPa
 
     return () => window.removeEventListener('resize', debouncedFn)
   })
+
   /* При наличии дельты высоты heightDelta делаем перерасчет количества строк в таблице.
   Обнуляем дельту. */
   useEffect(() => {
@@ -73,14 +82,10 @@ export const useRowsPerPage = <T,>({ data, startPage = 1, rowsPerPage: rowsPerPa
   }, [heightDelta, tableBodyHeight])
 
   useEffect(() => {
-    if (page > pageCount) {
+    if (isDataLoaded && page > pageCount) {
       setPage(pageCount)
     }
-  }, [page, pageCount])
-
-  useEffect(() => {
-    setPage(1)
-  }, [data])
+  }, [data, isDataLoaded, page, pageCount])
 
   return {
     tableBodyRef,
@@ -91,6 +96,6 @@ export const useRowsPerPage = <T,>({ data, startPage = 1, rowsPerPage: rowsPerPa
     rowsPerPage,
     rowHeight: ROW_HEIGHT,
     setPage,
-    handleChangePage,
+    changePage,
   }
 }
