@@ -106,7 +106,6 @@ export function useMapApplicationFromBriefCalculator() {
         Потому тут изначально ставим 0, а на этапе сохранения выбираем 0 или 1 */
         anketaType: AnketaType.Incomplete,
       }
-      console.log('newApplicationData', JSON.stringify(newApplicationData, null, 2))
 
       dispatch(updateApplication(newApplicationData))
     },
