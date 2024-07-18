@@ -1,24 +1,15 @@
-import { alpha } from '@mui/material'
+import { alpha, Theme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
-export default makeStyles(theme => ({
+type StyleProps = {
+  isCollapsed: boolean
+}
+
+export default makeStyles<Theme, StyleProps>(theme => ({
   label: {
-    '& > span': {
-      marginTop: theme.spacing(1),
-
-      lineHeight: 1.25,
-      color: theme.palette.text.primary,
-      fontSize: 16,
-
-      [theme.breakpoints.down('sm')]: {
-        fontWeight: 400,
-        color: theme.palette.text.primary,
-      },
-    },
-
-    '&.MuiListItemText-root': {
-      flex: 'none',
-    },
+    display: ({ isCollapsed }) => (isCollapsed ? 'none' : 'block'),
+    color: theme.palette.text.secondary,
+    marginTop: theme.spacing(0.75),
   },
 
   itemContainer: {
@@ -34,38 +25,6 @@ export default makeStyles(theme => ({
     bottom: 0,
     width: 4,
     backgroundColor: theme.palette.primary.main,
-  },
-
-  logoutItem: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-
-  logoutBtn: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 108,
-    width: '100%',
-
-    [theme.breakpoints.up('xl')]: {
-      flexDirection: 'row',
-      justifyContent: 'start!important',
-      gap: theme.spacing(2),
-      paddingLeft: theme.spacing(3) + '!important',
-      minHeight: 72,
-    },
-
-    '&.MuiListItemButton-root': {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-
-    '&:hover': {
-      backgroundColor: `${alpha(theme.palette.primary.dark, 0.1)}`,
-    },
   },
 
   list: {
@@ -88,9 +47,20 @@ export default makeStyles(theme => ({
       display: 'none',
     },
   },
+
   tab: {
     minWidth: '100%!important',
 
+    '&.MuiTab-root': {
+      textTransform: 'none',
+    },
+
+    '&:hover': {
+      'background-color': `${alpha(theme.palette.primary.main, 0.1)}`,
+    },
+  },
+
+  largeTab: {
     [theme.breakpoints.up('xl')]: {
       display: 'flex',
       flexDirection: 'row!important',
@@ -104,22 +74,43 @@ export default makeStyles(theme => ({
         marginBottom: '0!important',
       },
     },
-
-    '& .MuiTab-root': {
-      height: 108,
-      minHeight: 108,
-    },
-    '&.MuiTab-root': {
-      textTransform: 'none',
-    },
-    '&:hover': {
-      'background-color': `${alpha(theme.palette.primary.main, 0.1)}`,
-    },
   },
 
   tabLabel: {
-    [theme.breakpoints.down('lg')]: {
-      display: 'none',
+    display: ({ isCollapsed }) => (isCollapsed ? 'none' : 'block'),
+  },
+
+  logoutItem: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
+  logoutBtn: {
+    '&.MuiButton-root': {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: 72,
+      width: '100%',
+
+      [theme.breakpoints.up('xl')]: {
+        flexDirection: 'row',
+        justifyContent: 'start',
+        gap: theme.spacing(2),
+        paddingLeft: theme.spacing(3),
+        minHeight: 72,
+      },
+
+      '&.MuiListItemButton-root': {
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      '&:hover': {
+        'background-color': `${alpha(theme.palette.primary.main, 0.1)}`,
+      },
     },
   },
 }))

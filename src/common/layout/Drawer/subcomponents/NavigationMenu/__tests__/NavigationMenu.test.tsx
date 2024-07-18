@@ -64,7 +64,7 @@ describe('NavigationMenu', () => {
   it('отображает табы для каждого элемента меню', () => {
     render(
       <MockProviders>
-        <NavigationMenu />
+        <NavigationMenu isCollapsed={false} />
       </MockProviders>,
     )
 
@@ -76,7 +76,7 @@ describe('NavigationMenu', () => {
   it('вызывает onCallback для кнопки выхода и перенаправляет на страницу авторизации', () => {
     render(
       <MockProviders>
-        <NavigationMenu />
+        <NavigationMenu isCollapsed={false} />
       </MockProviders>,
     )
 

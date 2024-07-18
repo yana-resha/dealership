@@ -1,15 +1,21 @@
 import { useCallback } from 'react'
 
-import { Box, Button, ListItemText, Tab, Tabs } from '@mui/material'
+import { Box, Button, Tab, Tabs } from '@mui/material'
+import cx from 'classnames'
 import { useNavigate, useLocation, matchPath } from 'react-router-dom'
+
+import { CustomTooltip } from 'shared/ui/CustomTooltip'
 
 import { MenuItem } from './hooks/types'
 import { useGetItems } from './hooks/useGetItems'
 import { useGetLogoutBtn } from './hooks/useGetLogoutBtn'
 import useStyles from './NavigationMenu.styles'
 
-export function NavigationMenu() {
-  const classes = useStyles()
+type Props = {
+  isCollapsed: boolean
+}
+export function NavigationMenu({ isCollapsed }: Props) {
+  const classes = useStyles({ isCollapsed })
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -26,32 +32,59 @@ export function NavigationMenu() {
 
   const renderLogout = useCallback(
     (item: MenuItem) => (
-      <Button onClick={() => handleTabClick(item)} className={classes.logoutBtn}>
-        {!!item.icon && item.icon({ isSelected: false })}
-        <ListItemText primary={item.label} className={classes.label} />
-      </Button>
+      <CustomTooltip
+        arrow
+        placement="right"
+        title={item.label}
+        disableHoverListener={!isCollapsed}
+        disableFocusListener={!isCollapsed}
+      >
+        <Button onClick={() => handleTabClick(item)} className={classes.logoutBtn}>
+          {!!item.icon && item.icon({ isSelected: false })}
+          <span className={classes.label}>{item.label}</span>
+        </Button>
+      </CustomTooltip>
     ),
-    [classes, handleTabClick],
+    [classes.label, classes.logoutBtn, handleTabClick, isCollapsed],
   )
 
   const renderItem = useCallback(
     (item: MenuItem, index: number) => {
       const isSelected = !!matchPath(item.path, location.pathname)
       const id = `${item.label}_${item.path}`
-      const tabProps = { id, key: id, 'aria-controls': `vertical-tabpanel-${index}` }
+      const tabProps = { id, 'aria-controls': `vertical-tabpanel-${index}` }
       const icon = item?.icon?.({ isSelected })
 
       return (
-        <Tab
-          {...tabProps}
-          label={<span className={classes.tabLabel}>{item.label}</span>}
-          icon={icon}
-          className={classes.tab}
-          onClick={() => handleTabClick(menuItems[index])}
-        />
+        <CustomTooltip
+          key={id}
+          arrow
+          placement="right"
+          title={item.label}
+          disableHoverListener={!isCollapsed}
+          disableFocusListener={!isCollapsed}
+        >
+          <Tab
+            {...tabProps}
+            label={<span className={classes.tabLabel}>{item.label}</span>}
+            icon={icon}
+            className={cx(classes.tab, {
+              [classes.largeTab]: !isCollapsed,
+            })}
+            onClick={() => handleTabClick(menuItems[index])}
+          />
+        </CustomTooltip>
       )
     },
-    [classes.tab, classes.tabLabel, location.pathname, menuItems, handleTabClick],
+    [
+      location.pathname,
+      isCollapsed,
+      classes.tabLabel,
+      classes.tab,
+      classes.largeTab,
+      handleTabClick,
+      menuItems,
+    ],
   )
 
   const value = Math.max(

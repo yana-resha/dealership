@@ -1,27 +1,20 @@
 import { makeStyles } from '@mui/styles'
 
-const SHORT_DRAWER_WIDTH = '80px'
-const DRAWER_WIDTH = '200px'
-const MAX_DRAWER_WIDTH = '240px'
-
 export const useStyles = makeStyles(theme => ({
   globalContainer: {
-    display: 'grid',
+    display: 'flex',
     height: '100%',
+    width: '100%',
     overflow: 'hidden',
-
-    gridTemplateColumns: `${SHORT_DRAWER_WIDTH} 1fr`,
-    [theme.breakpoints.up('lg')]: {
-      gridTemplateColumns: `${DRAWER_WIDTH} 1fr`,
-    },
-    [theme.breakpoints.up('xl')]: {
-      gridTemplateColumns: `${MAX_DRAWER_WIDTH} 1fr`,
-    },
   },
+
   contentContainer: {
     height: '100%',
+    width: '100%',
     overflow: 'hidden',
+    marginLeft: 'auto',
   },
+
   appBar: {
     borderBottom: `1px solid ${theme.palette.grey[400]}`,
 
