@@ -1,34 +1,35 @@
 import { useEffect, useMemo } from 'react'
 
-import { useField, useFormikContext } from 'formik'
+import { useFormikContext } from 'formik'
 
-import { usePrevious } from 'shared/hooks/usePrevious'
 import { compareStrings } from 'shared/utils/compareStrings'
 
 import { initialValueMap } from '../config'
-import { FormFieldNameMap } from '../types'
+import { BriefOrderCalculatorFields, FormFieldNameMap, FullOrderCalculatorFields } from '../types'
 import { useCarSection } from './useCarSection'
 
 export function useCarBrands() {
-  const { setFieldValue } = useFormikContext()
+  const { values, setFieldValue } = useFormikContext<BriefOrderCalculatorFields | FullOrderCalculatorFields>()
+  const { carBrand, carModel } = values
   const { cars } = useCarSection()
 
-  const [carBrandField] = useField<string | null>(FormFieldNameMap.carBrand)
-  const prevCarBrandValue = usePrevious(carBrandField.value)
   const carBrands = useMemo(() => Object.keys(cars).sort(compareStrings), [cars])
   const carModels = useMemo(
-    () =>
-      (carBrandField.value && cars[carBrandField.value]?.models ? cars[carBrandField.value].models : []).sort(
-        compareStrings,
-      ),
-    [carBrandField.value, cars],
+    () => (carBrand && cars[carBrand]?.models ? cars[carBrand].models : []).sort(compareStrings),
+    [carBrand, cars],
   )
 
   useEffect(() => {
-    if (prevCarBrandValue !== carBrandField.value) {
-      setFieldValue(FormFieldNameMap.carModel, initialValueMap[FormFieldNameMap.carModel])
+    if (carBrand && !carBrands.includes(carBrand)) {
+      setFieldValue(FormFieldNameMap.carBrand, initialValueMap.carBrand)
     }
-  }, [carBrandField.value, prevCarBrandValue, setFieldValue])
+  }, [carBrand, carBrands, setFieldValue])
 
-  return { carBrands, carModels, isDisabledCarModel: !carBrandField.value }
+  useEffect(() => {
+    if (carModel && !carModels.includes(carModel)) {
+      setFieldValue(FormFieldNameMap.carModel, initialValueMap.carModel)
+    }
+  }, [carModel, carModels, setFieldValue])
+
+  return { carBrands, carModels, isDisabledCarModel: !carBrand }
 }
