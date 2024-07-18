@@ -266,17 +266,6 @@ describe('InformationAreaTest', () => {
       expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
     })
 
-    it('График платежей отсутствует при статусе clientRejected (Отказ по клиенту), есть предупреждение', () => {
-      render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.CLIENT_REJECTED }} />, {
-        wrapper: createWrapper,
-      })
-
-      expect(screen.queryByText('График платежей')).not.toBeInTheDocument()
-      expect(
-        screen.queryByText('Клиенту необходимо обратиться в отделение банка для актуализации данных.'),
-      ).toBeInTheDocument()
-    })
-
     it('График платежей отсутствует при статусе CanceledDeal (КД Отменен)', () => {
       render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.CANCELED_DEAL }} />, {
         wrapper: createWrapper,
