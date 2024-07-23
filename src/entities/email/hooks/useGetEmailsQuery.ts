@@ -11,8 +11,6 @@ import { getEmails } from 'shared/api/requests/emailAppDc.api'
 
 import { PreparedEmailData, RequiredEmail } from '../types'
 
-const EMAIL_UPDATE_PERIOD = 300000
-
 export const prepareEmails = (initialEmails: Email[] | null | undefined) =>
   (initialEmails || []).reduce<PreparedEmailData>(
     (acc, cur) => {
@@ -56,7 +54,6 @@ export const useGetEmailsQuery = (
 
   return useQuery(['getEmails', params], () => getEmails(params), {
     retry: false,
-    staleTime: EMAIL_UPDATE_PERIOD, // Почта с почтового сервера подтягивается в БД раз в 5 минут
     select: response => prepareEmails(response.emails),
     onError,
     ...options,
