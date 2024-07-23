@@ -19,7 +19,7 @@ describe('StatusFilter', () => {
     expect(screen.getByText('Черновик')).toBeVisible()
     expect(screen.getByText('Актуальные заявки')).toBeVisible()
     expect(screen.getByText('Ожидает решение')).toBeVisible()
-    expect(screen.getByText('КД Отменен')).toBeVisible()
+    expect(screen.getByText('Истек срок одобрения')).toBeVisible()
     expect(screen.getByText('Ожидание финансирования')).toBeVisible()
     expect(screen.getByText('Кредит одобрен')).toBeVisible()
     expect(screen.getByText('Отказ')).toBeVisible()
@@ -36,7 +36,7 @@ describe('StatusFilter', () => {
     userEvent.click(screen.getByText('Черновик'))
     userEvent.click(screen.getByText('Актуальные заявки'))
     userEvent.click(screen.getByText('Ожидает решение'))
-    userEvent.click(screen.getByText('КД Отменен'))
+    userEvent.click(screen.getByText('Истек срок одобрения'))
     userEvent.click(screen.getByText('Ожидание финансирования'))
     userEvent.click(screen.getByText('Кредит одобрен'))
     userEvent.click(screen.getByText('Отказ'))
@@ -97,7 +97,7 @@ describe('StatusFilter', () => {
       userEvent.click(screen.getByText('Ожидает решение'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
-    it('КД Отменен', () => {
+    it('Истек срок одобрения', () => {
       const change = jest.fn()
 
       render(
@@ -106,9 +106,9 @@ describe('StatusFilter', () => {
         </ThemeProviderMock>,
       )
 
-      userEvent.click(screen.getByText('КД Отменен'))
+      userEvent.click(screen.getByText('Истек срок одобрения'))
       expect(change).toHaveBeenNthCalledWith(1, [StatusCode.CANCELED_DEAL])
-      userEvent.click(screen.getByText('КД Отменен'))
+      userEvent.click(screen.getByText('Истек срок одобрения'))
       expect(change).toHaveBeenNthCalledWith(2, [])
     })
     it('Ожидание финансирования', () => {
