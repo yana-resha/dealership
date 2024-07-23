@@ -20,6 +20,8 @@ export const statusListItems: Record<string, string> = {
   [PreparedStatus.financed]: theme.palette.status.approved,
   [PreparedStatus.error]: theme.palette.status.error,
   [PreparedStatus.issueError]: theme.palette.status.error,
+  [PreparedStatus.signing]: theme.palette.status.processed,
+  [PreparedStatus.signError]: theme.palette.status.error,
 }
 
 type Props = {

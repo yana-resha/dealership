@@ -9,7 +9,8 @@ import {
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
-import { useNavigate } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { theme } from 'app/theme'
 import { updateOrder } from 'entities/order'
@@ -19,6 +20,7 @@ import { NoMatchesModal } from 'pages/CreateOrder/OrderSearching/components/NoMa
 import {
   useCheckIfSberClient,
   useSendGovProgramDocumentsMutation,
+  useSendToFinancingMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
@@ -72,6 +74,7 @@ export function ActionArea({
   const classes = useStyles()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const application = useAppSelector(selectApplication)
   const { applicant, dcAppId } = application
   const isHasGovProgram = !!application.loanData?.govprogramCode
@@ -91,6 +94,10 @@ export function ActionArea({
     useCheckIfSberClient()
   const { mutate: sendGovProgramDocumentsMutate, isLoading: isSendGovProgramDocumentsLoading } =
     useSendGovProgramDocumentsMutation()
+  const { mutateAsync: sendToFinancing, isLoading: isSendLoading } = useSendToFinancingMutation()
+  const { applicationId = '' } = useParams()
+  const { refetch: refetchFullApplication, isFetching: isRefetchFullApplicationLoading } =
+    useGetFullApplicationQuery({ applicationId }, { enabled: false })
 
   const passport = applicant?.documents?.find(document => document.type === ApplicantDocsType.PASSPORT)
   const phoneNumber = applicant?.phones?.find(document => document.type === PhoneType.MOBILE)
@@ -189,6 +196,16 @@ export function ActionArea({
   const sendApplicationToScore = useCallback(() => {
     sendToScoreMutate(applicationForScore)
   }, [applicationForScore, sendToScoreMutate])
+
+  const handleSendToFinancingBtnClick = useCallback(() => {
+    sendToFinancing({
+      dcAppId: application.dcAppId,
+    })
+      .then(() => refetchFullApplication())
+      .catch(() =>
+        enqueueSnackbar('Не удалось отправить на финансирование. Попробуйте еще раз', { variant: 'error' }),
+      )
+  }, [sendToFinancing, application.dcAppId, refetchFullApplication, enqueueSnackbar])
 
   const filteredGovProgramScans = useMemo(
     () => currentGovProgramScans.filter((scan): scan is Scan => !!scan),
@@ -340,6 +357,24 @@ export function ActionArea({
         </Box>
       )
     }
+    if ([PreparedStatus.issueError, PreparedStatus.signError].includes(preparedStatus)) {
+      return (
+        <Box className={classes.actionButtons}>
+          <Button
+            variant="contained"
+            className={classes.financingButton}
+            onClick={handleSendToFinancingBtnClick}
+            disabled={isSendLoading || isRefetchFullApplicationLoading}
+          >
+            {isSendLoading || isRefetchFullApplicationLoading ? (
+              <CircularProgressWheel size="small" />
+            ) : (
+              <>Отправить на финансирование</>
+            )}
+          </Button>
+        </Box>
+      )
+    }
     if (
       [PreparedStatus.finallyApproved, PreparedStatus.formation, PreparedStatus.signed].includes(
         preparedStatus,
@@ -354,6 +389,8 @@ export function ActionArea({
           closeConfirmationModal={closeConfirmationModal}
           confirmedAction={confirmedAction.current}
           editApplication={editApplication}
+          onSendToFinancing={handleSendToFinancingBtnClick}
+          isSendLoading={isSendLoading}
         />
       )
     }
@@ -361,6 +398,7 @@ export function ActionArea({
     application.anketaType,
     application.vendor?.vendorCode,
     classes.actionButtons,
+    classes.financingButton,
     closeConfirmationModal,
     editApplication,
     editApplicationWithApprovedStatus,
@@ -368,6 +406,7 @@ export function ActionArea({
     editApplicationWithInitialStatus,
     editFullApplication,
     getToNewApplication,
+    handleSendToFinancingBtnClick,
     isCheckIfSberClientLoading,
     isConfirmationModalVisible,
     isGovProgramDocumentsPending,
@@ -375,6 +414,8 @@ export function ActionArea({
     isHasGovProgram,
     isSendGovProgramDocumentsDisabled,
     isSendGovProgramDocumentsLoading,
+    isRefetchFullApplicationLoading,
+    isSendLoading,
     isSendToScoreLoading,
     isShouldShowRecreateButton,
     preparedStatus,

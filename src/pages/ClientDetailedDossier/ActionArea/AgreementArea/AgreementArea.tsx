@@ -12,7 +12,6 @@ import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmatio
 import { useAgreementDocs } from 'pages/ClientDetailedDossier/hooks/useAgreementDocs'
 import {
   useFormContractMutation,
-  useSendToFinancingMutation,
   useUpdateApplicationStatusMutation,
 } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
@@ -36,6 +35,8 @@ type Props = {
   closeConfirmationModal: () => void
   confirmedAction?: () => void
   editApplication: (editFunction: () => void) => void
+  onSendToFinancing: () => void
+  isSendLoading: boolean
 }
 
 export function AgreementArea({
@@ -47,6 +48,8 @@ export function AgreementArea({
   closeConfirmationModal,
   editApplication,
   confirmedAction,
+  onSendToFinancing,
+  isSendLoading,
 }: Props) {
   const classes = useStyles()
   const preparedStatus = getStatus(status)
@@ -67,7 +70,6 @@ export function AgreementArea({
     { applicationId },
     { enabled: false },
   )
-  const { mutateAsync: sendToFinancing, isLoading: isSendLoading } = useSendToFinancingMutation()
   const { mutate: updateApplicationStatusMutate, isLoading: isStatusLoading } =
     useUpdateApplicationStatusMutation(application?.dcAppId ?? '', (statusCode: StatusCode) => {
       updateApplicationStatusLocally(statusCode)
@@ -133,18 +135,6 @@ export function AgreementArea({
     setRightsAssigned(undefined)
     fetchAgreement()
   }, [preparedStatus, formContractMutate, checkDocuments, enqueueSnackbar, updateApplicationStatusLocally])
-
-  const handleSendToFinancingBtnClick = useCallback(async () => {
-    const res = await sendToFinancing({
-      dcAppId: application.dcAppId,
-    }).catch(err => err)
-
-    if (res.success) {
-      await refetchFullApplication()
-    } else {
-      enqueueSnackbar('Не удалось отправить на финансирование. Попробуйте еще раз', { variant: 'error' })
-    }
-  }, [sendToFinancing, application.dcAppId, refetchFullApplication, enqueueSnackbar])
 
   const returnToFirstStage = useCallback(() => {
     setDocsStatus([])
@@ -291,7 +281,7 @@ export function AgreementArea({
             <Button
               variant="contained"
               className={classes.financingButton}
-              onClick={handleSendToFinancingBtnClick}
+              onClick={onSendToFinancing}
               disabled={!financingEnabled || isSendLoading || isRefetchFullApplicationLoading}
             >
               {isSendLoading || isRefetchFullApplicationLoading ? (

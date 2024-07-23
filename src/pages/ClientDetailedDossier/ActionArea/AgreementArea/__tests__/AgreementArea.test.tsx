@@ -114,6 +114,8 @@ describe('AgreementAreaTest', () => {
           closeConfirmationModal={jest.fn}
           isConfirmationModalVisible={false}
           editApplication={jest.fn}
+          onSendToFinancing={jest.fn}
+          isSendLoading={false}
         />,
         {
           wrapper: createWrapper,
@@ -133,6 +135,8 @@ describe('AgreementAreaTest', () => {
             closeConfirmationModal={jest.fn}
             isConfirmationModalVisible={false}
             editApplication={jest.fn}
+            onSendToFinancing={jest.fn}
+            isSendLoading={false}
           />,
           {
             wrapper: createWrapper,
@@ -166,6 +170,8 @@ describe('AgreementAreaTest', () => {
             closeConfirmationModal={jest.fn}
             isConfirmationModalVisible={false}
             editApplication={jest.fn}
+            onSendToFinancing={jest.fn}
+            isSendLoading={false}
           />,
           {
             wrapper: createWrapper,
@@ -186,6 +192,8 @@ describe('AgreementAreaTest', () => {
           closeConfirmationModal={jest.fn}
           isConfirmationModalVisible={false}
           editApplication={jest.fn}
+          onSendToFinancing={jest.fn}
+          isSendLoading={false}
         />,
         {
           wrapper: createWrapper,
@@ -203,6 +211,8 @@ describe('AgreementAreaTest', () => {
           closeConfirmationModal={jest.fn}
           isConfirmationModalVisible={false}
           editApplication={jest.fn}
+          onSendToFinancing={jest.fn}
+          isSendLoading={false}
         />,
         {
           wrapper: createWrapper,
@@ -224,6 +234,8 @@ describe('AgreementAreaTest', () => {
             closeConfirmationModal={jest.fn}
             isConfirmationModalVisible={false}
             editApplication={jest.fn}
+            onSendToFinancing={jest.fn}
+            isSendLoading={false}
           />,
           {
             wrapper: createWrapper,
@@ -265,6 +277,8 @@ describe('AgreementAreaTest', () => {
             closeConfirmationModal={jest.fn}
             isConfirmationModalVisible={false}
             editApplication={jest.fn}
+            onSendToFinancing={jest.fn}
+            isSendLoading={false}
           />,
           {
             wrapper: createWrapper,
