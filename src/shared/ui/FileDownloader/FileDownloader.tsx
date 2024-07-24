@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { Avatar, IconButton, Link } from '@mui/material'
+import { Avatar, IconButton, Link, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
 import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
@@ -37,6 +37,7 @@ type FileDownloaderProps = {
   isLoading: boolean
   fileOrMetadata: FileOrMetadata | undefined
   onDownloadFile?: () => Promise<File | undefined>
+  tooltipText?: string
 }
 
 export const FileDownloader = ({
@@ -49,6 +50,7 @@ export const FileDownloader = ({
   isLoading,
   fileOrMetadata,
   onDownloadFile,
+  tooltipText,
 }: FileDownloaderProps) => {
   const styles = useStyles()
   // Локальное хранение файла сделано для того,
@@ -70,15 +72,40 @@ export const FileDownloader = ({
     }
   }
 
+  const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
+  const message = loadingMessage ? loadingMessage : 'Файл загружается...'
+
+  const fileName = useMemo(
+    () =>
+      file ? (
+        <Tooltip
+          arrow
+          placement="right"
+          title={tooltipText}
+          classes={{
+            tooltip: styles.tooltip,
+            arrow: styles.tooltipArrow,
+          }}
+        >
+          <Box>
+            <SberTypography className={styles.text} sberautoVariant="body3" component="p">
+              {file?.name || 'Файл'}
+            </SberTypography>
+          </Box>
+        </Tooltip>
+      ) : (
+        <SberTypography className={styles.text} sberautoVariant="body3" component="p">
+          {message}
+        </SberTypography>
+      ),
+    [file, message, styles.text, styles.tooltip, styles.tooltipArrow, tooltipText],
+  )
+
   // Необходим, чтобы при смене пропса, менялся и локальный стэйт file.
   // В противном случае будет отображаться и скачиваться старый файл
   useEffect(() => {
     setFile(fileOrMetadata)
   }, [fileOrMetadata])
-
-  const preview = isFileObject(file) && file ? URL.createObjectURL(file) : undefined
-  const message = loadingMessage ? loadingMessage : 'Файл загружается...'
-  const fileName = file?.name || 'Файл'
 
   return (
     <Box
@@ -110,9 +137,8 @@ export const FileDownloader = ({
               <CircularProgressWheel size="small" />
             </Box>
           )}
-          <SberTypography className={styles.text} sberautoVariant="body3" component="p">
-            {file ? fileName : message}
-          </SberTypography>
+
+          {fileName}
         </Link>
       ) : (
         <Link href="#" onClick={handleDownload} className={styles.fileLink}>
@@ -125,9 +151,8 @@ export const FileDownloader = ({
               <img width="100%" height="100%" src={documentIcon} />
             </Avatar>
           )}
-          <SberTypography className={styles.text} sberautoVariant="body3" component="p">
-            {file ? fileName : message}
-          </SberTypography>
+
+          {fileName}
         </Link>
       )}
 

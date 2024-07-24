@@ -13,6 +13,8 @@ import { FileInfo, UploaderConfig, DocumentUploadStatus } from './ApplicationFil
 import { useDownloadDocument } from './hooks/useDownloadDocument'
 import { useUploadDocument } from './hooks/useUploadDocument'
 
+const RENAMING_TOOLTIP = 'Наименования файла было изменено системой'
+
 type UploaderProps = {
   uploaderConfig: UploaderConfig
   suggest?: string
@@ -105,6 +107,7 @@ const Uploader: React.FC<UploaderProps> = ({
             index={0}
             onClickRemove={handleRemove}
             onDownloadDocuments={downloadFile}
+            tooltipText={RENAMING_TOOLTIP}
           />
         </Box>
         {isError && (
@@ -145,6 +148,7 @@ const Uploader: React.FC<UploaderProps> = ({
                   index={0}
                   onClickRemove={handleRemove}
                   onDownloadDocuments={downloadFile}
+                  tooltipText={RENAMING_TOOLTIP}
                 />
               ) : (
                 <FileUploadButton

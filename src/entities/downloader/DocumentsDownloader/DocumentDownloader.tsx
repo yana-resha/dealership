@@ -16,6 +16,7 @@ type DocumentsDownloaderProps = {
   onClick?: () => void
   onClickRemove?: (index: number) => void
   onDownloadDocuments?: (metadata: DocumentsFileMetadata) => Promise<File>
+  tooltipText?: string
 }
 export const DocumentDownloader = ({
   fileOrMetadata,
@@ -26,6 +27,7 @@ export const DocumentDownloader = ({
   onClick,
   onClickRemove,
   onDownloadDocuments,
+  tooltipText,
 }: DocumentsDownloaderProps) => {
   const [isLoading, setIsLoading] = useState(false)
 
@@ -67,6 +69,7 @@ export const DocumentDownloader = ({
       documentType={documentType}
       onDownloadFile={downloadDocument}
       onClickRemove={removeFile}
+      tooltipText={tooltipText}
     />
   )
 }

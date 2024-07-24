@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useApplicationContext } from 'entities/application/ApplicationProvider'
 import { useCheckDocumentsList } from 'features/ApplicationFileLoader/hooks/useCheckDocumentsList'
 import { useUploadDocumentMutation } from 'shared/api/requests/loanAppLifeCycleDc'
+import { UPLOADED_FILE_NAME_MAP } from 'shared/config/fileLoading.config'
 
 import { FileInfo, UploaderConfig, DocumentUploadStatus } from '../ApplicationFileUploader.types'
 import { checkIsFile } from '../utils/checkIsFile'
@@ -30,7 +31,16 @@ export const useUploadDocument = ({ uploaderConfig, onError, onUploadDocument }:
       return
     }
 
-    onUploadDocument?.(file, documentName, DocumentUploadStatus.Progress)
+    const extension = file.name.split('.').pop()
+    const newName = UPLOADED_FILE_NAME_MAP[documentType]
+      ? `${UPLOADED_FILE_NAME_MAP[documentType]}.${extension}`
+      : documentName
+    const renamedFile = new File([file], newName, {
+      type: file.type,
+      lastModified: file.lastModified,
+    })
+
+    onUploadDocument?.(renamedFile, documentName, DocumentUploadStatus.Progress)
     try {
       const dcAppId = await onGetOrderId?.()
       if (!dcAppId) {
@@ -39,20 +49,20 @@ export const useUploadDocument = ({ uploaderConfig, onError, onUploadDocument }:
 
       await uploadDocumentMutate({
         dcAppId,
-        file,
+        file: renamedFile,
         documentType,
       })
-      onUploadDocument?.(file, documentName, DocumentUploadStatus.Sended)
+      onUploadDocument?.(renamedFile, documentName, DocumentUploadStatus.Sended)
 
       // Опрашиваем бэк о статусе загрузки файлов
       const uploadedDocuments = await checkApplicationDocumentsList(dcAppId, [documentType])
       if (!uploadedDocuments.length) {
         throw new Error('Failed to upload the document')
       }
-      onUploadDocument?.(file, documentName, DocumentUploadStatus.Uploaded)
+      onUploadDocument?.(renamedFile, documentName, DocumentUploadStatus.Uploaded)
     } catch (err) {
       onError?.(documentName)
-      onUploadDocument?.(file, documentName, DocumentUploadStatus.Error)
+      onUploadDocument?.(renamedFile, documentName, DocumentUploadStatus.Error)
     }
   }, [
     checkApplicationDocumentsList,
