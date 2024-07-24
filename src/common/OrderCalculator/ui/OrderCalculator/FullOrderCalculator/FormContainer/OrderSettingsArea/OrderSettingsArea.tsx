@@ -30,10 +30,10 @@ import useStyles from './OrderSettingsArea.styles'
 type Props = {
   disabled: boolean
   isSubmitLoading: boolean
-  disabledSubmit: boolean
+  isDisabledSubmit: boolean
 }
 
-export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, disabledSubmit }: Props, ref) => {
+export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisabledSubmit }: Props, ref) => {
   const classes = useStyles()
   const { vendorCode } = getPointOfSaleFromCookies()
   const {
@@ -121,9 +121,9 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, disabl
 
   const isSectionLoading = isLimitsLoading || isVendorOptionsLoading
   const isSectionLoaded = !isSectionLoading && isLimitsSuccess && isVendorOptionsSuccess
-  const isSectionError = !isSectionLoaded && !(isLimitsSuccess && isVendorOptionsSuccess)
+  const isSectionError = !isSectionLoading && (!isLimitsSuccess || !isVendorOptionsSuccess)
   const isSubmitBtnLoading = isSubmitLoading || isSectionLoading
-  const isSubmitBtnDisabled = disabledSubmit || isSectionError
+  const isSubmitBtnDisabled = isDisabledSubmit || isSectionError
 
   return (
     <CollapsibleFormAreaContainer

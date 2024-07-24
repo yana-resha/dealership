@@ -9,7 +9,7 @@ import { useGetCarsListQuery } from './useGetCarsListQuery'
 
 export function useCarSection() {
   const { vendorCode } = getPointOfSaleFromCookies()
-  const { data, isLoading, isSuccess } = useGetCarsListQuery({ vendorCode })
+  const { data, isLoading, isSuccess, isError } = useGetCarsListQuery({ vendorCode })
   const [carConditionField] = useField<number>(FormFieldNameMap.carCondition)
   const cars = useMemo(
     () => ({ ...(carConditionField.value ? data?.newCars : data?.usedCars) }),
@@ -20,5 +20,6 @@ export function useCarSection() {
     cars,
     isLoading,
     isSuccess,
+    isError,
   }
 }

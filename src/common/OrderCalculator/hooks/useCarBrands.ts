@@ -11,7 +11,9 @@ import { useCarSection } from './useCarSection'
 export function useCarBrands() {
   const { values, setFieldValue } = useFormikContext<BriefOrderCalculatorFields | FullOrderCalculatorFields>()
   const { carBrand, carModel } = values
-  const { cars } = useCarSection()
+  const { cars, isLoading, isSuccess, isError } = useCarSection()
+  const isCarLoaded = isSuccess && !isLoading
+  const isCarError = isError && !isLoading
 
   const carBrands = useMemo(() => Object.keys(cars).sort(compareStrings), [cars])
   const carModels = useMemo(
@@ -20,16 +22,23 @@ export function useCarBrands() {
   )
 
   useEffect(() => {
-    if (carBrand && !carBrands.includes(carBrand)) {
+    if (carBrand && isCarLoaded && !carBrands.includes(carBrand)) {
       setFieldValue(FormFieldNameMap.carBrand, initialValueMap.carBrand)
     }
-  }, [carBrand, carBrands, setFieldValue])
+  }, [carBrand, carBrands, isCarLoaded, setFieldValue])
 
   useEffect(() => {
-    if (carModel && !carModels.includes(carModel)) {
+    if (carModel && isCarLoaded && !carModels.includes(carModel)) {
       setFieldValue(FormFieldNameMap.carModel, initialValueMap.carModel)
     }
-  }, [carModel, carModels, setFieldValue])
+  }, [carModel, carModels, isCarLoaded, setFieldValue])
 
-  return { carBrands, carModels, isDisabledCarModel: !carBrand }
+  return {
+    carBrands,
+    carModels,
+    isDisabledCarModel: !carBrand,
+    isCarsLoading: isLoading,
+    isCarLoaded,
+    isCarError,
+  }
 }

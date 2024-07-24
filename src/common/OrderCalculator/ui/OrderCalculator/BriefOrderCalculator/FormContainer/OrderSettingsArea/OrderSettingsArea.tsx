@@ -124,7 +124,7 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
 
   const isSectionLoading = isLimitsLoading || isVendorOptionsLoading
   const isSectionLoaded = !isSectionLoading && isLimitsSuccess && isVendorOptionsSuccess
-  const isSectionError = !isSectionLoaded && !(isLimitsSuccess && isVendorOptionsSuccess)
+  const isSectionError = !isSectionLoading && (!isLimitsSuccess || !isVendorOptionsSuccess)
   const isSubmitBtnLoading = isSubmitLoading || isSectionLoading
   const isSubmitBtnDisabled = isDisabledSubmit || isSectionError
 

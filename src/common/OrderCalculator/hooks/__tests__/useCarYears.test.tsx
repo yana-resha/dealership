@@ -57,6 +57,7 @@ describe('useCarYears', () => {
         cars: INITIAL_CARS.newCars,
         isLoading: false,
         isSuccess: false,
+        isError: false,
       }))
     })
 
@@ -87,6 +88,7 @@ describe('useCarYears', () => {
         cars: INITIAL_CARS.usedCars,
         isLoading: false,
         isSuccess: false,
+        isError: false,
       }))
     })
 
@@ -117,6 +119,7 @@ describe('useCarYears', () => {
         cars: INITIAL_CARS.newCars,
         isLoading: false,
         isSuccess: false,
+        isError: false,
       }))
     })
 
