@@ -35,7 +35,7 @@ export function JobArea() {
   const [jobDisabled, setJobDisabled] = useState(false)
   const [isEmplAddressDialogVisible, setIsEmplAddressDialogVisible] = useState(false)
 
-  const { values, setFieldValue } = useFormikContext<ClientData>()
+  const { values, touched, setFieldValue, setFieldTouched } = useFormikContext<ClientData>()
   const {
     occupation,
     employerAddress,
@@ -68,8 +68,13 @@ export function JobArea() {
     [data?.suggestions],
   )
 
+  const handleEmployerNameChange = useCallback(() => {
+    !touched.employerName && setFieldTouched('employerName', true, true)
+  }, [setFieldTouched, touched])
+
   const handleEmployerNameSelect = useCallback(
     (value: string | string[] | null) => {
+      handleEmployerNameChange()
       if (typeof value !== 'string') {
         return
       }
@@ -82,7 +87,7 @@ export function JobArea() {
         }
       }
     },
-    [employerNameSuggestionsMap, setFieldValue],
+    [employerNameSuggestionsMap, handleEmployerNameChange, setFieldValue],
   )
 
   const updateListOfSuggestions = useMemo(
@@ -208,6 +213,7 @@ export function JobArea() {
         gridColumn="span 12"
         disabled={jobDisabled}
         onSelectOption={handleEmployerNameSelect}
+        onChange={handleEmployerNameChange}
       />
       <Box gridColumn="span 4" />
 

@@ -279,6 +279,13 @@ export const clientFormValidationSchema = Yup.object().shape({
     }),
   employerName: Yup.string()
     .nullable()
+    .test('isLongEmployerName', (value, context) =>
+      value && value.length > 120
+        ? context.createError({
+            message: `Наименование организации составляет ${value.length} символов из допустимых 120. Необходимо сократить наименование`,
+          })
+        : true,
+    )
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
       otherwise: schema => setRequiredIfSave(schema),
