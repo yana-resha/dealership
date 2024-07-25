@@ -42,4 +42,9 @@ export default makeStyles(theme => ({
     height: 40,
     width: '100%',
   },
+
+  tooltipContainer: {
+    width: 'min-content',
+    height: 'min-content',
+  },
 }))
