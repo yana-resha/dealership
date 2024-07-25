@@ -1,25 +1,25 @@
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { theme } from 'app/theme'
 import { Status } from 'shared/ui/Status/Status'
 
 import { getStatus, PreparedStatus } from '../application.utils'
 
-//FIXME: Брать цвета из темы
 export const statusListItems: Record<string, string> = {
-  [PreparedStatus.initial]: '#0B6B9D',
-  [PreparedStatus.processed]: '#FF971E',
-  [PreparedStatus.approved]: '#17A131',
-  [PreparedStatus.finallyApproved]: '#17A131',
-  [PreparedStatus.formation]: '#17A131',
-  [PreparedStatus.rejected]: '#FF2E43',
-  [PreparedStatus.clientRejected]: '#FF2E43',
-  [PreparedStatus.canceledDeal]: '#D3D3D3',
-  [PreparedStatus.canceled]: '#D7DCE1',
-  [PreparedStatus.signed]: '#17A131',
-  [PreparedStatus.authorized]: '#FF971E',
-  [PreparedStatus.financed]: '#17A131',
-  [PreparedStatus.error]: '#FF0000',
-  [PreparedStatus.issueError]: '#FF0000',
+  [PreparedStatus.initial]: theme.palette.status.initial,
+  [PreparedStatus.processed]: theme.palette.status.processed,
+  [PreparedStatus.approved]: theme.palette.status.approved,
+  [PreparedStatus.finallyApproved]: theme.palette.status.approved,
+  [PreparedStatus.formation]: theme.palette.status.approved,
+  [PreparedStatus.rejected]: theme.palette.status.rejected,
+  [PreparedStatus.clientRejected]: theme.palette.status.rejected,
+  [PreparedStatus.canceledDeal]: theme.palette.status.canceled,
+  [PreparedStatus.canceled]: theme.palette.status.canceled,
+  [PreparedStatus.signed]: theme.palette.status.approved,
+  [PreparedStatus.authorized]: theme.palette.status.processed,
+  [PreparedStatus.financed]: theme.palette.status.approved,
+  [PreparedStatus.error]: theme.palette.status.error,
+  [PreparedStatus.issueError]: theme.palette.status.error,
 }
 
 type Props = {

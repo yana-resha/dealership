@@ -21,19 +21,19 @@ describe('ApplicationStatus', () => {
       render(<ApplicationStatus status={StatusCode.REJECTED} />)
 
       expect(screen.getByText('Отказ')).toBeInTheDocument()
-      expect(screen.getByText('Отказ')).toHaveStyle('background-color: rgb(255, 46, 67)')
+      expect(screen.getByText('Отказ')).toHaveStyle('background-color: rgb(144, 77, 48)')
     })
     it('clientRejected', () => {
       render(<ApplicationStatus status={StatusCode.CLIENT_REJECTED} />)
 
       expect(screen.getByText('Отказ по клиенту')).toBeInTheDocument()
-      expect(screen.getByText('Отказ по клиенту')).toHaveStyle('background-color: rgb(255, 46, 67)')
+      expect(screen.getByText('Отказ по клиенту')).toHaveStyle('background-color: rgb(144, 77, 48)')
     })
     it('error', () => {
       render(<ApplicationStatus status={StatusCode.ERROR} />)
 
       expect(screen.getByText('Ошибка')).toBeInTheDocument()
-      expect(screen.getByText('Ошибка')).toHaveStyle('background-color: rgb(255, 0, 0)')
+      expect(screen.getByText('Ошибка')).toHaveStyle('background-color: rgb(211, 47, 47)')
     })
     it('approved', () => {
       render(<ApplicationStatus status={StatusCode.APPROVED} />)
@@ -45,7 +45,7 @@ describe('ApplicationStatus', () => {
       render(<ApplicationStatus status={StatusCode.CANCELED} />)
 
       expect(screen.getByText('Отменен')).toBeInTheDocument()
-      expect(screen.getByText('Отменен')).toHaveStyle('background-color: rgb(215, 220, 225)')
+      expect(screen.getByText('Отменен')).toHaveStyle('background-color: rgb(211, 211, 211)')
     })
     it('authorized', () => {
       render(<ApplicationStatus status={StatusCode.AUTHORIZED} />)
@@ -56,8 +56,8 @@ describe('ApplicationStatus', () => {
     it('canceledDeal', () => {
       render(<ApplicationStatus status={StatusCode.CANCELED_DEAL} />)
 
-      expect(screen.getByText('КД Отменен')).toBeInTheDocument()
-      expect(screen.getByText('КД Отменен')).toHaveStyle('background-color: rgb(211, 211, 211)')
+      expect(screen.getByText('Истек срок одобрения')).toBeInTheDocument()
+      expect(screen.getByText('Истек срок одобрения')).toHaveStyle('background-color: rgb(211, 211, 211)')
     })
     it('finallyApproved', () => {
       render(<ApplicationStatus status={StatusCode.FINALLY_APPROVED} />)
@@ -74,8 +74,8 @@ describe('ApplicationStatus', () => {
     it('formation', () => {
       render(<ApplicationStatus status={StatusCode.FORMATION} />)
 
-      expect(screen.getByText('Формирование КД')).toBeInTheDocument()
-      expect(screen.getByText('Формирование КД')).toHaveStyle('background-color: rgb(23, 161, 49)')
+      expect(screen.getByText('Подписание КД')).toBeInTheDocument()
+      expect(screen.getByText('Подписание КД')).toHaveStyle('background-color: rgb(23, 161, 49)')
     })
     it('signed', () => {
       render(<ApplicationStatus status={StatusCode.SIGNED} />)
@@ -90,6 +90,6 @@ describe('ApplicationStatus', () => {
     render(<ApplicationStatus status="Какой-то не валидный статус" />)
 
     expect(screen.getByText('Ошибка')).toBeInTheDocument()
-    expect(screen.getByText('Ошибка')).toHaveStyle('background-color: rgb(255, 0, 0)')
+    expect(screen.getByText('Ошибка')).toHaveStyle('background-color: rgb(211, 47, 47)')
   })
 })

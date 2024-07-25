@@ -172,18 +172,12 @@ export const theme = createTheme({
   },
   palette: {
     status: {
-      initial: '#0000FF',
-      processed: '#FF8C00',
-      approved: '#228B22',
-      finallyApproved: '#008000',
-      formation: '#008000',
-      rejected: '#8B0000',
-      canceledDeal: '#D3D3D3',
+      initial: '#0B6B9D',
+      processed: '#FF971E',
+      approved: '#17A131',
+      rejected: '#904d30',
       canceled: '#D3D3D3',
-      signed: '#008000',
-      authorized: '#00FF00',
-      financed: '#00FF7F',
-      error: '#FF0000',
+      error: '#D32f2f',
     },
     sber: {
       main: '#17A131',
@@ -235,14 +229,8 @@ declare module '@mui/material/styles' {
       initial: React.CSSProperties['color']
       processed: React.CSSProperties['color']
       approved: React.CSSProperties['color']
-      finallyApproved: React.CSSProperties['color']
-      formation: React.CSSProperties['color']
       rejected: React.CSSProperties['color']
-      canceledDeal: React.CSSProperties['color']
       canceled: React.CSSProperties['color']
-      signed: React.CSSProperties['color']
-      authorized: React.CSSProperties['color']
-      financed: React.CSSProperties['color']
       error: React.CSSProperties['color']
     }
 
@@ -262,14 +250,8 @@ declare module '@mui/material/styles' {
     initial: string
     processed: string
     approved: string
-    finallyApproved: string
-    formation: string
     rejected: string
-    canceledDeal: string
     canceled: string
-    signed: string
-    authorized: string
-    financed: string
     error: string
   }
 
@@ -279,14 +261,8 @@ declare module '@mui/material/styles' {
     initial?: string
     processed?: string
     approved?: string
-    finallyApproved?: string
-    formation?: string
     rejected?: string
-    canceledDeal?: string
     canceled?: string
-    signed?: string
-    authorized?: string
-    financed?: string
     error?: string
   }
 }
