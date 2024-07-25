@@ -1,3 +1,5 @@
+import { useCallback } from 'react'
+
 import { AutocompleteRenderOptionState, Box } from '@mui/material'
 
 import { Masked } from '../../masks/InputMasks'
@@ -21,6 +23,7 @@ type Props = {
   mask?: Masked
   disabled?: boolean
   onSelectOption?: (val: string | string[] | null) => void
+  onChange?: (val: string | string[] | null) => void
 }
 
 export const AutocompleteInputFormik = ({
@@ -35,8 +38,17 @@ export const AutocompleteInputFormik = ({
   mask,
   disabled,
   onSelectOption,
+  onChange: onChangeProp,
 }: Props) => {
   const { value, isError, error, onChange } = useFormikWrapper(name)
+
+  const handleChange = useCallback(
+    (value: string | string[] | null) => {
+      onChange(value)
+      onChangeProp?.(value)
+    },
+    [onChange, onChangeProp],
+  )
 
   return (
     <Box gridColumn={gridColumn}>
@@ -52,7 +64,7 @@ export const AutocompleteInputFormik = ({
         disabled={disabled}
         id={name}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         isError={isError}
         mask={mask}
         errorMessage={error}
