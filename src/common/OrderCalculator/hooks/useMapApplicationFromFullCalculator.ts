@@ -61,7 +61,7 @@ const getBankOptionDocNumber = (optionType: string | null, dcAppId: string | und
   switch (optionType) {
     case BankOptionProductType.FIRST:
     case BankOptionProductType.THIRD:
-      return '007SE056' + (dcAppId || '').slice(0, 18)
+      return '008SE054' + (dcAppId || '').slice(0, 18)
     case BankOptionProductType.SECOND:
     case BankOptionProductType.FOURTH:
       return '077SE680' + (dcAppId || '').slice(0, 18)
