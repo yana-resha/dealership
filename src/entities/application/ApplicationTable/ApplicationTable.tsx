@@ -1,3 +1,5 @@
+import { useCallback } from 'react'
+
 import {
   Box,
   Skeleton,
@@ -13,6 +15,7 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import cx from 'classnames'
 
 import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
+import { getTablePage, INITIAL_TABLE_PAGE, setTablePage, TableType } from 'shared/tableCurrentPage'
 import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
@@ -31,35 +34,38 @@ import { getCellsChildren } from './ApplicationTable.utils'
 
 type Props = {
   data: PreparedTableData[]
-  onClickRow: (index: string, page: number) => void
-  startPage?: number
-  isLoading?: boolean
+  onClickRow: (index: string) => void
+  isLoading: boolean
+  isFetched: boolean
   rowsPerPage?: number
 }
 
 export const ApplicationTable = ({
   data,
   onClickRow,
-  startPage = 1,
   isLoading,
+  isFetched,
   rowsPerPage: rowsPerPageProp,
 }: Props) => {
   const classes = useStyles()
 
-  const {
-    tableBodyRef,
-    currentRowData,
-    emptyRows,
-    pageCount,
-    page,
-    rowsPerPage,
-    rowHeight,
-    handleChangePage,
-  } = useRowsPerPage({
-    data,
-    startPage,
-    rowsPerPage: rowsPerPageProp,
-  })
+  const startPage = getTablePage(TableType.APPLICATION) || INITIAL_TABLE_PAGE
+
+  const { tableBodyRef, currentRowData, emptyRows, pageCount, page, rowsPerPage, rowHeight, changePage } =
+    useRowsPerPage({
+      data,
+      startPage,
+      rowsPerPage: rowsPerPageProp,
+      isDataLoaded: !isLoading && isFetched,
+    })
+
+  const handleChangePage = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+      changePage(newPage)
+      setTablePage(TableType.APPLICATION, newPage)
+    },
+    [changePage],
+  )
 
   if (isLoading) {
     return (
@@ -126,7 +132,7 @@ export const ApplicationTable = ({
           <TableRow
             key={row.applicationNumber}
             className={classes.bodyRow}
-            onClick={() => onClickRow(row.applicationNumber, page)}
+            onClick={() => onClickRow(row.applicationNumber)}
           >
             {getCellsChildren(row).map((cell, i) => (
               <TableCell

@@ -38,8 +38,9 @@ export function OrderSearching({ nextStep }: Props) {
   const closeModal = useCallback(() => setVisibleModal(false), [])
 
   const {
-    isSuccess: isSuccessFindApplicationsQuery,
-    isLoading: isLoadingFindApplicationsQuery,
+    isSuccess: isFindApplicationsQuerySuccess,
+    isLoading: isFindApplicationsQueryLoading,
+    isFetched: isFindApplicationsQueryFetched,
     refetch,
     remove,
     data: orderData = [],
@@ -123,8 +124,8 @@ export function OrderSearching({ nextStep }: Props) {
   }, [dispatch])
 
   const isShowNewForm =
-    isSuccessFindApplicationsQuery &&
-    !isLoadingFindApplicationsQuery &&
+    isFindApplicationsQuerySuccess &&
+    !isFindApplicationsQueryLoading &&
     !orderData?.length &&
     isVisibleNewOrderForm
 
@@ -133,13 +134,13 @@ export function OrderSearching({ nextStep }: Props) {
       <OrderForm
         isShowWarning={isShowNewForm && !isCreatingFormTouched}
         initialData={initialOrderData}
-        isLoading={isLoadingFindApplicationsQuery}
+        isLoading={isFindApplicationsQueryLoading}
         onSubmit={findOrders}
         onChange={handleSearchingFormChange}
         isDisabledSubmit={isShowNewForm}
       />
 
-      {isLoadingFindApplicationsQuery ? (
+      {isFindApplicationsQueryLoading ? (
         <>
           <Skeleton height={72} width="100%" />
           <Skeleton height={72} width="100%" />
@@ -157,10 +158,11 @@ export function OrderSearching({ nextStep }: Props) {
             />
           )}
 
-          {isSuccessFindApplicationsQuery && !!orderData?.length && (
+          {isFindApplicationsQuerySuccess && !!orderData?.length && (
             <ApplicationTable
               data={orderData}
-              isLoading={false}
+              isLoading={isFindApplicationsQueryLoading}
+              isFetched={isFindApplicationsQueryFetched}
               rowsPerPage={-1}
               onClickRow={handleRowClick}
             />

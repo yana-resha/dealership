@@ -14,7 +14,6 @@ jest.mock('pages/Emails/ui/EmailTable/EmailRow')
 const createWrapper = ({ children }: PropsWithChildren) => <ThemeProviderMock>{children}</ThemeProviderMock>
 
 const mockedNavigate = jest.fn()
-const mockedChangeStartPage = jest.fn()
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -37,28 +36,17 @@ jest.mock('shared/hooks/useRowsPerPage', () => ({
 
 describe('EmailTable', () => {
   it('Если isLoading=true, то отображается лоадер - skeletons', () => {
-    render(
-      <EmailTable
-        emails={mockedPreparedEmails.emails}
-        isLoading={true}
-        changeStartPage={mockedChangeStartPage}
-        startPage={1}
-      />,
-      {
-        wrapper: createWrapper,
-      },
-    )
+    render(<EmailTable emails={mockedPreparedEmails.emails} isLoading={true} isFetched={true} />, {
+      wrapper: createWrapper,
+    })
     expect(screen.queryByTestId('dealershipclient.Emails.EmailTable.SkeletonContainer')).toBeInTheDocument()
     expect(screen.queryByTestId('dealershipclient.Emails.EmailTable')).not.toBeInTheDocument()
   })
 
   it('Если isLoading=true, то отображается лоадер - skeletons', () => {
-    render(
-      <EmailTable emails={[]} isLoading={false} changeStartPage={mockedChangeStartPage} startPage={1} />,
-      {
-        wrapper: createWrapper,
-      },
-    )
+    render(<EmailTable emails={[]} isLoading={false} isFetched={true} />, {
+      wrapper: createWrapper,
+    })
     expect(
       screen.queryByTestId('dealershipclient.Emails.EmailTable.SkeletonContainer'),
     ).not.toBeInTheDocument()
@@ -67,17 +55,9 @@ describe('EmailTable', () => {
   })
 
   it('Если isLoading=false и emails не пуст, то отображается таблица с письмами', () => {
-    render(
-      <EmailTable
-        emails={mockedPreparedEmails.emails}
-        isLoading={false}
-        changeStartPage={mockedChangeStartPage}
-        startPage={1}
-      />,
-      {
-        wrapper: createWrapper,
-      },
-    )
+    render(<EmailTable emails={mockedPreparedEmails.emails} isLoading={false} isFetched={true} />, {
+      wrapper: createWrapper,
+    })
     expect(
       screen.queryByTestId('dealershipclient.Emails.EmailTable.SkeletonContainer'),
     ).not.toBeInTheDocument()
@@ -86,34 +66,17 @@ describe('EmailTable', () => {
   })
 
   it('При клике на строку вызывается changeStartPage и navigate на заявку', () => {
-    render(
-      <EmailTable
-        emails={mockedPreparedEmails.emails}
-        isLoading={false}
-        changeStartPage={mockedChangeStartPage}
-        startPage={1}
-      />,
-      {
-        wrapper: createWrapper,
-      },
-    )
+    render(<EmailTable emails={mockedPreparedEmails.emails} isLoading={false} isFetched={true} />, {
+      wrapper: createWrapper,
+    })
     userEvent.click(screen.getByTestId('dealershipclient.Emails.EmailTable.EmailRow'))
-    expect(mockedChangeStartPage).toHaveBeenCalledWith(1)
     expect(mockedNavigate).toHaveBeenCalledWith(appRoutes.detailedEmail('1'))
   })
 
   it('Отображается пагинация', () => {
-    render(
-      <EmailTable
-        emails={mockedPreparedEmails.emails}
-        isLoading={false}
-        changeStartPage={mockedChangeStartPage}
-        startPage={1}
-      />,
-      {
-        wrapper: createWrapper,
-      },
-    )
+    render(<EmailTable emails={mockedPreparedEmails.emails} isLoading={false} isFetched={true} />, {
+      wrapper: createWrapper,
+    })
     expect(screen.getByTestId('dealershipclient.Emails.EmailTable.TablePagination')).toBeInTheDocument()
   })
 })

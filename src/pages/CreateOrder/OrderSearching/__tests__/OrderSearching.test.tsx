@@ -3,10 +3,13 @@ import { PropsWithChildren } from 'react'
 
 import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { UseQueryResult } from 'react-query'
 import configureMockStore from 'redux-mock-store'
 
 import * as ApiHooks from 'common/findApplication/findApplications/hooks/useFindApplicationsQuery'
+import { PreparedTableData } from 'entities/application/ApplicationTable/ApplicationTable.types'
 import * as orderSlice from 'entities/reduxStore/orderSlice'
+import { CustomFetchError } from 'shared/api/client'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -50,13 +53,16 @@ describe('OrderSearching', () => {
 
   describe('Элементы формы отображаются', () => {
     it('Изначально отображается только форма поиска заявки', () => {
-      mockedUseFindApplications.mockImplementation(() => ({
-        isSuccess: false,
-        isLoading: false,
-        data: undefined,
-        refetch: mockRefetch,
-        remove: jest.fn(),
-      }))
+      mockedUseFindApplications.mockImplementation(
+        () =>
+          ({
+            isSuccess: false,
+            isLoading: false,
+            data: undefined,
+            refetch: mockRefetch,
+            remove: jest.fn(),
+          } as unknown as UseQueryResult<PreparedTableData[], CustomFetchError>),
+      )
 
       render(<OrderSearching nextStep={nextStep} />, {
         wrapper: createWrapper,
@@ -69,13 +75,16 @@ describe('OrderSearching', () => {
     })
 
     it('Если поиск не дал результатов, то отображается дополнительно форма новой заявки ', async () => {
-      mockedUseFindApplications.mockImplementation(() => ({
-        isSuccess: true,
-        isLoading: false,
-        data: undefined,
-        refetch: mockRefetch,
-        remove: jest.fn(),
-      }))
+      mockedUseFindApplications.mockImplementation(
+        () =>
+          ({
+            isSuccess: true,
+            isLoading: false,
+            data: undefined,
+            refetch: mockRefetch,
+            remove: jest.fn(),
+          } as unknown as UseQueryResult<PreparedTableData[], CustomFetchError>),
+      )
 
       render(<OrderSearching nextStep={nextStep} />, {
         wrapper: createWrapper,
@@ -110,13 +119,16 @@ describe('OrderSearching', () => {
     })
 
     it('После ответа поиска заявки отображается таблица заявок', () => {
-      mockedUseFindApplications.mockImplementation(() => ({
-        isSuccess: true,
-        isLoading: false,
-        data: applicationTabledataMock,
-        refetch: mockRefetch,
-        remove: jest.fn(),
-      }))
+      mockedUseFindApplications.mockImplementation(
+        () =>
+          ({
+            isSuccess: true,
+            isLoading: false,
+            data: applicationTabledataMock,
+            refetch: mockRefetch,
+            remove: jest.fn(),
+          } as unknown as UseQueryResult<PreparedTableData[], CustomFetchError>),
+      )
 
       render(<OrderSearching nextStep={nextStep} />, {
         wrapper: createWrapper,
@@ -129,13 +141,16 @@ describe('OrderSearching', () => {
     })
 
     it('После ошибки создания заявки отображается модалка с ошибкой', async () => {
-      mockedUseFindApplications.mockImplementation(() => ({
-        isSuccess: true,
-        isLoading: false,
-        data: undefined,
-        refetch: mockRefetch,
-        remove: jest.fn(),
-      }))
+      mockedUseFindApplications.mockImplementation(
+        () =>
+          ({
+            isSuccess: true,
+            isLoading: false,
+            data: undefined,
+            refetch: mockRefetch,
+            remove: jest.fn(),
+          } as unknown as UseQueryResult<PreparedTableData[], CustomFetchError>),
+      )
 
       jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(false))
 
@@ -195,13 +210,16 @@ describe('OrderSearching', () => {
       },
     }
 
-    mockedUseFindApplications.mockImplementation(() => ({
-      isSuccess: true,
-      isLoading: false,
-      data: undefined,
-      refetch: mockRefetch,
-      remove: jest.fn(),
-    }))
+    mockedUseFindApplications.mockImplementation(
+      () =>
+        ({
+          isSuccess: true,
+          isLoading: false,
+          data: undefined,
+          refetch: mockRefetch,
+          remove: jest.fn(),
+        } as unknown as UseQueryResult<PreparedTableData[], CustomFetchError>),
+    )
 
     jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(true))
     const mockSetOrder = jest.spyOn(orderSlice, 'setOrder')
@@ -232,13 +250,16 @@ describe('OrderSearching', () => {
       },
     }
 
-    mockedUseFindApplications.mockImplementation(() => ({
-      isSuccess: true,
-      isLoading: false,
-      data: undefined,
-      refetch: mockRefetch,
-      remove: jest.fn(),
-    }))
+    mockedUseFindApplications.mockImplementation(
+      () =>
+        ({
+          isSuccess: true,
+          isLoading: false,
+          data: undefined,
+          refetch: mockRefetch,
+          remove: jest.fn(),
+        } as unknown as UseQueryResult<PreparedTableData[], CustomFetchError>),
+    )
 
     jest.spyOn(Hooks, 'useCheckIfSberClient').mockImplementation(useCheckIfSberClientCreator(true))
     const mockUpdateOrder = jest.spyOn(orderSlice, 'updateOrder')

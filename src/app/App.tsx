@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { store } from 'app/store'
 import { AuthProvider } from 'common/auth'
 import { TabBlocker } from 'entities/tabManagement'
+import { useInitialTablePagesClearing } from 'shared/tableCurrentPage'
 
 import { Router } from './Router'
 import { theme } from './theme'
@@ -16,6 +17,8 @@ const queryClient = new QueryClient({
 })
 
 export function App() {
+  useInitialTablePagesClearing()
+
   return (
     <QueryClientProvider client={queryClient}>
       <StoreProvider store={store}>
