@@ -28,6 +28,9 @@ jest.mock('common/OrderCalculator/hooks/useCarBrands.ts', () => ({
     carBrands: ['BMW', 'Fiat'],
     carModels: ['1 series', '3 series'],
     isDisabledCarModel: false,
+    isCarsLoading: false,
+    isCarLoaded: true,
+    isCarError: false,
   }),
 }))
 

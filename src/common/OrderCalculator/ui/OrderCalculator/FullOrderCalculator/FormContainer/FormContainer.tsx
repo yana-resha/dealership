@@ -155,7 +155,7 @@ export function FormContainer({
         <OrderSettingsArea
           ref={orderSettingsAreaRef}
           disabled={!shouldShowOrderSettings}
-          disabledSubmit={isRequisitesQueryLoading || isDisabledFormSubmit}
+          isDisabledSubmit={isRequisitesQueryLoading || isDisabledFormSubmit}
           isSubmitLoading={isSubmitLoading}
         />
       </RequisitesContextProvider>

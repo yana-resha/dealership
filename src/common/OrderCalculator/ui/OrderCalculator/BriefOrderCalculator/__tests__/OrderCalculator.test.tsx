@@ -85,7 +85,12 @@ describe('OrderCalculator', () => {
           initialValues: initialValueMap,
         } as any),
     )
-    mockedUseCarSection.mockImplementation(() => ({ cars: CAR_BRANDS, isLoading: false, isSuccess: true }))
+    mockedUseCarSection.mockImplementation(() => ({
+      cars: CAR_BRANDS,
+      isLoading: false,
+      isSuccess: true,
+      isError: false,
+    }))
     mockedUseAppSelector.mockImplementation(() => fullApplicationData.application?.applicant?.birthDate)
   })
 
