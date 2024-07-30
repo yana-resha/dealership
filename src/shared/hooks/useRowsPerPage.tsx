@@ -82,10 +82,10 @@ export const useRowsPerPage = <T,>({
   }, [heightDelta, tableBodyHeight])
 
   useEffect(() => {
-    if (isDataLoaded && page > pageCount) {
+    if (isDataLoaded && rowsPerPage >= 0 && page > pageCount) {
       setPage(pageCount)
     }
-  }, [data, isDataLoaded, page, pageCount])
+  }, [data, isDataLoaded, page, pageCount, rowsPerPage])
 
   return {
     tableBodyRef,
