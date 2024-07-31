@@ -91,3 +91,6 @@ export function prepareEmailStatusCode(code: keyof typeof EmailStatusCode): Emai
   return EmailStatusCode[code] ?? EmailStatusCode.INITIAL
 }
 export const checkIsNumber = (val: any): val is number => typeof val === 'number' && !isNaN(val)
+
+export const getTaxFromPercent = (price: number, taxPercent: number) =>
+  (price * taxPercent) / (100 + taxPercent)

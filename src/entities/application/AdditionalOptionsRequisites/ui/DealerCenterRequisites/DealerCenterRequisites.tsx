@@ -5,6 +5,7 @@ import { useFormikContext } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_SERVICE, fullInitialValueMap } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { checkIsNumber, getTaxFromPercent } from 'shared/lib/helpers'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -34,12 +35,15 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
     beneficiaryBank,
     taxPresence,
     isCustomFields,
-    loanAmount,
     carCost,
     initialPayment,
     additionalEquipments,
     dealerAdditionalServices,
+    bankAdditionalServices,
   } = values
+
+  const carCostNum = stringToNumber(carCost) || 0
+  const initialPaymentNum = stringToNumber(initialPayment) || 0
 
   const legalPersonOptions = useMemo(
     () =>
@@ -108,19 +112,25 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
 
       return acc
     }, 0)
+    const bankServicesConst = bankAdditionalServices?.reduce((acc, option) => {
+      // банковские допы всегда в кредит
+      acc += stringToNumber(option[FormFieldNameMap.productCost]) ?? 0
 
-    return equipmentCost + dealerServicesConst
-  }, [additionalEquipments, dealerAdditionalServices])
+      return acc
+    }, 0)
+
+    return equipmentCost + dealerServicesConst + bankServicesConst
+  }, [additionalEquipments, bankAdditionalServices, dealerAdditionalServices])
 
   useEffect(() => {
-    const loanAmount = parseInt(carCost, 10) + priceOfAdditionalOptionsInCredit - parseInt(initialPayment, 10)
+    const loanAmount = carCostNum + priceOfAdditionalOptionsInCredit - initialPaymentNum
     setFieldValue(
       namePrefix + 'loanAmount',
       loanAmount >= 0 ? `${loanAmount}` : fullInitialValueMap[FormFieldNameMap.loanAmount],
     )
     // Исключены лишние зависимости, чтобы избежать случайных перерендеров
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [carCost, initialPayment, priceOfAdditionalOptionsInCredit])
+  }, [carCostNum, initialPaymentNum, priceOfAdditionalOptionsInCredit])
 
   useEffect(() => {
     setFieldValue(namePrefix + 'legalPersonName', currentLegalPerson?.vendorName)
@@ -129,17 +139,18 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
   }, [currentLegalPerson?.vendorName, namePrefix])
 
   useEffect(() => {
-    if (currentLegalPerson?.tax) {
-      setFieldValue(namePrefix + 'taxPercent', currentLegalPerson?.tax)
-      setFieldValue(
-        namePrefix + 'taxValue',
-        (currentLegalPerson?.tax * (stringToNumber(loanAmount) ?? 0)) / 100,
-      )
-    } else {
-      setFieldValue(namePrefix + 'taxPercent', FULL_INITIAL_ADDITIONAL_SERVICE[FormFieldNameMap.taxPercent])
-      setFieldValue(namePrefix + 'taxValue', FULL_INITIAL_ADDITIONAL_SERVICE[FormFieldNameMap.taxValue])
-    }
-  }, [currentLegalPerson?.tax, loanAmount, namePrefix, setFieldValue])
+    const tax = currentLegalPerson?.tax
+    setFieldValue(
+      namePrefix + 'taxPercent',
+      checkIsNumber(tax) ? tax : FULL_INITIAL_ADDITIONAL_SERVICE.taxPercent,
+    )
+    setFieldValue(
+      namePrefix + 'taxValue',
+      checkIsNumber(tax)
+        ? getTaxFromPercent(carCostNum - initialPaymentNum, tax)
+        : FULL_INITIAL_ADDITIONAL_SERVICE.taxValue,
+    )
+  }, [carCostNum, currentLegalPerson?.tax, initialPaymentNum, namePrefix, setFieldValue])
 
   return (
     <Box className={classes.editingAreaContainer} data-testid="DealerCenterRequisites">

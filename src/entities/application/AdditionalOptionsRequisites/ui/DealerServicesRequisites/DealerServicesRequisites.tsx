@@ -4,12 +4,13 @@ import { Box } from '@mui/material'
 import { ArrayHelpers, useField, useFormikContext } from 'formik'
 
 import { CASCO_OPTION_ID, FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
-import { LOAN_TERM_GRADUATION_VALUE, MONTH_OF_YEAR_COUNT } from 'common/OrderCalculator/constants'
+import { LOAN_TERM_GRADUATION_VALUE } from 'common/OrderCalculator/constants'
 import {
   FormFieldNameMap,
   FullInitialAdditionalService,
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
+import { checkIsNumber, getTaxFromPercent } from 'shared/lib/helpers'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -25,6 +26,7 @@ import { AddingSquareBtn } from 'shared/ui/SquareBtn/AddingSquareBtn'
 import { CloseSquareBtn } from 'shared/ui/SquareBtn/CloseSquareBtn'
 import { SwitchInput } from 'shared/ui/SwitchInput/SwitchInput'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { DOCUMENT_TYPES, ServicesGroupName } from '../../configs/additionalOptionsRequisites.config'
 import { useAdditionalServices } from '../../hooks/useAdditionalServices'
@@ -219,16 +221,19 @@ export function DealerServicesRequisites({
   ])
 
   useEffect(() => {
-    if (currentBroker?.tax) {
-      setFieldValue(namePrefix + FormFieldNameMap.taxPercent, currentBroker.tax)
-      setFieldValue(
-        namePrefix + FormFieldNameMap.taxValue,
-        (currentBroker.tax * parseInt(productCost || '0', 10)) / 100,
-      )
-    } else {
-      setFieldValue(namePrefix + FormFieldNameMap.taxPercent, 0)
-      setFieldValue(namePrefix + FormFieldNameMap.taxValue, 0)
-    }
+    const productCostNum = stringToNumber(productCost)
+    const tax = currentBroker?.tax
+
+    setFieldValue(
+      namePrefix + 'taxPercent',
+      checkIsNumber(tax) ? tax : FULL_INITIAL_ADDITIONAL_SERVICE.taxPercent,
+    )
+    setFieldValue(
+      namePrefix + 'taxValue',
+      checkIsNumber(productCostNum) && checkIsNumber(tax)
+        ? getTaxFromPercent(productCostNum, tax)
+        : FULL_INITIAL_ADDITIONAL_SERVICE.taxValue,
+    )
   }, [currentBroker?.tax, namePrefix, productCost, setFieldValue])
 
   const isCascoProductType = productType === CASCO_OPTION_ID

@@ -4,6 +4,8 @@ import { useFormikContext } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { checkIsNumber, getTaxFromPercent } from 'shared/lib/helpers'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { RequisitesForFinancing } from '../../hooks/useRequisitesForFinancingQuery'
 
@@ -97,13 +99,18 @@ export function useAdditionalEquipmentRequisites({
   ])
 
   useEffect(() => {
-    if (currentBroker?.tax) {
-      setFieldValue(namePrefix + 'taxPercent', currentBroker.tax)
-      setFieldValue(namePrefix + 'taxValue', currentBroker.tax * parseFloat(productCost || '0'))
-    } else {
-      setFieldValue(namePrefix + 'taxPercent', null)
-      setFieldValue(namePrefix + 'taxValue', null)
-    }
+    const productCostNum = stringToNumber(productCost)
+    const tax = currentBroker?.tax
+    setFieldValue(
+      namePrefix + 'taxPercent',
+      checkIsNumber(tax) ? tax : FULL_INITIAL_ADDITIONAL_EQUIPMENTS.taxPercent,
+    )
+    setFieldValue(
+      namePrefix + 'taxValue',
+      checkIsNumber(productCostNum) && checkIsNumber(tax)
+        ? getTaxFromPercent(productCostNum, tax)
+        : FULL_INITIAL_ADDITIONAL_EQUIPMENTS.taxValue,
+    )
   }, [currentBroker?.tax, namePrefix, productCost, setFieldValue])
 
   useEffect(() => {
