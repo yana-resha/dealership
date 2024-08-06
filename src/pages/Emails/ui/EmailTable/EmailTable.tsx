@@ -47,7 +47,7 @@ function EmailTable({ emails, isLoading, isFetched }: Props) {
   const handleChangePage = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
       changePage(newPage)
-      setTablePage(TableType.CATALOG, newPage)
+      setTablePage(TableType.EMAIL, newPage)
     },
     [changePage],
   )
