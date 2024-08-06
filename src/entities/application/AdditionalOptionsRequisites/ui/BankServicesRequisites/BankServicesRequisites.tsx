@@ -9,8 +9,9 @@ import {
   FullInitialBankAdditionalService,
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
-import { usePrevious } from 'shared/hooks/usePrevious'
+import { checkIsNumber, getTaxFromPercent } from 'shared/lib/helpers'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { ServicesGroupName } from '../../configs/additionalOptionsRequisites.config'
 import { useRequisitesContext } from '../RequisitesContext'
@@ -70,9 +71,12 @@ export function BankServicesRequisites({
       setFieldValue(namePrefix + FormFieldNameMap.broker, currentProvider.brokers[0]?.brokerCode)
       setFieldValue(namePrefix + FormFieldNameMap.brokerName, currentProvider.brokers[0]?.brokerName)
       setFieldValue(namePrefix + FormFieldNameMap.taxPercent, tax)
+      const productCostNum = stringToNumber(productCost)
       setFieldValue(
         namePrefix + FormFieldNameMap.taxValue,
-        tax ? (tax * parseInt(productCost || '0', 10)) / 100 : undefined,
+        checkIsNumber(tax) && checkIsNumber(productCostNum)
+          ? getTaxFromPercent(productCostNum, tax)
+          : undefined,
       )
 
       setFieldValue(
