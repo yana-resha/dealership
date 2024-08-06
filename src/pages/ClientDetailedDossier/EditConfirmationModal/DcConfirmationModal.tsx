@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import { Box, Button, DialogContentText } from '@mui/material'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { transformAddress } from 'shared/lib/utils'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 
 import { useStyles } from './DcConfirmationModal.styles'
@@ -27,7 +28,7 @@ export function DcConfirmationModal({ confirmedAction, actionText, isVisible, on
       <Box className={classes.contentContainer}>
         <DialogContentText className={classes.dialogText}>{actionText}</DialogContentText>
         <DialogContentText className={classes.dialogText}>
-          {vendor.vendorName}, {vendor.address}
+          {vendor.vendorName}, {transformAddress(vendor.address ?? '')}
         </DialogContentText>
         <DialogContentText className={classes.dialogText}>Все верно?</DialogContentText>
         <Box className={classes.buttonsContainer}>

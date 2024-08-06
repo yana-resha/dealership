@@ -6,6 +6,7 @@ import compact from 'lodash/compact'
 
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { transformAddress } from 'shared/lib/utils'
 
 const useStyles = makeStyles(theme => ({
   posNumber: {
@@ -26,7 +27,7 @@ export const PointInfo = ({ onButtonClick }: Props) => {
   const pointOfSale = getPointOfSaleFromCookies()
 
   const fullPointInfo = useMemo(() => {
-    const entities = [pointOfSale?.vendorName, pointOfSale?.address]
+    const entities = [pointOfSale?.vendorName, transformAddress(pointOfSale?.address ?? '')]
 
     return compact(entities).join(', ')
   }, [pointOfSale])
