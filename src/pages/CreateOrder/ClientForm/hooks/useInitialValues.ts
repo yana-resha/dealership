@@ -14,13 +14,13 @@ import compact from 'lodash/compact'
 import { DateTime, Interval } from 'luxon'
 import { useDispatch } from 'react-redux'
 
-import { AnketaType } from 'entities/application/application.utils'
+import { AnketaType } from 'entities/applications/application.utils'
+import { selectCurrentGovernmentProgram, updateApplication } from 'entities/order'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
-import { getFullName, getSplittedName } from 'shared/utils/clientNameTransform'
+import { getFullName } from 'shared/utils/clientNameTransform'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
@@ -39,6 +39,7 @@ export function useInitialValues() {
     initialOrder: state.order.order,
     user: state.user.user,
   }))
+  const currentGovernmentProgram = useAppSelector(selectCurrentGovernmentProgram)
 
   const { data: addressMap = {}, isLoading: isAddressMapLoading } = useGetAddressMapQuery()
   const { areaTypeCodes, cityTypeCodes, settlementTypeCodes, streetTypeCodes } = addressMap
@@ -47,11 +48,14 @@ export function useInitialValues() {
 
   const initialValues = makeClientForm(initialOrder)
 
-  const fullApplicationData = initialOrder?.orderData
+  const application = useMemo(
+    () => initialOrder?.orderData?.application || ({} as ApplicationFrontdc),
+    [initialOrder?.orderData?.application],
+  )
 
-  const { dcAppId, applicant, createdDate } = useMemo(
-    () => fullApplicationData?.application || ({} as ApplicationFrontdc),
-    [fullApplicationData?.application],
+  const { dcAppId, applicant, createdDate, scans, loanData } = useMemo(
+    () => application || ({} as ApplicationFrontdc),
+    [application],
   )
 
   const clientFormerLastName = applicant?.prevLastName
@@ -244,7 +248,6 @@ export function useInitialValues() {
         sex,
         submitAction,
       } = values
-      const application = fullApplicationData?.application
       if (!application) {
         return undefined
       }
@@ -379,7 +382,7 @@ export function useInitialValues() {
 
       return updatedApplication
     },
-    [createdDate, dcAppId, fullApplicationData?.application, pointOfSale, user],
+    [createdDate, dcAppId, application, pointOfSale, user],
   )
 
   const setAnketaType = useCallback(
@@ -413,7 +416,7 @@ export function useInitialValues() {
   )
 
   const makeDocumentTypeFile = (expectedType: DocumentType) => {
-    const currentScan = fullApplicationData?.application?.scans?.find(scan => scan.type === expectedType)
+    const currentScan = scans?.find(scan => scan.type === expectedType)
 
     if (!currentScan?.type || !dcAppId) {
       return null
@@ -427,10 +430,10 @@ export function useInitialValues() {
 
   const initialValuesClientData: ClientData = {
     ...initialValues,
-    incomeConfirmation: fullApplicationData?.application?.loanData?.incomeProduct
+    incomeConfirmation: loanData?.incomeProduct
       ? true
       : !!(applicant?.income?.incomeVerify ?? initialValues.incomeConfirmation),
-    ...(fullApplicationData?.application?.applicant
+    ...(applicant
       ? {
           // В данной группе основным значением идет initialValues,
           // т.к. пользователь может вернуться на первый шаг и поменять данные клиента,
@@ -490,6 +493,11 @@ export function useInitialValues() {
           questionnaireFile: makeDocumentTypeFile(DocumentType.CONSENT_FORM),
         }
       : {}),
+
+    validationParams: {
+      minChildrenCount: stringToNumber(currentGovernmentProgram?.children) ?? 0,
+      isDfoProgram: loanData?.govprogramDfoFlag ?? false,
+    },
   }
 
   return {

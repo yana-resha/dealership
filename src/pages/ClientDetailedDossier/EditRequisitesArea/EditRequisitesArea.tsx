@@ -6,12 +6,12 @@ import { Form, Formik } from 'formik'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 
-import { editRequisitesValidationSchema } from '../../../entities/application/AdditionalOptionsRequisites/configs/editRequisitesValidation'
+import { editRequisitesValidationSchema } from '../../../entities/applications/AdditionalOptionsRequisites/configs/editRequisitesValidation'
 import {
   AdditionalEquipmentRequisites,
   DealerCenterRequisites,
   DealerServicesRequisites,
-} from '../../../entities/application/AdditionalOptionsRequisites/ui'
+} from '../../../entities/applications/AdditionalOptionsRequisites/ui'
 import { AdditionalOptions, mockRequisites } from './__tests__/EditRequisitesArea.mock'
 import { useStyles } from './EditRequisitesArea.styles'
 import { useInitialValues } from './useInitialValues'

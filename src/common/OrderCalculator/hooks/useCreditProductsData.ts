@@ -8,18 +8,13 @@ import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { MONTH_OF_YEAR_COUNT } from '../constants'
-import {
-  BriefOrderCalculatorFields,
-  CreditDurationData,
-  CreditProductsData,
-  InitialPaymentData,
-} from '../types'
+import { BriefOrderCalculatorFields } from '../types'
 import { getMinMaxValueFromPercent, RoundOption } from '../utils/getValueFromPercent'
 import { useCarSection } from './useCarSection'
 import { getServicesTotalCost } from './useCreditProductsValidations'
-import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
+import { useSelectCreditProductList } from './useSelectCreditProductList'
 
-export function useCreditProductsData(vendorCode: string | undefined) {
+export function useCreditProductsData() {
   const { values } = useFormikContext<BriefOrderCalculatorFields>()
   const { creditProduct, carBrand, carYear, additionalEquipments } = values
   const carCost = stringToNumber(values.carCost) ?? 0
@@ -31,18 +26,16 @@ export function useCreditProductsData(vendorCode: string | undefined) {
     state => state.order.order?.orderData?.application?.applicant?.birthDate || state.order.order?.birthDate,
   )
 
-  const {
-    data: creditProductListData,
-    isLoading: isCreditProductListLoading,
-    isSuccess: isCreditProductListSuccess,
-  } = useGetCreditProductListQuery({ vendorCode, values, enabled: false })
-  const { cars, isLoading: isGetCarsLoading, isSuccess: isGetCarsSuccess } = useCarSection()
+  const { creditProductListData, isCreditProductListLoading, isCreditProductListSuccess } =
+    useSelectCreditProductList()
+
+  const { data: carsInfo, isLoading: isGetCarsLoading, isSuccess: isGetCarsSuccess } = useCarSection()
   const currentProduct = useMemo(
     () => creditProductListData?.productsMap?.[`${creditProduct}`],
     [creditProduct, creditProductListData?.productsMap],
   )
 
-  const carMaxAge = carBrand ? cars[carBrand]?.maxCarAge ?? 0 : 0
+  const carMaxAge = carBrand ? carsInfo.brandMap[carBrand]?.maxCarAge ?? 0 : 0
   const durationMaxFromCarAge = carYear
     ? (carMaxAge - (new Date().getFullYear() - carYear)) * MONTH_OF_YEAR_COUNT
     : 0
@@ -137,20 +130,14 @@ export function useCreditProductsData(vendorCode: string | undefined) {
   const isLoadedCreditProducts = !isCreditProductListLoading && isCreditProductListSuccess
 
   return {
-    initialPaymentData: {
-      minInitialPaymentPercent,
-      maxInitialPaymentPercent,
-      minInitialPayment,
-      maxInitialPayment,
-    } as InitialPaymentData,
-    creditProductsData: {
-      creditProductListData,
-      currentProduct,
-    } as CreditProductsData,
-    creditDurationData: {
-      currentDurationMin,
-      currentDurationMax,
-    } as CreditDurationData,
+    creditProductListData,
+    minInitialPaymentPercent,
+    maxInitialPaymentPercent,
+    minInitialPayment,
+    maxInitialPayment,
+    currentProduct,
+    currentDurationMin,
+    currentDurationMax,
     clientAge,
     durationMaxFromAge,
     currentDownpaymentMin,

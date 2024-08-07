@@ -4,9 +4,9 @@ import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync'
 
+import { orderSlice } from 'entities/order'
 import { tabsSlice } from 'entities/tabManagement'
 import { userSlice } from 'entities/user'
-import { orderSlice } from 'pages/CreateOrder'
 
 // Настройки для сохранения редьюсера в локалСторадж
 const persistTabsConfig = {

@@ -3,16 +3,19 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useFormikContext } from 'formik'
 
 import { CREDIT_PRODUCT_PARAMS_FIELDS } from '../config'
-import { FormFieldNameMap } from '../types'
+import { BriefOrderCalculatorFields, CreditProductParams, FullOrderCalculatorFields } from '../types'
 
 export function useCarSettings(onFilled: () => void) {
-  const { errors, setFieldTouched } = useFormikContext()
+  const { errors, setFieldTouched } = useFormikContext<
+    BriefOrderCalculatorFields | FullOrderCalculatorFields
+  >()
 
   const [shouldChangeFillStatus, setShouldChangeFillStatus] = useState(false)
   const [isFilled, setFilled] = useState(false)
 
   const hasErrors = useMemo(
-    () => Object.keys(errors).some(k => CREDIT_PRODUCT_PARAMS_FIELDS.includes(k as FormFieldNameMap)),
+    () =>
+      Object.keys(errors).some(k => CREDIT_PRODUCT_PARAMS_FIELDS.includes(k as keyof CreditProductParams)),
     [errors],
   )
 

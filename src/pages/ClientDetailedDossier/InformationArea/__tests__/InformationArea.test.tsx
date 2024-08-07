@@ -60,6 +60,8 @@ const informationAreaProps = {
   incomeProduct: true,
   scans: [],
   emailId: undefined,
+  isGovProgramDocumentsNecessaryRequest: false,
+  isGovProgramDocumentsPending: false,
 }
 
 describe('InformationAreaTest', () => {

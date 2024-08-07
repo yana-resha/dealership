@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { OptionType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
 import { CAR_PASSPORT_TYPE, INITIAL_CAR_ID_TYPE } from '../config'
@@ -218,12 +218,25 @@ export function useInitialValues<D extends boolean | undefined>(
     hasCustomInitialValues: !!application?.loanCar,
     initialValues: application
       ? ({
+          [FormFieldNameMap.IS_GOVERNMENT_PROGRAM]:
+            !!loanData?.govprogramCode ?? initialData.isGovernmentProgram,
+          [FormFieldNameMap.IS_DFO_PROGRAM]: loanData?.govprogramDfoFlag ?? initialData.isDfoProgram,
           [FormFieldNameMap.carCondition]: loanCar?.isCarNew ?? initialData.carCondition ? 1 : 0,
           [FormFieldNameMap.carBrand]: loanCar?.brand ?? initialData.carBrand,
           [FormFieldNameMap.carModel]: loanCar?.model ?? initialData.carModel,
           [FormFieldNameMap.carYear]: loanCar?.autoCreateYear ?? initialData.carYear,
           [FormFieldNameMap.carCost]: `${loanCar?.autoPrice ?? initialData.carCost}`,
           [FormFieldNameMap.carMileage]: loanCar?.mileage ?? initialData.carMileage,
+          [FormFieldNameMap.GOVERNMENT_PROGRAM]: loanData?.govprogramCode ?? initialData.governmentProgram,
+          [FormFieldNameMap.GOVERNMENT_NAME]: loanData?.govprogramName ?? initialData.governmentName,
+          [FormFieldNameMap.GOVERNMENT_DISCOUNT]:
+            typeof loanData?.govprogramDiscount === 'number'
+              ? `${loanData?.govprogramDiscount}`
+              : initialData.governmentDiscount,
+          [FormFieldNameMap.GOVERNMENT_DISCOUNT_PERCENT]:
+            typeof loanData?.govprogramDiscount === 'number' && typeof loanCar?.autoPrice === 'number'
+              ? `${Math.round((loanData?.govprogramDiscount / loanCar?.autoPrice) * 10000) / 100}`
+              : initialData.governmentDiscountPercent,
           [FormFieldNameMap.creditProduct]: loanData?.productId || initialData.creditProduct,
           [FormFieldNameMap.initialPayment]: `${loanData?.downpayment ?? initialData.initialPayment}`,
           [FormFieldNameMap.initialPaymentPercent]: `${

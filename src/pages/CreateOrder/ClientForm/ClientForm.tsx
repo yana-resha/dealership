@@ -9,7 +9,7 @@ import { Formik, FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { clearOrder, setAppId } from 'entities/reduxStore/orderSlice'
+import { clearOrder, setAppId } from 'entities/order'
 import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'
 import {
   useSaveDraftApplicationMutation,

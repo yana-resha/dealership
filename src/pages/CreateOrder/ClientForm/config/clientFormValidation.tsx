@@ -7,11 +7,13 @@ import { FileInfo } from 'features/ApplicationFileLoader'
 import { getMaxBirthDate, getMinBirthDate } from 'pages/CreateOrder/CreateOrder.utils'
 import { MIN_AGE } from 'shared/config/client.config'
 import { FieldMessages } from 'shared/constants/fieldMessages'
+import { checkIsNumber } from 'shared/lib/helpers'
 
 import { SubmitAction } from '../ClientForm.types'
 
 export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
 export const QUESTIONNAIRE_FILE_IS_REQUIRED = 'Необходимо загрузить анкету'
+const DFO_ADDRESS_CODES = ['03', '14', '75', '41', '25', '27', '28', '49', '65', '79', '87']
 
 function validatePassportDate(value: Date | null | undefined, context: Yup.TestContext<AnyObject>) {
   const birthDate = (context.options as InternalOptions)?.from?.[0].value.birthDate as Date | null
@@ -116,7 +118,19 @@ function setRequiredIfSave<T extends Yup.BaseSchema<any, AnyObject, any>>(schema
 
 export const clientAddressValidationSchema = Yup.object().shape(
   {
-    regCode: Yup.string().nullable().required(FieldMessages.required),
+    regCode: Yup.string()
+      .nullable()
+      .required(FieldMessages.required)
+      .test('isWrongRegion', (value, context) => {
+        const { isDfoProgram } = (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
+        if (!isDfoProgram) {
+          return true
+        }
+        const isHasRegion = DFO_ADDRESS_CODES.some(code => code === value)
+
+        return isHasRegion ? true : context.createError({ message: FieldMessages.WRONG_REGION })
+      }),
+
     settlement: Yup.string().when('city', {
       is: undefined,
       then: schema => schema.required('Необходимо указать город или населенный пункт'),
@@ -166,7 +180,20 @@ export const clientFormValidationSchema = Yup.object().shape({
     is: true,
     then: schema => setRequiredIfSave(schema),
   }),
-  numOfChildren: setRequiredIfSave(Yup.number().nullable()),
+  numOfChildren: setRequiredIfSave(
+    Yup.number()
+      .nullable()
+      .test('isLessThenMin', (value, context) => {
+        const { minChildrenCount } =
+          (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
+
+        return checkIsNumber(value) && minChildrenCount && value < minChildrenCount
+          ? context.createError({
+              message: `По данной госпрограмме минимальное количество детей ${minChildrenCount}`,
+            })
+          : true
+      }),
+  ),
   familyStatus: setRequiredIfSave(Yup.number().nullable()),
   passport: Yup.string().required(FieldMessages.required).min(10, 'Введите данные полностью'),
   birthDate: Yup.date()
@@ -183,7 +210,19 @@ export const clientFormValidationSchema = Yup.object().shape({
   divisionCode: setRequiredIfSave(Yup.string().nullable()).min(6, 'Введите данные полностью'),
   sex: setRequiredIfSave(Yup.number().nullable()),
   issuedBy: setRequiredIfSave(Yup.string().nullable()),
-  registrationAddressString: setRequiredIfSave(Yup.string()),
+  registrationAddressString: setRequiredIfSave(
+    Yup.string().test('isWrongRegion', (value, context) => {
+      const { isDfoProgram } = (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
+      const { regCode } = (context.options as InternalOptions)?.from?.[0].value.registrationAddress || {}
+      if (!isDfoProgram) {
+        return true
+      }
+      const isHasRegion = DFO_ADDRESS_CODES.some(code => code === regCode)
+
+      return isHasRegion ? true : context.createError({ message: FieldMessages.WRONG_REGION })
+    }),
+  ),
+
   livingAddressString: Yup.string().when('regAddrIsLivingAddr', {
     is: false,
     then: schema => setRequiredIfSave(schema),

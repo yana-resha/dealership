@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom'
 
 import { ReactComponent as DownloadIcon } from 'assets/icons/download.svg'
 import { ReactComponent as MailIcon } from 'assets/icons/mail.svg'
-import { getStatus, PreparedStatus } from 'entities/application/application.utils'
+import { getStatus, PreparedStatus } from 'entities/applications/application.utils'
 import { useSendEmailDecisionMutation } from 'shared/api/requests/emailAppDc.api'
 import {
   useDownloadDocumentMutation,
@@ -23,8 +23,8 @@ import {
 } from 'shared/api/requests/loanAppLifeCycleDc'
 import { checkIsNumber } from 'shared/lib/helpers'
 import { formatMoney, formatTerm } from 'shared/lib/utils'
+import { AreaContainer } from 'shared/ui/AreaContainer'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
-import { AreaContainer } from 'shared/ui/DossierAreaContainer'
 import { Downloader } from 'shared/ui/Downloader'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
@@ -60,6 +60,8 @@ type Props = {
   incomeProduct: boolean
   scans: Scan[]
   emailId: number | undefined
+  isGovProgramDocumentsNecessaryRequest: boolean
+  isGovProgramDocumentsPending: boolean
 }
 
 export function InformationArea({
@@ -81,6 +83,8 @@ export function InformationArea({
   incomeProduct,
   scans,
   emailId,
+  isGovProgramDocumentsNecessaryRequest,
+  isGovProgramDocumentsPending,
 }: Props) {
   const classes = useStyles()
   const { applicationId = '' } = useParams()
@@ -278,7 +282,13 @@ export function InformationArea({
               </Downloader>
             )}
           </Box>
-          <ApplicationWarning statusCode={statusCode} errorDescription={errorDescription} />
+
+          <ApplicationWarning
+            statusCode={statusCode}
+            errorDescription={errorDescription}
+            isGovProgramDocumentsNecessaryRequest={isGovProgramDocumentsNecessaryRequest}
+            isGovProgramDocumentsPending={isGovProgramDocumentsPending}
+          />
 
           <Box className={classes.infoTextContainer} gridColumn="span 7">
             <InfoText label="ДЦ">

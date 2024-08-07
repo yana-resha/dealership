@@ -85,10 +85,12 @@ export const configInitialValues: ClientData = {
   questionnaireFile: null,
   submitAction: SubmitAction.Save,
   isFormComplete: false,
-}
 
-const MAX_CHILDREN_COUNT = 11
-export const childrenCounts = [...Array(MAX_CHILDREN_COUNT)].map((v, i) => ({ value: i }))
+  validationParams: {
+    minChildrenCount: 0,
+    isDfoProgram: false,
+  },
+}
 
 export const FAMILY_STATUS_VALUES = [
   { label: 'Женат/Замужем', value: MaritalStatus.MARRIED },

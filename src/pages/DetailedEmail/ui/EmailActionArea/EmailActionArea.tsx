@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { EmailStatus, getEmailStatus } from 'entities/email'
 import { appRoutePaths, appRoutes } from 'shared/navigation/routerPath'
-import { AreaContainer } from 'shared/ui/DossierAreaContainer'
+import { AreaContainer } from 'shared/ui/AreaContainer'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 
 import { useStyles } from './EmailActionArea.styles'

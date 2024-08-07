@@ -32,6 +32,7 @@ type Props = {
   isError?: boolean
   errorMessage?: string
   isInitialExpanded?: boolean
+  icon?: React.ReactNode
 }
 export const AdditionalServicesContainer = React.memo(
   ({
@@ -44,6 +45,7 @@ export const AdditionalServicesContainer = React.memo(
     isError = false,
     errorMessage,
     isInitialExpanded = false,
+    icon,
     children,
   }: PropsWithChildren<Props>) => {
     const classes = useStyles()
@@ -58,6 +60,11 @@ export const AdditionalServicesContainer = React.memo(
     const [field, , { setValue: setServices }] = useField<AdditionalService[]>(name)
     const { submitCount } = useFormikContext()
     const prevSubmitCount = usePrevious(submitCount)
+
+    const handleIconClick = useCallback((evt: React.MouseEvent<HTMLDivElement>) => {
+      evt.preventDefault()
+      evt.stopPropagation()
+    }, [])
 
     useEffect(() => {
       if (prevSubmitCount === submitCount) {
@@ -85,7 +92,7 @@ export const AdditionalServicesContainer = React.memo(
           onClick={changeExpanded}
           expandIcon={<OrderCreateIcon className={classes.summaryIcon} />}
         >
-          <Box gridColumn="1 / -1" minWidth="min-content">
+          <Box>
             <Typography className={classes.title}>{title}</Typography>
             {isError && (
               <Typography className={classes.errorMessage}>
@@ -93,7 +100,13 @@ export const AdditionalServicesContainer = React.memo(
               </Typography>
             )}
           </Box>
+          {!!icon && (
+            <Box className={classes.iconContainer} onClick={handleIconClick}>
+              {icon}
+            </Box>
+          )}
         </AccordionSummary>
+
         <AdditionalServicesContainerProvider closeAccordion={closeAccordion}>
           <AccordionDetails>{children}</AccordionDetails>
         </AdditionalServicesContainerProvider>

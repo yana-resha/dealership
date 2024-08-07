@@ -61,6 +61,11 @@ export enum ErrorAlias {
   GetEmails_VendorNotFound = 'GetEmails_VendorNotFound',
   SendEmailDecision_AlreadyAnswered = 'SendEmailDecision_AlreadyAnswered',
   SendEmailDecision_EmptyText = 'SendEmailDecision_EmptyText',
+  CalculateCredit_GovprogramNotAvailableForProduct = 'CalculateCredit_GovprogramNotAvailableForProduct',
+  CalculateCredit_GovprogramNotAvailableForCar = 'CalculateCredit_GovprogramNotAvailableForCar',
+  CalculateCredit_NeedLaterPtsDateForGovprogram = 'CalculateCredit_NeedLaterPtsDateForGovprogram',
+  CalculateCredit_CarPriceTooHighForGovprogram = 'CalculateCredit_CarPriceTooHighForGovprogram',
+  CalculateCredit_CarTooOldForGovprogram = 'CalculateCredit_CarTooOldForGovprogram',
 }
 export const errorAliasMap = {
   [ErrorAlias.RemoveCatalog_catalogIsNotEmpty]: 'Ошибка. Невозможно удалить папку, так как в ней есть файлы',
@@ -77,6 +82,14 @@ export const errorAliasMap = {
   [ErrorAlias.GetEmails_VendorNotFound]: 'Дилерский центр не найден',
   [ErrorAlias.SendEmailDecision_AlreadyAnswered]: 'По этой заявке решение уже отправлено',
   [ErrorAlias.SendEmailDecision_EmptyText]: 'Письмо не может быть пустым',
+  [ErrorAlias.CalculateCredit_GovprogramNotAvailableForProduct]:
+    'Данная гос программа не может быть выдана для данной кредитной программы',
+  [ErrorAlias.CalculateCredit_GovprogramNotAvailableForCar]:
+    'Данная гос программа не может быть выдана для данной модели авто',
+  [ErrorAlias.CalculateCredit_NeedLaterPtsDateForGovprogram]: 'Необходима более ранняя выдача ПТС',
+  [ErrorAlias.CalculateCredit_CarPriceTooHighForGovprogram]:
+    'Недопустимая стоимость автомобиля по госпрограмме',
+  [ErrorAlias.CalculateCredit_CarTooOldForGovprogram]: 'Необходим более ранний год выпуска автомобиля',
 }
 
 type GetErrorMessageParams = {
