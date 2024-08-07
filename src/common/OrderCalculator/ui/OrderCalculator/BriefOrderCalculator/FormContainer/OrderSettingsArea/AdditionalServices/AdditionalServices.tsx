@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { Box } from '@mui/material'
-import { FieldArray, useField, useFormikContext } from 'formik'
+import { FieldArray, useField } from 'formik'
 
 import { INITIAL_ADDITIONAL_SERVICE, INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
@@ -11,12 +11,15 @@ import {
   NonNullableAdditionalOption,
 } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import {
+  MaxRateModsMap,
   OrderCalculatorAdditionalService,
   OrderCalculatorBankAdditionalService,
 } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
-import { BankAdditionalService } from 'entities/application/AdditionalOptionsRequisites/ui'
+import { RateModInfo } from 'common/OrderCalculator/ui/RateModInfo/RateModInfo'
+import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { BankAdditionalService } from 'entities/applications/AdditionalOptionsRequisites/ui'
+import { RequiredRateMod } from 'entities/order/model/orderSlice'
 
 import { AdditionalServiceItem } from './AdditionalServiceItem/AdditionalServiceItem'
 import useStyles from './AdditionalServices.styles'
@@ -31,7 +34,9 @@ type Props = {
   errorMessage?: string
   disabled?: boolean
   clientAge?: number
-  selectedRequiredOptionsMap?: Record<string, boolean>
+  currentRateMod?: RequiredRateMod
+  isShouldShowInfoIcon?: boolean
+  maxRateModsMap?: MaxRateModsMap
 }
 
 export function AdditionalServices({
@@ -44,7 +49,9 @@ export function AdditionalServices({
   errorMessage,
   disabled = false,
   clientAge,
-  selectedRequiredOptionsMap = {},
+  currentRateMod,
+  isShouldShowInfoIcon = false,
+  maxRateModsMap = {},
 }: Props) {
   const classes = useStyles()
   const initialAdditionalService =
@@ -79,6 +86,11 @@ export function AdditionalServices({
       isError={isError}
       errorMessage={errorMessage}
       isInitialExpanded={isInitialExpanded}
+      icon={
+        name === ServicesGroupName.bankAdditionalServices && isShouldShowInfoIcon ? (
+          <RateModInfo />
+        ) : undefined
+      }
     >
       <FieldArray name={name}>
         {arrayHelpers => (
@@ -100,7 +112,8 @@ export function AdditionalServices({
                     // Если clientAge отсутствует, то банковские опции = пустой массив,
                     // потому clientAge можно ставить как number
                     clientAge={clientAge as number}
-                    selectedRequiredOptionsMap={selectedRequiredOptionsMap}
+                    currentRateMod={currentRateMod}
+                    maxRateModsMap={maxRateModsMap}
                   />
                 ))
               : field.value.map((v, i, arr) => (

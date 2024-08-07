@@ -5,38 +5,142 @@ import {
   OptionType,
 } from '@sberauto/dictionarydc-proto/public'
 
+export interface ModelInfo {
+  model?: string
+  govprogramFlag?: boolean
+  govprogramDfoFlag?: boolean
+  mass?: number
+}
+
+export interface BrandInfo {
+  modelInfo?: Record<string, ModelInfo | null> | null
+  brand?: string
+  maxCarAge?: number
+  madeIn?: string
+  autoCategory?: string
+}
+
 export const CAR_BRANDS = {
   BMW: {
     brand: 'BMW',
-    models: ['1 series', '3 series'],
+    modelInfo: {
+      '1 series': {
+        model: '1 series',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 1,
+      },
+      '3 series': {
+        model: '3 series',
+        govprogramFlag: true,
+        govprogramDfoFlag: false,
+        mass: 2,
+      },
+      '5 series': {
+        model: '5 series',
+        govprogramFlag: true,
+        govprogramDfoFlag: true,
+        mass: 3,
+      },
+    },
     maxCarAge: 20,
     madeIn: 'GERMANY',
     autoCategory: 'B',
   },
   Fiat: {
     brand: 'Fiat',
-    models: ['Ducato', 'Punto', '500'],
+    modelInfo: {
+      Punto: {
+        model: 'Punto',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 1,
+      },
+      500: {
+        model: '500',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 2,
+      },
+      Ducato: {
+        model: 'Ducato',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 3,
+      },
+    },
     maxCarAge: 1,
     madeIn: 'ITALY',
     autoCategory: 'B',
   },
   KIA: {
     brand: 'KIA',
-    models: ['Picanto', 'Rio', 'Ceed'],
+    modelInfo: {
+      Picanto: {
+        model: 'Picanto',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 1,
+      },
+      Rio: {
+        model: 'Rio',
+        govprogramFlag: true,
+        govprogramDfoFlag: false,
+        mass: 2,
+      },
+      Ceed: {
+        model: 'Ceed',
+        govprogramFlag: true,
+        govprogramDfoFlag: true,
+        mass: 3,
+      },
+    },
     maxCarAge: 19,
     madeIn: 'KOREA',
     autoCategory: 'B',
   },
   Toyota: {
     brand: 'Toyota',
-    models: ['Camry', 'Corolla'],
+    modelInfo: {
+      Camry: {
+        model: 'Camry',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 1,
+      },
+      Corolla: {
+        model: 'Corolla',
+        govprogramFlag: true,
+        govprogramDfoFlag: false,
+        mass: 2,
+      },
+    },
     maxCarAge: 21,
     madeIn: 'JAPAN',
     autoCategory: 'B',
   },
   Skoda: {
     brand: 'Skoda',
-    models: ['Rapid', 'Octavia', 'Superb'],
+    modelInfo: {
+      Rapid: {
+        model: 'Rapid',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 1,
+      },
+      Octavia: {
+        model: 'Octavia',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 2,
+      },
+      Superb: {
+        model: 'Superb',
+        govprogramFlag: false,
+        govprogramDfoFlag: false,
+        mass: 3,
+      },
+    },
     maxCarAge: 2,
     madeIn: 'CZECH',
     autoCategory: 'B',

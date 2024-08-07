@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import { MockStore } from 'redux-mock-store'
 
-import { Order } from 'entities/reduxStore/orderSlice'
+import * as useGovProgramScansModule from 'pages/ClientDetailedDossier/GovProgramDocumentsArea/hooks/useGovProgramScans'
 import * as useGetFullApplicationQueryModule from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
@@ -30,6 +30,7 @@ const mockedUseGetFullApplicationQuery = jest.spyOn(
 )
 
 const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
+const mockedUseGovProgramScans = jest.spyOn(useGovProgramScansModule, 'useGovProgramScans')
 
 interface WrapperProps extends PropsWithChildren {
   store?: MockStore
@@ -51,11 +52,16 @@ describe('ClientDetailedDossierTest', () => {
             refetch: jest.fn(),
           } as any),
       )
-      mockedUseAppSelector.mockImplementation(() => {
-        const orderData: Order = { orderData: fullApplicationData }
-
-        return orderData
-      })
+      mockedUseAppSelector.mockImplementation(() => ({ application: fullApplicationData }))
+      mockedUseGovProgramScans.mockImplementation(
+        () =>
+          ({
+            currentGovProgramScans: [],
+            isNecessaryRequest: false,
+            isPending: false,
+            isSuccess: false,
+          } as any),
+      )
       render(<ClientDetailedDossier />, { wrapper: createWrapper })
     })
     it('Отображается область DossierIdArea', () => {

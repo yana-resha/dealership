@@ -14,7 +14,7 @@ type Props = {
 
 export const DateInputFormik = (props: Props) => {
   const { name, label, gridColumn, disabled } = props
-  const { value, isError, error, onChange } = useFormikWrapper(name)
+  const { value, isError, error, handleChange } = useFormikWrapper(name)
 
   return (
     <Box width="auto" minWidth="min-content" gridColumn={gridColumn}>
@@ -23,7 +23,7 @@ export const DateInputFormik = (props: Props) => {
         disabled={disabled}
         id={name}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         isError={isError}
         errorMessage={error}
       />

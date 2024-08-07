@@ -6,17 +6,16 @@ import { useFormikWrapper } from '../hooks/useFormikWrapper'
 import { SelectInput } from './SelectInput'
 import { SelectInputProps } from './selectInput.types'
 
-interface Props<T>
-  extends Omit<SelectInputProps<T>, 'value' | 'onChange' | 'isError' | 'errorMessage' | 'id'> {
+interface Props<T> extends Omit<SelectInputProps<T>, 'value' | 'isError' | 'errorMessage' | 'id'> {
   name: string
   gridColumn?: string
 }
 export const SelectInputFormik = forwardRef(
   <T extends string | number>(
-    { name, label, placeholder, options, gridColumn, emptyAvailable, disabled }: Props<T>,
+    { name, label, placeholder, options, gridColumn, emptyAvailable, disabled, onChange }: Props<T>,
     ref: ForwardedRef<HTMLDivElement | undefined>,
   ) => {
-    const { value, isError, error, onChange } = useFormikWrapper(name)
+    const { value, isError, error, handleChange } = useFormikWrapper(name, onChange)
 
     return (
       <Box width="auto" gridColumn={gridColumn} ref={ref}>
@@ -28,7 +27,7 @@ export const SelectInputFormik = forwardRef(
           disabled={disabled}
           id={name}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           isError={isError}
           errorMessage={error}
         />

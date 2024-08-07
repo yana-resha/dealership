@@ -37,4 +37,21 @@ export default makeStyles(theme => ({
       marginLeft: theme.spacing(1.75),
     },
   },
+
+  labelContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: theme.spacing(1),
+    width: '100%',
+  },
+
+  label: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+
+  subLabel: {
+    color: theme.palette.sber.main,
+  },
 }))

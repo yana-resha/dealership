@@ -5,8 +5,7 @@ import { Formik, Form } from 'formik'
 import { UseQueryResult } from 'react-query'
 
 import * as useGetCarsListQueryModule from 'common/OrderCalculator/hooks/useGetCarsListQuery'
-import { NormalizedCars } from 'common/OrderCalculator/types'
-import { CAR_BRANDS } from 'shared/api/requests/dictionaryDc.mock'
+import { NormalizedCarsInfo } from 'common/OrderCalculator/types'
 import { MockProviders } from 'tests/mocks'
 
 import { useCarSection } from '../useCarSection'
@@ -32,17 +31,17 @@ describe('useCarSection', () => {
         ({
           data: mockedUseGetCarsListQueryData,
           isError: false,
-        } as unknown as UseQueryResult<NormalizedCars, unknown>),
+        } as unknown as UseQueryResult<NormalizedCarsInfo, unknown>),
     )
   })
 
   it('Если в форме выбрано состояние автомобиля Новый, то возвращает новые авто', () => {
     const result = renderHook(() => useCarSection(), { wrapper: createWrapper(1) })
-    expect(result.result.current.cars).toEqual(mockedUseGetCarsListQueryData.newCars)
+    expect(result.result.current.data).toEqual(mockedUseGetCarsListQueryData.newCarsInfo)
   })
 
   it('Если в форме выбрано состояние автомобиля БУ, то возвращает старые авто', () => {
     const result = renderHook(() => useCarSection(), { wrapper: createWrapper(0) })
-    expect(result.result.current.cars).toEqual(mockedUseGetCarsListQueryData.usedCars)
+    expect(result.result.current.data).toEqual(mockedUseGetCarsListQueryData.usedCarsInfo)
   })
 })

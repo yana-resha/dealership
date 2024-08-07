@@ -1,12 +1,14 @@
 import { useCallback } from 'react'
 
-import { TableCell, TableRow } from '@mui/material'
+import { Box, TableCell, TableRow } from '@mui/material'
 import { CalculatedProduct } from '@sberauto/dictionarydc-proto/public'
 import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { ReactComponent as InfoIcon } from 'assets/icons/info.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
 import { useGetPreliminaryPaymentScheduleFormMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import { Downloader } from 'shared/ui/Downloader'
 import { transformFileName } from 'shared/utils/fileLoading'
 
@@ -55,6 +57,11 @@ export const BodyRow = ({ row, onClick }: Props) => {
     [autoPrice, dcAppId, getPreliminaryPaymentScheduleFormMutate],
   )
 
+  const handleInfoClick = useCallback((evt: React.MouseEvent<SVGSVGElement | HTMLSpanElement>) => {
+    evt.preventDefault()
+    evt.stopPropagation()
+  }, [])
+
   return (
     <TableRow key={row.productId} className={classes.bodyRow}>
       {getCellsChildren(row).map(cell => (
@@ -65,16 +72,50 @@ export const BodyRow = ({ row, onClick }: Props) => {
           onClick={cell.type === TableCellType.ICON ? () => null : () => onClick(row)}
         >
           <>
-            {cell.type === TableCellType.ICON && cell.name === HeaderCellKey.INCOME_FLAG && <ButtonsCell />}
+            {cell.name === HeaderCellKey.INCOME_FLAG && <ButtonsCell />}
 
-            {cell.type === TableCellType.ICON && cell.name === HeaderCellKey.ATTACHMENT && (
+            {cell.name === HeaderCellKey.ATTACHMENT && (
               <Downloader
                 onDownloadFile={async () => await handleAttachmentClick(row)}
                 icon={<ScheduleIcon />}
               />
             )}
 
-            {cell.type !== TableCellType.ICON && cell.value}
+            {cell.name === HeaderCellKey.DOWNPAYMENT && !!cell.additionalValue && (
+              <>
+                <span className={classes.oldValue}>{cell.value}</span>{' '}
+                <span className={classes.newValue}>{cell.additionalValue}</span>
+              </>
+            )}
+
+            {cell.name === HeaderCellKey.CURRENT_RATE && !!cell.additionalValue && (
+              <>
+                <span className={classes.oldValue}>{cell.additionalValue}</span>{' '}
+                <span className={classes.newValue}>{cell.value}</span>
+              </>
+            )}
+
+            {cell.name === HeaderCellKey.CURRENT_RATE && !cell.additionalValue && cell.isAdditionalIcon && (
+              <Box className={classes.additionalIconContainer}>
+                <span>{cell.value}</span>
+                <CustomTooltip
+                  arrow
+                  title={
+                    <span onClick={handleInfoClick}>
+                      Вы можете снизить базовую ставку, подключив дополнительную услугу банка
+                    </span>
+                  }
+                  placement="right"
+                >
+                  <InfoIcon onClick={handleInfoClick} />
+                </CustomTooltip>
+              </Box>
+            )}
+
+            {cell.type !== TableCellType.ICON &&
+              !cell.additionalValue &&
+              !cell.isAdditionalIcon &&
+              cell.value}
           </>
         </TableCell>
       ))}

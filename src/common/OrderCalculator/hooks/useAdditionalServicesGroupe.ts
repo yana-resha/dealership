@@ -6,7 +6,7 @@ import {
   OrderCalculatorAdditionalService,
   OrderCalculatorBankAdditionalService,
 } from 'common/OrderCalculator/types'
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { usePrevious } from 'shared/hooks/usePrevious'
 
 export function useAdditionalServicesGroupe(

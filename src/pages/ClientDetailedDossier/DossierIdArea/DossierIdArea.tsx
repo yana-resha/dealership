@@ -4,7 +4,7 @@ import { Box, IconButton } from '@mui/material'
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
-import { ApplicationStatus } from 'entities/application/ApplicationStatus/ApplicationStatus'
+import { ApplicationStatus } from 'entities/applications/ApplicationStatus/ApplicationStatus'
 import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { convertedDateToString } from 'shared/utils/dateTransform'

@@ -7,6 +7,7 @@ import {
   DARK_NORMAL,
   GRAY_NORMAL,
   LIGHT_GRAY,
+  ORANGE_NORMAL,
   PRIMARY_DARK,
   PRIMARY_MAIN,
   WHITE,
@@ -182,6 +183,7 @@ export const theme = createTheme({
     sber: {
       main: '#17A131',
       dark: '#1d9032',
+      warning: ORANGE_NORMAL,
     },
     primary: {
       main: PRIMARY_MAIN,
@@ -219,6 +221,7 @@ declare module '@mui/material/styles' {
     sber: {
       main: React.CSSProperties['color']
       dark: React.CSSProperties['color']
+      warning: React.CSSProperties['color']
     }
     colors: {
       blueGray: React.CSSProperties['color']
@@ -253,6 +256,7 @@ declare module '@mui/material/styles' {
     rejected: string
     canceled: string
     error: string
+    warning: string
   }
 
   interface SimplePaletteColorOptions {

@@ -2,26 +2,35 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 import {
-  ApplicationFrontdc,
+  DocumentType,
   IsClientRequest,
+  Scan,
   SendApplicationToScoringRequest,
   StatusCode,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useNavigate } from 'react-router-dom'
 
+import { theme } from 'app/theme'
+import { updateOrder } from 'entities/order'
+import { selectApplication } from 'entities/order/model/selectors'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { NoMatchesModal } from 'pages/CreateOrder/OrderSearching/components/NoMatchesModal/NoMatchesModal'
-import { useCheckIfSberClient } from 'shared/api/requests/loanAppLifeCycleDc'
+import {
+  useCheckIfSberClient,
+  useSendGovProgramDocumentsMutation,
+} from 'shared/api/requests/loanAppLifeCycleDc'
 import { useSendApplicationToScore } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { appRoutePaths } from 'shared/navigation/routerPath'
-import { AreaContainer } from 'shared/ui/DossierAreaContainer'
+import { AreaContainer } from 'shared/ui/AreaContainer'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import SberTypography from 'shared/ui/SberTypography'
 
-import { AnketaType, getStatus, PreparedStatus } from '../../../entities/application/application.utils'
+import { AnketaType, getStatus, PreparedStatus } from '../../../entities/applications/application.utils'
 import { DcConfirmationModal } from '../EditConfirmationModal/DcConfirmationModal'
+import { useGetFullApplicationQuery } from '../hooks/useGetFullApplicationQuery'
 import { useStyles } from './ActionArea.styles'
 import { AgreementArea } from './AgreementArea/AgreementArea'
 
@@ -31,7 +40,6 @@ enum Source {
 
 type Props = {
   status: StatusCode
-  application: ApplicationFrontdc
   moratoryEndDate?: string
   source?: string
   targetDcAppId?: string
@@ -40,11 +48,14 @@ type Props = {
   goToTargetApplication: (targetAppId: string) => void
   updateApplicationStatusLocally: (statusCode: StatusCode) => void
   setIsEditRequisitesMode: (value: boolean) => void
+  isGovProgramDocumentsSendingBlocked: boolean
+  isGovProgramDocumentsPending: boolean
+  isGovProgramDocumentsSuccess: boolean
+  currentGovProgramScans: (Scan | undefined)[]
 }
 
 export function ActionArea({
   status,
-  application,
   moratoryEndDate,
   source,
   targetDcAppId,
@@ -53,23 +64,33 @@ export function ActionArea({
   goToTargetApplication,
   updateApplicationStatusLocally,
   setIsEditRequisitesMode,
+  isGovProgramDocumentsSendingBlocked,
+  isGovProgramDocumentsPending,
+  isGovProgramDocumentsSuccess,
+  currentGovProgramScans,
 }: Props) {
   const classes = useStyles()
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const application = useAppSelector(selectApplication)
+  const { applicant, dcAppId } = application
+  const isHasGovProgram = !!application.loanData?.govprogramCode
 
   const preparedStatus = getStatus(status)
 
   const [isVisibleModal, setVisibleModal] = useState(false)
   const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false)
   const confirmedAction = useRef<() => void>()
-  const navigate = useNavigate()
-  const { applicant } = application
   const { vendorCode } = getPointOfSaleFromCookies()
+  const { isLoading: isGetFullApplicationQueryLoading, refetch: refetchGetFullApplicationQuery } =
+    useGetFullApplicationQuery({ applicationId: dcAppId }, { enabled: false })
   const { mutateAsync: sendToScoreMutate, isLoading: isSendToScoreLoading } = useSendApplicationToScore({
     onSuccess: returnToList,
   })
   const { mutateAsync: checkIfSberClientMutate, isLoading: isCheckIfSberClientLoading } =
     useCheckIfSberClient()
+  const { mutate: sendGovProgramDocumentsMutate, isLoading: isSendGovProgramDocumentsLoading } =
+    useSendGovProgramDocumentsMutation()
 
   const passport = applicant?.documents?.find(document => document.type === ApplicantDocsType.PASSPORT)
   const phoneNumber = applicant?.phones?.find(document => document.type === PhoneType.MOBILE)
@@ -132,7 +153,7 @@ export function ActionArea({
     })
   }, [navigate])
 
-  const extendApplicationWithApprovedStatus = useCallback(() => {
+  const editFullApplication = useCallback(() => {
     navigate(appRoutePaths.createOrder, {
       state: { isExistingApplication: true, isFullCalculator: true, saveDraftDisabled: true },
     })
@@ -169,6 +190,44 @@ export function ActionArea({
     sendToScoreMutate(applicationForScore)
   }, [applicationForScore, sendToScoreMutate])
 
+  const filteredGovProgramScans = useMemo(
+    () => currentGovProgramScans.filter((scan): scan is Scan => !!scan),
+    [currentGovProgramScans],
+  )
+
+  // Проверяем, что все сканы загружены и не на проверке
+  const isSendGovProgramDocumentsDisabled =
+    isGovProgramDocumentsSendingBlocked ||
+    isSendGovProgramDocumentsLoading ||
+    isGetFullApplicationQueryLoading
+
+  const currentGovProgramDocumentTypes = useMemo(
+    () =>
+      filteredGovProgramScans
+        .filter((scan): scan is Scan & { type: DocumentType } => !!scan.type)
+        .map(scan => scan.type),
+    [filteredGovProgramScans],
+  )
+
+  const sendGovProgramDocuments = useCallback(
+    () =>
+      sendGovProgramDocumentsMutate(
+        {
+          dcAppId: application.dcAppId,
+          documentTypes: currentGovProgramDocumentTypes,
+        },
+        {
+          onSuccess: () => refetchGetFullApplicationQuery(),
+        },
+      ),
+    [
+      application.dcAppId,
+      currentGovProgramDocumentTypes,
+      refetchGetFullApplicationQuery,
+      sendGovProgramDocumentsMutate,
+    ],
+  )
+
   const isShouldShowRecreateButton =
     preparedStatus === PreparedStatus.canceled ||
     preparedStatus === PreparedStatus.canceledDeal ||
@@ -195,16 +254,63 @@ export function ActionArea({
     if (preparedStatus == PreparedStatus.approved) {
       return (
         <Box className={classes.actionButtons}>
-          <Button variant="contained" onClick={() => editApplication(editApplicationWithApprovedStatus)}>
+          <Button
+            variant="contained"
+            onClick={() => editApplication(editApplicationWithApprovedStatus)}
+            disabled={isHasGovProgram && isGovProgramDocumentsPending}
+          >
             Редактировать
           </Button>
-          {application.vendor?.vendorCode === vendorCode && (
+
+          {isHasGovProgram && !isGovProgramDocumentsSuccess && (
             <Button
               variant="contained"
-              onClick={extendApplicationWithApprovedStatus}
-              disabled={isSendToScoreLoading}
+              onClick={sendGovProgramDocuments}
+              disabled={isSendGovProgramDocumentsDisabled}
             >
-              Дозаполнить анкету
+              {isSendGovProgramDocumentsLoading ? (
+                <CircularProgressWheel size="small" color={theme.palette.background.default} />
+              ) : (
+                'Отправить документы'
+              )}
+            </Button>
+          )}
+
+          {application.vendor?.vendorCode === vendorCode &&
+            (!isHasGovProgram || isGovProgramDocumentsSuccess) && (
+              <Button variant="contained" onClick={editFullApplication} disabled={isSendToScoreLoading}>
+                Дозаполнить анкету
+              </Button>
+            )}
+        </Box>
+      )
+    }
+    if (
+      preparedStatus == PreparedStatus.finallyApproved &&
+      isHasGovProgram &&
+      !isGovProgramDocumentsSuccess
+    ) {
+      return (
+        <Box className={classes.actionButtons}>
+          <Button
+            variant="contained"
+            onClick={() => editApplication(editFullApplication)}
+            disabled={isHasGovProgram && isGovProgramDocumentsPending}
+          >
+            Редактировать
+          </Button>
+
+          {isHasGovProgram && !isGovProgramDocumentsSuccess && (
+            <Button
+              variant="contained"
+              onClick={sendGovProgramDocuments}
+              disabled={isSendGovProgramDocumentsDisabled}
+            >
+              {isSendGovProgramDocumentsLoading ? (
+                <CircularProgressWheel size="small" color={theme.palette.background.default} />
+              ) : (
+                'Отправить документы'
+              )}
             </Button>
           )}
         </Box>
@@ -260,15 +366,21 @@ export function ActionArea({
     editApplicationWithApprovedStatus,
     editApplicationWithErrorStatus,
     editApplicationWithInitialStatus,
-    extendApplicationWithApprovedStatus,
+    editFullApplication,
     getToNewApplication,
     isCheckIfSberClientLoading,
     isConfirmationModalVisible,
+    isGovProgramDocumentsPending,
+    isGovProgramDocumentsSuccess,
+    isHasGovProgram,
+    isSendGovProgramDocumentsDisabled,
+    isSendGovProgramDocumentsLoading,
     isSendToScoreLoading,
     isShouldShowRecreateButton,
     preparedStatus,
     recreateApplication,
     sendApplicationToScore,
+    sendGovProgramDocuments,
     setIsEditRequisitesMode,
     status,
     targetDcAppId,

@@ -11,7 +11,7 @@ interface Props extends Omit<MaskedInputProps, 'onChange' | 'isError' | 'value'>
 
 export const MaskedInputFormik = (props: Props) => {
   const { name, label, placeholder, mask, gridColumn, disabled, InputProps, helperMessage } = props
-  const { value, isError, error, onChange } = useFormikWrapper(name)
+  const { value, isError, error, handleChange } = useFormikWrapper(name)
 
   return (
     <Box width="auto" gridColumn={gridColumn}>
@@ -22,7 +22,7 @@ export const MaskedInputFormik = (props: Props) => {
         disabled={disabled}
         id={name}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         isError={isError}
         errorMessage={error}
         InputProps={InputProps}

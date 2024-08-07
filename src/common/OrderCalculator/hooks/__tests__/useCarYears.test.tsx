@@ -5,16 +5,13 @@ import { Formik, Form } from 'formik'
 
 import { CAR_YEARS_LENGTH } from 'common/OrderCalculator/config'
 import * as useCarSectionModule from 'common/OrderCalculator/hooks/useCarSection'
-import { BriefOrderCalculatorFields, NormalizedCars } from 'common/OrderCalculator/types'
-import { CAR_BRANDS } from 'shared/api/requests/dictionaryDc.mock'
+import { BriefOrderCalculatorFields, NormalizedCarsInfo } from 'common/OrderCalculator/types'
 import { MockProviders } from 'tests/mocks'
 
 import { getTrimmedСarYears, useCarYears } from '../useCarYears'
+import { mockedUseGetCarsListQueryData } from './useGetCarsListQuery.mock'
 
-const INITIAL_CARS: NormalizedCars = {
-  newCars: { BMW: CAR_BRANDS.BMW, Fiat: CAR_BRANDS.Fiat },
-  usedCars: { KIA: CAR_BRANDS.KIA, Toyota: CAR_BRANDS.Toyota },
-}
+const INITIAL_CARS: NormalizedCarsInfo = mockedUseGetCarsListQueryData
 
 const CAR_MAX_AGE = 5
 const currentYear = new Date().getFullYear()
@@ -31,12 +28,10 @@ const mockedFormik = jest.requireActual('formik')
 const mockedSetValue = jest.fn()
 jest.mock('formik', () => ({
   ...jest.requireActual('formik'),
-  useField: (...params: any) => {
-    const originResult = mockedFormik.useField(...params)
-    originResult[2] = { setValue: mockedSetValue }
-
-    return originResult
-  },
+  useFormikContext: (...params: any) => ({
+    ...mockedFormik.useFormikContext(...params),
+    setFieldValue: mockedSetValue,
+  }),
 }))
 
 const createWrapper =
@@ -53,12 +48,15 @@ const createWrapper =
 describe('useCarYears', () => {
   describe('Новые авто', () => {
     beforeEach(() => {
-      mockedUseCarSection.mockImplementation(() => ({
-        cars: INITIAL_CARS.newCars,
-        isLoading: false,
-        isSuccess: false,
-        isError: false,
-      }))
+      mockedUseCarSection.mockImplementation(
+        () =>
+          ({
+            data: INITIAL_CARS.newCarsInfo,
+            isLoading: false,
+            isSuccess: false,
+            isError: false,
+          } as ReturnType<typeof useCarSectionModule.useCarSection>),
+      )
     })
 
     it('Возвращает список допустимых годов авто из данных автомобиля', () => {
@@ -84,12 +82,15 @@ describe('useCarYears', () => {
 
   describe('Б/У авто', () => {
     beforeEach(() => {
-      mockedUseCarSection.mockImplementation(() => ({
-        cars: INITIAL_CARS.usedCars,
-        isLoading: false,
-        isSuccess: false,
-        isError: false,
-      }))
+      mockedUseCarSection.mockImplementation(
+        () =>
+          ({
+            data: INITIAL_CARS.usedCarsInfo,
+            isLoading: false,
+            isSuccess: false,
+            isError: false,
+          } as ReturnType<typeof useCarSectionModule.useCarSection>),
+      )
     })
 
     it('Для БУ авто возвращает полный список годов', () => {
@@ -115,12 +116,15 @@ describe('useCarYears', () => {
 
   describe('Эффекты', () => {
     beforeEach(() => {
-      mockedUseCarSection.mockImplementation(() => ({
-        cars: INITIAL_CARS.newCars,
-        isLoading: false,
-        isSuccess: false,
-        isError: false,
-      }))
+      mockedUseCarSection.mockImplementation(
+        () =>
+          ({
+            data: INITIAL_CARS.newCarsInfo,
+            isLoading: false,
+            isSuccess: false,
+            isError: false,
+          } as ReturnType<typeof useCarSectionModule.useCarSection>),
+      )
     })
 
     it('Если выбрный ранее год в поле carYear отсутствует в допустимом списке годов, то поле carYear в форме очищается', () => {

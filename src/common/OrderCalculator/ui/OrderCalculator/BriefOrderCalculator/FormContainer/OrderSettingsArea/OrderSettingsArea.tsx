@@ -10,22 +10,19 @@ import {
   useGetVendorOptionsQuery,
 } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useInitialPayment } from 'common/OrderCalculator/hooks/useInitialPayment'
-import { useRequiredService } from 'common/OrderCalculator/hooks/useRequiredService'
+import { useRateMod } from 'common/OrderCalculator/hooks/useRateMod'
 import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { CommonOrderSettings } from 'common/OrderCalculator/ui/CommonOrderSettings/CommonOrderSettings'
+import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { FraudDialog } from 'entities/SpecialMark'
 import { checkIsNumber } from 'shared/lib/helpers'
-import { maskOnlyDigitsWithSeparator, maskPercent } from 'shared/masks/InputMasks'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
-import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
-import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 
 import { useCreditProductsData } from '../../../../../hooks/useCreditProductsData'
-import { useCreditProductsLimits } from '../../../../../hooks/useCreditProductsLimits'
 import { useCreditProductsTerms } from '../../../../../hooks/useCreditProductsTerms'
 import { useCreditProductsValidations } from '../../../../../hooks/useCreditProductsValidations'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
@@ -50,40 +47,43 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
   })
 
   const {
-    initialPaymentData,
-    creditProductsData,
-    creditDurationData,
+    creditProductListData,
+    minInitialPaymentPercent,
+    maxInitialPaymentPercent,
+    minInitialPayment,
+    maxInitialPayment,
+    currentProduct,
+    currentDurationMin,
+    currentDurationMax,
     durationMaxFromAge,
     isGetCarsLoading,
     isGetCarsSuccess,
     clientAge,
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
-  } = useCreditProductsData(vendorCode)
-  const { creditProducts, initialPaymentHelperText, initialPaymentPercentHelperText } =
-    useCreditProductsLimits(
-      initialPaymentData,
-      creditProductsData,
-      durationMaxFromAge,
-      isGetCarsLoading,
-      isGetCarsSuccess,
-    )
-  const { loanTerms } = useCreditProductsTerms(creditDurationData, creditProductsData, durationMaxFromAge)
-  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(initialPaymentData)
+  } = useCreditProductsData()
 
-  const { selectedRequiredOptionsMap } = useRequiredService({
-    creditProductsData,
+  const { loanTerms } = useCreditProductsTerms({
+    currentDurationMin,
+    currentDurationMax,
+    currentProduct,
+    durationMaxFromAge,
+  })
+
+  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations({
+    minInitialPaymentPercent,
+    maxInitialPaymentPercent,
+    minInitialPayment,
+    maxInitialPayment,
+  })
+
+  const { currentRateMod, isShouldShowDiscountNotification, maxRateModsMap } = useRateMod({
+    creditProductListData,
+    currentProduct,
     additionalOptionsMap: vendorOptions?.additionalOptionsMap,
     isVendorOptionsSuccess,
     initialBankAdditionalService: INITIAL_BANK_ADDITIONAL_SERVICE,
   })
-
-  const {
-    handleInitialPaymentFocus,
-    handleInitialPaymentPercentFocus,
-    handleInitialPaymentBlur,
-    handleInitialPaymentPercentBlur,
-  } = useInitialPayment(disabled)
 
   const additionalEquipments = useMemo(
     () =>
@@ -142,44 +142,20 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
 
       {isSectionLoaded && (
         <Box className={classes.gridWrapper} ref={ref}>
-          <Box className={classes.gridContainer}>
-            <SelectInputFormik
-              name={FormFieldNameMap.creditProduct}
-              label="Кредитный продукт"
-              placeholder="-"
-              options={creditProducts}
-              gridColumn="span 2"
-              emptyAvailable
-            />
-            <MaskedInputFormik
-              name={FormFieldNameMap.initialPayment}
-              label="Первоначальный взнос"
-              placeholder="-"
-              mask={maskOnlyDigitsWithSeparator}
-              gridColumn="span 1"
-              helperMessage={initialPaymentHelperText}
-              InputProps={{ onFocus: handleInitialPaymentFocus, onBlur: handleInitialPaymentBlur }}
-            />
-            <MaskedInputFormik
-              name={FormFieldNameMap.initialPaymentPercent}
-              label="Первоначальный взнос в %"
-              placeholder="-"
-              mask={maskPercent}
-              gridColumn="span 1"
-              helperMessage={initialPaymentPercentHelperText}
-              InputProps={{
-                onFocus: handleInitialPaymentPercentFocus,
-                onBlur: handleInitialPaymentPercentBlur,
-              }}
-            />
-            <SelectInputFormik
-              name={FormFieldNameMap.loanTerm}
-              label="Срок"
-              placeholder="-"
-              options={loanTerms}
-              gridColumn="span 1"
-            />
-          </Box>
+          <CommonOrderSettings
+            disabled={disabled}
+            minInitialPaymentPercent={minInitialPaymentPercent}
+            maxInitialPaymentPercent={maxInitialPaymentPercent}
+            minInitialPayment={minInitialPayment}
+            maxInitialPayment={maxInitialPayment}
+            currentProduct={currentProduct}
+            loanTerms={loanTerms}
+            durationMaxFromAge={durationMaxFromAge}
+            currentDurationMin={currentDurationMin}
+            currentDurationMax={currentDurationMax}
+            isGetCarsLoading={isGetCarsLoading}
+            isGetCarsSuccess={isGetCarsSuccess}
+          />
 
           <AdditionalServices
             title="Дополнительное оборудование"
@@ -200,7 +176,9 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
             name={ServicesGroupName.bankAdditionalServices}
             productLabel="Тип продукта"
             clientAge={clientAge}
-            selectedRequiredOptionsMap={selectedRequiredOptionsMap}
+            currentRateMod={currentRateMod}
+            isShouldShowInfoIcon={isShouldShowDiscountNotification}
+            maxRateModsMap={maxRateModsMap}
           />
 
           {!!commonErrors.length && (
