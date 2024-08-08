@@ -10,7 +10,7 @@ import {
   FullInitialAdditionalService,
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
-import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 

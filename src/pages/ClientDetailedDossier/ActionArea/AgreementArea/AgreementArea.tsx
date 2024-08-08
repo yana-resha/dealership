@@ -5,7 +5,7 @@ import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { getStatus, PreparedStatus } from 'entities/applications/application.utils'
+import { getStatus, PreparedStatus } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useCheckDocumentsList } from 'features/ApplicationFileLoader/hooks/useCheckDocumentsList'
 import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'

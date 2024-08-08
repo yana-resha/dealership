@@ -87,14 +87,7 @@ export const AddressDialog = ({
   return (
     <ModalDialog isVisible={isVisible} label={label} onClose={onClose}>
       <Box className={classes.content}>
-        <Formik
-          initialValues={{
-            ...address,
-            validationParams: { isDfoProgram: addressName === 'registrationAddress' },
-          }}
-          validationSchema={clientAddressValidationSchema}
-          onSubmit={onSubmit}
-        >
+        <Formik initialValues={address} validationSchema={clientAddressValidationSchema} onSubmit={onSubmit}>
           <Form className={classes.formContainer}>
             <AutocompleteInputFormik
               name="regCode"

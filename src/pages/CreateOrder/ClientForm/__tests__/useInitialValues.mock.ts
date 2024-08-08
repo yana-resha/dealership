@@ -116,10 +116,6 @@ export const EXPECTED_DATA: ClientData = {
     status: DocumentUploadStatus.Uploaded,
   },
   isFormComplete: false,
-  validationParams: {
-    minChildrenCount: 0,
-    isDfoProgram: false,
-  },
 }
 
 const EMPTY_ADDRESS = {
@@ -197,9 +193,4 @@ export const EXPECTED_EMPTY_DATA = {
   questionnaireFile: null,
   submitAction: SubmitAction.Save,
   isFormComplete: false,
-
-  validationParams: {
-    isDfoProgram: false,
-    minChildrenCount: 0,
-  },
 }

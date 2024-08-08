@@ -40,7 +40,7 @@ export const AutocompleteInputFormik = ({
   onSelectOption,
   onChange: onChangeProp,
 }: Props) => {
-  const { value, isError, error, handleChange: onChange } = useFormikWrapper(name)
+  const { value, isError, error, onChange } = useFormikWrapper(name)
 
   const handleChange = useCallback(
     (value: string | string[] | null) => {

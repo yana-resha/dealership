@@ -11,7 +11,7 @@ import { DossierIdArea } from '../DossierIdArea'
 jest.mock('@mui/material/IconButton', () => ({ onClick }: any) => (
   <div data-testid="backButton" onClick={onClick} />
 ))
-jest.mock('entities/applications/ApplicationStatus/ApplicationStatus', () => ({
+jest.mock('entities/application/ApplicationStatus/ApplicationStatus', () => ({
   ApplicationStatus: () => <div data-testid="applicationStatus" />,
 }))
 

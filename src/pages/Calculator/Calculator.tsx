@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { OrderCalculator } from 'common/OrderCalculator'
-import { clearOrder } from 'entities/order'
+import { clearOrder } from 'entities/reduxStore/orderSlice'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 

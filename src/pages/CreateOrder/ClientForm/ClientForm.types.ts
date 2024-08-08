@@ -35,11 +35,6 @@ export enum SubmitAction {
   Print = 'print',
 }
 
-export type ValidationParams = {
-  minChildrenCount: number
-  isDfoProgram: boolean
-}
-
 export interface ClientData {
   clientFirstName: string
   clientLastName: string
@@ -99,7 +94,6 @@ export interface ClientData {
   questionnaireFile: FileInfo | null
   submitAction: SubmitAction
   isFormComplete: boolean
-  validationParams: ValidationParams
 }
 
 export interface AddressTypeCode {

@@ -11,7 +11,6 @@ import { AddressMap, SubmitAction } from 'pages/CreateOrder/ClientForm/ClientFor
 import { ADDRESS_MAP } from 'pages/CreateOrder/ClientForm/hooks/__tests__/useGetAddressMapQuery.mock'
 import * as useGetAddressMapQueryModule from 'pages/CreateOrder/ClientForm/hooks/useGetAddressMapQuery'
 import * as daDataQueryModule from 'shared/api/requests/dadata.api'
-import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import { MockedDateInput } from 'shared/ui/DateInput/__mocks__/DateInput.mock'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
@@ -34,10 +33,6 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
 }))
 jest.mock('shared/ui/DateInput/DateInput', () => ({
   DateInput: MockedDateInput,
-}))
-
-jest.mock('shared/hooks/store/useAppSelector', () => ({
-  useAppSelector: () => {},
 }))
 
 type Props = {

@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import { Box } from '@mui/material'
-import { useFormikContext } from 'formik'
+import { useField, useFormikContext } from 'formik'
 
 import {
   CAR_CONDITIONS,
@@ -13,9 +13,9 @@ import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/const
 import { useCarBrands } from 'common/OrderCalculator/hooks/useCarBrands'
 import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
 import { useCarYears } from 'common/OrderCalculator/hooks/useCarYears'
-import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { FormFieldNameMap } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { DealerCenterRequisites } from 'entities/applications/AdditionalOptionsRequisites/ui'
+import { DealerCenterRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskVin,
@@ -44,9 +44,9 @@ type Props = {
 export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
   const styles = useStyles()
 
-  const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
-  const { isGovernmentProgram, isDfoProgram, carPassportType } = values
-  const prevCarPassportType = usePrevious(carPassportType)
+  const { setFieldValue } = useFormikContext()
+  const [carPassportTypeField] = useField(FormFieldNameMap.carPassportType)
+  const prevCarPassportType = usePrevious(carPassportTypeField.value)
 
   const { carBrands, carModels, isDisabledCarModel, isCarsLoading, isCarLoaded, isCarError } = useCarBrands()
   const { carYears } = useCarYears()
@@ -55,17 +55,11 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
   const isSectionLoading = isLoading || isCarsLoading
   const isSectionLoaded = !isLoading && isCarLoaded
 
-  // Для гос.программ допускается только один тип - VIN
-  const initialCarIdTypeOptions = useMemo(
-    () => (isGovernmentProgram || isDfoProgram ? INITIAL_CAR_ID_TYPE.slice(0, 1) : INITIAL_CAR_ID_TYPE),
-    [isDfoProgram, isGovernmentProgram],
-  )
-
   useEffect(() => {
-    if (carPassportType !== prevCarPassportType) {
+    if (carPassportTypeField.value !== prevCarPassportType) {
       setFieldValue(FormFieldNameMap.carPassportId, fullInitialValueMap[FormFieldNameMap.carPassportId])
     }
-  }, [carPassportType, prevCarPassportType, setFieldValue])
+  }, [carPassportTypeField.value, prevCarPassportType, setFieldValue])
 
   return (
     <CollapsibleFormAreaContainer title="Автомобиль">
@@ -132,9 +126,9 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
               name={FormFieldNameMap.carPassportId}
               label="Серия и номер ПТС"
               placeholder="-"
-              mask={carPassportType ? maskElectronicСarPassportId : maskСarPassportId}
+              mask={carPassportTypeField.value ? maskElectronicСarPassportId : maskСarPassportId}
               gridColumn="span 1"
-              disabled={carPassportType === null}
+              disabled={carPassportTypeField.value === null}
             />
             <DateInputFormik
               name={FormFieldNameMap.carPassportCreationDate}
@@ -147,7 +141,7 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
               name={FormFieldNameMap.carIdType}
               label="VIN или номер кузова"
               placeholder="-"
-              options={initialCarIdTypeOptions}
+              options={INITIAL_CAR_ID_TYPE}
               gridColumn="span 1"
             />
             <MaskedInputFormik

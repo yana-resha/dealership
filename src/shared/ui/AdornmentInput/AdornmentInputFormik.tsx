@@ -22,7 +22,7 @@ export const AdornmentInputFormik = (props: Props) => {
     type,
     endAdornment,
   } = props
-  const { value, isError, error, handleChange } = useFormikWrapper(name)
+  const { value, isError, error, onChange } = useFormikWrapper(name)
 
   return (
     <Box width="auto" gridColumn={gridColumn}>
@@ -33,7 +33,7 @@ export const AdornmentInputFormik = (props: Props) => {
         disabled={disabled}
         id={name}
         value={value}
-        onChange={handleChange}
+        onChange={onChange}
         isError={isError}
         errorMessage={error}
         inputProps={inputProps}

@@ -8,8 +8,8 @@ import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditio
 import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
 import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
-import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
-import { AdditionalEquipmentRequisites } from 'entities/applications/AdditionalOptionsRequisites/ui'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { AdditionalEquipmentRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
 
 import useStyles from './AdditionalEquipment.styles'
 

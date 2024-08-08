@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { Formik, Form } from 'formik'
 
 import { FormFieldNameMap, BriefOrderCalculatorFields } from 'common/OrderCalculator/types'
-import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 

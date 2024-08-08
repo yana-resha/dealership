@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
-import { useFormikContext } from 'formik'
+import { useField } from 'formik'
 
 import { MIN_LOAN_YEAR_TERM, getCarYears } from '../config'
-import { BriefOrderCalculatorFields, FormFieldNameMap } from '../types'
+import { FormFieldNameMap } from '../types'
 import { useCarSection } from './useCarSection'
 
 // Обрезаем массив годом выпуска по максимальному возрасту авто
@@ -30,22 +30,27 @@ export function getTrimmedСarYears(carYears: { value: number }[], carMaxAge: nu
 }
 
 export function useCarYears() {
-  const { data: carsInfo } = useCarSection()
-  const { values, setFieldValue } = useFormikContext<BriefOrderCalculatorFields>()
+  const { cars } = useCarSection()
 
-  const carMaxAge = carsInfo.brandMap[values.carBrand ?? '']?.maxCarAge
+  const [carConditionField] = useField<string | null>(FormFieldNameMap.carCondition)
+  const [carBrandField] = useField<string | null>(FormFieldNameMap.carBrand)
+  const [carYearField, , { setValue: setCarYear }] = useField<number | undefined>(FormFieldNameMap.carYear)
+
+  const carMaxAge = cars[carBrandField.value ?? '']?.maxCarAge
   const carYears = useMemo(() => {
-    const carYears = getCarYears(!!values.carCondition)
+    const carYears = getCarYears(!!carConditionField.value)
     const trimmedСarYears = getTrimmedСarYears(carYears, carMaxAge)
 
     return trimmedСarYears
-  }, [carMaxAge, values.carCondition])
+  }, [carConditionField.value, carMaxAge])
 
   useEffect(() => {
-    if (values.carYear && (carYears.every(year => year.value !== values.carYear) || !values.carBrand)) {
-      setFieldValue(FormFieldNameMap.carYear, undefined)
+    if (!carYears.some(year => year.value === carYearField.value) || !carBrandField.value) {
+      setCarYear(undefined)
     }
-  }, [carYears, setFieldValue, values.carBrand, values.carYear])
+    // исключен setCarYear, приводил к бесконечному ререндеру
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [carBrandField.value, carConditionField.value, carYearField.value, carYears])
 
   return { carYears }
 }

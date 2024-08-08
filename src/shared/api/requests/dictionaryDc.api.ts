@@ -9,17 +9,14 @@ import {
   CalculateCreditResponse,
   GetVendorsListRequest,
   RequiredServiceFlag,
-  CalcType,
 } from '@sberauto/dictionarydc-proto/public'
-import { useSnackbar } from 'notistack'
 import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
 import { CustomFetchError, Rest } from 'shared/api/client'
-import { prepareCalcType, prepareOptionType, prepareRequiredServiceFlag } from 'shared/lib/helpers'
+import { prepareOptionType, prepareRequiredServiceFlag } from 'shared/lib/helpers'
 
-import { Service, ServiceApi } from '../constants'
-import { ErrorAlias, ErrorCode, getErrorMessage } from '../errors'
+import { Service } from '../constants'
 
 const dictionaryDcApi = createDictionaryDc(`${appConfig.apiUrl}/${Service.Dictionarydc}`, Rest.request)
 
@@ -34,51 +31,33 @@ export const getVendorOptionsList = (params: GetVendorOptionsListRequest) =>
     const additionalOptions = response.data.additionalOptions?.map(el => ({
       ...el,
       optionType: prepareOptionType(el.optionType as unknown as keyof typeof OptionType),
-      tariffs: el.tariffs?.map(tariff => ({
-        ...tariff,
-        calcType: prepareCalcType(tariff.calcType as unknown as keyof typeof CalcType),
-      })),
+      optionId: el.optionId,
     }))
 
     return { ...(response.data ?? {}), additionalOptions }
   })
 
 export const calculateCredit = (params: CalculateCreditRequest) =>
-  dictionaryDcApi.calculateCredit({ data: params }).then(res => ({
-    ...res.data,
-    products: res.data?.products
-      // По требованию аналитиков отфильтровываем продукт,
-      //  если discountAvailability=false и rateDelta больше 0 https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1068534196
-      ?.filter(product => !(!product.discountAvailability && product.rateDelta))
-      .map(product => ({
+  dictionaryDcApi.calculateCredit({ data: params }).then(res => {
+    const data = {
+      ...res.data,
+      products: res.data?.products?.map(product => ({
         ...product,
         requiredServiceFlag: prepareRequiredServiceFlag(
           product.requiredServiceFlag as unknown as keyof typeof RequiredServiceFlag,
         ),
       })),
-  }))
+    }
 
-export const useCalculateCreditMutation = () => {
-  const { enqueueSnackbar } = useSnackbar()
+    return data
+  })
+// .then(res => res.data ?? {})
 
-  return useMutation<CalculateCreditResponse, CustomFetchError, CalculateCreditRequest, unknown>(
+export const useCalculateCreditMutation = () =>
+  useMutation<CalculateCreditResponse, CustomFetchError, CalculateCreditRequest, unknown>(
     ['calculateCredit'],
-    calculateCredit,
-    {
-      onError: err => {
-        enqueueSnackbar(
-          getErrorMessage({
-            service: Service.Dictionarydc,
-            serviceApi: ServiceApi.CALCULATE_CREDIT,
-            code: err.code as ErrorCode,
-            alias: err.alias as ErrorAlias,
-          }),
-          { variant: 'error' },
-        )
-      },
-    },
+    (params: CalculateCreditRequest) => calculateCredit(params),
   )
-}
 
 export const getRequisitesForFinancing = (params: GetRequisitesForFinancingRequest) =>
   dictionaryDcApi.getRequisitesForFinancing({ data: params }).then(res => res.data ?? {})

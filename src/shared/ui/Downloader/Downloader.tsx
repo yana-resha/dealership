@@ -13,7 +13,6 @@ type DownloaderIconProps = {
   onDownloadFile: () => Promise<File | undefined>
   gridColumn?: string
   disabled?: boolean
-  isDisabledLoader?: boolean
   icon?: React.ReactNode
 }
 
@@ -21,7 +20,6 @@ export function Downloader({
   onDownloadFile,
   gridColumn,
   disabled = false,
-  isDisabledLoader = false,
   icon,
   children,
 }: React.PropsWithChildren<DownloaderIconProps>) {
@@ -88,7 +86,7 @@ export function Downloader({
           onClick={handleDownload}
         >
           <Box className={classes.contentContainer}>
-            {isLoading && !isDisabledLoader ? <CircularProgressWheel /> : icon}
+            {isLoading ? <CircularProgressWheel /> : icon}
             {children}
           </Box>
         </Link>

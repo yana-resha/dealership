@@ -4,17 +4,16 @@ import { Box } from '@mui/material'
 import { DocumentType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import { useParams } from 'react-router-dom'
 
-import { getStatus, PreparedStatus } from 'entities/applications/application.utils'
-import { DocumentDownloader } from 'entities/downloader/DocumentsDownloader'
-import { updateApplication } from 'entities/order'
-import { selectApplicationScans } from 'entities/order/model/selectors'
+import { PreparedStatus, getStatus } from 'entities/application/application.utils'
+import { DocumentDownloader } from 'entities/downloader/DocumentsDownloader/DocumentDownloader'
+import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { FileInfo, UploaderConfig, DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { Uploader } from 'features/ApplicationFileLoader/ApplicationFileUploader'
 import { useDownloadDocument } from 'features/ApplicationFileLoader/hooks/useDownloadDocument'
 import { UPLOADED_DOCUMENTS } from 'pages/CreateOrder/ClientForm/config/clientFormInitialValues'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { AreaContainer } from 'shared/ui/AreaContainer'
+import { AreaContainer } from 'shared/ui/DossierAreaContainer'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { useAgreementDocs } from '../hooks/useAgreementDocs'
@@ -29,7 +28,7 @@ export function DocumentsArea({ status }: Props) {
   const { applicationId = '' } = useParams()
   const dispatch = useAppDispatch()
 
-  const scans = useAppSelector(selectApplicationScans)
+  const scans = useAppSelector(state => state.order.order?.orderData?.application?.scans || [])
 
   const { downloadFile } = useDownloadDocument()
   const { agreementDocs } = useAgreementDocs(true)
@@ -47,7 +46,7 @@ export function DocumentsArea({ status }: Props) {
     PreparedStatus.authorized,
     PreparedStatus.financed,
   ].includes(preparedStatus)
-  const isRemoveDisabled = [
+  const isDisabledRemove = [
     PreparedStatus.formation,
     PreparedStatus.signed,
     PreparedStatus.authorized,
@@ -114,7 +113,7 @@ export function DocumentsArea({ status }: Props) {
           motivateMessage="Загрузить анкету"
           onUploadDocument={uploadQuestionnaire}
           onRemoveDocument={removeQuestionnaire}
-          isRemoveDisabled={isRemoveDisabled}
+          isDisabledRemove={isDisabledRemove}
           isShowLabel={!isShowDownloadLoanAgreement}
         />
 

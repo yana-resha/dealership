@@ -1,6 +1,6 @@
 import { StatusCode, Application } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { PreparedTableData } from 'entities/applications/ApplicationTable/ApplicationTable.types'
+import { PreparedTableData } from 'entities/application/ApplicationTable/ApplicationTable.types'
 
 export const findApplicationsDataMock: Application[] = [
   {

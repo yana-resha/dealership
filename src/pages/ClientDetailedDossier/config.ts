@@ -15,5 +15,4 @@ export const ADDITIONAL_AGREEMENT_DOC_TYPES = [
   DocumentType.ADD_OPTIONS_APPLICATION,
   DocumentType.PATH_PROTECTION,
   DocumentType.MULTIPOLIS,
-  DocumentType.ROAD_ASSISTANCE,
 ]

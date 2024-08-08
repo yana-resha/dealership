@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import { selectApplicationScans } from 'entities/order/model/selectors'
 import { RequiredScan } from 'shared/api/requests/loanAppLifeCycleDc'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 
@@ -10,7 +9,7 @@ import { ADDITIONAL_AGREEMENT_DOC_TYPES, AGREEMENT_DOC_TYPES } from '../config'
 
 export const useAgreementDocs = (isShowAgreementDocs = false) => {
   const { applicationId = '' } = useParams()
-  const scans = useAppSelector(selectApplicationScans)
+  const scans = useAppSelector(state => state.order.order?.orderData?.application?.scans || [])
 
   const uploadedAgreementScans = useMemo(
     () =>

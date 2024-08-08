@@ -1,8 +1,8 @@
-import { BrandInfo, ModelInfo } from '@sberauto/dictionarydc-proto/public'
+import { Car, CreditProduct } from '@sberauto/dictionarydc-proto/public'
 import { DocType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
-import { GovernmentProgramsMap, ProductsMap, RequiredTariff } from 'entities/order/model/orderSlice'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ProductsMap, RequiredProduct } from 'entities/reduxStore/orderSlice'
 
 export enum FormFieldNameMap {
   carCondition = 'carCondition', //Состояние
@@ -59,12 +59,6 @@ export enum FormFieldNameMap {
   ogrn = 'ogrn',
   kpp = 'kpp',
   tariff = 'tariff',
-  IS_GOVERNMENT_PROGRAM = 'isGovernmentProgram',
-  IS_DFO_PROGRAM = 'isDfoProgram',
-  GOVERNMENT_PROGRAM = 'governmentProgram',
-  GOVERNMENT_NAME = 'governmentName',
-  GOVERNMENT_DISCOUNT = 'governmentDiscount',
-  GOVERNMENT_DISCOUNT_PERCENT = 'governmentDiscountPercent',
 }
 
 export interface OrderCalculatorAdditionalService {
@@ -147,8 +141,6 @@ export interface CommonError {
   isExceededDealerAdditionalServicesLimit: boolean
   isExceededBankAdditionalServicesLimit: boolean
   isHasNotCascoOption: boolean
-  isCurrentGovProgramNotFoundInList?: boolean
-  isCurrentCreditProductNotFoundInList?: boolean
 }
 
 export interface ValidationParams {
@@ -160,18 +152,12 @@ export interface ValidationParams {
 }
 
 export interface BriefOrderCalculatorFields {
-  [FormFieldNameMap.IS_GOVERNMENT_PROGRAM]: boolean
-  [FormFieldNameMap.IS_DFO_PROGRAM]: boolean
   [FormFieldNameMap.carCondition]: number
   [FormFieldNameMap.carBrand]: string | null
   [FormFieldNameMap.carModel]: string | null
   [FormFieldNameMap.carYear]: number | null
   [FormFieldNameMap.carCost]: string
   [FormFieldNameMap.carMileage]: string
-  [FormFieldNameMap.GOVERNMENT_PROGRAM]: string | null
-  [FormFieldNameMap.GOVERNMENT_NAME]: string | null
-  [FormFieldNameMap.GOVERNMENT_DISCOUNT]: string
-  [FormFieldNameMap.GOVERNMENT_DISCOUNT_PERCENT]: string
   [FormFieldNameMap.creditProduct]: string | null
   [FormFieldNameMap.initialPayment]: string
   [FormFieldNameMap.initialPaymentPercent]: string
@@ -218,15 +204,11 @@ export type FormMessages = {
 
 export type CreditProductParams = Partial<
   Pick<
-    FullOrderCalculatorFields,
-    | FormFieldNameMap.IS_GOVERNMENT_PROGRAM
-    | FormFieldNameMap.IS_DFO_PROGRAM
+    BriefOrderCalculatorFields,
     | FormFieldNameMap.carCondition
     | FormFieldNameMap.carBrand
     | FormFieldNameMap.carModel
     | FormFieldNameMap.carYear
-    | FormFieldNameMap.carCost
-    | FormFieldNameMap.carPassportCreationDate
   >
 >
 
@@ -247,52 +229,40 @@ export enum AutoCategory {
   C = 'C',
 }
 
-export interface RequiredModel extends ModelInfo {
-  model: string
-  govprogramFlag: boolean
-  govprogramDfoFlag: boolean
-}
-
-export type NormalizedModels = {
-  models: string[]
-  modelMap: Record<string, RequiredModel>
-}
-
-export interface RequiredBrand extends BrandInfo, NormalizedModels {
+export interface NormalizedCar extends Car {
   brand: string
+  models: string[]
   maxCarAge: number
-  isHasGovernmentProgram: boolean
-  isHasDfoProgram: boolean
 }
 
-export type NormalizedBrands = {
-  brands: string[]
-  brandMap: Record<string, RequiredBrand>
-}
-
-export type NormalizedCarsInfo = {
-  newCarsInfo: NormalizedBrands
-  usedCarsInfo: NormalizedBrands
+export type NormalizedCars = {
+  newCars: Record<string, NormalizedCar>
+  usedCars: Record<string, NormalizedCar>
 }
 
 export type UseGetCreditProductListQueryData = {
-  productIds: string[]
+  products: RequiredProduct[]
   productsMap: ProductsMap
-  governmentProgramsCodes: string[]
-  governmentProgramsMap: GovernmentProgramsMap
   fullDownpaymentMin?: number
   fullDownpaymentMax?: number
   fullDurationMin?: number
   fullDurationMax?: number
+  creditProducts?: CreditProduct[] | null
 }
 
-export type TariffMap = Record<string, RequiredTariff>
+export interface InitialPaymentData {
+  minInitialPaymentPercent: number
+  maxInitialPaymentPercent: number
+  minInitialPayment: number
+  maxInitialPayment: number
+}
 
-export type MaxRateModsMap = Record<
-  string,
-  {
-    optionId: string
-    maxDelta: number
-    maxTariffMap: TariffMap
-  }
->
+export interface CreditProductsData {
+  creditProductListData: UseGetCreditProductListQueryData | undefined
+  currentProduct: RequiredProduct | undefined
+}
+
+export interface CreditDurationData {
+  currentDurationMin: number | undefined
+  currentDurationMax: number | undefined
+}

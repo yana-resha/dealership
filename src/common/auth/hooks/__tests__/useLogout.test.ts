@@ -1,8 +1,8 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import Cookies from 'js-cookie'
 
-import * as orderSlice from 'entities/order/model/orderSlice'
 import { COOKIE_POINT_OF_SALE } from 'entities/pointOfSale/constants'
+import * as orderSlice from 'entities/reduxStore/orderSlice'
 import * as userSlice from 'entities/user/model/userSlice'
 import { AUTH_COOKIE } from 'shared/api/helpers/authCookie'
 import * as authdcModule from 'shared/api/requests/authdc'

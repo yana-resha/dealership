@@ -2,11 +2,12 @@ import { useCallback, useState } from 'react'
 
 import { Box, Button } from '@mui/material'
 import classNames from 'classnames'
+import { useFormikContext } from 'formik'
 import { useDispatch } from 'react-redux'
 
 import { ReactComponent as Close } from 'assets/icons/cancel.svg'
 import { ReactComponent as WarningIcon } from 'assets/icons/warning.svg'
-import { updateOrder } from 'entities/order'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { SPECIAL_MARK_OPTIONS } from 'entities/SpecialMark'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
@@ -18,6 +19,7 @@ import { useStyles } from './FraudDialog.styles'
 export const FraudDialog = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { setFieldValue } = useFormikContext()
   const [isVisible, setIsVisible] = useState(false)
   const savedApplication = useAppSelector(state => state.order.order)
   const application = savedApplication?.orderData?.application

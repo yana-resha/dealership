@@ -1,7 +1,7 @@
 import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 import { renderHook } from '@testing-library/react-hooks'
 
-import * as ApplicationProviderModule from 'entities/applications/ApplicationProvider/ApplicationProvider'
+import * as ApplicationProviderModule from 'entities/application/ApplicationProvider/ApplicationProvider'
 import {
   DocumentUploadStatus,
   UploaderConfig,

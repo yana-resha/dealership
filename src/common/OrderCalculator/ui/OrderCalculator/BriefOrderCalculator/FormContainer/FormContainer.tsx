@@ -7,7 +7,6 @@ import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProduct
 import { useFormChanging } from 'common/OrderCalculator/hooks/useFormChanging'
 import { useScrollToOrderSettingsArea } from 'common/OrderCalculator/hooks/useScrollToOrderSettingsArea'
 import { BriefOrderCalculatorFields } from 'common/OrderCalculator/types'
-import { ProgramSwitchesArea } from 'common/OrderCalculator/ui/ProgramSwitchesArea/ProgramSwitchesArea'
 import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
 
 import { CarSettingsArea } from './CarSettingsArea/CarSettingsArea'
@@ -40,8 +39,6 @@ export function FormContainer({
 
   const formFields = useMemo(
     () => ({
-      isGovernmentProgram: values.isGovernmentProgram,
-      isDfoProgram: values.isDfoProgram,
       carCondition: values.carCondition,
       carBrand: values.carBrand,
       carModel: values.carModel,
@@ -56,8 +53,6 @@ export function FormContainer({
       values.carMileage,
       values.carModel,
       values.carYear,
-      values.isDfoProgram,
-      values.isGovernmentProgram,
     ],
   )
 
@@ -72,7 +67,6 @@ export function FormContainer({
 
   return (
     <Form>
-      <ProgramSwitchesArea />
       <CarSettingsArea
         onFilled={changeShouldFetchProducts}
         visibleFooter={!shouldShowOrderSettings}

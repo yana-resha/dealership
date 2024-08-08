@@ -1,6 +1,9 @@
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import {
   BriefOrderCalculatorFields,
+  CreditDurationData,
+  CreditProductsData,
+  InitialPaymentData,
   OrderCalculatorAdditionalService,
   OrderCalculatorBankAdditionalService,
 } from 'common/OrderCalculator/types'
@@ -86,100 +89,144 @@ export const MOCKED_STATE_WITH_DATA = {
   },
 }
 
-export const MOCKED_INITIAL_PAYMENT_DATA = {
+export const MOCKED_INITIAL_PAYMENT_DATA: InitialPaymentData = {
   maxInitialPayment: 90,
   maxInitialPaymentPercent: 90,
   minInitialPayment: 0,
   minInitialPaymentPercent: 0,
 }
 
-export const MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT = {
+export const MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT: InitialPaymentData = {
   maxInitialPayment: 80,
   maxInitialPaymentPercent: 80,
   minInitialPayment: 20,
   minInitialPaymentPercent: 20,
 }
 
-export const MOCKED_CREDIT_DURATION_DATA = {
+export const MOCKED_CREDIT_DURATION_DATA: CreditDurationData = {
   currentDurationMin: undefined,
   currentDurationMax: undefined,
 }
 
-export const MOCKED_CREDIT_PRODUCT_LIST_DATA = {
-  fullDurationMax: 84,
-  fullDurationMin: 24,
-  fullDownpaymentMax: 90,
-  fullDownpaymentMin: 0,
-  productIds: ['1', '2'],
-  productsMap: {
-    '1': {
-      productCode: 10,
-      productCodeName: 'ACDC',
-      productName: 'Максимум: Без Каско',
-      productId: '1',
-      npllzp: 16000000,
-      npllzak: 16000000,
-      termsLoanCode: 269,
-      approvalValidity: 45,
-      incomeFlag: true,
-      activeDateFrom: '2023-01-01',
-      activeDateTo: '2099-01-01',
-      conditions: [
-        {
-          downpaymentMin: 20,
-          downpaymentMax: 80,
-          durationMin: 24,
-          durationMax: 84,
-          rateMods: [],
-        },
-      ],
-    },
-    '2': {
-      productCode: 10,
-      productCodeName: 'AKHC',
-      productName: 'Комфорт: Драйв',
-      productId: '2',
-      npllzp: 16000000,
-      npllzak: 16000000,
-      termsLoanCode: 269,
-      approvalValidity: 45,
-      incomeFlag: true,
-      activeDateFrom: '2023-01-01',
-      activeDateTo: '2099-01-01',
-      conditions: [
-        {
-          downpaymentMin: 0,
-          downpaymentMax: 90,
-          durationMin: 36,
-          durationMax: 72,
-          rateMods: [],
-        },
-      ],
+export const MOCKED_CREDIT_PRODUCTS_DATA: CreditProductsData = {
+  creditProductListData: {
+    fullDurationMax: 84,
+    fullDurationMin: 24,
+    fullDownpaymentMax: 90,
+    fullDownpaymentMin: 0,
+    products: [
+      {
+        productCode: 10,
+        productCodeName: 'ACDC',
+        productName: 'Максимум: Без Каско',
+        productId: '1',
+        npllzp: 16000000,
+        npllzak: 16000000,
+        termsLoanCode: 269,
+        approvalValidity: 45,
+        incomeFlag: true,
+        activeDateFrom: '2023-01-01',
+        activeDateTo: '2099-01-01',
+        conditions: [
+          {
+            downpaymentMin: 20,
+            downpaymentMax: 80,
+            durationMin: 24,
+            durationMax: 84,
+            rateMods: [],
+          },
+        ],
+      },
+      {
+        productCode: 10,
+        productCodeName: 'AKHC',
+        productName: 'Комфорт: Драйв',
+        productId: '2',
+        npllzp: 16000000,
+        npllzak: 16000000,
+        termsLoanCode: 269,
+        approvalValidity: 45,
+        incomeFlag: true,
+        activeDateFrom: '2023-01-01',
+        activeDateTo: '2099-01-01',
+        conditions: [
+          {
+            downpaymentMin: 0,
+            downpaymentMax: 90,
+            durationMin: 36,
+            durationMax: 72,
+            rateMods: [],
+          },
+        ],
+      },
+    ],
+    productsMap: {
+      '1': {
+        productCode: 10,
+        productCodeName: 'ACDC',
+        productName: 'Максимум: Без Каско',
+        productId: '1',
+        npllzp: 16000000,
+        npllzak: 16000000,
+        termsLoanCode: 269,
+        approvalValidity: 45,
+        incomeFlag: true,
+        activeDateFrom: '2023-01-01',
+        activeDateTo: '2099-01-01',
+        conditions: [
+          {
+            downpaymentMin: 20,
+            downpaymentMax: 80,
+            durationMin: 24,
+            durationMax: 84,
+            rateMods: [],
+          },
+        ],
+      },
+      '2': {
+        productCode: 10,
+        productCodeName: 'AKHC',
+        productName: 'Комфорт: Драйв',
+        productId: '2',
+        npllzp: 16000000,
+        npllzak: 16000000,
+        termsLoanCode: 269,
+        approvalValidity: 45,
+        incomeFlag: true,
+        activeDateFrom: '2023-01-01',
+        activeDateTo: '2099-01-01',
+        conditions: [
+          {
+            downpaymentMin: 0,
+            downpaymentMax: 90,
+            durationMin: 36,
+            durationMax: 72,
+            rateMods: [],
+          },
+        ],
+      },
     },
   },
-  governmentProgramsCodes: [],
-  governmentProgramsMap: {},
-}
-export const MOCKED_CURRENT_PRODUCT = {
-  productCode: 10,
-  productCodeName: 'AKHC',
-  productName: 'Комфорт: Драйв',
-  productId: '2',
-  npllzp: 16000000,
-  npllzak: 16000000,
-  termsLoanCode: 269,
-  approvalValidity: 45,
-  incomeFlag: true,
-  activeDateFrom: '2023-01-01',
-  activeDateTo: '2099-01-01',
-  conditions: [
-    {
-      downpaymentMin: 0,
-      downpaymentMax: 90,
-      durationMin: 36,
-      durationMax: 72,
-      rateMods: [],
-    },
-  ],
-  productGovernmentProgramsCodes: [],
+  currentProduct: {
+    productCode: 10,
+    productCodeName: 'AKHC',
+    productName: 'Комфорт: Драйв',
+    productId: '2',
+    npllzp: 16000000,
+    npllzak: 16000000,
+    termsLoanCode: 269,
+    approvalValidity: 45,
+    incomeFlag: true,
+    activeDateFrom: '2023-01-01',
+    activeDateTo: '2099-01-01',
+    conditions: [
+      {
+        downpaymentMin: 0,
+        downpaymentMax: 90,
+        durationMin: 36,
+        durationMax: 72,
+        rateMods: [],
+      },
+    ],
+  },
 }

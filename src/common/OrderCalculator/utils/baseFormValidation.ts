@@ -112,31 +112,6 @@ export const baseFormValidation = {
     is: (carCondition: number) => !carCondition,
     then: schema => schema.required(FieldMessages.required).moreThan(0, FieldMessages.moreThanZero),
   }),
-  [FormFieldNameMap.GOVERNMENT_PROGRAM]: Yup.string()
-    .nullable()
-    .when([FormFieldNameMap.IS_GOVERNMENT_PROGRAM, FormFieldNameMap.IS_DFO_PROGRAM], {
-      is: (isGovernmentProgram: boolean, isDfoProgram: boolean) => isGovernmentProgram || isDfoProgram,
-      then: schema =>
-        schema
-          .test(
-            'isCurrentGovProgramNotFoundInList',
-            'Ранее выбранныая гос.программа не подходит по параметрам',
-            (value, context) =>
-              !(context.options as InternalOptions)?.from?.[0].value.commonError
-                .isCurrentGovProgramNotFoundInList,
-          )
-          .required(FieldMessages.required),
-    }),
-
-  [FormFieldNameMap.creditProduct]: Yup.string()
-    .nullable()
-    .test(
-      'isCurrentCreditProductNotFoundInList',
-      'Ранее выбранныый кредитный продукт не подходит по параметрам',
-      (value, context) =>
-        !(context.options as InternalOptions)?.from?.[0].value.commonError
-          .isCurrentCreditProductNotFoundInList,
-    ),
   [FormFieldNameMap.initialPayment]: Yup.string()
     .required(FieldMessages.required)
     .test('isLessThenMin', (value, context) => {

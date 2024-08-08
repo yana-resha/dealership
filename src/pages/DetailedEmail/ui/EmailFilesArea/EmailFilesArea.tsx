@@ -6,7 +6,7 @@ import { AttachedFiles } from '@sberauto/emailappdc-proto/public'
 import { EmailFileDownloader } from 'entities/downloader/EmailFileDownloader/EmailFileDownloader'
 import { useDownloadEmailDocMutation } from 'shared/api/requests/emailAppDc.api'
 import { DEFAULT_FILE_NAME } from 'shared/config/fileLoading.config'
-import { AreaContainer } from 'shared/ui/AreaContainer'
+import { AreaContainer } from 'shared/ui/DossierAreaContainer'
 import { EmailFileMetadata } from 'shared/ui/FileDownloader/FileDownloader'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 

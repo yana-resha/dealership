@@ -3,9 +3,9 @@ import { useCallback, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 
-import { ApplicationFilters } from 'entities/applications/ApplicationFilters/ApplicationFilters'
-import { FindApplicationsReq } from 'entities/applications/ApplicationFilters/ApplicationFilters.types'
-import { ApplicationTable } from 'entities/applications/ApplicationTable/ApplicationTable'
+import { ApplicationFilters } from 'entities/application/ApplicationFilters/ApplicationFilters'
+import { FindApplicationsReq } from 'entities/application/ApplicationFilters/ApplicationFilters.types'
+import { ApplicationTable } from 'entities/application/ApplicationTable/ApplicationTable'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { appRoutes } from 'shared/navigation/routerPath'
 

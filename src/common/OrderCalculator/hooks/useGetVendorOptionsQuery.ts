@@ -17,7 +17,7 @@ export interface NonNullableTariff extends Tariff {
   maxClientAge: number
   minTerm: number
   maxTerm: number
-  price: number
+  price: string
 }
 
 export interface NonNullableAdditionalOption extends AdditionalOption {
@@ -56,8 +56,7 @@ const prepareAdditionalOptions = (options: AdditionalOption[]) =>
             tariff.maxClientAge !== undefined &&
             tariff.minTerm !== undefined &&
             tariff.maxTerm !== undefined &&
-            !!tariff.price &&
-            !!tariff.calcType,
+            !!tariff.price,
         ) as NonNullableTariff[]
         if (!tariffs?.length) {
           return acc

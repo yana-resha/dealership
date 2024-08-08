@@ -1,127 +1,66 @@
-import { CreditProduct, Govprograms } from '@sberauto/dictionarydc-proto/public'
-import merge from 'lodash/merge'
-import union from 'lodash/union'
+import { CreditProduct } from '@sberauto/dictionarydc-proto/public'
 
 import {
-  GovernmentProgramsMap,
   ProductsMap,
-  RequiredGovernmentProgram,
   RequiredProduct,
   RequiredProductCondition,
-  RequiredTariff,
-} from 'entities/order/model/orderSlice'
+  RequiredRateMods,
+} from 'entities/reduxStore/orderSlice'
 import { compareStrings } from 'shared/utils/compareStrings'
 
-const prepareGovernmentPrograms = (
-  initialGovernmentPrograms: Govprograms[] | null | undefined,
-  governmentProgramsMap: GovernmentProgramsMap,
-  productId: string,
-) =>
-  (initialGovernmentPrograms || []).reduce<{
-    productGovernmentProgramsCodes: string[]
-    productGovernmentProgramsMap: GovernmentProgramsMap
-  }>(
-    (acc, cur) => {
-      // Поле id нас не интресует, основным является поле code, потому id не проверяем
-      const isValidProgram = Object.entries(cur).every(([key, value]) => value !== undefined || key === 'id')
-      // если поля программы валидны, то пушим ее массив кодов и мапу
-      // в сущность госпрограммы необходимо добавить productId,
-      // чтобы понимать какие продукты связаны с этой госпрограмме
-      if (isValidProgram) {
-        acc.productGovernmentProgramsCodes.push(cur.code as string)
-        acc.productGovernmentProgramsMap[cur.code as string] = {
-          ...(cur as RequiredGovernmentProgram),
-          productIdsForGovernmentProgram: [
-            ...(governmentProgramsMap[cur.code as string]?.productIdsForGovernmentProgram || []),
-            productId,
-          ],
-        }
-      }
-
-      return acc
-    },
-    { productGovernmentProgramsCodes: [], productGovernmentProgramsMap: {} },
-  )
-
 export const prepareCreditProducts = (initialProducts: CreditProduct[] | null | undefined) => {
-  const { productIds, productsMap, governmentProgramsCodes, governmentProgramsMap } = (
-    initialProducts || []
-  ).reduce<{
-    productIds: string[]
+  const { products, productsMap } = (initialProducts || []).reduce<{
+    products: RequiredProduct[]
     productsMap: ProductsMap
-    governmentProgramsCodes: string[]
-    governmentProgramsMap: GovernmentProgramsMap
   }>(
     (acc, cur) => {
       if (!cur.productId || !cur.productName) {
         return acc
       }
 
-      const conditions = [...(cur.conditions || [])].reduce((acc, cur) => {
-        const tariffs = (cur.rateMod?.tariffs || [])
-          .map(tariff => ({ ...tariff, rateDelta: tariff.rateDelta ?? 0 }))
-          .filter((tariff): tariff is RequiredTariff => !!tariff.tariffId)
+      const conditions = (cur.conditions || []).reduce((acc, cur) => {
+        /* отфильтровываем rateMod, у которых нет optionId или tariffId, если при этом requiredService=false,
+        если же при этом requiredService=true, то считаем весь массив rateMods невалилным,
+        останавливаем reduce и присваиваем isValidRateMods=false */
+        const { rateMods, isValidRateMods } = [...(cur.rateMods || [])].reduce(
+          (rateModsAcc, currentRateMod, rateModsIdx, rateModsArr) => {
+            const isValidRateMod = !!currentRateMod.optionId && !!currentRateMod.tariffId
+            const requiredService = currentRateMod.requiredService ?? true
+            if (isValidRateMod) {
+              rateModsAcc.rateMods.push(currentRateMod as RequiredRateMods)
+            }
+            if (!isValidRateMod && requiredService) {
+              rateModsAcc.isValidRateMods = false
+              rateModsArr.splice(1)
+            }
 
-        // Считаем объект rateMod вылидным если он содержит optionId и tariffs с вылидными значениями,
-        // либо если requiredService=false
-        const isValidRateMod =
-          (cur.rateMod?.optionId && tariffs.length) || !cur.rateMod || cur.rateMod.requiredService === false
+            return rateModsAcc
+          },
+          {
+            rateMods: [] as RequiredRateMods[],
+            isValidRateMods: true,
+          } as { rateMods: RequiredRateMods[]; isValidRateMods: boolean },
+        )
 
-        // добавляем condition с валидным rateMod
-        if (isValidRateMod) {
-          acc.push({
-            ...cur,
-            rateMod: cur.rateMod
-              ? {
-                  optionId: cur.rateMod.optionId as string,
-                  tariffs,
-                  requiredService: cur.rateMod.requiredService ?? true,
-                }
-              : undefined,
-          })
+        // добавляем condition с отфильтрованными rateMods, если isValidRateMods=true
+        if (isValidRateMods) {
+          acc.push({ ...cur, rateMods })
         }
 
         return acc
       }, [] as RequiredProductCondition[])
 
-      // Если есть хотя бы один condition, то добавляем product в мапу и массив (id продукта)
+      // Если есть хотя бы один condition, то добавляем product
       if (conditions.length) {
-        /* Перед добавлением продукта, мапим госпрограммы в нем. Т.к. программу нужно выбрать первой,
-        а потом по ней отфильтровать продукты, то выносим программы в общий массив и мапу из продуктов,
-        и в каждой программе оставляем массив id продуктов, с которыми она связана.
-        В программы в продуктах могут попадаться одинаковые. */
-        const { productGovernmentProgramsCodes, productGovernmentProgramsMap } = prepareGovernmentPrograms(
-          cur.govPrograms,
-          acc.governmentProgramsMap,
-          cur.productId,
-        )
-        acc.governmentProgramsCodes = union(acc.governmentProgramsCodes, productGovernmentProgramsCodes)
-        acc.governmentProgramsMap = merge(acc.governmentProgramsMap, productGovernmentProgramsMap)
-        // govPrograms больше не нужен,
-        // т.к. теперь в родителе есть governmentProgramsCodes и governmentProgramsMap
-        const product = { ...cur, conditions, govPrograms: null } as RequiredProduct
-        acc.productIds.push(product.productId)
+        const product = { ...cur, conditions } as RequiredProduct
+        acc.products.push(product)
         acc.productsMap[cur.productId] = product
       }
 
       return acc
     },
-    {
-      productIds: [],
-      productsMap: {},
-      governmentProgramsCodes: [],
-      governmentProgramsMap: {},
-    },
+    { products: [], productsMap: {} },
   )
 
-  return {
-    productIds: productIds.sort((a, b) =>
-      compareStrings(productsMap[a].productName, productsMap[b].productName),
-    ),
-    productsMap,
-    governmentProgramsCodes: governmentProgramsCodes.sort((a, b) =>
-      compareStrings(governmentProgramsMap[a].name, governmentProgramsMap[b].name),
-    ),
-    governmentProgramsMap,
-  }
+  return { products: products.sort((a, b) => compareStrings(a.productName, b.productName)), productsMap }
 }

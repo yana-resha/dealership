@@ -5,7 +5,7 @@ import { Form, useFormikContext } from 'formik'
 import isEqual from 'lodash/isEqual'
 
 import { useOrderContext } from 'common/OrderCalculator'
-import { ApplicationProvider } from 'entities/applications/ApplicationProvider'
+import { ApplicationProvider } from 'entities/application/ApplicationProvider'
 import { FraudDialog } from 'entities/SpecialMark'
 import { FieldMessages } from 'shared/constants/fieldMessages'
 import { usePrevious } from 'shared/hooks/usePrevious'

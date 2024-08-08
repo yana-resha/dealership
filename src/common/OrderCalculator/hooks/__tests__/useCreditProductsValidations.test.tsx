@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react-hooks'
 import { Form, Formik } from 'formik'
 import configureMockStore from 'redux-mock-store'
 
-import { Order } from 'entities/order/model/orderSlice'
+import { Order } from 'entities/reduxStore/orderSlice'
 import { MockProviders } from 'tests/mocks'
 
 import { BriefOrderCalculatorFields } from '../../types'
@@ -19,13 +19,14 @@ import {
   DEALER_ADDITIONAL_SERVICES,
   EXPECTED_ADDITIONAL_EQUIPMENTS,
   initialData,
+  MOCKED_INITIAL_PAYMENT_DATA,
   MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
   MOCKED_STATE_WITH_DATA,
 } from './useLimits.mock'
 
 jest.mock('common/OrderCalculator/hooks/useCarSection', () => ({
   useCarSection: () => ({
-    cars: mockedUseGetCarsListQueryData.usedCarsInfo,
+    cars: mockedUseGetCarsListQueryData.usedCars,
     isLoading: false,
     isSuccess: true,
   }),
@@ -178,18 +179,9 @@ describe('useCreditProductValidations', () => {
 
   describe('Эффекты', () => {
     it('Если кредитный продукт не выбран, то параметры валидации соответствуют дефолтным значения из ручки GetCreditProductList', async () => {
-      const { result } = renderHook(
-        () =>
-          useCreditProductsValidations({
-            maxInitialPayment: 90,
-            maxInitialPaymentPercent: 90,
-            minInitialPayment: 0,
-            minInitialPaymentPercent: 0,
-          }),
-        {
-          wrapper: createWrapper(initialData),
-        },
-      )
+      const { result } = renderHook(() => useCreditProductsValidations(MOCKED_INITIAL_PAYMENT_DATA), {
+        wrapper: createWrapper(initialData),
+      })
       const { values } = result.current
       expect(values.validationParams).toEqual({
         isNecessaryCasco: false,

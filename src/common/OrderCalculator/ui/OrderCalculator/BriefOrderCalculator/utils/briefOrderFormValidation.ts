@@ -10,7 +10,7 @@ import {
   checkDealerAdditionalServicesLimit,
   checkIsLowCascoLimit,
 } from 'common/OrderCalculator/utils/baseFormValidation'
-import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 
 export const briefOrderFormValidationSchema = Yup.object({
   ...baseFormValidation,

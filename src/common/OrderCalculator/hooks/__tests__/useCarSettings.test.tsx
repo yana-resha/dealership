@@ -7,16 +7,7 @@ const mockedSetFieldTouched = jest.fn()
 const mockedOnFilled = jest.fn()
 const mockedUseFormikContext = jest.spyOn(formikModule, 'useFormikContext')
 
-const CREDIT_PRODUCT_PARAMS_FIELDS = [
-  'isGovernmentProgram',
-  'isDfoProgram',
-  'carCondition',
-  'carBrand',
-  'carModel',
-  'carYear',
-  'carPrice',
-  'carPassportCreationDate',
-]
+const CREDIT_PRODUCT_PARAMS_FIELDS = ['carCondition', 'carBrand', 'carModel', 'carYear']
 
 describe('useCarSettings', () => {
   beforeEach(() => {

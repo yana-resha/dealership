@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
@@ -52,10 +52,11 @@ export const DocumentDownloader = ({
     }
   }
 
-  const removeFile = useMemo(
-    () => (onClickRemove ? () => onClickRemove(index) : undefined),
-    [onClickRemove, index],
-  )
+  const removeFile = useCallback(() => {
+    if (onClickRemove) {
+      onClickRemove(index)
+    }
+  }, [onClickRemove, index])
 
   return (
     <FileDownloader

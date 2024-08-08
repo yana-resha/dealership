@@ -8,7 +8,7 @@ import {
 import { LoanDataFrontdc } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 
-import { updateApplication, updateFillingProgress } from 'entities/order'
+import { updateApplication, updateFillingProgress } from 'entities/reduxStore/orderSlice'
 import { Service, ServiceApi } from 'shared/api/constants'
 import { ErrorAlias, ErrorCode, getErrorMessage } from 'shared/api/errors'
 import { useCalculateCreditMutation } from 'shared/api/requests/dictionaryDc.api'
@@ -89,14 +89,8 @@ export function useOrderSettings(nextStep: () => void) {
         return
       }
 
-      const additionalOptions = orderData?.application?.loanData?.additionalOptions?.map(option => ({
-        ...option,
-        rateDelta: option.type === bankOffer.rateDeltaOptionId ? bankOffer.rateDelta : undefined,
-      }))
-
       const loanData: LoanDataFrontdc = {
         ...orderData?.application?.loanData,
-        additionalOptions,
         productId: bankOffer.productId ?? orderData?.application?.loanData?.productId,
         productCode: creditProduct?.productCode,
         productCodeName: bankOffer?.productCodeName,
@@ -118,16 +112,14 @@ export function useOrderSettings(nextStep: () => void) {
         amountWithoutOptions: bankOffer?.amountWithoutOptions,
         incomeProduct: bankOffer?.incomeFlag,
         productRates: {
-          baseRate: bankOffer?.currentRate,
+          baseRate: condition?.baseRate,
           rateGrntyPeriod: condition?.rateGrntyPeriod,
           rateNewGrnty: condition?.rateNewGrnty,
           rateNonGrnty: condition?.rateNonGrnty,
         },
         overpayment: bankOffer.overpayment,
         pskPrc: bankOffer.pskPrc,
-        govprogramDiscount: bankOffer?.discountGovprogram,
       }
-
       dispatch(updateFillingProgress({ isFilledLoanData: true }))
       dispatch(updateApplication({ loanData }))
 

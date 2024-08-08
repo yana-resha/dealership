@@ -23,7 +23,6 @@ export function useOrderCalculator({ onSubmit, remapApplicationValues, remapAppl
   })
 
   const formRef = useRef<FormikProps<OrderCalculatorFields>>(null)
-
   const { data: creditProductListData } = useGetCreditProductListQuery({
     vendorCode,
     values: formRef.current?.values as OrderCalculatorFields,

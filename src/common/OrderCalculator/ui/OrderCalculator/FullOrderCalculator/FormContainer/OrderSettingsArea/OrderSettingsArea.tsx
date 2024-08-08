@@ -9,9 +9,8 @@ import {
   BankAdditionalOption,
   useGetVendorOptionsQuery,
 } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
-import { useRateMod } from 'common/OrderCalculator/hooks/useRateMod'
+import { useRequiredService } from 'common/OrderCalculator/hooks/useRequiredService'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { CommonOrderSettings } from 'common/OrderCalculator/ui/CommonOrderSettings/CommonOrderSettings'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { checkIsNumber } from 'shared/lib/helpers'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
@@ -19,11 +18,13 @@ import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaConta
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 
 import { useCreditProductsData } from '../../../../../hooks/useCreditProductsData'
+import { useCreditProductsLimits } from '../../../../../hooks/useCreditProductsLimits'
 import { useCreditProductsTerms } from '../../../../../hooks/useCreditProductsTerms'
 import { useCreditProductsValidations } from '../../../../../hooks/useCreditProductsValidations'
 import { AdditionalBankService } from './AdditionalBankService/AdditionalBankService'
 import { AdditionalEquipment } from './AdditionalEquipment/AdditionalEquipment'
 import { AdditionalServices } from './AdditionalServices/AdditionalServices'
+import { CommonOrderSettings } from './CommonOrderSettings/CommonOrderSettings'
 import useStyles from './OrderSettingsArea.styles'
 
 type Props = {
@@ -42,14 +43,9 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
   } = useGetVendorOptionsQuery({ vendorCode })
 
   const {
-    creditProductListData,
-    minInitialPaymentPercent,
-    maxInitialPaymentPercent,
-    minInitialPayment,
-    maxInitialPayment,
-    currentProduct,
-    currentDurationMin,
-    currentDurationMax,
+    initialPaymentData,
+    creditProductsData,
+    creditDurationData,
     durationMaxFromAge,
     isGetCarsLoading,
     isGetCarsSuccess,
@@ -57,25 +53,19 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
     isLoadedCreditProducts,
-  } = useCreditProductsData()
-
-  const { loanTerms } = useCreditProductsTerms({
-    currentDurationMin,
-    currentDurationMax,
-    currentProduct,
-    durationMaxFromAge,
-  })
-
-  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations({
-    minInitialPaymentPercent,
-    maxInitialPaymentPercent,
-    minInitialPayment,
-    maxInitialPayment,
-  })
-
-  const { currentRateMod, isShouldShowDiscountNotification, maxRateModsMap } = useRateMod({
-    creditProductListData,
-    currentProduct,
+  } = useCreditProductsData(vendorCode)
+  const { creditProducts, initialPaymentHelperText, initialPaymentPercentHelperText } =
+    useCreditProductsLimits(
+      initialPaymentData,
+      creditProductsData,
+      durationMaxFromAge,
+      isGetCarsLoading,
+      isGetCarsSuccess,
+    )
+  const { loanTerms } = useCreditProductsTerms(creditDurationData, creditProductsData, durationMaxFromAge)
+  const { commonErrors, isNecessaryCasco } = useCreditProductsValidations(initialPaymentData)
+  const { selectedRequiredOptionsMap } = useRequiredService({
+    creditProductsData,
     additionalOptionsMap: vendorOptions?.additionalOptionsMap,
     isVendorOptionsSuccess,
     initialBankAdditionalService: FULL_INITIAL_BANK_ADDITIONAL_SERVICE,
@@ -151,17 +141,10 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
         <Box className={classes.gridWrapper} ref={ref} data-testid="fullOrderSettingsArea">
           <CommonOrderSettings
             disabled={disabled}
-            minInitialPaymentPercent={minInitialPaymentPercent}
-            maxInitialPaymentPercent={maxInitialPaymentPercent}
-            minInitialPayment={minInitialPayment}
-            maxInitialPayment={maxInitialPayment}
-            currentProduct={currentProduct}
+            creditProducts={creditProducts}
+            initialPaymentPercentHelperText={initialPaymentPercentHelperText}
+            initialPaymentHelperText={initialPaymentHelperText}
             loanTerms={loanTerms}
-            durationMaxFromAge={durationMaxFromAge}
-            currentDurationMin={currentDurationMin}
-            currentDurationMax={currentDurationMax}
-            isGetCarsLoading={isGetCarsLoading}
-            isGetCarsSuccess={isGetCarsSuccess}
           />
 
           <AdditionalEquipment options={{ productType: additionalEquipments, loanTerms }} />
@@ -173,10 +156,9 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
           <AdditionalBankService
             additionalServices={bankAdditionalServices}
             clientAge={clientAge}
-            currentRateMod={currentRateMod}
-            isShouldShowInfoIcon={isShouldShowDiscountNotification}
-            maxRateModsMap={maxRateModsMap}
+            selectedRequiredOptionsMap={selectedRequiredOptionsMap}
           />
+
           {!!commonErrors.length && (
             <Box className={classes.errorList}>
               {commonErrors.map(e => (
@@ -186,6 +168,7 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
               ))}
             </Box>
           )}
+
           <AreaFooter
             btnTitle="Рассчитать"
             btnType="submit"

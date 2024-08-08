@@ -7,15 +7,12 @@ import { FULL_INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/con
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
 import { BankAdditionalOption } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
-import { MaxRateModsMap } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
-import { RateModInfo } from 'common/OrderCalculator/ui/RateModInfo/RateModInfo'
-import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import {
   BankAdditionalService,
   BankServicesRequisites,
-} from 'entities/applications/AdditionalOptionsRequisites/ui'
-import { RequiredRateMod } from 'entities/order/model/orderSlice'
+} from 'entities/application/AdditionalOptionsRequisites/ui'
 
 import useStyles from './AdditionalBankService.styles'
 
@@ -25,9 +22,7 @@ type Props = {
   isError?: boolean
   errorMessage?: string
   disabled?: boolean
-  currentRateMod: RequiredRateMod | undefined
-  isShouldShowInfoIcon: boolean
-  maxRateModsMap: MaxRateModsMap
+  selectedRequiredOptionsMap: Record<string, boolean>
 }
 
 export function AdditionalBankService({
@@ -36,9 +31,7 @@ export function AdditionalBankService({
   isError = false,
   errorMessage,
   disabled = false,
-  currentRateMod,
-  isShouldShowInfoIcon,
-  maxRateModsMap,
+  selectedRequiredOptionsMap,
 }: Props) {
   const classes = useStyles()
   const [field] = useField(ServicesGroupName.bankAdditionalServices)
@@ -69,7 +62,6 @@ export function AdditionalBankService({
       isError={isError}
       errorMessage={errorMessage}
       isInitialExpanded={isInitialExpanded}
-      icon={isShouldShowInfoIcon ? <RateModInfo /> : undefined}
     >
       <FieldArray name={ServicesGroupName.bankAdditionalServices}>
         {arrayHelpers => (
@@ -90,8 +82,7 @@ export function AdditionalBankService({
                   // Если clientAge отсутствует, то банковские опции = пустой массив,
                   // потому clientAge можно ставить как number
                   clientAge={clientAge as number}
-                  currentRateMod={currentRateMod}
-                  maxRateModsMap={maxRateModsMap}
+                  selectedRequiredOptionsMap={selectedRequiredOptionsMap}
                 />
                 <BankServicesRequisites
                   index={index}

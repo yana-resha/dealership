@@ -1,7 +1,7 @@
 export type SelectInputProps<T> = {
   label: string
   placeholder: string
-  options: { value: T; label?: string; subLabel?: string }[]
+  options: { value: T; label?: string }[]
   value?: string | T
   onChange?: (value: string | T) => void
   isError?: boolean

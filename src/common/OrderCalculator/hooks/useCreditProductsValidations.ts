@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 
 import { useField, useFormikContext } from 'formik'
 
-import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { CASCO_OPTION_ID, formMessages } from '../config'
@@ -11,6 +11,7 @@ import {
   CommonError,
   FormFieldNameMap,
   FormMessages,
+  InitialPaymentData,
   OrderCalculatorAdditionalService,
   OrderCalculatorBankAdditionalService,
   ValidationParams,
@@ -44,18 +45,8 @@ export function checkIfExceededServicesLimit(carCost: number, criterion: boolean
 
   return criterion
 }
-type Params = {
-  minInitialPaymentPercent: number
-  maxInitialPaymentPercent: number
-  minInitialPayment: number
-  maxInitialPayment: number
-}
-export function useCreditProductsValidations({
-  minInitialPayment,
-  maxInitialPayment,
-  minInitialPaymentPercent,
-  maxInitialPaymentPercent,
-}: Params) {
+
+export function useCreditProductsValidations(initialPayment: InitialPaymentData) {
   const [validationParamsField, , { setValue: setValidationParams }] = useField<ValidationParams>(
     FormFieldNameMap.validationParams,
   )
@@ -65,6 +56,8 @@ export function useCreditProductsValidations({
   const { values, setFieldTouched } = useFormikContext<BriefOrderCalculatorFields>()
   const { bankAdditionalServices, dealerAdditionalServices, additionalEquipments } = values
   const carCost = parseFloat(values.carCost)
+  const { minInitialPayment, maxInitialPayment, minInitialPaymentPercent, maxInitialPaymentPercent } =
+    initialPayment
 
   /*
   В initialValues формика прописано свойство validationParams. Поля для него нет,

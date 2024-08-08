@@ -201,19 +201,20 @@ describe('ApplicationFileUploader', () => {
       expect(mockedOnRemoveDocument).toBeCalledWith('ndfl2File')
     })
 
-    it('Если удаление отключено, то кнопка удаления не отображается', () => {
+    it('Функция удаления будет вызвана, если удаление отключено', () => {
       render(
         <Uploader
           uploaderConfig={UPLOADER_CONFIG}
           onUploadDocument={mockedOnUploadDocument}
           onRemoveDocument={mockedOnRemoveDocument}
-          isRemoveDisabled
+          isDisabledRemove
         />,
         {
           wrapper: createWrapper,
         },
       )
-      expect(screen.queryByTestId('deleteFileButton')).not.toBeInTheDocument()
+      fireEvent.click(screen.getByTestId('deleteFileButton'))
+      expect(mockedOnRemoveDocument).not.toBeCalled()
     })
 
     it('sendFile вызывается', () => {

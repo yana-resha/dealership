@@ -5,7 +5,7 @@ import { Form, Formik } from 'formik'
 import { UseQueryResult } from 'react-query'
 import configureMockStore from 'redux-mock-store'
 
-import { Order } from 'entities/order/model/orderSlice'
+import { Order } from 'entities/reduxStore/orderSlice'
 
 import { MockProviders } from '../../../../tests/mocks'
 import { BriefOrderCalculatorFields, UseGetCreditProductListQueryData } from '../../types'
@@ -21,7 +21,7 @@ const mockedUseGetCreditProductListQuery = jest.spyOn(
 )
 jest.mock('common/OrderCalculator/hooks/useCarSection', () => ({
   useCarSection: () => ({
-    data: mockedUseGetCarsListQueryData.usedCarsInfo,
+    cars: mockedUseGetCarsListQueryData.usedCars,
     isLoading: false,
     isSuccess: true,
   }),
@@ -63,7 +63,7 @@ describe('useCreditProductData', () => {
             isLoading: true,
           } as unknown as UseQueryResult<UseGetCreditProductListQueryData, unknown>),
       )
-      const { result } = renderHook(() => useCreditProductsData(), {
+      const { result } = renderHook(() => useCreditProductsData('1'), {
         wrapper: createWrapper(initialData),
       })
       const { isLoadedCreditProducts } = result.current
@@ -78,7 +78,7 @@ describe('useCreditProductData', () => {
             isLoading: false,
           } as unknown as UseQueryResult<UseGetCreditProductListQueryData, unknown>),
       )
-      const { result } = renderHook(() => useCreditProductsData(), {
+      const { result } = renderHook(() => useCreditProductsData('1'), {
         wrapper: createWrapper(initialData),
       })
       const { isLoadedCreditProducts } = result.current

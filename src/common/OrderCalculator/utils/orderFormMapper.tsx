@@ -3,14 +3,14 @@ import {
   AdditionalOptionCalculateCredit,
   CalculateCreditRequest,
   LoanCar,
+  OptionType,
 } from '@sberauto/dictionarydc-proto/public'
 
-import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
-import { ProductsMap } from 'entities/order/model/orderSlice'
+import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { ProductsMap } from 'entities/reduxStore/orderSlice'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
-import { BankOptionTariffCode, INSURED_AMOUNT_VALUE_MAP } from '../config'
 import {
   FormFieldNameMap,
   FullOrderCalculatorFields,
@@ -104,23 +104,7 @@ export const mapValuesForCalculateCreditRequest = (
     term: values[FormFieldNameMap.loanTerm] ?? undefined,
     additionalOptions: additionalOptions,
     loanCar: loanCar,
-    govprogramCode: values[FormFieldNameMap.GOVERNMENT_PROGRAM] || undefined,
-    govprogramDfoFlag: values[FormFieldNameMap.IS_DFO_PROGRAM],
   }
 
   return calculateCreditRequest
-}
-
-// Значения прописаны в статье https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1071122571
-// Обновлено в статье https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1071123739
-export const getBankOptionInsuredAmount = (
-  tariffCode: string | undefined,
-  carCost: string,
-  initialPayment: string,
-) => {
-  if (tariffCode === BankOptionTariffCode.FOURTH) {
-    return parseInt(carCost, 10) - parseInt(initialPayment, 10)
-  }
-
-  return INSURED_AMOUNT_VALUE_MAP[tariffCode ?? '']
 }

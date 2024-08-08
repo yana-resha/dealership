@@ -1,6 +1,6 @@
 import { CreditProduct } from '@sberauto/dictionarydc-proto/public'
 
-import { ProductsMap, RequiredProduct } from 'entities/order/model/orderSlice'
+import { ProductsMap, RequiredProduct } from 'entities/reduxStore/orderSlice'
 
 const products: RequiredProduct[] = [
   {
@@ -25,8 +25,7 @@ const products: RequiredProduct[] = [
     activeDateTo: '2099-01-01',
     // crMinValue: 100000,
     // crMaxValue: 6000000,
-    conditions: [{ downpaymentMin: 20, downpaymentMax: 80, durationMin: 24, durationMax: 84 }],
-    productGovernmentProgramsCodes: [],
+    conditions: [{ downpaymentMin: 20, downpaymentMax: 80, durationMin: 24, durationMax: 84, rateMods: [] }],
   },
   {
     productCode: 10,
@@ -50,8 +49,7 @@ const products: RequiredProduct[] = [
     activeDateTo: '2099-01-01',
     // crMinValue: 100000,
     // crMaxValue: 16000000,
-    conditions: [{ downpaymentMin: 0, downpaymentMax: 90, durationMin: 36, durationMax: 72 }],
-    productGovernmentProgramsCodes: [],
+    conditions: [{ downpaymentMin: 0, downpaymentMax: 90, durationMin: 36, durationMax: 72, rateMods: [] }],
   },
 ]
 

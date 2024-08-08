@@ -6,12 +6,12 @@ import { UseQueryOptions, useQuery } from 'react-query'
 
 import { getCarsList } from 'shared/api/requests/dictionaryDc.api'
 
-import { NormalizedCarsInfo } from '../types'
-import { prepareBrands } from '../utils/prepareCars'
+import { NormalizedCars } from '../types'
+import { prepareCars } from '../utils/prepareCars'
 
 export const useGetCarsListQuery = (
   params: GetCarsListRequest,
-  options?: UseQueryOptions<NormalizedCarsInfo, unknown, NormalizedCarsInfo, (string | GetCarsListRequest)[]>,
+  options?: UseQueryOptions<GetCarsListResponse, unknown, NormalizedCars, (string | GetCarsListRequest)[]>,
 ) => {
   const { enqueueSnackbar } = useSnackbar()
 
@@ -20,18 +20,11 @@ export const useGetCarsListQuery = (
     [enqueueSnackbar],
   )
 
-  return useQuery(
-    ['getCarsList', params],
-    () =>
-      getCarsList(params).then(res => ({
-        newCarsInfo: prepareBrands(res.newCars),
-        usedCarsInfo: prepareBrands(res.usedCars),
-      })),
-    {
-      retry: false,
-      cacheTime: Infinity,
-      onError,
-      ...options,
-    },
-  )
+  return useQuery(['getCarsList', params], () => getCarsList(params), {
+    retry: false,
+    cacheTime: Infinity,
+    select: res => ({ newCars: prepareCars(res.newCars), usedCars: prepareCars(res.usedCars) }),
+    onError,
+    ...options,
+  })
 }

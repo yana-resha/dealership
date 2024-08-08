@@ -3,14 +3,13 @@ import { useCallback } from 'react'
 import { AdditionalOptionsFrontdc, OptionType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useDispatch } from 'react-redux'
 
-import { AnketaType } from 'entities/applications/application.utils'
-import { updateApplication } from 'entities/order'
+import { AnketaType } from 'entities/application/application.utils'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
+import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { BriefOrderCalculatorFields, OrderCalculatorAdditionalService } from '../types'
 import { mapCommonApplicationValues } from '../utils/mapApplication'
-import { getBankOptionInsuredAmount } from '../utils/orderFormMapper'
 import { useGetCarsListQuery } from './useGetCarsListQuery'
 import { NonNullableAdditionalOption, useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
@@ -46,13 +45,7 @@ export function useMapApplicationFromBriefCalculator() {
 
   const remapAdditionalOptionsForBriefCalculator = useCallback(
     (values: BriefOrderCalculatorFields) => {
-      const {
-        carCost,
-        initialPayment,
-        additionalEquipments,
-        dealerAdditionalServices,
-        bankAdditionalServices,
-      } = values
+      const { additionalEquipments, dealerAdditionalServices, bankAdditionalServices } = values
 
       const additionalEquipmentForApplication = mapAdditionalOptionsForBriefCalculator(
         additionalEquipments,
@@ -69,21 +62,17 @@ export function useMapApplicationFromBriefCalculator() {
       const bankAdditionalServicesForApplication = bankAdditionalServices.reduce(
         (acc: AdditionalOptionsFrontdc[], option) => {
           const { productCost, productType, tariff, loanTerm } = option
-          const vendorOption = vendorOptions?.additionalOptionsMap[productType ?? '']
-          const currentTariff = vendorOption?.tariffs?.find(t => t.tariffId === tariff)
-          const tariffCode = currentTariff?.tariffCode
           const additionalOption: AdditionalOptionsFrontdc = {
             bankOptionType: OptionType.BANK,
             type: productType ?? undefined,
-            name: vendorOption?.optionName,
+            name: vendorOptions?.additionalOptionsMap[productType ?? '']?.optionName,
             inCreditFlag: true, // Банковские допы всегда в кредит
             price: stringToNumber(productCost),
             tariffId: tariff ?? undefined,
-            tariff: currentTariff?.tariff,
-            tariffCode,
-            insuredAmount: getBankOptionInsuredAmount(tariffCode, carCost, initialPayment),
+            tariff: vendorOptions?.additionalOptionsMap[productType ?? '']?.tariffs?.find(
+              t => t.tariffId === tariff,
+            )?.tariff,
             term: loanTerm ?? undefined,
-            code: vendorOption?.optionCode,
           }
           if (additionalOption.type) {
             acc.push(additionalOption)

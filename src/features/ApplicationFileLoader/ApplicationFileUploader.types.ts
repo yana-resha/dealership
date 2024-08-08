@@ -29,8 +29,7 @@ export type FileInfo = {
 export type UploaderConfig = {
   documentLabel: string
   documentName: string
-  documentType: DocumentType | null
+  documentType: DocumentType
   documentFile: FileInfo | null
-  documentTypeOptions?: { label: string; value: DocumentType }[]
   documentError?: string
 }

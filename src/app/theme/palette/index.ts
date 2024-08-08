@@ -11,7 +11,7 @@ export const GREEN_DEEP = '#19732A' // Зеленый сбера
 export const OLIVE = '#769E3B'
 export const RED_DEEP = '#D61C2F' // Красный
 export const RED_DARK = '#9E1B32' //Темно красный
-export const ORANGE_NORMAL = '#FF8C00'
+export const ORANGE_NORMAL = '#F25700'
 
 export const DARK_NORMAL = '#283844'
 export const LIGHT_PURPLE_GRAY = '#F4F4F9'

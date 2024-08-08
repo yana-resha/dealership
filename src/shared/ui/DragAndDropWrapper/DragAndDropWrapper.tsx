@@ -29,10 +29,9 @@ const useStyles = makeStyles(theme => ({
 
 type Props = {
   onChange: (files: FileList) => void
-  disabled?: boolean
 }
 
-export const DragAndDropWrapper = ({ onChange, disabled = false, children }: PropsWithChildren<Props>) => {
+export const DragAndDropWrapper = ({ onChange, children }: PropsWithChildren<Props>) => {
   const styles = useStyles()
   const [isShowDropArea, setIsShowDropArea] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
@@ -40,21 +39,14 @@ export const DragAndDropWrapper = ({ onChange, disabled = false, children }: Pro
   const [errorMessage, setErrorMessage] = useState('')
 
   const onEnter = useCallback(() => {
-    if (!disabled) {
-      setIsShowDropArea(true)
-    }
-  }, [disabled])
+    setIsShowDropArea(true)
+  }, [setIsShowDropArea])
   const onLeave = useCallback(() => {
-    if (!disabled) {
-      setIsShowDropArea(false)
-    }
-  }, [disabled])
+    setIsShowDropArea(false)
+  }, [setIsShowDropArea])
 
   const onDrop = useCallback(
     (e: DragEvent<HTMLDivElement>) => {
-      if (disabled) {
-        return
-      }
       onLeave()
       const { files } = e.dataTransfer
       if (files != null) {
@@ -80,7 +72,7 @@ export const DragAndDropWrapper = ({ onChange, disabled = false, children }: Pro
       }
       onChange(e.dataTransfer.files)
     },
-    [disabled, onChange, onLeave],
+    [onChange, onLeave],
   )
 
   const onClose = useCallback(() => {

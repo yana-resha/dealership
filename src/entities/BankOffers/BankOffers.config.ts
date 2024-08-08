@@ -29,12 +29,6 @@ export type BankOffersTableHeader = {
   type?: TableCellType
 }
 
-export enum RateShowingType {
-  BASE_RATE = 'base_rate',
-  WITH_DELTA = 'with_delta',
-  WITH_ICON = 'with_icon',
-}
-
 export const BANK_OFFERS_TABLE_HEADERS = [
   { key: HeaderCellKey.PRODUCT_NAME, label: 'Продукт', isCanSort: true },
   { key: HeaderCellKey.DOWNPAYMENT, label: 'ПВ' },

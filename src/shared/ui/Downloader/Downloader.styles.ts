@@ -33,9 +33,8 @@ export default makeStyles(theme => ({
 
   contentContainer: {
     display: 'flex',
-    alignSelf: 'center',
     gap: theme.spacing(2),
-    alignItems: 'center',
+    alignSelf: 'center',
     userSelect: 'none',
   },
 }))

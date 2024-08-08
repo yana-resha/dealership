@@ -1,53 +1,44 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { useFormikContext } from 'formik'
+import { useField, useFormikContext } from 'formik'
 
-import { RequiredProduct } from 'entities/order/model/orderSlice'
+import { updateOrder } from 'entities/reduxStore/orderSlice'
+import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { formatMoney, formatNumber } from 'shared/lib/utils'
 
-import { initialValueMap } from '../config'
-import { BriefOrderCalculatorFields, FormFieldNameMap } from '../types'
-import { useSelectCreditProductList } from './useSelectCreditProductList'
+import {
+  BriefOrderCalculatorFields,
+  CreditProductsData,
+  FormFieldNameMap,
+  InitialPaymentData,
+} from '../types'
 
-type Params = {
-  minInitialPaymentPercent: number
-  maxInitialPaymentPercent: number
-  minInitialPayment: number
-  maxInitialPayment: number
-  currentProduct: RequiredProduct | undefined
-  durationMaxFromAge: number
-  isGetCarsLoading: boolean
-  isGetCarsSuccess: boolean
-  productIdsForGovernmentProgram: string[]
-}
+export function useCreditProductsLimits(
+  initialPaymentData: InitialPaymentData,
+  creditProductsData: CreditProductsData,
+  durationMaxFromAge: number,
+  isGetCarsLoading: boolean,
+  isGetCarsSuccess: boolean,
+) {
+  const dispatch = useAppDispatch()
 
-export function useCreditProductsLimits({
-  minInitialPaymentPercent,
-  maxInitialPaymentPercent,
-  minInitialPayment,
-  maxInitialPayment,
-  currentProduct,
-  durationMaxFromAge,
-  isGetCarsLoading,
-  isGetCarsSuccess,
-  productIdsForGovernmentProgram,
-}: Params) {
-  const [isShouldValidate, setShouldValidate] = useState(false)
-  const { values, setFieldValue, setFieldTouched } = useFormikContext<BriefOrderCalculatorFields>()
-  const { creditProduct, isGovernmentProgram, isDfoProgram, commonError } = values
+  const [, , { setValue: setCreditProduct }] = useField<string>(FormFieldNameMap.creditProduct)
 
-  const { creditProductListData } = useSelectCreditProductList()
+  const { values } = useFormikContext<BriefOrderCalculatorFields>()
+  const { creditProduct } = values
+  const { minInitialPaymentPercent, maxInitialPaymentPercent, minInitialPayment, maxInitialPayment } =
+    initialPaymentData
+  const { creditProductListData, currentProduct } = creditProductsData
+
+  useEffect(() => {
+    dispatch(updateOrder({ productsMap: creditProductListData?.productsMap || {} }))
+  }, [creditProductListData?.productsMap, dispatch])
 
   const { creditProducts, isValidCreditProduct } = useMemo(
     () =>
-      (creditProductListData?.productIds || []).reduce(
-        (acc, productId) => {
-          const product = creditProductListData?.productsMap[productId]
-          if (!product) {
-            return acc
-          }
-
-          const productDurationMin = product.conditions?.reduce((conditionsAcc, condition) => {
+      (creditProductListData?.products || []).reduce(
+        (acc, cur) => {
+          const productDurationMin = cur.conditions?.reduce((conditionsAcc, condition) => {
             if (
               typeof condition.durationMin === 'number' &&
               conditionsAcc &&
@@ -63,22 +54,10 @@ export function useCreditProductsLimits({
             return acc
           }
 
-          // Если product.productId === creditProduct значит в форме выбран существующий продукт
-          if (product.productId === creditProduct) {
+          if (cur.productId === creditProduct) {
             acc.isValidCreditProduct = true
           }
-
-          // Если выбрана гос.программа, то отфильтровываем продукты не связанные с этой гос.программой
-          if (isGovernmentProgram || isDfoProgram) {
-            const isCurrentProgramHasProduct = productIdsForGovernmentProgram.some(
-              id => id === product.productId,
-            )
-            if (!isCurrentProgramHasProduct) {
-              return acc
-            }
-          }
-
-          acc.creditProducts.push({ value: product.productId, label: product.productName })
+          acc.creditProducts.push({ value: cur.productId, label: cur.productName })
 
           return acc
         },
@@ -93,59 +72,25 @@ export function useCreditProductsLimits({
     [
       creditProduct,
       creditProductListData?.fullDurationMax,
-      creditProductListData?.productIds,
-      creditProductListData?.productsMap,
+      creditProductListData?.products,
       durationMaxFromAge,
-      isDfoProgram,
-      isGovernmentProgram,
-      productIdsForGovernmentProgram,
     ],
   )
 
-  // Если creditProduct пришел с Бэка, но по какой-то причине отсутствует в списке продуктов, то очищаем поле
+  // Если creditProduct пришел с Бэка, но по какой-то причине не проходит по сроку, то очищаем поле
   useEffect(() => {
     if (
       !isGetCarsLoading &&
       isGetCarsSuccess &&
-      creditProductListData?.productIds &&
+      creditProductListData?.products &&
       !isValidCreditProduct &&
       creditProduct
     ) {
-      setFieldValue(FormFieldNameMap.creditProduct, initialValueMap.creditProduct)
-      setFieldValue(FormFieldNameMap.commonError, {
-        ...commonError,
-        isCurrentCreditProductNotFoundInList: true,
-      })
-      setShouldValidate(true)
+      setCreditProduct('')
     }
-  }, [
-    commonError,
-    creditProduct,
-    creditProductListData?.productIds,
-    currentProduct,
-    isGetCarsLoading,
-    isGetCarsSuccess,
-    isValidCreditProduct,
-    setFieldValue,
-  ])
-
-  useEffect(() => {
-    if (isShouldValidate) {
-      setShouldValidate(false)
-      setFieldTouched(FormFieldNameMap.creditProduct, true)
-    }
-  }, [isShouldValidate, setFieldTouched])
-
-  // Если продукт вновь выбран, то очищаем ошибку
-  useEffect(() => {
-    if (creditProduct && isValidCreditProduct && commonError?.isCurrentCreditProductNotFoundInList) {
-      setFieldTouched(FormFieldNameMap.creditProduct, false)
-      setFieldValue(FormFieldNameMap.commonError, {
-        ...commonError,
-        isCurrentCreditProductNotFoundInList: false,
-      })
-    }
-  }, [commonError, creditProduct, isValidCreditProduct, setFieldTouched, setFieldValue])
+    // Исключили setCreditProduct что бы избежать случайного перерендера
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [creditProduct, currentProduct])
 
   /*
   Сформирована на основе минимального и максимального Первоначального взноса

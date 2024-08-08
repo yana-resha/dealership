@@ -9,7 +9,7 @@ import { ReactComponent as MailIcon } from 'assets/icons/mail.svg'
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
 import { ReactComponent as OrderListIcon } from 'assets/icons/orderList.svg'
 import { ReactComponent as ScheduleIcon } from 'assets/icons/schedule.svg'
-import { clearOrder } from 'entities/order'
+import { clearOrder } from 'entities/reduxStore/orderSlice'
 import { useUserRoles } from 'entities/user'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 
