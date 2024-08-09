@@ -7,6 +7,8 @@ import {
   removeSpaces,
 } from 'shared/lib/helpers'
 
+import { transformAddress } from '../utils'
+
 describe('helpers tests', () => {
   describe('filterDigitsFromString', () => {
     it('Строка содержит буквенные символы, пробелы, цифры и знак -> возвращаются только цифры (все)', () => {
@@ -132,6 +134,31 @@ describe('helpers tests', () => {
       expect(checkIsNumber('1')).toBe(false)
       expect(checkIsNumber('0')).toBe(false)
       expect(checkIsNumber('')).toBe(false)
+    })
+  })
+
+  describe('transformAddress', () => {
+    it('Если строка менее 6 символов, то вернется та же строка', () => {
+      expect(transformAddress('улица')).toBe('улица')
+    })
+
+    it('Если 6-значное число не имеет разделителя с буквами, то это не индекс и верезан он не будет', () => {
+      expect(transformAddress('г. Воронеж, ул. 394065Проспект Патриотов,47')).toBe(
+        'г. Воронеж, ул. 394065Проспект Патриотов, 47',
+      )
+    })
+
+    it('Если в строке есть 6-значное число и оно имеет разделитель, то это индекс и он будет вырезан из строки', () => {
+      expect(transformAddress('394065, г. Воронеж, ул. Проспект Патриотов,47')).toBe(
+        'г. Воронеж, ул. Проспект Патриотов, 47',
+      )
+      expect(transformAddress('г. Воронеж, ул. Проспект Патриотов,47, 394065')).toBe(
+        'г. Воронеж, ул. Проспект Патриотов, 47',
+      )
+
+      expect(transformAddress('г. Воронеж, 394065 ул. Проспект Патриотов,47')).toBe(
+        'г. Воронеж, ул. Проспект Патриотов, 47',
+      )
     })
   })
 })

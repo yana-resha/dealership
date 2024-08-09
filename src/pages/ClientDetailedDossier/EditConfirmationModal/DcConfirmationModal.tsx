@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
 import { Box, Button, DialogContentText } from '@mui/material'
+import compact from 'lodash/compact'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { transformAddress } from 'shared/lib/utils'
@@ -18,6 +19,7 @@ type Props = {
 export function DcConfirmationModal({ confirmedAction, actionText, isVisible, onClose }: Props) {
   const classes = useStyles()
   const vendor = getPointOfSaleFromCookies()
+  const address = compact([vendor.vendorName, transformAddress(vendor.address ?? '')]).join(' ')
 
   const performConfirmedAction = useCallback(() => {
     confirmedAction?.()
@@ -27,9 +29,7 @@ export function DcConfirmationModal({ confirmedAction, actionText, isVisible, on
     <ModalDialog isVisible={isVisible} onClose={onClose}>
       <Box className={classes.contentContainer}>
         <DialogContentText className={classes.dialogText}>{actionText}</DialogContentText>
-        <DialogContentText className={classes.dialogText}>
-          {vendor.vendorName}, {transformAddress(vendor.address ?? '')}
-        </DialogContentText>
+        <DialogContentText className={classes.dialogText}>{address}</DialogContentText>
         <DialogContentText className={classes.dialogText}>Все верно?</DialogContentText>
         <Box className={classes.buttonsContainer}>
           <Button
