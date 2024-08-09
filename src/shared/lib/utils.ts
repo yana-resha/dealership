@@ -102,10 +102,10 @@ export const toCamelcaseKeysData = <T extends object>(data: T): KeysToCamelCase<
 
 /** Возвращаем строку адреса без индекса */
 export const transformAddress = (address: string): string => {
-  let str = address
   if (address.length >= 6) {
     const re = /((^\d{6,6}[ .,;])|(^\d{6,6}$)|([ .,;]\d{6,6}$)|([ .,;]\d{6,6}[ .,;]))/gm
-    str = address
+
+    return address
       .replace(re, '')
       .split(',')
       .map(el => el.trim())
@@ -113,5 +113,5 @@ export const transformAddress = (address: string): string => {
       .join(', ')
   }
 
-  return str
+  return address
 }
