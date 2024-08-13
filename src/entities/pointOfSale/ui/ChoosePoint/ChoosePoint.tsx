@@ -21,6 +21,7 @@ import {
   retrieveLabelForPointOfSale,
   savePointOfSaleToCookies,
 } from './ChoosePoint.utils'
+import { transformAddress } from 'shared/lib/utils'
 
 type Props = { value?: Vendor; isHeader?: boolean; onSuccessEditing?: () => void }
 
@@ -33,6 +34,9 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   const prevChosenOption = usePrevious(chosenOption)
   const [validationError, setValidationError] = useState<boolean>(false)
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+  const chosenOptionAddress = useMemo(() => {
+    return chosenOption?.address ? transformAddress(chosenOption.address) : undefined
+  }, [chosenOption])
 
   const handleAutocompleteOptionChange = useCallback((event: React.SyntheticEvent, option: Vendor | null) => {
     setChosenOption(option)
@@ -172,9 +176,12 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
           <Box>
             <DialogContentText className={classes.dialogText}>Вы выбрали точку:</DialogContentText>
             {chosenOption && (
-              <DialogContentText className={classes.dialogText}>
-                {retrieveLabelForPointOfSale(chosenOption)}
-              </DialogContentText>
+              <Box className={classes.dialogText}>
+                <Box>
+                  {chosenOption.vendorName} {chosenOption.vendorCode}
+                </Box>
+                {chosenOptionAddress && <Box>{chosenOptionAddress}</Box>}
+              </Box>
             )}
             <DialogContentText className={cx(classes.dialogText, classes.lastDialogText)}>
               Все верно?
