@@ -94,6 +94,7 @@ export interface ClientData {
   questionnaireFile: FileInfo | null
   submitAction: SubmitAction
   isFormComplete: boolean
+  validationParams: ValidationParams
 }
 
 export interface AddressTypeCode {
@@ -107,4 +108,8 @@ export interface AddressMap extends GetAddressMapResponse {
   cityTypeCodes?: AddressTypeCode[]
   settlementTypeCodes?: AddressTypeCode[]
   streetTypeCodes?: AddressTypeCode[]
+}
+
+export interface ValidationParams {
+  applicationCreatedDate?: Date
 }

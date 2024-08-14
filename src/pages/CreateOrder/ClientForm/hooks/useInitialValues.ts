@@ -11,7 +11,7 @@ import {
   OccupationType,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import compact from 'lodash/compact'
-import { DateTime, Interval } from 'luxon'
+import { DateTime } from 'luxon'
 import { useDispatch } from 'react-redux'
 
 import { AnketaType } from 'entities/application/application.utils'
@@ -20,11 +20,11 @@ import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport } from 'shared/lib/utils'
-import { getFullName, getSplittedName } from 'shared/utils/clientNameTransform'
+import { getFullName } from 'shared/utils/clientNameTransform'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
-import { ClientData, SubmitAction } from '../ClientForm.types'
+import { ClientData, SubmitAction, ValidationParams } from '../ClientForm.types'
 import { configAddressInitialValues, UPLOADED_DOCUMENTS } from '../config/clientFormInitialValues'
 import { getAddressName } from '../utils/addressMap'
 import { addressTransformForForm, addressTransformForRequest } from '../utils/addressTransformForRequest'
@@ -32,6 +32,7 @@ import { makeClientForm } from '../utils/makeClienForm'
 import { transformDocsForRequest } from '../utils/transformDocsForRequest'
 import { transformPhoneForRequest } from '../utils/transformPhoneForRequest'
 import { useGetAddressMapQuery } from './useGetAddressMapQuery'
+import { getCurrentWorkExperience } from '../utils/getCurrentWorkExperience'
 
 export function useInitialValues() {
   const dispatch = useDispatch()
@@ -78,20 +79,6 @@ export function useInitialValues() {
     () =>
       (applicant?.addresses || []).reduce(
         (acc, cur) => {
-          function getLabel(
-            values: {
-              value: string
-              label: string
-            }[],
-            value?: string | null,
-          ): string {
-            if (!value) {
-              return ''
-            }
-
-            return values.find(item => item.value === value)?.label ?? value ?? ''
-          }
-
           const preparedAddress = addressTransformForForm(cur, configAddressInitialValues)
           const preparedAddressString =
             getStringIfPresent(preparedAddress.postalCode) +
@@ -197,6 +184,13 @@ export function useInitialValues() {
       return initialValues.employmentDate
     }
   }, [applicant?.employment?.currentWorkExperience, createdDate, initialValues.employmentDate])
+
+  const validationParams: ValidationParams = useMemo(
+    () => ({
+      applicationCreatedDate: createdDate ? new Date(createdDate) : undefined,
+    }),
+    [createdDate],
+  )
 
   const remapApplicationValues = useCallback(
     (values: ClientData): ApplicationFrontdc | undefined => {
@@ -341,15 +335,7 @@ export function useInitialValues() {
           occupation: occupation ?? undefined,
           currentWorkExperience:
             employmentDate && newCreatedDate
-              ? parseInt(
-                  Interval.fromDateTimes(
-                    DateTime.fromJSDate(employmentDate),
-                    DateTime.fromJSDate(new Date(newCreatedDate)),
-                  )
-                    .toDuration(['months'])
-                    .toFormat('MM'),
-                  10,
-                )
+              ? getCurrentWorkExperience(employmentDate, new Date(newCreatedDate))
               : undefined,
           orgName: employerName ?? undefined,
           inn: employerInn,
@@ -427,6 +413,7 @@ export function useInitialValues() {
 
   const initialValuesClientData: ClientData = {
     ...initialValues,
+    validationParams,
     incomeConfirmation: fullApplicationData?.application?.loanData?.incomeProduct
       ? true
       : !!(applicant?.income?.incomeVerify ?? initialValues.incomeConfirmation),
