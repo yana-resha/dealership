@@ -116,6 +116,9 @@ export const EXPECTED_DATA: ClientData = {
     status: DocumentUploadStatus.Uploaded,
   },
   isFormComplete: false,
+  validationParams: {
+    applicationCreatedDate: new Date('2023-06-08T07:44:00.355Z'),
+  },
 }
 
 const EMPTY_ADDRESS = {
@@ -193,4 +196,7 @@ export const EXPECTED_EMPTY_DATA = {
   questionnaireFile: null,
   submitAction: SubmitAction.Save,
   isFormComplete: false,
+  validationParams: {
+    applicationCreatedDate: undefined,
+  },
 }

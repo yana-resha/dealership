@@ -9,6 +9,7 @@ import { MIN_AGE } from 'shared/config/client.config'
 import { FieldMessages } from 'shared/constants/fieldMessages'
 
 import { SubmitAction } from '../ClientForm.types'
+import { getCurrentWorkExperience } from '../utils/getCurrentWorkExperience'
 
 export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
 export const QUESTIONNAIRE_FILE_IS_REQUIRED = 'Необходимо загрузить анкету'
@@ -92,6 +93,16 @@ function isIncomeProofUploadedCorrectly(value: string | undefined, context: Yup.
 function fileUploadStatusNotError(file: FileInfo | null | undefined) {
   if (file) {
     return file.status !== 'error'
+  }
+
+  return true
+}
+
+function validateEmploymentDate(value: Date | null | undefined, context: Yup.TestContext<AnyObject>) {
+  const { applicationCreatedDate } =
+    (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
+  if (value) {
+    return getCurrentWorkExperience(value, applicationCreatedDate ?? new Date()) >= 1
   }
 
   return true
@@ -275,7 +286,10 @@ export const clientFormValidationSchema = Yup.object().shape({
     .nullable()
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation),
-      otherwise: schema => setRequiredIfSave(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
+      otherwise: schema =>
+        setRequiredIfSave(schema)
+          .min(getMinBirthDate(), 'Дата слишком ранняя')
+          .test('isMinWorkExperience', 'Стаж работы должен быть более одного месяца', validateEmploymentDate),
     }),
   employerName: Yup.string()
     .nullable()

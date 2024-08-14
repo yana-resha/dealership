@@ -10,7 +10,6 @@ import { ADDITIONAL_AGREEMENT_DOC_TYPES, AGREEMENT_DOC_TYPES } from '../config'
 export const useAgreementDocs = (isShowAgreementDocs = false) => {
   const { applicationId = '' } = useParams()
   const scans = useAppSelector(state => state.order.order?.orderData?.application?.scans || [])
-
   const uploadedAgreementScans = useMemo(
     () =>
       (scans || []).filter(scan => AGREEMENT_DOC_TYPES.find(type => type === scan.type)) as RequiredScan[],

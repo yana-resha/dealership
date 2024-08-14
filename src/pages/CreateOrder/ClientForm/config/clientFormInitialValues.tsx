@@ -85,6 +85,8 @@ export const configInitialValues: ClientData = {
   questionnaireFile: null,
   submitAction: SubmitAction.Save,
   isFormComplete: false,
+  // Добавлено поле validationParams для того чтобы передать дату создания заявки
+  validationParams: {},
 }
 
 const MAX_CHILDREN_COUNT = 11
