@@ -272,7 +272,7 @@ export function InformationArea({
                   </SberTypography>
                 </Button>
               )}
-            {(status === PreparedStatus.approved || status === PreparedStatus.finallyApproved) && (
+            {status === PreparedStatus.approved && (
               <Downloader onDownloadFile={handleShareClick} icon={<DownloadIcon />}>
                 <SberTypography sberautoVariant="body3" component="p">
                   Скачать

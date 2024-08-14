@@ -104,11 +104,11 @@ describe('InformationAreaTest', () => {
       expect(screen.getByText('Информация')).toBeInTheDocument()
     })
 
-    it('Не отображается кнопка "Скачать", если заявка не имеет Одобрено и Предварительно одобрено', () => {
+    it('Не отображается кнопка "Скачать", если заявка не имеет Предварительно одобрено', () => {
       expect(screen.queryByText('Скачать')).not.toBeInTheDocument()
     })
 
-    it('Отображается кнопка "Скачать", если заявка имеет Одобрено и Предварительно одобрено', () => {
+    it('Отображается кнопка "Скачать", если заявка имеет Предварительно одобрено', () => {
       render(<InformationArea {...informationAreaProps} statusCode={StatusCode.APPROVED} />, {
         wrapper: createWrapper,
       })
