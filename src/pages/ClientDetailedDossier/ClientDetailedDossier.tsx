@@ -15,7 +15,7 @@ import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useGetFullApplicationQuery } from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { formatPassport } from 'shared/lib/utils'
+import { formatPassport, transformAddress } from 'shared/lib/utils'
 import { appRoutePaths, appRoutes } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
@@ -67,7 +67,10 @@ export function ClientDetailedDossier() {
       statusCode: application?.status ?? StatusCode.ERROR,
       errorDescription: fullApplicationData?.errorDescription,
       vendorCode: application?.vendor?.vendorCode,
-      vendorInfo: compact([application?.vendor?.vendorName, application?.vendor?.address]).join(', '),
+      vendorInfo: compact([
+        application?.vendor?.vendorName,
+        transformAddress(application?.vendor?.address ?? ''),
+      ]).join(', '),
       carBrand: application?.loanCar?.brand || '',
       carModel: application?.loanCar?.model || '',
       autoPrice: application?.loanCar?.autoPrice,

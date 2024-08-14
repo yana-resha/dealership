@@ -3,6 +3,8 @@ import { Vendor } from '@sberauto/dictionarydc-proto/public'
 import Cookies from 'js-cookie'
 import compact from 'lodash/compact'
 
+import { transformAddress } from 'shared/lib/utils'
+
 import { COOKIE_POINT_OF_SALE } from '../../constants'
 
 export function pointsOfSaleFilter(options: Vendor[], state: FilterOptionsState<Vendor>) {
@@ -19,7 +21,7 @@ export function pointsOfSaleFilter(options: Vendor[], state: FilterOptionsState<
 }
 
 export function retrieveLabelForPointOfSale(option: Vendor) {
-  const entities = [option?.vendorName, option?.vendorCode, option?.address]
+  const entities = [option?.vendorName, option?.vendorCode, transformAddress(option?.address ?? '')]
 
   return compact(entities).join(' ')
 }

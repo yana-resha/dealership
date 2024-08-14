@@ -99,3 +99,19 @@ export const toCamelcaseKeysData = <T extends object>(data: T): KeysToCamelCase<
 
   return camelcaseKeys(data, { deep: true }) as KeysToCamelCase<T>
 }
+
+/** Возвращаем строку адреса без индекса */
+export const transformAddress = (address: string): string => {
+  if (address.length >= 6) {
+    const re = /((^\d{6,6}[ .,;])|(^\d{6,6}$)|([ .,;]\d{6,6}$)|([ .,;]\d{6,6}[ .,;]))/gm
+
+    return address
+      .replace(re, '')
+      .split(',')
+      .map(el => el.trim())
+      .filter(el => el.length > 0)
+      .join(', ')
+  }
+
+  return address
+}
