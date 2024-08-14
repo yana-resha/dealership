@@ -49,6 +49,7 @@ type Props = {
   carBrand: string
   carModel: string
   autoPrice: number | undefined
+  isCarNew: boolean | undefined
   creditAmount: number | undefined
   monthlyPayment: number | undefined
   downPayment: number | undefined
@@ -68,6 +69,7 @@ export function InformationArea({
   vendorCode,
   vendorInfo,
   autoPrice,
+  isCarNew,
   carBrand,
   carModel,
   creditAmount,
@@ -286,25 +288,27 @@ export function InformationArea({
               {vendorInfo}
             </InfoText>
           </Box>
-
           <Box className={classes.infoTextContainer} gridColumn="span 2">
             <InfoText label="Марка / модель">
               {carBrand} {carModel}
             </InfoText>
+            <SberTypography sberautoVariant="body3" component="p">
+              {isCarNew === true ? 'Новая' : 'Б/У'}
+            </SberTypography>
           </Box>
-
+          <InfoText label="Стоимость авто">{formatMoney(autoPrice)}</InfoText>
           <InfoText label="Сумма кредита">{formatMoney(creditAmount)}</InfoText>
           <InfoText label="Платеж">{formatMoney(monthlyPayment)}</InfoText>
           <InfoText label="ПВ">{formatMoney(downPayment)}</InfoText>
           <InfoText label="Переплата">{formatMoney(overpayment)}</InfoText>
-          <InfoText label="% ставка">
-            {checkIsNumber(rate) ? Math.round((rate as number) * 100) / 100 : ''}%
-          </InfoText>
           <Box className={classes.infoTextContainer} gridColumn="span 2">
             <InfoText label="Кредитный продукт">{productName}</InfoText>
           </Box>
           <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
           <InfoText label="Срок кредита">{formatTerm(term)}</InfoText>
+          <InfoText label="% ставка">
+            {checkIsNumber(rate) ? Math.round((rate as number) * 100) / 100 : ''}%
+          </InfoText>
 
           {isShowScheduleBtn && isHasFeeScheduleInScans && (
             <FeeScheduleBtn

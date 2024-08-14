@@ -42,6 +42,7 @@ const informationAreaProps = {
   rate: 9.8,
   productName: 'Драйв В',
   term: 60,
+  isCarNew: true,
   additionalOptions: [
     {
       name: 'Название продукта',

@@ -71,6 +71,7 @@ export function ClientDetailedDossier() {
       carBrand: application?.loanCar?.brand || '',
       carModel: application?.loanCar?.model || '',
       autoPrice: application?.loanCar?.autoPrice,
+      isCarNew: application?.loanCar?.isCarNew,
       creditAmount: application?.loanData?.amount,
       monthlyPayment: application?.loanData?.monthlyPayment,
       downPayment: application?.loanData?.downpayment,
