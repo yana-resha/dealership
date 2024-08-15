@@ -124,8 +124,5 @@ export function useInitialPayment(isDisabledForm: boolean) {
     handleInitialPaymentPercentFocus,
     handleInitialPaymentBlur,
     handleInitialPaymentPercentBlur,
-    // Значения ниже используются только в тестах
-    values,
-    setFieldValue,
   }
 }

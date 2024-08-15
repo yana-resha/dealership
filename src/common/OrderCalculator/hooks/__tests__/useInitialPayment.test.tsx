@@ -4,12 +4,29 @@ import { renderHook } from '@testing-library/react-hooks'
 import { Form, Formik } from 'formik'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
-import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { BriefOrderCalculatorFields, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { MockProviders } from 'tests/mocks'
 
 import { getPercentFromValue, getValueFromPercent, useInitialPayment } from '../useInitialPayment'
 
 jest.mock('lodash/debounce', () => (fn: (...args: any[]) => any) => fn)
+
+const mockedFormikContext = {
+  values: {} as FullOrderCalculatorFields | BriefOrderCalculatorFields,
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => {},
+}
+
+jest.mock('formik', () => ({
+  ...jest.requireActual('formik'),
+  useFormikContext: () => {
+    const formikContext = jest.requireActual('formik').useFormikContext()
+
+    mockedFormikContext.values = formikContext.values
+    mockedFormikContext.setFieldValue = formikContext.setFieldValue
+
+    return formikContext
+  },
+}))
 
 const initialData: FullOrderCalculatorFields = {
   ...fullInitialValueMap,
@@ -35,32 +52,33 @@ describe('useInitialPayment', () => {
     })
 
     result.current.handleInitialPaymentFocus()
-    result.current.setFieldValue('initialPayment', 20)
+    mockedFormikContext.setFieldValue('initialPayment', 20)
     result.current.handleInitialPaymentBlur()
-    expect(result.current.values.initialPaymentPercent).toEqual('20')
+    expect(mockedFormikContext.values.initialPaymentPercent).toEqual('20')
 
     result.current.handleInitialPaymentPercentFocus()
-    result.current.setFieldValue('initialPaymentPercent', 5)
+    mockedFormikContext.setFieldValue('initialPaymentPercent', 5)
     result.current.handleInitialPaymentPercentBlur()
-    expect(result.current.values.initialPayment).toEqual('5')
+    expect(mockedFormikContext.values.initialPayment).toEqual('5')
   })
 
   it('При смене carCost меняется initialPaymentPercent', async () => {
-    const { result } = renderHook(() => useInitialPayment(false), {
+    renderHook(() => useInitialPayment(false), {
       wrapper: createWrapper(initialData),
     })
-    result.current.setFieldValue('carCost', 200)
-    expect(result.current.values.initialPaymentPercent).toEqual('5')
+
+    mockedFormikContext.setFieldValue('carCost', 200)
+    expect(mockedFormikContext.values.initialPaymentPercent).toEqual('5')
   })
 
   it('При добалении дополнительного оборудования (в кредит) меняется initialPaymentPercent', async () => {
-    const { result } = renderHook(() => useInitialPayment(false), {
+    renderHook(() => useInitialPayment(false), {
       wrapper: createWrapper(initialData),
     })
-    result.current.setFieldValue('additionalEquipments[0].productType', 1)
-    result.current.setFieldValue('additionalEquipments[0].productCost', 100)
-    result.current.setFieldValue('additionalEquipments[0].isCredit', true)
-    expect(result.current.values.initialPaymentPercent).toEqual('5')
+    mockedFormikContext.setFieldValue('additionalEquipments[0].productType', 1)
+    mockedFormikContext.setFieldValue('additionalEquipments[0].productCost', 100)
+    mockedFormikContext.setFieldValue('additionalEquipments[0].isCredit', true)
+    expect(mockedFormikContext.values.initialPaymentPercent).toEqual('5')
   })
 })
 
