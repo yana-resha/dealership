@@ -20,6 +20,8 @@ export const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     gap: theme.spacing(3),
     padding: theme.spacing(3),
+    width: '100%',
+    boxSizing: 'border-box',
   },
 
   buttonsArea: {
