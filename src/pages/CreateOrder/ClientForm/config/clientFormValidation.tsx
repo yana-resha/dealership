@@ -9,6 +9,7 @@ import { MIN_AGE } from 'shared/config/client.config'
 import { FieldMessages } from 'shared/constants/fieldMessages'
 
 import { SubmitAction } from '../ClientForm.types'
+import { checkInn } from '../utils/checkInn'
 import { getCurrentWorkExperience } from '../utils/getCurrentWorkExperience'
 
 export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
@@ -38,6 +39,40 @@ function validatePassportDate(value: Date | null | undefined, context: Yup.TestC
   })
 
   return passportDate.diff(formalPassportDate, ['days']).days >= 0
+}
+
+function validateEmplyeeInn(value: string | undefined, context: Yup.TestContext<AnyObject>) {
+  const occupation = (context.options as InternalOptions)?.from?.[0].value.occupation as number | null
+
+  if (occupation === null || !value) {
+    return true
+  }
+
+  const isIndividualInn = [
+    OccupationType.PRIVATE_PRACTICE,
+    OccupationType.INDIVIDUAL_ENTREPRENEUR,
+    OccupationType.AGENT_ON_COMMISSION_CONTRACT,
+    OccupationType.CONTRACTOR_UNDER_CIVIL_LAW_CONTRACT,
+    OccupationType.SELF_EMPLOYED,
+  ].some(value => value === occupation)
+
+  if (isIndividualInn && value?.length !== 12) {
+    return context.createError({
+      message: 'Длина ИНН должна составлять 12 цифр',
+    })
+  } else if (!isIndividualInn && value?.length !== 10) {
+    return context.createError({
+      message: 'Длина ИНН должна составлять 10 цифр',
+    })
+  }
+
+  if (!checkInn(value)) {
+    return context.createError({
+      message: 'Некорректный ИНН',
+    })
+  }
+
+  return true
 }
 
 function isIncomeProofUploadedCorrectly(value: string | undefined, context: Yup.TestContext<AnyObject>) {
@@ -252,7 +287,16 @@ export const clientFormValidationSchema = Yup.object().shape({
       })
       .when('secondDocumentType', {
         is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.INN,
-        then: schema => schema.length(12, 'Длина ИНН физ.лица должна составлять 12 цифр'),
+        then: schema =>
+          schema
+            .length(12, 'Длина ИНН физ.лица должна составлять 12 цифр')
+            .test('isInnCorrect', (value, context) =>
+              value && !checkInn(value)
+                ? context.createError({
+                    message: 'Некорректный ИНН',
+                  })
+                : true,
+            ),
       }),
   ),
   secondDocumentDate: Yup.date()
@@ -309,11 +353,7 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
       otherwise: schema => setRequiredIfSave(schema),
     })
-    .test(
-      'wrongInnLenght',
-      'Длина ИНН должна составлять 10 или 12 цифр',
-      value => !value || value?.length === 10 || value?.length === 12,
-    ),
+    .test('wrongInn', '', validateEmplyeeInn),
   employerPhone: Yup.string()
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
       const { mobileNumber, additionalNumber } = (context.options as InternalOptions)?.from?.[0].value || {}
