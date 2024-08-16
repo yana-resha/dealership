@@ -33,4 +33,18 @@ export default makeStyles(theme => ({
       },
     },
   },
+
+  oldValue: {
+    textDecoration: 'line-through',
+  },
+  newValue: {
+    color: theme.palette.sber.main,
+  },
+
+  additionalIconContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.spacing(1),
+  },
 }))

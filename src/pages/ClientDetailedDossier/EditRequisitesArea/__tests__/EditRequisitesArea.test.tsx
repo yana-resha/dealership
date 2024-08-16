@@ -3,20 +3,20 @@ import { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { DealerCenterRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
+import { DealerCenterRequisites } from 'entities/applications/AdditionalOptionsRequisites/ui'
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { EditRequisitesArea } from '../EditRequisitesArea'
 import { getMockedClientDossier, Requisites } from './EditRequisitesArea.mock'
 
-jest.mock('entities/application/AdditionalOptionsRequisites/ui', () => ({
+jest.mock('entities/applications/AdditionalOptionsRequisites/ui', () => ({
   DealerCenterRequisites: () => <div data-testid="dealerCenterRequisites" />,
 }))
-jest.mock('entities/application/AdditionalOptionsRequisites/ui', () => ({
+jest.mock('entities/applications/AdditionalOptionsRequisites/ui', () => ({
   DealerServicesRequisites: () => <div data-testid="dealerServicesRequisites" />,
 }))
-jest.mock('entities/application/AdditionalOptionsRequisites/ui', () => ({
+jest.mock('entities/applications/AdditionalOptionsRequisites/ui', () => ({
   AdditionalEquipmentRequisites: () => <div data-testid="additionalEquipmentRequisites" />,
 }))
 jest.mock('./EditRequisitesArea.mock', () => ({

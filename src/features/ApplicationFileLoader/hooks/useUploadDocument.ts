@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { useApplicationContext } from 'entities/application/ApplicationProvider'
+import { useApplicationContext } from 'entities/applications/ApplicationProvider'
 import { useCheckDocumentsList } from 'features/ApplicationFileLoader/hooks/useCheckDocumentsList'
 import { useUploadDocumentMutation } from 'shared/api/requests/loanAppLifeCycleDc'
 import { UPLOADED_FILE_NAME_MAP } from 'shared/config/fileLoading.config'
@@ -27,14 +27,15 @@ export const useUploadDocument = ({ uploaderConfig, onError, onUploadDocument }:
   const sendFile = useCallback(async () => {
     const file = documentFile?.file
     // Если файл не задан, или есть метаинформация о файле, а не сам файл
-    if (!file || !checkIsFile(file)) {
+    if (!file || !checkIsFile(file) || !documentType) {
       return
     }
 
     const extension = file.name.split('.').pop()
     const newName = UPLOADED_FILE_NAME_MAP[documentType]
       ? `${UPLOADED_FILE_NAME_MAP[documentType]}.${extension}`
-      : documentName
+      : `${documentName}.${extension}`
+
     const renamedFile = new File([file], newName, {
       type: file.type,
       lastModified: file.lastModified,

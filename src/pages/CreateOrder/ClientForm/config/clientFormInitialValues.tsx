@@ -86,11 +86,11 @@ export const configInitialValues: ClientData = {
   submitAction: SubmitAction.Save,
   isFormComplete: false,
   // Добавлено поле validationParams для того чтобы передать дату создания заявки
-  validationParams: {},
+  validationParams: {
+    minChildrenCount: 0,
+    isDfoProgram: false,
+  },
 }
-
-const MAX_CHILDREN_COUNT = 11
-export const childrenCounts = [...Array(MAX_CHILDREN_COUNT)].map((v, i) => ({ value: i }))
 
 export const FAMILY_STATUS_VALUES = [
   { label: 'Женат/Замужем', value: MaritalStatus.MARRIED },

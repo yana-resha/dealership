@@ -5,7 +5,9 @@ import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
 import { Timeout } from 'react-number-format/types/types'
 
+import { selectCurrentGovernmentProgram } from 'entities/order'
 import { DADATA_OPTIONS_LIMIT, useGetFmsUnitSuggestions } from 'shared/api/requests/dadata.api'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskDivisionCode,
@@ -21,21 +23,23 @@ import { MaskedInput } from 'shared/ui/MaskedInput/MaskedInput'
 import { MaskedInputFormik } from 'shared/ui/MaskedInput/MaskedInputFormik'
 import { SelectInputFormik } from 'shared/ui/SelectInput/SelectInputFormik'
 import { SwitchInputFormik } from 'shared/ui/SwitchInput/SwitchInputFormik'
+import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { ClientData } from '../../ClientForm.types'
 import {
   FAMILY_STATUS_VALUES,
   SEX_VALUES,
-  childrenCounts,
   configAddressInitialValues,
 } from '../../config/clientFormInitialValues'
 import { usePrepareAddress } from '../../hooks/usePrepareAddress'
+import { getChildrenCount } from '../../utils/getChildrenCount'
 import { AddressDialog } from '../AddressDialog/AddressDialog'
 import useStyles from './PassportArea.styles'
 
 export function PassportArea() {
   const classes = useStyles()
   const { prepareAddress } = usePrepareAddress()
+  const currentGovernmentProgram = useAppSelector(selectCurrentGovernmentProgram)
 
   const { values, setFieldValue } = useFormikContext<ClientData>()
   const {
@@ -51,6 +55,7 @@ export function PassportArea() {
     regAddrIsLivingAddr,
     regNotKladr,
     livingNotKladr,
+    numOfChildren,
   } = values
   const previousDivisionCode = usePrevious(divisionCode)
   const [isRegAddressDialogVisible, setIsRegAddressDialogVisible] = useState(false)
@@ -59,6 +64,11 @@ export function PassportArea() {
   const [issuedBySuggestions, setIssuedBySuggestions] = useState<string[]>([])
   const [divisionCodeSuggestions, setDivisionCodeSuggestions] = useState<string[]>([])
   const timerRef = useRef<Timeout | null>(null)
+  const childrenCounts = useMemo(() => {
+    const children = stringToNumber(currentGovernmentProgram?.children) || 0
+
+    return getChildrenCount(numOfChildren !== null && children && numOfChildren >= children ? children : 0)
+  }, [currentGovernmentProgram?.children, numOfChildren])
 
   const updateListOfSuggestions = useMemo(
     () =>
@@ -66,6 +76,35 @@ export function PassportArea() {
         getPassportSuggestions(value)
       }, 1000),
     [getPassportSuggestions],
+  )
+
+  const onCloseAddressDialog = useCallback(
+    (name: string, addressString: string) => {
+      if (addressString === '') {
+        setFieldValue(name, false)
+      }
+    },
+    [setFieldValue],
+  )
+
+  const handleKladrChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.id === 'regNotKladr') {
+        if (event.target.checked) {
+          setIsRegAddressDialogVisible(true)
+        }
+        setFieldValue('registrationAddress', configAddressInitialValues)
+        setFieldValue('registrationAddressString', '')
+      }
+      if (event.target.id === 'livingNotKladr') {
+        if (event.target.checked) {
+          setIsLivingAddressDialogVisible(true)
+        }
+        setFieldValue('livingAddress', configAddressInitialValues)
+        setFieldValue('livingAddressString', '')
+      }
+    },
+    [setIsRegAddressDialogVisible, setIsLivingAddressDialogVisible, setFieldValue],
   )
 
   useEffect(
@@ -118,35 +157,6 @@ export function PassportArea() {
       }
     }
   }, [data?.suggestions])
-
-  const onCloseAddressDialog = useCallback(
-    (name: string, addressString: string) => {
-      if (addressString === '') {
-        setFieldValue(name, false)
-      }
-    },
-    [setFieldValue],
-  )
-
-  const handleKladrChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (event.target.id === 'regNotKladr') {
-        if (event.target.checked) {
-          setIsRegAddressDialogVisible(true)
-        }
-        setFieldValue('registrationAddress', configAddressInitialValues)
-        setFieldValue('registrationAddressString', '')
-      }
-      if (event.target.id === 'livingNotKladr') {
-        if (event.target.checked) {
-          setIsLivingAddressDialogVisible(true)
-        }
-        setFieldValue('livingAddress', configAddressInitialValues)
-        setFieldValue('livingAddressString', '')
-      }
-    },
-    [setIsRegAddressDialogVisible, setIsLivingAddressDialogVisible, setFieldValue],
-  )
 
   return (
     <Box className={classes.gridContainer}>

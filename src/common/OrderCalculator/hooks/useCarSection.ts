@@ -1,25 +1,33 @@
 import { useMemo } from 'react'
 
-import { useField } from 'formik'
+import { useFormikContext } from 'formik'
 
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 
-import { FormFieldNameMap } from '../types'
+import { BriefOrderCalculatorFields, NormalizedBrands } from '../types'
 import { useGetCarsListQuery } from './useGetCarsListQuery'
+
+const INITIAL_CAR_INFO: NormalizedBrands = {
+  brands: [],
+  brandMap: {},
+}
 
 export function useCarSection() {
   const { vendorCode } = getPointOfSaleFromCookies()
-  const { data, isLoading, isSuccess, isError } = useGetCarsListQuery({ vendorCode })
-  const [carConditionField] = useField<number>(FormFieldNameMap.carCondition)
-  const cars = useMemo(
-    () => ({ ...(carConditionField.value ? data?.newCars : data?.usedCars) }),
-    [carConditionField.value, data?.newCars, data?.usedCars],
+  const result = useGetCarsListQuery({ vendorCode })
+
+  const { values } = useFormikContext<BriefOrderCalculatorFields>()
+  const carsInfo = useMemo(
+    () => ({
+      ...(values.carCondition
+        ? result.data?.newCarsInfo || INITIAL_CAR_INFO
+        : result.data?.usedCarsInfo || INITIAL_CAR_INFO),
+    }),
+    [result.data?.newCarsInfo, result.data?.usedCarsInfo, values.carCondition],
   )
 
   return {
-    cars,
-    isLoading,
-    isSuccess,
-    isError,
+    ...result,
+    data: carsInfo,
   }
 }

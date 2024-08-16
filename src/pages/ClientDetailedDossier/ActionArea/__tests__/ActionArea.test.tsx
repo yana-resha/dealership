@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { MockStore } from 'redux-mock-store'
 
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
+import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { ThemeProviderMock, StoreProviderMock } from 'tests/mocks'
 
 import { ActionArea } from '../ActionArea'
@@ -35,6 +36,8 @@ jest.mock('notistack', () => ({
     enqueueSnackbar: jest.fn(),
   }),
 }))
+const mockedUseAppSelector = jest.spyOn(useAppSelectorModule, 'useAppSelector')
+
 const queryClient = new QueryClient()
 
 const createWrapper = ({ store, children }: WrapperProps) => (
@@ -48,19 +51,26 @@ const createWrapper = ({ store, children }: WrapperProps) => (
 )
 
 describe('ActionAreaTest', () => {
+  beforeEach(() => {
+    mockedUseAppSelector.mockImplementation(() => fullApplicationData.application as ApplicationFrontdc)
+  })
+
   describe('Отображаются все элементы для каждого статуса', () => {
     it('Отображается название области экрана "Действие"', () => {
       render(
         <ActionArea
           status={StatusCode.INITIAL}
           goToTargetApplication={jest.fn}
-          application={fullApplicationData.application as ApplicationFrontdc}
           moratoryEndDate="1970-01-01"
           targetDcAppId={undefined}
           applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
           returnToList={jest.fn}
           updateApplicationStatusLocally={jest.fn}
           setIsEditRequisitesMode={jest.fn}
+          isGovProgramDocumentsPending={false}
+          isGovProgramDocumentsSuccess={false}
+          isGovProgramDocumentsSendingBlocked={false}
+          currentGovProgramScans={[]}
         />,
         {
           wrapper: createWrapper,
@@ -70,18 +80,26 @@ describe('ActionAreaTest', () => {
     })
 
     describe('Статус Initial (Черновик)', () => {
+      beforeEach(() => {
+        mockedUseAppSelector.mockImplementation(
+          () => ({ ...fullApplicationData.application, anketaType: 1 } as ApplicationFrontdc),
+        )
+      })
       it('Если файл анкеты отсутствует, отображатеся только кнопка "Редактировать"', () => {
         render(
           <ActionArea
             status={StatusCode.INITIAL}
             goToTargetApplication={jest.fn}
-            application={{ ...fullApplicationData.application, anketaType: 1 } as ApplicationFrontdc}
             moratoryEndDate="1970-01-01"
             targetDcAppId={undefined}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -96,13 +114,16 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.INITIAL}
             goToTargetApplication={jest.fn}
-            application={{ ...fullApplicationData.application, anketaType: 1 } as ApplicationFrontdc}
             moratoryEndDate="1970-01-01"
             targetDcAppId={undefined}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -120,11 +141,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.APPROVED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -142,11 +166,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.FINALLY_APPROVED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -163,11 +190,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.FORMATION}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -184,11 +214,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.CANCELED_DEAL}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -205,11 +238,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.CANCELED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -226,11 +262,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.REJECTED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -245,13 +284,16 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.REJECTED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             moratoryEndDate="3970-01-01"
             source="DC"
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -266,12 +308,15 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.REJECTED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             moratoryEndDate="3970-01-01"
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -286,13 +331,16 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.REJECTED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             moratoryEndDate="3970-01-01"
             targetDcAppId="123"
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -309,11 +357,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.CLIENT_REJECTED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -330,11 +381,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.FINALLY_APPROVED}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,
@@ -351,11 +405,14 @@ describe('ActionAreaTest', () => {
           <ActionArea
             status={StatusCode.ERROR}
             goToTargetApplication={jest.fn}
-            application={fullApplicationData.application as ApplicationFrontdc}
             applicationForScore={{ application: fullApplicationData.application as ApplicationFrontdc }}
             returnToList={jest.fn}
             updateApplicationStatusLocally={jest.fn}
             setIsEditRequisitesMode={jest.fn}
+            isGovProgramDocumentsPending={false}
+            isGovProgramDocumentsSuccess={false}
+            isGovProgramDocumentsSendingBlocked={false}
+            currentGovProgramScans={[]}
           />,
           {
             wrapper: createWrapper,

@@ -2,11 +2,13 @@ import { memo, useCallback, useEffect, useMemo } from 'react'
 
 import { Box, FormHelperText } from '@mui/material'
 import { Stack } from '@mui/system'
+import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
-import { DocumentDownloader } from 'entities/downloader/DocumentsDownloader/DocumentDownloader'
+import { DocumentDownloader } from 'entities/downloader/DocumentsDownloader'
 import { DragAndDropWrapper } from 'shared/ui/DragAndDropWrapper'
 import { FileUploadButton } from 'shared/ui/FileUploadButton'
 import SberTypography from 'shared/ui/SberTypography'
+import { SelectInput } from 'shared/ui/SelectInput/SelectInput'
 
 import useStyles from './ApplicationFileUploader.styles'
 import { FileInfo, UploaderConfig, DocumentUploadStatus } from './ApplicationFileUploader.types'
@@ -24,9 +26,10 @@ type UploaderProps = {
    * Меняет внешний вид компонента */
   onUploadDocument?: (file: File, documentName: string, status: FileInfo['status']) => void
   onRemoveDocument?: (documentName: string) => void
+  onChangeOption?: (documentName: string, documentType: string | DocumentType) => void
   onError?: (documentName: string) => void
   isAllowedUploadToServer?: boolean
-  isDisabledRemove?: boolean
+  isRemoveDisabled?: boolean
   isShowLabel?: boolean
 }
 
@@ -38,12 +41,14 @@ const Uploader: React.FC<UploaderProps> = ({
   motivateMessage,
   onUploadDocument,
   onRemoveDocument,
+  onChangeOption,
   onError,
   isAllowedUploadToServer = true,
-  isDisabledRemove = false,
+  isRemoveDisabled = false,
   isShowLabel = false,
 }) => {
-  const { documentLabel, documentName, documentFile, documentError } = uploaderConfig || {}
+  const { documentLabel, documentName, documentFile, documentType, documentError, documentTypeOptions } =
+    uploaderConfig || {}
   const isShowInput = !!onUploadDocument
   const isLoading = documentFile?.status === DocumentUploadStatus.Progress
   const isError = !!documentError || documentFile?.status === DocumentUploadStatus.Error
@@ -66,12 +71,17 @@ const Uploader: React.FC<UploaderProps> = ({
 
   const handleRemove = useMemo(
     () =>
-      onRemoveDocument && !isDisabledRemove
+      onRemoveDocument && !isRemoveDisabled
         ? () => {
             onRemoveDocument(documentName)
           }
         : undefined,
-    [documentName, isDisabledRemove, onRemoveDocument],
+    [documentName, isRemoveDisabled, onRemoveDocument],
+  )
+
+  const handleChangeOption = useCallback(
+    (type: string | DocumentType) => onChangeOption && onChangeOption(documentName, type),
+    [documentName, onChangeOption],
   )
 
   useEffect(() => {
@@ -128,6 +138,7 @@ const Uploader: React.FC<UploaderProps> = ({
               {documentLabel}
             </SberTypography>
           )}
+
           {!!suggest && (
             <SberTypography
               sberautoVariant="body3"
@@ -139,26 +150,41 @@ const Uploader: React.FC<UploaderProps> = ({
             </SberTypography>
           )}
 
-          <Stack direction="row" className={classes.stack}>
-            <Box gridColumn="1 / -1" className={classes.item} display="flex" alignItems="center">
-              {documentFile?.file && !isLoading ? (
-                <DocumentDownloader
-                  fileOrMetadata={documentFile?.file}
-                  loadingMessage={loadingMessage}
-                  index={0}
-                  onClickRemove={handleRemove}
-                  onDownloadDocuments={downloadFile}
-                  tooltipText={RENAMING_TOOLTIP}
-                />
-              ) : (
-                <FileUploadButton
-                  buttonText={motivateMessage}
-                  onChange={handleUpload}
-                  isUploading={isLoading}
-                />
-              )}
-            </Box>
-          </Stack>
+          {!!documentTypeOptions && (
+            <SelectInput
+              options={documentTypeOptions}
+              onChange={handleChangeOption}
+              label="Тип документа"
+              placeholder="-"
+              value={documentType || undefined}
+              disabled={documentFile?.file && !isLoading}
+            />
+          )}
+
+          {!!documentType && (
+            <>
+              <Stack direction="row" className={classes.stack}>
+                <Box gridColumn="1 / -1" className={classes.item} display="flex" alignItems="center">
+                  {documentFile?.file && !isLoading ? (
+                    <DocumentDownloader
+                      fileOrMetadata={documentFile?.file}
+                      loadingMessage={loadingMessage}
+                      index={0}
+                      onClickRemove={handleRemove}
+                      onDownloadDocuments={downloadFile}
+                      tooltipText={RENAMING_TOOLTIP}
+                    />
+                  ) : (
+                    <FileUploadButton
+                      buttonText={motivateMessage}
+                      onChange={handleUpload}
+                      isUploading={isLoading}
+                    />
+                  )}
+                </Box>
+              </Stack>
+            </>
+          )}
         </DragAndDropWrapper>
 
         {isError && <FormHelperText error>{errorMessage}</FormHelperText>}

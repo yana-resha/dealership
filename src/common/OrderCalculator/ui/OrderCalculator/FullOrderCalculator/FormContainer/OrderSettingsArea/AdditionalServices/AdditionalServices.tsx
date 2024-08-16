@@ -7,8 +7,8 @@ import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
-import { DealerServicesRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
+import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { DealerServicesRequisites } from 'entities/applications/AdditionalOptionsRequisites/ui'
 
 import useStyles from './AdditionalServices.styles'
 

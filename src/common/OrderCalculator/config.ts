@@ -1,4 +1,4 @@
-import { ServicesGroupName } from 'entities/application/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 
 import {
   OrderCalculatorAdditionalService,
@@ -14,6 +14,7 @@ import {
   AutoCategory,
   OrderCalculatorBankAdditionalService,
   FullInitialBankAdditionalService,
+  CreditProductParams,
 } from './types'
 
 export const CAR_YEARS_LENGTH = 20
@@ -121,6 +122,8 @@ const INITIAL_COMMON_ERROR: CommonError = {
   isExceededDealerAdditionalServicesLimit: false,
   isExceededBankAdditionalServicesLimit: false,
   isHasNotCascoOption: false,
+  isCurrentGovProgramNotFoundInList: false,
+  isCurrentCreditProductNotFoundInList: false,
 }
 
 const INITIAL_VALIDATION_PARAMS: ValidationParams = {}
@@ -128,12 +131,18 @@ const INITIAL_VALIDATION_PARAMS: ValidationParams = {}
 const initialCarCondition = CAR_CONDITIONS[0].value
 
 export const initialValueMap: BriefOrderCalculatorFields = {
+  [FormFieldNameMap.IS_GOVERNMENT_PROGRAM]: false,
+  [FormFieldNameMap.IS_DFO_PROGRAM]: false,
   [FormFieldNameMap.carCondition]: initialCarCondition,
   [FormFieldNameMap.carBrand]: null,
   [FormFieldNameMap.carModel]: null,
-  [FormFieldNameMap.carYear]: getCarYears(!!initialCarCondition)[0].value,
+  [FormFieldNameMap.carYear]: null,
   [FormFieldNameMap.carCost]: '',
   [FormFieldNameMap.carMileage]: '',
+  [FormFieldNameMap.GOVERNMENT_PROGRAM]: null,
+  [FormFieldNameMap.GOVERNMENT_NAME]: null,
+  [FormFieldNameMap.GOVERNMENT_DISCOUNT]: '',
+  [FormFieldNameMap.GOVERNMENT_DISCOUNT_PERCENT]: '',
   [FormFieldNameMap.creditProduct]: null,
   [FormFieldNameMap.initialPayment]: '',
   [FormFieldNameMap.initialPaymentPercent]: '',
@@ -174,15 +183,32 @@ export const formMessages = {
     'Выбран кредитный продукт с обязательным КАСКО. Необходимо добавить дополнительную услугу КАСКО',
 }
 
-export const CREDIT_PRODUCT_PARAMS_FIELDS = [
+export const CREDIT_PRODUCT_PARAMS_FIELDS: (keyof CreditProductParams)[] = [
+  FormFieldNameMap.IS_GOVERNMENT_PROGRAM,
+  FormFieldNameMap.IS_DFO_PROGRAM,
   FormFieldNameMap.carCondition,
   FormFieldNameMap.carBrand,
   FormFieldNameMap.carModel,
   FormFieldNameMap.carYear,
+  FormFieldNameMap.carCost,
+  FormFieldNameMap.carPassportCreationDate,
 ]
 
 export const AUTO_TYPE_MAP = {
   [AutoCategory.A]: '3',
   [AutoCategory.B]: '1',
   [AutoCategory.C]: '2',
+}
+
+export enum BankOptionTariffCode {
+  FIRST = '100',
+  SECOND = '101',
+  THIRD = '102',
+  FOURTH = '103',
+}
+
+export const INSURED_AMOUNT_VALUE_MAP: Record<string, number> = {
+  [BankOptionTariffCode.FIRST]: 700000,
+  [BankOptionTariffCode.SECOND]: 1200000,
+  [BankOptionTariffCode.THIRD]: 510000,
 }

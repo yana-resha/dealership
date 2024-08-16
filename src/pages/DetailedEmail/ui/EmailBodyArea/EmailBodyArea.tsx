@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 
-import { AreaContainer } from 'shared/ui/DossierAreaContainer'
+import { AreaContainer } from 'shared/ui/AreaContainer'
 
 import { useStyles } from './EmailBodyArea.styles'
 

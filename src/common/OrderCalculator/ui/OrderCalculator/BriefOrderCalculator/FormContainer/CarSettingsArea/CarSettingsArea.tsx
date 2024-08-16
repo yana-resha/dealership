@@ -30,18 +30,16 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
   const { carBrands, carModels, isDisabledCarModel, isCarsLoading, isCarLoaded, isCarError } = useCarBrands()
   const { carYears } = useCarYears()
   const { handleBtnClick } = useCarSettings(onFilled)
-  const isSectionLoading = isLoading || isCarsLoading
-  const isSectionLoaded = !isLoading && isCarLoaded
 
   return (
     <CollapsibleFormAreaContainer title="Автомобиль">
-      {isSectionLoading && (
+      {isCarsLoading && (
         <Box className={styles.loaderContainer}>
           <CircularProgressWheel size="large" />
         </Box>
       )}
 
-      {isSectionLoaded && (
+      {isCarLoaded && (
         <Box className={styles.gridContainer}>
           <SelectInputFormik
             name={FormFieldNameMap.carCondition}

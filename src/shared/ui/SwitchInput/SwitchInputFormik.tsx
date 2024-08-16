@@ -16,7 +16,7 @@ type Props = {
 
 export const SwitchInputFormik = (props: Props) => {
   const { name, label, gridColumn, centered, disabled, afterChange } = props
-  const { value, isError, error, onChange } = useFormikWrapper(name)
+  const { value, isError, error, handleChange } = useFormikWrapper(name)
 
   return (
     <Box width="auto" minWidth="min-content" gridColumn={gridColumn}>
@@ -27,7 +27,7 @@ export const SwitchInputFormik = (props: Props) => {
         afterChange={afterChange}
         id={name}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         isError={isError}
         errorMessage={error}
       />

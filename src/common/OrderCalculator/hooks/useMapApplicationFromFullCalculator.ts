@@ -10,9 +10,9 @@ import {
 import { DateTime } from 'luxon'
 import { useDispatch } from 'react-redux'
 
-import { AnketaType } from 'entities/application/application.utils'
+import { AnketaType } from 'entities/applications/application.utils'
+import { updateApplication } from 'entities/order'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateApplication } from 'entities/reduxStore/orderSlice'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { convertedDateToString } from 'shared/utils/dateTransform'
 import { stringToNumber } from 'shared/utils/stringToNumber'
@@ -24,50 +24,26 @@ import {
   FullInitialBankAdditionalService,
 } from '../types'
 import { mapCommonApplicationValues } from '../utils/mapApplication'
+import { getBankOptionInsuredAmount } from '../utils/orderFormMapper'
 import { useGetCarsListQuery } from './useGetCarsListQuery'
 import { NonNullableAdditionalOption, useGetVendorOptionsQuery } from './useGetVendorOptionsQuery'
 
-enum BankOptionProductType {
-  FIRST = '26',
-  SECOND = '27',
-  THIRD = '28',
-  FOURTH = '29',
-}
-enum BankOptionTariffId {
-  FIRST = '100',
-  SECOND = '101',
-  THIRD = '102',
-  FOURTH = '103',
-  FIFTH = '104',
-}
-// Значения прописаны в статье https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1071122571
-const INSURED_AMOUNT_VALUE_MAP: Record<string, Record<string, number>> = {
-  [BankOptionProductType.FIRST]: {
-    [BankOptionTariffId.FIRST]: 700000,
-    [BankOptionTariffId.SECOND]: 1200000,
-  },
-  [BankOptionProductType.SECOND]: {
-    [BankOptionTariffId.THIRD]: 510000,
-  },
-  [BankOptionProductType.THIRD]: {
-    [BankOptionTariffId.FOURTH]: 1200000,
-  },
-  [BankOptionProductType.FOURTH]: {
-    [BankOptionTariffId.FIFTH]: 510000,
-  },
+enum BankOptionCodeDocNumberMap {
+  ZVP = '008SE054',
+  MLT = '077SE680',
+  PND = '077SE776',
+  PNDPR = '077SE677',
 }
 
-const getBankOptionDocNumber = (optionType: string | null, dcAppId: string | undefined) => {
-  switch (optionType) {
-    case BankOptionProductType.FIRST:
-    case BankOptionProductType.THIRD:
-      return '008SE054' + (dcAppId || '').slice(0, 18)
-    case BankOptionProductType.SECOND:
-    case BankOptionProductType.FOURTH:
-      return '077SE680' + (dcAppId || '').slice(0, 18)
-    default:
-      return ''
+const getBankOptionDocNumber = (optionCode: string | undefined, dcAppId: string | undefined) => {
+  if (!optionCode) {
+    return ''
   }
+
+  return (
+    BankOptionCodeDocNumberMap[optionCode as keyof typeof BankOptionCodeDocNumberMap] +
+    (dcAppId || '').slice(0, 18)
+  )
 }
 
 type MapCommonValueParams = {
@@ -152,7 +128,13 @@ export function useMapApplicationFromFullCalculator() {
 
   const remapAdditionalOptionsForFullCalculator = useCallback(
     (values: FullOrderCalculatorFields) => {
-      const { additionalEquipments, dealerAdditionalServices, bankAdditionalServices } = values
+      const {
+        carCost,
+        initialPayment,
+        additionalEquipments,
+        dealerAdditionalServices,
+        bankAdditionalServices,
+      } = values
 
       const additionalEquipmentForApplication = additionalEquipments.reduce(
         (acc: AdditionalOptionsFrontdc[], option) => {
@@ -225,7 +207,9 @@ export function useMapApplicationFromFullCalculator() {
         (acc: AdditionalOptionsFrontdc[], option) => {
           const { productType, tariff, loanTerm, provider, providerName } = option
           const vendorOption = vendorOptions?.additionalOptionsMap[productType ?? '']
-
+          const currentTariff = vendorOption?.tariffs?.find(t => t.tariffId === tariff)
+          const optionCode = vendorOption?.optionCode
+          const tariffCode = currentTariff?.tariffCode
           const commonValues = mapCommonValues({
             option,
             additionalOptionsMap: vendorOptions?.additionalOptionsMap,
@@ -238,12 +222,13 @@ export function useMapApplicationFromFullCalculator() {
           const additionalOption: AdditionalOptionsFrontdc = {
             ...commonValues,
             tariffId: tariff ?? undefined,
-            tariff: vendorOption?.tariffs?.find(t => t.tariffId === tariff)?.tariff,
-            // insuredAmount: INSURED_AMOUNT_VALUE_MAP[productType ?? '']?.[tariff ?? ''],
-            insuredAmount: INSURED_AMOUNT_VALUE_MAP[productType ?? '']?.[tariff ?? ''],
+            tariff: currentTariff?.tariff,
+            tariffCode,
+            insuredAmount: getBankOptionInsuredAmount(tariffCode, carCost, initialPayment),
             docType: 2, // Для услуг OptionType.BANK, всегда 2 (из аналитики)
             // Для услуг OptionType.BANK, фронт заполняет сам, по шаблону
-            docNumber: getBankOptionDocNumber(productType, dcAppId),
+            docNumber: getBankOptionDocNumber(optionCode, dcAppId),
+            code: optionCode,
           }
 
           if (additionalOption.type) {

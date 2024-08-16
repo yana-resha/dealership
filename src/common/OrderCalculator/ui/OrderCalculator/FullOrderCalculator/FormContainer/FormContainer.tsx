@@ -7,11 +7,12 @@ import { useCreditProducts } from 'common/OrderCalculator/hooks/useCreditProduct
 import { useFormChanging } from 'common/OrderCalculator/hooks/useFormChanging'
 import { useScrollToOrderSettingsArea } from 'common/OrderCalculator/hooks/useScrollToOrderSettingsArea'
 import { FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { ProgramSwitchesArea } from 'common/OrderCalculator/ui/ProgramSwitchesArea/ProgramSwitchesArea'
 import {
   RequisitesForFinancing,
   useRequisitesForFinancingQuery,
-} from 'entities/application/AdditionalOptionsRequisites/hooks/useRequisitesForFinancingQuery'
-import { RequisitesContextProvider } from 'entities/application/AdditionalOptionsRequisites/ui/RequisitesContext'
+} from 'entities/applications/AdditionalOptionsRequisites/hooks/useRequisitesForFinancingQuery'
+import { RequisitesContextProvider } from 'entities/applications/AdditionalOptionsRequisites/ui/RequisitesContext'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useScrollToErrorField } from 'shared/hooks/useScrollToErrorField'
 
@@ -88,6 +89,8 @@ export function FormContainer({
 
   const formFields = useMemo(
     () => ({
+      isGovernmentProgram: values.isGovernmentProgram,
+      isDfoProgram: values.isDfoProgram,
       carCondition: values.carCondition,
       carBrand: values.carBrand,
       carModel: values.carModel,
@@ -127,6 +130,8 @@ export function FormContainer({
       values.carYear,
       values.correspondentAccount,
       values.isCustomFields,
+      values.isDfoProgram,
+      values.isGovernmentProgram,
       values.legalPersonCode,
       values.loanAmount,
       values.salesContractDate,
@@ -146,6 +151,7 @@ export function FormContainer({
 
   return (
     <Form data-testid="fullOrderCalculatorFormContainer">
+      <ProgramSwitchesArea />
       <RequisitesContextProvider requisites={requisites} isRequisitesFetched={isRequisitesFetched}>
         <CarSettingsArea
           onFilled={changeShouldFetchProducts}

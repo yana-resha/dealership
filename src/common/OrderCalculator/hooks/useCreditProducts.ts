@@ -13,7 +13,14 @@ import {
 } from '../types'
 import { useGetCreditProductListQuery } from './useGetCreditProductListQuery'
 
-interface UseCreditProductParams<T> {
+const checkIsValueChanged = (prevValue: any, currentValue: any) =>
+  prevValue !== undefined && prevValue !== currentValue
+
+const isFullOrderCalculatorFieldsType = (
+  obj: FullOrderCalculatorFields | BriefOrderCalculatorFields,
+): obj is FullOrderCalculatorFields => obj && 'carPassportCreationDate' in obj
+
+interface UseCreditProductParams<T extends FullOrderCalculatorFields | BriefOrderCalculatorFields> {
   shouldFetchProductsOnStart: boolean
   formFields: CreditProductParams
   initialValueMap: T
@@ -36,16 +43,20 @@ export function useCreditProducts<T extends FullOrderCalculatorFields | BriefOrd
   const [shouldFetchProducts, setShouldFetchProducts] = useState(shouldFetchProductsOnStart)
   const changeShouldFetchProducts = useCallback(() => setShouldFetchProducts(true), [])
 
-  const isChangedBaseValues = useMemo(
+  const isBaseValuesChanged = useMemo(
     () =>
-      CREDIT_PRODUCT_PARAMS_FIELDS.some(
-        f =>
-          !!sentParams[f as keyof CreditProductParams] &&
-          sentParams[f as keyof CreditProductParams] !== values[f as keyof T],
-      ),
+      CREDIT_PRODUCT_PARAMS_FIELDS.some(field => {
+        if (isFullOrderCalculatorFieldsType(values)) {
+          return checkIsValueChanged(sentParams[field], values[field])
+        } else {
+          return (
+            field !== FormFieldNameMap.carPassportCreationDate &&
+            checkIsValueChanged(sentParams[field], values[field])
+          )
+        }
+      }),
     [sentParams, values],
   )
-
   const { data, isError, isFetching, isLoading } = useGetCreditProductListQuery({
     vendorCode,
     values,
@@ -56,23 +67,20 @@ export function useCreditProducts<T extends FullOrderCalculatorFields | BriefOrd
     if (isFetching) {
       setShouldFetchProducts(false)
       setSentParams(formFields)
-      if (!shouldFetchProductsOnStart || isChangedBaseValues) {
-        setValues({ ...initialValueMap, ...formFields })
-      }
     }
-  }, [formFields, initialValueMap, isChangedBaseValues, isFetching, setValues, shouldFetchProductsOnStart])
+  }, [formFields, initialValueMap, isBaseValuesChanged, isFetching, setValues, shouldFetchProductsOnStart])
 
   useEffect(() => {
-    if (!isError && data && !isChangedBaseValues) {
+    if (!isError && data && !isBaseValuesChanged) {
       setShouldShowOrderSettings(true)
     }
-  }, [data, isChangedBaseValues, isError])
+  }, [data, isBaseValuesChanged, isError])
 
   useEffect(() => {
-    if (isChangedBaseValues) {
+    if (isBaseValuesChanged) {
       setShouldShowOrderSettings(false)
     }
-  }, [isChangedBaseValues])
+  }, [isBaseValuesChanged])
 
   /* если от родителя пришел id кредитного продукта, то переключаемся на него,
   при условии, что кредитный продукт еще не выбран */
