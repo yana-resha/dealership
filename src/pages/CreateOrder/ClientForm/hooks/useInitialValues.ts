@@ -28,11 +28,11 @@ import { ClientData, SubmitAction, ValidationParams } from '../ClientForm.types'
 import { configAddressInitialValues, UPLOADED_DOCUMENTS } from '../config/clientFormInitialValues'
 import { getAddressName } from '../utils/addressMap'
 import { addressTransformForForm, addressTransformForRequest } from '../utils/addressTransformForRequest'
+import { getCurrentWorkExperience } from '../utils/getCurrentWorkExperience'
 import { makeClientForm } from '../utils/makeClienForm'
 import { transformDocsForRequest } from '../utils/transformDocsForRequest'
 import { transformPhoneForRequest } from '../utils/transformPhoneForRequest'
 import { useGetAddressMapQuery } from './useGetAddressMapQuery'
-import { getCurrentWorkExperience } from '../utils/getCurrentWorkExperience'
 
 export function useInitialValues() {
   const dispatch = useDispatch()

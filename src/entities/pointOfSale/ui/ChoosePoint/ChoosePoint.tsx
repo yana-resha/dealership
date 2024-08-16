@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
 import { usePrevious } from 'shared/hooks/usePrevious'
+import { transformAddress } from 'shared/lib/utils'
 import { defaultRoute } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
@@ -21,22 +22,21 @@ import {
   retrieveLabelForPointOfSale,
   savePointOfSaleToCookies,
 } from './ChoosePoint.utils'
-import { transformAddress } from 'shared/lib/utils'
 
-type Props = { value?: Vendor; isHeader?: boolean; onSuccessEditing?: () => void }
+type Props = { isHeader?: boolean; onSuccessEditing?: () => void }
 
-export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
+export const ChoosePoint = ({ isHeader, onSuccessEditing }: Props) => {
   const classes = useStyles()
   const navigate = useNavigate()
-
   const { data, error, isLoading } = useGetVendorsListQuery()
-  const [chosenOption, setChosenOption] = useState<Vendor | null>(value ?? null)
+  const [chosenOption, setChosenOption] = useState<Vendor | null>(null)
   const prevChosenOption = usePrevious(chosenOption)
   const [validationError, setValidationError] = useState<boolean>(false)
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-  const chosenOptionAddress = useMemo(() => {
-    return chosenOption?.address ? transformAddress(chosenOption.address) : undefined
-  }, [chosenOption])
+  const chosenOptionAddress = useMemo(
+    () => (chosenOption?.address ? transformAddress(chosenOption.address) : undefined),
+    [chosenOption],
+  )
 
   const handleAutocompleteOptionChange = useCallback((event: React.SyntheticEvent, option: Vendor | null) => {
     setChosenOption(option)
@@ -78,7 +78,6 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   )
 
   const getOptionLabel = useCallback((option: Vendor) => retrieveLabelForPointOfSale(option), [])
-
   const renderInput = useCallback(
     (params: AutocompleteRenderInputParams) => (
       <TextField
