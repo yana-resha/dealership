@@ -348,12 +348,11 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
       otherwise: schema => setRequiredIfSave(schema),
     }),
-  employerInn: Yup.string()
-    .when('occupation', {
-      is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-      otherwise: schema => setRequiredIfSave(schema),
-    })
-    .test('wrongInn', '', validateEmplyeeInn),
+  employerInn: Yup.string().when('occupation', {
+    is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
+    otherwise: schema => setRequiredIfSave(schema),
+  }),
+  // .test('wrongInn', '', validateEmplyeeInn),
   employerPhone: Yup.string()
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
       const { mobileNumber, additionalNumber } = (context.options as InternalOptions)?.from?.[0].value || {}
