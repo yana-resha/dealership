@@ -10,6 +10,7 @@ import compact from 'lodash/compact'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { ApplicationSource } from 'entities/applications/application.utils'
 import { ApplicationProvider } from 'entities/applications/ApplicationProvider'
 import { updateOrder } from 'entities/order'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
@@ -100,11 +101,14 @@ export function ClientDetailedDossier() {
       isGovProgramDocumentsNecessaryRequest,
       isGovProgramDocumentsPending,
       pskPrc: application?.loanData?.pskPrc,
+      appType: application?.appType,
     }),
     [
+      application?.appType,
       application?.emailId,
       application?.loanCar?.autoPrice,
       application?.loanCar?.brand,
+      application?.loanCar?.isCarNew,
       application?.loanCar?.model,
       application?.loanData?.additionalOptions,
       application?.loanData?.amount,
@@ -205,13 +209,15 @@ export function ClientDetailedDossier() {
                   <Box className={classes.dossierContainer}>
                     <InformationArea {...appInfo} />
 
-                    <DocumentsArea
-                      status={
-                        application.status || application.status === StatusCode.INITIAL
-                          ? application.status
-                          : StatusCode.ERROR
-                      }
-                    />
+                    {application.appType === ApplicationSource.CAR_LOAN_APPLICATION_DC && (
+                      <DocumentsArea
+                        status={
+                          application.status || application.status === StatusCode.INITIAL
+                            ? application.status
+                            : StatusCode.ERROR
+                        }
+                      />
+                    )}
 
                     {isShowGovProgramDocuments && (
                       <GovProgramDocumentsArea

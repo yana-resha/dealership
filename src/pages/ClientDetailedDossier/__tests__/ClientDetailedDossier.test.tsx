@@ -3,7 +3,6 @@ import { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import { MockStore } from 'redux-mock-store'
 
-import { Order } from 'entities/order/model/orderSlice'
 import * as useGovProgramScansModule from 'pages/ClientDetailedDossier/GovProgramDocumentsArea/hooks/useGovProgramScans'
 import * as useGetFullApplicationQueryModule from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
@@ -53,7 +52,7 @@ describe('ClientDetailedDossierTest', () => {
             refetch: jest.fn(),
           } as any),
       )
-      mockedUseAppSelector.mockImplementation(() => ({ application: fullApplicationData }))
+      mockedUseAppSelector.mockImplementation(() => ({ application: fullApplicationData.application }))
       mockedUseGovProgramScans.mockImplementation(
         () =>
           ({
@@ -79,6 +78,41 @@ describe('ClientDetailedDossierTest', () => {
 
     it('Отображается область ActionArea', () => {
       expect(screen.getByTestId('ActionArea')).toBeInTheDocument()
+    })
+  })
+
+  describe('Если appType !== CARLOANAPPLICATIONDC', () => {
+    beforeEach(() => {
+      mockedUseGetFullApplicationQuery.mockImplementation(
+        () =>
+          ({
+            data: {
+              ...fullApplicationData,
+              application: {
+                ...fullApplicationData,
+                appType: '',
+              },
+            },
+            refetch: jest.fn(),
+          } as any),
+      )
+      mockedUseAppSelector.mockImplementation(() => ({
+        application: { ...fullApplicationData.application, appType: '' },
+      }))
+      mockedUseGovProgramScans.mockImplementation(
+        () =>
+          ({
+            currentGovProgramScans: [],
+            isNecessaryRequest: false,
+            isPending: false,
+            isSuccess: false,
+          } as any),
+      )
+      render(<ClientDetailedDossier />, { wrapper: createWrapper })
+    })
+
+    it('Не отображается область DocumentsArea', () => {
+      expect(screen.queryByTestId('DocumentsArea')).not.toBeInTheDocument()
     })
   })
 })

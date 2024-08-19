@@ -8,5 +8,6 @@ export const convertDateTimeToLocal = (date?: string) => {
   if (!date) {
     return null
   }
+
   return new Date(!/[Z]/g.test(date) ? date + 'Z' : date)
 }
