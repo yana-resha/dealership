@@ -1,37 +1,27 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { AnyAction, combineReducers, configureStore, Dispatch, Middleware } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
-import { persistReducer, persistStore } from 'redux-persist'
+import { persistReducer, persistStore, WebStorage } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync'
+import storageSession from 'redux-persist/lib/storage/session'
+import { initMessageListener } from 'redux-state-sync'
 
 import { orderSlice } from 'entities/order'
-import { tabsSlice } from 'entities/tabManagement'
 import { userSlice } from 'entities/user'
 
-// Настройки для сохранения редьюсера в локалСторадж
-const persistTabsConfig = {
-  key: tabsSlice.name,
-  storage,
-  whitelist: ['openTabs'],
-}
-
-const persistDefaultConfig = (key: string) => ({
+const persistDefaultConfig = (key: string, storage: WebStorage) => ({
   key,
   storage,
 })
 
 const rootReducer = combineReducers({
-  [tabsSlice.name]: persistReducer(persistTabsConfig, tabsSlice.reducer),
-  [userSlice.name]: persistReducer(persistDefaultConfig(userSlice.name), userSlice.reducer),
-  [orderSlice.name]: persistReducer(persistDefaultConfig(orderSlice.name), orderSlice.reducer),
+  [userSlice.name]: persistReducer(persistDefaultConfig(userSlice.name, storage), userSlice.reducer),
+  [orderSlice.name]: persistReducer(
+    persistDefaultConfig(orderSlice.name, storageSession),
+    orderSlice.reducer,
+  ),
 })
 
-// Помогает синхронизировать состояние между вкладками, на пример для блока дублирующей вкладки
-const syncStateMiddleware = createStateSyncMiddleware({
-  whitelist: Object.keys(tabsSlice.actions).map(action => `${tabsSlice.name}/${action}`),
-})
-
-const middlewares = [syncStateMiddleware]
+const middlewares: Middleware<{}, any, Dispatch<AnyAction>>[] = []
 
 if (process.env.NODE_ENV === 'development') {
   const logger = require('redux-logger').default

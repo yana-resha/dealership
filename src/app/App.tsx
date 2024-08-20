@@ -7,7 +7,6 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { store } from 'app/store'
 import { AuthProvider } from 'common/auth'
-import { TabBlocker } from 'entities/tabManagement'
 import { TechnicalError } from 'pages/TechnicalError/TechnicalError'
 import { useInitialTablePagesClearing } from 'shared/tableCurrentPage'
 
@@ -27,13 +26,11 @@ export function App() {
         <ThemeProvider theme={theme}>
           <SnackbarProvider hideIconVariant dense>
             <ErrorBoundary fallback={<TechnicalError />}>
-              <TabBlocker>
-                <BrowserRouter basename="/">
-                  <AuthProvider>
-                    <Router />
-                  </AuthProvider>
-                </BrowserRouter>
-              </TabBlocker>
+              <BrowserRouter basename="/">
+                <AuthProvider>
+                  <Router />
+                </AuthProvider>
+              </BrowserRouter>
             </ErrorBoundary>
           </SnackbarProvider>
         </ThemeProvider>
