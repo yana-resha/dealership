@@ -4,7 +4,7 @@ import { Box, IconButton } from '@mui/material'
 
 import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowDown.svg'
 import { ReactComponent as KeyboardArrowUp } from 'assets/icons/keyboardArrowUp.svg'
-import { AreaContainer } from 'shared/ui/DossierAreaContainer'
+import { AreaContainer } from 'shared/ui/AreaContainer'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { AdditionalOptionItem } from './AdditionalOptionItem'

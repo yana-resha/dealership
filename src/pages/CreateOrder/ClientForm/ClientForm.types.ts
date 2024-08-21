@@ -35,6 +35,12 @@ export enum SubmitAction {
   Print = 'print',
 }
 
+export type ValidationParams = {
+  applicationCreatedDate?: Date
+  minChildrenCount: number
+  isDfoProgram: boolean
+}
+
 export interface ClientData {
   clientFirstName: string
   clientLastName: string
@@ -108,8 +114,4 @@ export interface AddressMap extends GetAddressMapResponse {
   cityTypeCodes?: AddressTypeCode[]
   settlementTypeCodes?: AddressTypeCode[]
   streetTypeCodes?: AddressTypeCode[]
-}
-
-export interface ValidationParams {
-  applicationCreatedDate?: Date
 }

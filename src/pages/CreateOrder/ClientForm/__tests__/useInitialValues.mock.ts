@@ -118,6 +118,8 @@ export const EXPECTED_DATA: ClientData = {
   isFormComplete: false,
   validationParams: {
     applicationCreatedDate: new Date('2023-06-08T07:44:00.355Z'),
+    minChildrenCount: 0,
+    isDfoProgram: false,
   },
 }
 
@@ -196,7 +198,10 @@ export const EXPECTED_EMPTY_DATA = {
   questionnaireFile: null,
   submitAction: SubmitAction.Save,
   isFormComplete: false,
+
   validationParams: {
     applicationCreatedDate: undefined,
+    isDfoProgram: false,
+    minChildrenCount: 0,
   },
 }

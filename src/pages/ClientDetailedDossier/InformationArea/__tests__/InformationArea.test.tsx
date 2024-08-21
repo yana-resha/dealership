@@ -56,11 +56,20 @@ const informationAreaProps = {
       inCreditFlag: true,
       bankOptionType: 2,
     },
+    {
+      name: 'Название продукта 3',
+      price: 500000,
+      inCreditFlag: true,
+      bankOptionType: 0,
+    },
   ],
   overpayment: 1000.1,
   incomeProduct: true,
   scans: [],
   emailId: undefined,
+  isGovProgramDocumentsNecessaryRequest: false,
+  isGovProgramDocumentsPending: false,
+  pskPrc: 10.5,
 }
 
 describe('InformationAreaTest', () => {
@@ -158,7 +167,7 @@ describe('InformationAreaTest', () => {
 
     it('Отображается Сумма продуктов', () => {
       expect(screen.getByText('Сумма продуктов')).toBeInTheDocument()
-      expect(screen.getByText('700 000 ₽')).toBeInTheDocument()
+      expect(screen.getByText('1 200 000 ₽')).toBeInTheDocument()
     })
 
     it('Отображается Срок кредита', () => {
@@ -184,6 +193,11 @@ describe('InformationAreaTest', () => {
     it('Отображается информация о дополнительных услугах дилера', () => {
       expect(screen.getByText('Название продукта')).toBeInTheDocument()
       expect(screen.getByText('400 000 ₽')).toBeInTheDocument()
+    })
+
+    it('Отображается информация о банковских услугах', () => {
+      expect(screen.getByText('Название продукта 3')).toBeInTheDocument()
+      expect(screen.getByText('500 000 ₽')).toBeInTheDocument()
     })
   })
 

@@ -1,5 +1,7 @@
-import { OptionType, RequiredServiceFlag } from '@sberauto/dictionarydc-proto/public'
+import { CalcType, OptionType, RequiredServiceFlag } from '@sberauto/dictionarydc-proto/public'
 import { EmailStatusCode, GetEmailsResponse } from '@sberauto/emailappdc-proto/public'
+import { Application, BoolType, StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
+import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
 export const exhaustiveCheck = (value: never) => value
 
@@ -43,6 +45,10 @@ export function downloadBlob(blob: Blob, fileName: string) {
  * поэтому приводим к изначальному виду */
 export function prepareOptionType(type: keyof typeof OptionType): OptionType | undefined {
   return OptionType[type] ?? undefined
+}
+
+export function prepareCalcType(type: keyof typeof CalcType): CalcType | undefined {
+  return CalcType[type] ?? undefined
 }
 
 /** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,

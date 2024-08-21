@@ -28,6 +28,9 @@ import {
   Scan,
   GetPreliminaryPaymentScheduleFormRequest,
   GetShareFormRequest,
+  DeleteDocumentRequest,
+  SendGovProgramDocumentsRequest,
+  FormGovProgramStatementRequest,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation } from 'react-query'
@@ -42,6 +45,8 @@ export interface RequiredScan extends Scan {
   name?: string
   extension?: string
 }
+
+const serviceUrl = `${appConfig.apiUrl}/${Service.Loanapplifecycledc}`
 
 /** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,
  * поэтому приводим к изначальному виду */
@@ -60,10 +65,13 @@ function prepareApplication(application: Application): Application {
   }
 }
 
-const loanAppLifeCycleDcApi = createLoanAppLifeCycleDc(
-  () => `${appConfig.apiUrl}/${Service.Loanapplifecycledc}`,
-  Rest.request,
-)
+const requestBlob = <T>(endpoint: string, data: T) =>
+  Rest.request<T, Blob>(`${serviceUrl}/${endpoint}`, {
+    data,
+    isResponseBlob: true,
+  })
+
+const loanAppLifeCycleDcApi = createLoanAppLifeCycleDc(() => serviceUrl, Rest.request)
 
 const updateApplicationStatus = (params: ChangeApplicationStatusRequest) =>
   loanAppLifeCycleDcApi.changeApplicationStatus({ data: params }).then(response => response.data ?? {})
@@ -118,15 +126,13 @@ type UploadDocumentRequestMod = Omit<UploadDocumentRequest, 'file'> & {
   file: File
 }
 export const uploadDocument = (data: UploadDocumentRequestMod) => {
-  const url = `${appConfig.apiUrl}/loanapplifecycledc`
   const endpoint = 'uploadDocument'
-
   const formData = new FormData()
   formData.append('dc_app_id', data.dcAppId || '')
   formData.append('document_type', `${data.documentType}`)
   formData.append('file', data.file)
 
-  return Rest.request(`${url}/${endpoint}`, { data: formData })
+  return Rest.request(`${serviceUrl}/${endpoint}`, { data: formData })
 }
 
 export const useUploadDocumentMutation = () => {
@@ -162,15 +168,8 @@ export const getApplicationDocumentsList = (params: GetApplicationDocumentsListR
     .then(response => prepareApplicationDocumentType(response.data ?? {}))
 
 /** Получение документа привязанного к заявке */
-export const downloadDocument = (data: DownloadDocumentRequest): Promise<Blob> => {
-  const url = `${appConfig.apiUrl}/loanapplifecycledc`
-  const endpoint = 'downloadDocument'
-
-  return Rest.request<DownloadDocumentRequest, Blob>(`${url}/${endpoint}`, {
-    data,
-    isResponseBlob: true,
-  })
-}
+export const downloadDocument = (data: DownloadDocumentRequest): Promise<Blob> =>
+  requestBlob('downloadDocument', data)
 
 export const useDownloadDocumentMutation = () =>
   useMutation(['downloadDocument'], (params: DownloadDocumentRequest) => downloadDocument(params), {})
@@ -229,10 +228,6 @@ export const useSaveDraftApplicationMutation = (onSuccess: (value: string) => vo
     },
   )
 }
-
-/** TODO DCB-198 : когда перестанет возвращаться 401ая, то убрать +mock
- * Импортировать loanapplifecycledcApi из shared/api */
-// const mockLoanapplifecycledcApi = createLoanAppLifeCycleDc(`${appConfig.apiUrl}+mock`, Rest.request)
 
 export const findApplications = (params: FindApplicationsRequest) =>
   loanAppLifeCycleDcApi.findApplications({ data: params }).then(response => {
@@ -339,26 +334,36 @@ export const useFormContractMutation = (params: FormContractRequest) =>
 
 export const getPreliminaryPaymentScheduleForm = (
   data: GetPreliminaryPaymentScheduleFormRequest,
-): Promise<Blob> => {
-  const url = `${appConfig.apiUrl}/loanapplifecycledc`
-  const endpoint = 'getPreliminaryPaymentScheduleForm'
-
-  return Rest.request<GetPreliminaryPaymentScheduleFormRequest, Blob>(`${url}/${endpoint}`, {
-    data,
-    isResponseBlob: true,
-  })
-}
+): Promise<Blob> => requestBlob('getPreliminaryPaymentScheduleForm', data)
 export const useGetPreliminaryPaymentScheduleFormMutation = () =>
   useMutation('getPreliminaryPaymentScheduleForm', getPreliminaryPaymentScheduleForm)
 
-export const getShareForm = (data: GetShareFormRequest): Promise<Blob> => {
-  const url = `${appConfig.apiUrl}/loanapplifecycledc`
-  const endpoint = 'getShareForm'
-
-  return Rest.request<GetShareFormRequest, Blob>(`${url}/${endpoint}`, {
-    data,
-    isResponseBlob: true,
-  })
-}
+export const getShareForm = (data: GetShareFormRequest): Promise<Blob> => requestBlob('getShareForm', data)
 export const useGetShareFormMutation = (data: GetShareFormRequest) =>
   useMutation('getShareForm', () => getShareForm(data))
+
+export const formGovProgramStatement = (data: FormGovProgramStatementRequest): Promise<Blob> =>
+  requestBlob('formGovProgramStatement', data)
+
+export const useFormGovProgramStatementMutation = (data: FormGovProgramStatementRequest) =>
+  useMutation('formGovProgramStatement', () => formGovProgramStatement(data))
+
+export const deleteDocument = (params: DeleteDocumentRequest) =>
+  loanAppLifeCycleDcApi.deleteDocument({ data: params })
+export const useDeleteDocumentMutation = () => {
+  const { enqueueSnackbar } = useSnackbar()
+
+  return useMutation('deleteDocument', deleteDocument, {
+    onError: () => {
+      enqueueSnackbar('Ошибка. Не удалось удалить документ', {
+        variant: 'error',
+      })
+    },
+  })
+}
+
+export const sendGovProgramDocuments = (data: SendGovProgramDocumentsRequest) =>
+  loanAppLifeCycleDcApi.sendGovProgramDocuments({ data })
+
+export const useSendGovProgramDocumentsMutation = () =>
+  useMutation('sendGovProgramDocuments', sendGovProgramDocuments)

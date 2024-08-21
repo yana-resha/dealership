@@ -28,7 +28,7 @@ export const useStyles = makeStyles(theme => ({
     userSelect: 'none',
   },
 
-  warningTextContainer: {
+  errorTextContainer: {
     color: theme.palette.error.main,
   },
 
@@ -48,5 +48,9 @@ export const useStyles = makeStyles(theme => ({
   sendEmailBtnIcon: {
     width: '21px',
     fill: theme.palette.icon.main,
+  },
+
+  warningTextContainer: {
+    color: theme.palette.sber.warning,
   },
 }))

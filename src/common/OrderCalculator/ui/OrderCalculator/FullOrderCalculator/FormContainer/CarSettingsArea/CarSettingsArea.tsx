@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Box } from '@mui/material'
-import { useField, useFormikContext } from 'formik'
+import { useFormikContext } from 'formik'
 
 import {
   CAR_CONDITIONS,
@@ -13,9 +13,9 @@ import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/const
 import { useCarBrands } from 'common/OrderCalculator/hooks/useCarBrands'
 import { useCarSettings } from 'common/OrderCalculator/hooks/useCarSettings'
 import { useCarYears } from 'common/OrderCalculator/hooks/useCarYears'
-import { FormFieldNameMap } from 'common/OrderCalculator/types'
+import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
-import { DealerCenterRequisites } from 'entities/application/AdditionalOptionsRequisites/ui'
+import { DealerCenterRequisites } from 'entities/applications/AdditionalOptionsRequisites/ui'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
   maskVin,
@@ -44,32 +44,35 @@ type Props = {
 export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
   const styles = useStyles()
 
-  const { setFieldValue } = useFormikContext()
-  const [carPassportTypeField] = useField(FormFieldNameMap.carPassportType)
-  const prevCarPassportType = usePrevious(carPassportTypeField.value)
+  const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
+  const { isGovernmentProgram, isDfoProgram, carPassportType } = values
+  const prevCarPassportType = usePrevious(carPassportType)
 
   const { carBrands, carModels, isDisabledCarModel, isCarsLoading, isCarLoaded, isCarError } = useCarBrands()
   const { carYears } = useCarYears()
   const { handleBtnClick } = useCarSettings(onFilled)
 
-  const isSectionLoading = isLoading || isCarsLoading
-  const isSectionLoaded = !isLoading && isCarLoaded
+  // Для гос.программ допускается только один тип - VIN
+  const initialCarIdTypeOptions = useMemo(
+    () => (isGovernmentProgram || isDfoProgram ? INITIAL_CAR_ID_TYPE.slice(0, 1) : INITIAL_CAR_ID_TYPE),
+    [isDfoProgram, isGovernmentProgram],
+  )
 
   useEffect(() => {
-    if (carPassportTypeField.value !== prevCarPassportType) {
+    if (carPassportType !== prevCarPassportType) {
       setFieldValue(FormFieldNameMap.carPassportId, fullInitialValueMap[FormFieldNameMap.carPassportId])
     }
-  }, [carPassportTypeField.value, prevCarPassportType, setFieldValue])
+  }, [carPassportType, prevCarPassportType, setFieldValue])
 
   return (
     <CollapsibleFormAreaContainer title="Автомобиль">
-      {isSectionLoading && (
+      {isCarsLoading && (
         <Box className={styles.loaderContainer}>
           <CircularProgressWheel size="large" />
         </Box>
       )}
 
-      {isSectionLoaded && (
+      {isCarLoaded && (
         <Box className={styles.wrapper} data-testid="carSettingsArea">
           <Box className={styles.gridContainer}>
             <SelectInputFormik
@@ -126,9 +129,9 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
               name={FormFieldNameMap.carPassportId}
               label="Серия и номер ПТС"
               placeholder="-"
-              mask={carPassportTypeField.value ? maskElectronicСarPassportId : maskСarPassportId}
+              mask={carPassportType ? maskElectronicСarPassportId : maskСarPassportId}
               gridColumn="span 1"
-              disabled={carPassportTypeField.value === null}
+              disabled={carPassportType === null}
             />
             <DateInputFormik
               name={FormFieldNameMap.carPassportCreationDate}
@@ -141,7 +144,7 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
               name={FormFieldNameMap.carIdType}
               label="VIN или номер кузова"
               placeholder="-"
-              options={INITIAL_CAR_ID_TYPE}
+              options={initialCarIdTypeOptions}
               gridColumn="span 1"
             />
             <MaskedInputFormik

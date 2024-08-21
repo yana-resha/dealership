@@ -1,26 +1,28 @@
 import { useEffect, useMemo } from 'react'
 
-import { useField, useFormikContext } from 'formik'
+import { useFormikContext } from 'formik'
+
+import { RequiredProduct } from 'entities/order/model/orderSlice'
 
 import { LOAN_TERM_GRADUATION_VALUE, MONTH_OF_YEAR_COUNT } from '../constants'
-import {
-  BriefOrderCalculatorFields,
-  CreditDurationData,
-  CreditProductsData,
-  FormFieldNameMap,
-} from '../types'
+import { BriefOrderCalculatorFields, FormFieldNameMap } from '../types'
+import { useSelectCreditProductList } from './useSelectCreditProductList'
 
-export function useCreditProductsTerms(
-  creditDurationData: CreditDurationData,
-  creditProductsData: CreditProductsData,
-  durationMaxFromAge: number,
-) {
-  const { values } = useFormikContext<BriefOrderCalculatorFields>()
+type Params = {
+  currentProduct: RequiredProduct | undefined
+  durationMaxFromAge: number
+  currentDurationMin: number | undefined
+  currentDurationMax: number | undefined
+}
+export function useCreditProductsTerms({
+  currentProduct,
+  durationMaxFromAge,
+  currentDurationMin,
+  currentDurationMax,
+}: Params) {
+  const { values, setFieldValue } = useFormikContext<BriefOrderCalculatorFields>()
   const { creditProduct, loanTerm } = values
-  const { creditProductListData, currentProduct } = creditProductsData
-  const { currentDurationMin, currentDurationMax } = creditDurationData
-  const [, , { setValue: setLoanTerm }] = useField<string>(FormFieldNameMap.loanTerm)
-
+  const { creditProductListData } = useSelectCreditProductList()
   /*
   Сформирован на основе минимального и максимального срока кредита
   массив допустимых значений для поля Срок кредита. Просто возвращается компоненту.
@@ -56,7 +58,7 @@ export function useCreditProductsTerms(
   то очищаем поле */
   useEffect(() => {
     if (!!loanTerm && loanTerms.length && !loanTerms.some(term => term.value === loanTerm)) {
-      setLoanTerm('')
+      setFieldValue(FormFieldNameMap.loanTerm, '')
     }
     // Исключили setLoanTerm что бы избежать случайного перерендера
     // eslint-disable-next-line react-hooks/exhaustive-deps

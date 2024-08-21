@@ -2,22 +2,29 @@ import { PropsWithChildren } from 'react'
 
 import { renderHook } from '@testing-library/react-hooks'
 import { Form, Formik } from 'formik'
+import { UseQueryResult } from 'react-query'
 import configureMockStore from 'redux-mock-store'
 
-import { Order } from 'entities/reduxStore/orderSlice'
+import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hooks/useGetCreditProductListQuery'
+import { Order } from 'entities/order/model/orderSlice'
 
 import { MockProviders } from '../../../../tests/mocks'
-import { BriefOrderCalculatorFields } from '../../types'
+import { BriefOrderCalculatorFields, UseGetCreditProductListQueryData } from '../../types'
 import { useCreditProductsLimits } from '../useCreditProductsLimits'
 import {
+  MOCKED_CURRENT_PRODUCT,
   currentYear,
   initialData,
-  MOCKED_CREDIT_PRODUCTS_DATA,
   MOCKED_INITIAL_PAYMENT_DATA,
   MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
   MOCKED_STATE_WITH_DATA,
+  MOCKED_CREDIT_PRODUCT_LIST_DATA,
 } from './useLimits.mock'
 
+const mockedUseGetCreditProductListQuery = jest.spyOn(
+  useGetCreditProductListQueryModule,
+  'useGetCreditProductListQuery',
+)
 const mockStoreCreator = configureMockStore()
 const createWrapper =
   (initialValues: Partial<BriefOrderCalculatorFields>, additionalState?: Partial<Order>) =>
@@ -33,11 +40,28 @@ const createWrapper =
     )
 
 describe('useCreditProductLimits', () => {
+  beforeEach(() => {
+    mockedUseGetCreditProductListQuery.mockImplementation(
+      () =>
+        ({
+          data: MOCKED_CREDIT_PRODUCT_LIST_DATA,
+          isSuccess: true,
+          isLoading: true,
+        } as unknown as UseQueryResult<UseGetCreditProductListQueryData, unknown>),
+    )
+  })
   describe('Хук возвращает корректные данные', () => {
     it('Если durationMaxFromCarAge больше durationMin КП, то данный КП отфильтровывается из creditProducts', async () => {
       const { result } = renderHook(
         () =>
-          useCreditProductsLimits(MOCKED_INITIAL_PAYMENT_DATA, MOCKED_CREDIT_PRODUCTS_DATA, 24, false, true),
+          useCreditProductsLimits({
+            ...MOCKED_INITIAL_PAYMENT_DATA,
+            currentProduct: MOCKED_CURRENT_PRODUCT,
+            durationMaxFromAge: 24,
+            isGetCarsLoading: false,
+            isGetCarsSuccess: true,
+            productIdsForGovernmentProgram: [],
+          }),
         {
           wrapper: createWrapper({ ...initialData, carBrand: 'Skoda' }),
         },
@@ -49,7 +73,14 @@ describe('useCreditProductLimits', () => {
     it('Если durationMaxFromClientAge больше durationMin КП, то данный КП отфильтровывается из creditProducts', async () => {
       const { result } = renderHook(
         () =>
-          useCreditProductsLimits(MOCKED_INITIAL_PAYMENT_DATA, MOCKED_CREDIT_PRODUCTS_DATA, 24, false, true),
+          useCreditProductsLimits({
+            ...MOCKED_INITIAL_PAYMENT_DATA,
+            currentProduct: MOCKED_CURRENT_PRODUCT,
+            durationMaxFromAge: 24,
+            isGetCarsLoading: false,
+            isGetCarsSuccess: true,
+            productIdsForGovernmentProgram: [],
+          }),
         {
           wrapper: createWrapper(
             {
@@ -69,7 +100,14 @@ describe('useCreditProductLimits', () => {
     it('Если КП не выбран, то подсказки ПВ берутся из fullDownpaymentMin и fullDownpaymentMax', async () => {
       const { result } = renderHook(
         () =>
-          useCreditProductsLimits(MOCKED_INITIAL_PAYMENT_DATA, MOCKED_CREDIT_PRODUCTS_DATA, 24, false, true),
+          useCreditProductsLimits({
+            ...MOCKED_INITIAL_PAYMENT_DATA,
+            currentProduct: MOCKED_CURRENT_PRODUCT,
+            durationMaxFromAge: 24,
+            isGetCarsLoading: false,
+            isGetCarsSuccess: true,
+            productIdsForGovernmentProgram: [],
+          }),
         {
           wrapper: createWrapper({ ...initialData, carBrand: 'Skoda' }),
         },
@@ -81,13 +119,14 @@ describe('useCreditProductLimits', () => {
     it('Если КП выбран, то подсказки ПВ берутся из его downpaymentMin и downpaymentMax', async () => {
       const { result } = renderHook(
         () =>
-          useCreditProductsLimits(
-            MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-            MOCKED_CREDIT_PRODUCTS_DATA,
-            24,
-            false,
-            true,
-          ),
+          useCreditProductsLimits({
+            ...MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
+            currentProduct: MOCKED_CURRENT_PRODUCT,
+            durationMaxFromAge: 24,
+            isGetCarsLoading: false,
+            isGetCarsSuccess: true,
+            productIdsForGovernmentProgram: [],
+          }),
         {
           wrapper: createWrapper({
             ...initialData,
@@ -105,16 +144,14 @@ describe('useCreditProductLimits', () => {
     it('Если creditProduct изначально есть в форме, но не проходит по минимальному сроку, или отсутствует productId, то очищаем поле CreditProduct', async () => {
       const { result } = renderHook(
         () =>
-          useCreditProductsLimits(
-            MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
-            {
-              ...MOCKED_CREDIT_PRODUCTS_DATA,
-              currentProduct: MOCKED_CREDIT_PRODUCTS_DATA.creditProductListData?.products[1],
-            },
-            24,
-            false,
-            true,
-          ),
+          useCreditProductsLimits({
+            ...MOCKED_INITIAL_PAYMENT_DATA_WITH_CURRENT_PRODUCT,
+            currentProduct: MOCKED_CURRENT_PRODUCT,
+            durationMaxFromAge: 24,
+            isGetCarsLoading: false,
+            isGetCarsSuccess: true,
+            productIdsForGovernmentProgram: [],
+          }),
         {
           wrapper: createWrapper({
             ...initialData,
@@ -125,7 +162,7 @@ describe('useCreditProductLimits', () => {
         },
       )
       const { values } = result.current
-      expect(values.creditProduct).toEqual('')
+      expect(values.creditProduct).toEqual(null)
     })
   })
 })

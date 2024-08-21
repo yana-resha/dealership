@@ -10,9 +10,9 @@ import compact from 'lodash/compact'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ApplicationProvider } from 'entities/application/ApplicationProvider'
+import { ApplicationProvider } from 'entities/applications/ApplicationProvider'
+import { updateOrder } from 'entities/order'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { updateOrder } from 'entities/reduxStore/orderSlice'
 import { useGetFullApplicationQuery } from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport, transformAddress } from 'shared/lib/utils'
@@ -26,6 +26,8 @@ import { useStyles } from './ClientDetailedDossier.styles'
 import { DocumentsArea } from './DocumentsArea/DocumentsArea'
 import { DossierIdArea } from './DossierIdArea/DossierIdArea'
 import { EditRequisitesArea } from './EditRequisitesArea/EditRequisitesArea'
+import { GovProgramDocumentsArea } from './GovProgramDocumentsArea/GovProgramDocumentsArea'
+import { useGovProgramScans } from './GovProgramDocumentsArea/hooks/useGovProgramScans'
 import { InformationArea } from './InformationArea/InformationArea'
 
 export function ClientDetailedDossier() {
@@ -33,12 +35,13 @@ export function ClientDetailedDossier() {
 
   const navigate = useNavigate()
   const { applicationId = '' } = useParams()
+  const { unit } = getPointOfSaleFromCookies()
+  const dispatch = useDispatch()
+  const orderData = useAppSelector(state => state.order.order?.orderData)
+  const application = orderData?.application
+
   const { isLoading, isError } = useGetFullApplicationQuery({ applicationId })
 
-  const dispatch = useDispatch()
-  const fullApplicationData = useAppSelector(state => state.order.order)?.orderData
-  const application = fullApplicationData?.application
-  const { unit } = getPointOfSaleFromCookies()
   const [isEditRequisitesMode, setIsEditRequisitesMode] = useState(false)
 
   const clientName = getFullName(
@@ -47,6 +50,13 @@ export function ClientDetailedDossier() {
     application?.applicant?.middleName,
   )
 
+  const {
+    currentGovProgramScans,
+    isNecessaryDecisionRequest: isGovProgramDocumentsNecessaryRequest,
+    isDecisionPending: isGovProgramDocumentsPending,
+    isDocumentsSendingBlocked: isGovProgramDocumentsSendingBlocked,
+    isDocumentsSuccess: isGovProgramDocumentsSuccess,
+  } = useGovProgramScans()
   const prepareApplicationForScore = useCallback(() => {
     const request: SendApplicationToScoringRequest = {
       application: application ? { ...application, unit: unit } : null,
@@ -65,7 +75,7 @@ export function ClientDetailedDossier() {
   const appInfo = useMemo(
     () => ({
       statusCode: application?.status ?? StatusCode.ERROR,
-      errorDescription: fullApplicationData?.errorDescription,
+      errorDescription: orderData?.errorDescription,
       vendorCode: application?.vendor?.vendorCode,
       vendorInfo: compact([
         application?.vendor?.vendorName,
@@ -86,29 +96,40 @@ export function ClientDetailedDossier() {
       incomeProduct: application?.loanData?.incomeProduct ?? false,
       scans: application?.scans || [],
       emailId: application?.emailId,
+      isGovProgramDocumentsNecessaryRequest,
+      isGovProgramDocumentsPending,
+      pskPrc: application?.loanData?.pskPrc,
     }),
     [
-      application?.status,
-      application?.vendor?.vendorCode,
-      application?.vendor?.vendorName,
-      application?.vendor?.address,
+      application?.emailId,
+      application?.loanCar?.autoPrice,
       application?.loanCar?.brand,
       application?.loanCar?.model,
-      application?.loanCar?.autoPrice,
-      application?.loanData?.amount,
-      application?.loanData?.monthlyPayment,
-      application?.loanData?.downpayment,
-      application?.loanData?.productRates?.baseRate,
-      application?.loanData?.productName,
-      application?.loanData?.term,
       application?.loanData?.additionalOptions,
-      application?.loanData?.overpayment,
+      application?.loanData?.amount,
+      application?.loanData?.downpayment,
       application?.loanData?.incomeProduct,
+      application?.loanData?.monthlyPayment,
+      application?.loanData?.overpayment,
+      application?.loanData?.productName,
+      application?.loanData?.productRates?.baseRate,
+      application?.loanData?.pskPrc,
+      application?.loanData?.term,
       application?.scans,
-      fullApplicationData?.errorDescription,
-      application?.emailId,
+      application?.status,
+      application?.vendor?.address,
+      application?.vendor?.vendorCode,
+      application?.vendor?.vendorName,
+      isGovProgramDocumentsNecessaryRequest,
+      isGovProgramDocumentsPending,
+      orderData?.errorDescription,
     ],
   )
+
+  const isShowGovProgramDocuments =
+    application?.loanData?.govprogramCode &&
+    application?.status !== StatusCode.INITIAL &&
+    (application?.status !== StatusCode.PROCESSED || !!currentGovProgramScans.length)
 
   const goToTargetApplication = useCallback(
     (targetAppId: string) => {
@@ -129,14 +150,14 @@ export function ClientDetailedDossier() {
         dispatch(
           updateOrder({
             orderData: {
-              ...fullApplicationData,
+              ...orderData,
               application: { ...application, status: statusCode },
             },
           }),
         )
       }
     },
-    [application, dispatch, fullApplicationData],
+    [application, dispatch, orderData],
   )
 
   return (
@@ -169,7 +190,7 @@ export function ClientDetailedDossier() {
                 <Box className={classes.container}>
                   <DossierIdArea
                     dcAppId={application.dcAppId || ''}
-                    appId={fullApplicationData.appId}
+                    appId={orderData?.appId}
                     clientName={clientName}
                     passport={passport}
                     data={application.createdDate || ''}
@@ -191,11 +212,20 @@ export function ClientDetailedDossier() {
                       }
                     />
 
+                    {isShowGovProgramDocuments && (
+                      <GovProgramDocumentsArea
+                        dcAppId={applicationId}
+                        isBlocked={
+                          application?.status !== StatusCode.APPROVED &&
+                          application?.status !== StatusCode.FINALLY_APPROVED
+                        }
+                      />
+                    )}
+
                     <ActionArea
-                      application={application}
-                      moratoryEndDate={fullApplicationData?.moratoryEndDate}
-                      source={fullApplicationData?.source}
-                      targetDcAppId={fullApplicationData?.targetDcAppId}
+                      moratoryEndDate={orderData?.moratoryEndDate}
+                      source={orderData?.source}
+                      targetDcAppId={orderData?.targetDcAppId}
                       applicationForScore={prepareApplicationForScore()}
                       returnToList={onBackButton}
                       goToTargetApplication={goToTargetApplication}
@@ -206,6 +236,10 @@ export function ClientDetailedDossier() {
                       }
                       setIsEditRequisitesMode={setIsEditRequisitesMode}
                       updateApplicationStatusLocally={updateApplicationStatusLocally}
+                      isGovProgramDocumentsSendingBlocked={isGovProgramDocumentsSendingBlocked}
+                      isGovProgramDocumentsPending={isGovProgramDocumentsPending}
+                      isGovProgramDocumentsSuccess={isGovProgramDocumentsSuccess}
+                      currentGovProgramScans={currentGovProgramScans}
                     />
                   </Box>
                 </Box>

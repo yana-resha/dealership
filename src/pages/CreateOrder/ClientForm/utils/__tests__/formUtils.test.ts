@@ -1,8 +1,8 @@
 import { ApplicantDocsType, PhoneType } from '@sberauto/loanapplifecycledc-proto/public'
 
+import { getCurrentWorkExperience } from '../getCurrentWorkExperience'
 import { transformDocsForRequest } from '../transformDocsForRequest'
 import { transformPhoneForRequest } from '../transformPhoneForRequest'
-import { getCurrentWorkExperience } from '../getCurrentWorkExperience'
 
 describe('утилиты анкеты клиента', () => {
   it('transformDocsForRequest работает корректно для водительского удостоверения', () => {

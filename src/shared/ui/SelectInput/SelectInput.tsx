@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { Box, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { DocumentType } from '@sberauto/loanapplifecycledc-proto/public'
 
 import useStyles from './SelectInput.styles'
 import { SelectInputProps } from './selectInput.types'
 
-export function SelectInputWithoutMemo<T extends string | number>(props: SelectInputProps<T>) {
+export function SelectInputWithoutMemo<T extends string | number | DocumentType>(props: SelectInputProps<T>) {
   const classes = useStyles()
   const {
     label,
@@ -66,7 +67,14 @@ export function SelectInputWithoutMemo<T extends string | number>(props: SelectI
           </MenuItem>
           {options.map(option => (
             <MenuItem key={`${option.value}${option.label}`} value={option.value}>
-              {option.label || option.value}
+              {option.subLabel ? (
+                <Box className={classes.labelContainer}>
+                  <span className={classes.label}>{option.label || option.value}</span>
+                  <span className={classes.subLabel}>{option.subLabel}</span>
+                </Box>
+              ) : (
+                option.label || option.value
+              )}
             </MenuItem>
           ))}
         </Select>
@@ -79,4 +87,5 @@ export function SelectInputWithoutMemo<T extends string | number>(props: SelectI
     </Box>
   )
 }
+
 export const SelectInput = React.memo(SelectInputWithoutMemo) as typeof SelectInputWithoutMemo

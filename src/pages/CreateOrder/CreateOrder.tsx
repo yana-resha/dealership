@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 
 import { OrderCalculator } from 'common/OrderCalculator'
 import { OrderContext } from 'common/OrderCalculator'
-import { clearOrder, setCurrentStep, updateApplication, updateOrder } from 'entities/reduxStore/orderSlice'
+import { clearOrder, setCurrentStep, updateApplication, updateOrder } from 'entities/order'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { CustomTooltip } from 'shared/ui/CustomTooltip'
 

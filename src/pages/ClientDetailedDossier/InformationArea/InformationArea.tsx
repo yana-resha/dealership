@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom'
 
 import { ReactComponent as DownloadIcon } from 'assets/icons/download.svg'
 import { ReactComponent as MailIcon } from 'assets/icons/mail.svg'
-import { getStatus, PreparedStatus } from 'entities/application/application.utils'
+import { getStatus, PreparedStatus } from 'entities/applications/application.utils'
 import { useSendEmailDecisionMutation } from 'shared/api/requests/emailAppDc.api'
 import {
   useDownloadDocumentMutation,
@@ -23,8 +23,8 @@ import {
 } from 'shared/api/requests/loanAppLifeCycleDc'
 import { checkIsNumber } from 'shared/lib/helpers'
 import { formatMoney, formatTerm } from 'shared/lib/utils'
+import { AreaContainer } from 'shared/ui/AreaContainer'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
-import { AreaContainer } from 'shared/ui/DossierAreaContainer'
 import { Downloader } from 'shared/ui/Downloader'
 import { InfoText } from 'shared/ui/InfoText/InfoText'
 import SberTypography from 'shared/ui/SberTypography'
@@ -61,6 +61,9 @@ type Props = {
   incomeProduct: boolean
   scans: Scan[]
   emailId: number | undefined
+  isGovProgramDocumentsNecessaryRequest: boolean
+  isGovProgramDocumentsPending: boolean
+  pskPrc: number | undefined
 }
 
 export function InformationArea({
@@ -83,6 +86,9 @@ export function InformationArea({
   incomeProduct,
   scans,
   emailId,
+  isGovProgramDocumentsNecessaryRequest,
+  isGovProgramDocumentsPending,
+  pskPrc,
 }: Props) {
   const classes = useStyles()
   const { applicationId = '' } = useParams()
@@ -102,6 +108,7 @@ export function InformationArea({
     bankServices,
     servicesInCreditPrice,
     equipmentInCreditPrice,
+    bankOptionsInCreditPrice,
     productSum,
   } = useMemo(
     () =>
@@ -116,17 +123,20 @@ export function InformationArea({
           switch (cur.bankOptionType) {
             case OptionType.BANK:
               acc.bankServices.push(additionalOptionInfo)
+              if (cur.price && cur.inCreditFlag) {
+                acc.bankOptionsInCreditPrice = acc.bankOptionsInCreditPrice + cur.price
+              }
               break
             case OptionType.EQUIPMENT:
               acc.additionalEquipment.push(additionalOptionInfo)
               if (cur.price && cur.inCreditFlag) {
-                acc.servicesInCreditPrice = acc.servicesInCreditPrice + cur.price
+                acc.equipmentInCreditPrice = acc.equipmentInCreditPrice + cur.price
               }
               break
             case OptionType.DEALER:
               acc.dealerServices.push(additionalOptionInfo)
               if (cur.price && cur.inCreditFlag) {
-                acc.equipmentInCreditPrice = acc.equipmentInCreditPrice + cur.price
+                acc.servicesInCreditPrice = acc.servicesInCreditPrice + cur.price
               }
               break
           }
@@ -143,6 +153,7 @@ export function InformationArea({
           bankServices: [] as AdditionalOptionInfo[],
           servicesInCreditPrice: 0,
           equipmentInCreditPrice: 0,
+          bankOptionsInCreditPrice: 0,
           productSum: 0,
         },
       ),
@@ -150,7 +161,15 @@ export function InformationArea({
   )
 
   const status = getStatus(statusCode)
-  const isHasFeeScheduleInScans = scans.some(scan => scan.type === DocumentType.ESTIMATED_FEE_SCHEDULE)
+  // на более ранних статусах график может быть в сканах, но при этом быть старой предыдущей версии заявки
+  const isHasFeeScheduleInScans =
+    scans.some(scan => scan.type === DocumentType.ESTIMATED_FEE_SCHEDULE) &&
+    [
+      PreparedStatus.formation,
+      PreparedStatus.signed,
+      PreparedStatus.authorized,
+      PreparedStatus.financed,
+    ].includes(status)
 
   const isShowScheduleBtn =
     [
@@ -219,6 +238,8 @@ export function InformationArea({
       overpayment,
       servicesInCreditPrice,
       equipmentInCreditPrice,
+      bankOptionsInCreditPrice,
+      pskPrc,
     })
     if (blob) {
       return new File(
@@ -230,6 +251,7 @@ export function InformationArea({
   }, [
     applicationId,
     autoPrice,
+    bankOptionsInCreditPrice,
     downPayment,
     equipmentInCreditPrice,
     getPreliminaryPaymentScheduleFormMutate,
@@ -237,6 +259,7 @@ export function InformationArea({
     monthlyPayment,
     overpayment,
     productName,
+    pskPrc,
     rate,
     servicesInCreditPrice,
     term,
@@ -280,7 +303,13 @@ export function InformationArea({
               </Downloader>
             )}
           </Box>
-          <ApplicationWarning statusCode={statusCode} errorDescription={errorDescription} />
+
+          <ApplicationWarning
+            statusCode={statusCode}
+            errorDescription={errorDescription}
+            isGovProgramDocumentsNecessaryRequest={isGovProgramDocumentsNecessaryRequest}
+            isGovProgramDocumentsPending={isGovProgramDocumentsPending}
+          />
 
           <Box className={classes.infoTextContainer} gridColumn="span 7">
             <InfoText label="ДЦ">

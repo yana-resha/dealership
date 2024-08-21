@@ -18,7 +18,7 @@ export default makeStyles(theme => ({
 
       '&:hover': {
         color: theme.palette.primary.main,
-        '& path': {
+        '& .MuiAccordionSummary-expandIconWrapper svg': {
           fill: theme.palette.primary.main,
         },
       },
@@ -53,8 +53,13 @@ export default makeStyles(theme => ({
 
   title: {
     '&.MuiTypography-root': {
-      marginLeft: '18px',
+      marginLeft: theme.spacing(2),
     },
+  },
+  iconContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginLeft: theme.spacing(2),
   },
 
   errorMessage: {

@@ -22,6 +22,7 @@ export const EXPECTED_REMAPPED_APPLICATION: ApplicationFrontdc = {
     productId: '3',
     downpayment: 410000,
     downpaymentInPercent: 30.48,
+    govprogramDfoFlag: false,
     term: 36,
     amount: 12121.33,
     additionalOptions: [
