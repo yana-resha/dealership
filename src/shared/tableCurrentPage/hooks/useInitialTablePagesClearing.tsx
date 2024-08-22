@@ -1,20 +1,14 @@
 import { useEffect } from 'react'
 
-import { TableType } from '../constants'
+import { clearTableSessions } from '../utils'
 
 export const useInitialTablePagesClearing = () => {
   useEffect(() => {
-    const handleBeforeUnload = (evt: BeforeUnloadEvent) => {
-      const storageKeys = Object.values(TableType)
+    clearTableSessions()
 
-      storageKeys.forEach(key => {
-        sessionStorage.removeItem(key)
-      })
-    }
+    window.addEventListener('beforeunload', clearTableSessions)
 
-    window.addEventListener('beforeunload', handleBeforeUnload)
-
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', clearTableSessions)
   }, [])
 
   return

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import {
   Box,
@@ -14,8 +14,9 @@ import {
 import { StatusCode } from '@sberauto/loanapplifecycledc-proto/public'
 import cx from 'classnames'
 
+import { useRowsPagination } from 'shared/hooks/useRowsPagination'
 import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
-import { getTablePage, INITIAL_TABLE_PAGE, setTablePage, TableType } from 'shared/tableCurrentPage'
+import { getTablePage, INITIAL_TABLE_PAGE, TableType } from 'shared/tableCurrentPage'
 import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
@@ -59,13 +60,12 @@ export const ApplicationTable = ({
       isDataLoaded: !isLoading && isFetched,
     })
 
-  const handleChangePage = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-      changePage(newPage)
-      setTablePage(TableType.APPLICATION, newPage)
-    },
-    [changePage],
-  )
+  const { handleChangePage } = useRowsPagination({
+    data,
+    tableType: TableType.APPLICATION,
+    changePage,
+    isDataLoaded: !isLoading && isFetched,
+  })
 
   if (isLoading) {
     return (

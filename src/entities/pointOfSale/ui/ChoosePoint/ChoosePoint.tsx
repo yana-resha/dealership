@@ -11,6 +11,7 @@ import { ReactComponent as KeyboardArrowDown } from 'assets/icons/keyboardArrowD
 import { usePrevious } from 'shared/hooks/usePrevious'
 import { transformAddress } from 'shared/lib/utils'
 import { defaultRoute } from 'shared/navigation/routerPath'
+import { clearTableSessions } from 'shared/tableCurrentPage/utils'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography'
@@ -71,6 +72,7 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
     setIsDialogOpen(false)
     onSuccessEditing && onSuccessEditing()
     navigate(defaultRoute)
+    clearTableSessions()
   }, [navigate, chosenOption, onSuccessEditing])
 
   const calculateIsOptionEqualToValue = useCallback(
