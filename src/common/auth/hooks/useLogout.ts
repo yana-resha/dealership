@@ -14,6 +14,7 @@ import { AUTH_TOKEN } from 'shared/constants/constants'
 import { useAppDispatch } from 'shared/hooks/store/useAppDispatch'
 import { removeLocalStorage } from 'shared/lib/helpers'
 import { sleep } from 'shared/lib/sleep'
+import { clearTableSessions } from 'shared/tableCurrentPage/utils'
 
 import { useAuthContext } from '../ui/AuthProvider'
 
@@ -58,6 +59,7 @@ export const useLogout = (beforeRedirectCb?: () => Promise<void>) => {
       Cookies.remove(COOKIE_POINT_OF_SALE)
       removeLocalStorage(AUTH_TOKEN)
       removeAuthCookie()
+      clearTableSessions()
       // т.к. в прилоджении производится проверка isAuth, то на этом этапе
       // будет произведен редирект на страницу авторизации
 

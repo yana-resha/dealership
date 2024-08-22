@@ -9,3 +9,11 @@ export const getTablePage = (tableType: TableType) => {
 
   return page ? parseInt(page, 10) : undefined
 }
+
+export const clearTableSessions = () => {
+  const storageKeys = Object.values(TableType)
+
+  storageKeys.forEach(key => {
+    sessionStorage.removeItem(key)
+  })
+}
