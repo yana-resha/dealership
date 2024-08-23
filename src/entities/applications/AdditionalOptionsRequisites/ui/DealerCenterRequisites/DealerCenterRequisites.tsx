@@ -5,6 +5,7 @@ import { useFormikContext } from 'formik'
 
 import { FULL_INITIAL_ADDITIONAL_SERVICE, fullInitialValueMap } from 'common/OrderCalculator/config'
 import { FormFieldNameMap, FullOrderCalculatorFields } from 'common/OrderCalculator/types'
+import { FieldLabels } from 'shared/constants/fieldLabels'
 import { checkIsNumber, getTaxFromPercent } from 'shared/lib/helpers'
 import {
   maskBankAccountNumber,
@@ -219,7 +220,7 @@ export function DealerCenterRequisites({ namePrefix = '' }: Props) {
         <SwitchInput
           id="manualInput"
           value={isCustomFields}
-          label="Ввести вручную"
+          label={FieldLabels.MANUAL_ENTRY}
           onChange={handleManualEntryChange}
           centered
           disabled

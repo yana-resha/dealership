@@ -11,6 +11,7 @@ import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
 
 import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
+import { FieldLabels } from 'shared/constants/fieldLabels'
 import { useOnScreen } from 'shared/hooks/useOnScreen'
 import { maskInn, maskNoRestrictions, maskCommonPhoneNumber } from 'shared/masks/InputMasks'
 import { AutocompleteDaDataAddressFormik } from 'shared/ui/AutocompleteInput/AutocompleteDaDataAddressFormik'
@@ -259,7 +260,7 @@ export function JobArea() {
 
       <SwitchInputFormik
         name="emplNotKladr"
-        label="Не КЛАДР"
+        label={FieldLabels.MANUAL_ENTRY}
         gridColumn="span 4"
         centered
         disabled={jobDisabled}
