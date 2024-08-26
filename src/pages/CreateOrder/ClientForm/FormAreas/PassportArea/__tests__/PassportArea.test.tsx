@@ -98,6 +98,7 @@ const mockedPassportAreaFields = {
   livingAddress: configAddressInitialValues,
   livingNotKladr: false,
   submitAction: SubmitAction.Save,
+  validationParams: {},
 }
 
 const createWrapper = ({ children }: PropsWithChildren) => (

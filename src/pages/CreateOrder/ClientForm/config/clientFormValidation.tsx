@@ -43,6 +43,19 @@ function validatePassportDate(value: Date | null | undefined, context: Yup.TestC
   return passportDate.diff(formalPassportDate, ['days']).days >= 0
 }
 
+function validateRegion(
+  value: string | null | undefined,
+  isDfoOnly: boolean | undefined,
+  context: Yup.TestContext<AnyObject>,
+) {
+  if (!isDfoOnly) {
+    return true
+  }
+  const isHasRegion = DFO_ADDRESS_CODES.some(code => code === value)
+
+  return isHasRegion ? true : context.createError({ message: FieldMessages.WRONG_REGION })
+}
+
 function validateEmplyeeInn(value: string | undefined, context: Yup.TestContext<AnyObject>) {
   const occupation = (context.options as InternalOptions)?.from?.[0].value.occupation as number | null
 
@@ -168,13 +181,9 @@ export const clientAddressValidationSchema = Yup.object().shape(
       .nullable()
       .required(FieldMessages.required)
       .test('isWrongRegion', (value, context) => {
-        const { isDfoProgram } = (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
-        if (!isDfoProgram) {
-          return true
-        }
-        const isHasRegion = DFO_ADDRESS_CODES.some(code => code === value)
+        const { isDfoOnly } = (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
 
-        return isHasRegion ? true : context.createError({ message: FieldMessages.WRONG_REGION })
+        return validateRegion(value, isDfoOnly, context)
       }),
 
     settlement: Yup.string().when('city', {
@@ -258,14 +267,10 @@ export const clientFormValidationSchema = Yup.object().shape({
   issuedBy: setRequiredIfSave(Yup.string().nullable()),
   registrationAddressString: setRequiredIfSave(
     Yup.string().test('isWrongRegion', (value, context) => {
-      const { isDfoProgram } = (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
       const { regCode } = (context.options as InternalOptions)?.from?.[0].value.registrationAddress || {}
-      if (!isDfoProgram) {
-        return true
-      }
-      const isHasRegion = DFO_ADDRESS_CODES.some(code => code === regCode)
+      const { isDfoProgram } = (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
 
-      return isHasRegion ? true : context.createError({ message: FieldMessages.WRONG_REGION })
+      return validateRegion(regCode, isDfoProgram, context)
     }),
   ),
 
