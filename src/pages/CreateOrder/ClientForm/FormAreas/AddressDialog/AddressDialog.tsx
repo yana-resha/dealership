@@ -19,6 +19,7 @@ type Props = {
   address: Address
   label: string
   isVisible: boolean
+  isDfoOnly?: boolean
   setIsVisible: (value: boolean) => void
   onCloseDialog?: () => void
 }
@@ -28,6 +29,7 @@ export const AddressDialog = ({
   address,
   label,
   isVisible,
+  isDfoOnly = false,
   setIsVisible,
   onCloseDialog,
 }: Props) => {
@@ -90,7 +92,7 @@ export const AddressDialog = ({
         <Formik
           initialValues={{
             ...address,
-            validationParams: { isDfoProgram: addressName === 'registrationAddress' },
+            validationParams: { isDfoOnly },
           }}
           validationSchema={clientAddressValidationSchema}
           onSubmit={onSubmit}

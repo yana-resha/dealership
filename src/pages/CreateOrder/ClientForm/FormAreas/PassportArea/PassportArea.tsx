@@ -56,6 +56,7 @@ export function PassportArea() {
     regNotKladr,
     livingNotKladr,
     numOfChildren,
+    validationParams,
   } = values
   const previousDivisionCode = usePrevious(divisionCode)
   const [isRegAddressDialogVisible, setIsRegAddressDialogVisible] = useState(false)
@@ -291,6 +292,7 @@ export function PassportArea() {
         address={registrationAddress}
         label="Адрес по регистрации (КЛАДР)"
         isVisible={isRegAddressDialogVisible}
+        isDfoOnly={validationParams.isDfoProgram}
         setIsVisible={setIsRegAddressDialogVisible}
         onCloseDialog={() => onCloseAddressDialog('regNotKladr', registrationAddressString)}
       />
