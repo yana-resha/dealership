@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
 
 import { appConfig } from 'config'
+import { Page } from 'shared/ui/Page'
 
 import { useStyles } from './Helpdesk.styles'
 import { HelpdeskExample } from './HelpdeskExample/HelpdeskExample'
@@ -11,7 +12,7 @@ export function Helpdesk() {
   const classes = useStyles()
 
   return (
-    <div className={classes.page} data-testid="helpdesk">
+    <Page dataTestId="helpdesk">
       <Typography className={classes.pageTitle}>Поддержка</Typography>
 
       <Box className={classes.container}>
@@ -24,6 +25,6 @@ export function Helpdesk() {
           </>
         )}
       </Box>
-    </div>
+    </Page>
   )
 }

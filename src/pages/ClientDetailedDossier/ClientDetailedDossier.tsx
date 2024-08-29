@@ -18,6 +18,7 @@ import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatPassport, transformAddress } from 'shared/lib/utils'
 import { appRoutePaths, appRoutes } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
+import { Page } from 'shared/ui/Page'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
 import { getFullName } from 'shared/utils/clientNameTransform'
 
@@ -161,7 +162,7 @@ export function ClientDetailedDossier() {
   )
 
   return (
-    <div className={classes.page} data-testid="clientDetailedDossier">
+    <Page dataTestId="clientDetailedDossier">
       <ApplicationProvider onGetOrderId={onGetOrderId}>
         <Box className={classes.container}>
           {isLoading && (
@@ -248,6 +249,6 @@ export function ClientDetailedDossier() {
           )}
         </Box>
       </ApplicationProvider>
-    </div>
+    </Page>
   )
 }

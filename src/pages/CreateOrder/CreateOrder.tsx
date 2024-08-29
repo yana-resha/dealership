@@ -10,6 +10,7 @@ import { OrderContext } from 'common/OrderCalculator'
 import { clearOrder, setCurrentStep, updateApplication, updateOrder } from 'entities/order'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { CustomTooltip } from 'shared/ui/CustomTooltip'
+import { Page } from 'shared/ui/Page'
 
 import { ClientForm } from './ClientForm'
 import { useStyles } from './CreateOrder.styles'
@@ -146,7 +147,7 @@ export function CreateOrder() {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
 
   return (
-    <div className={classes.page} data-testid="dealershipPage" ref={scrollContainerRef}>
+    <Page dataTestId="dealershipPage" ref={scrollContainerRef}>
       <Box className={classes.loaderContainer}>
         <Typography className={classes.pageTitle}>{title}</Typography>
 
@@ -182,6 +183,6 @@ export function CreateOrder() {
           {currentStep.label === StepKey.ClientForm && <ClientForm />}
         </OrderContext>
       </Box>
-    </div>
+    </Page>
   )
 }

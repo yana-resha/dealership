@@ -1,14 +1,11 @@
 import { makeStyles } from '@mui/styles'
 
 export const useStyles = makeStyles(theme => ({
-  page: {
-    padding: theme.spacing(6),
-  },
-
   container: {
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(4),
+    width: '100%',
   },
 
   dossierContainer: {
