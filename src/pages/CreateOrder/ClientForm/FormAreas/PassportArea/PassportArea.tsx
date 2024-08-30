@@ -168,7 +168,7 @@ export function PassportArea() {
       <Box width="auto" gridColumn="span 12">
         <MaskedInput
           label="ФИО"
-          mask={maskName}
+          mask={maskNoRestrictions}
           value={`${clientLastName} ${clientFirstName} ${clientMiddleName}`}
           disabled
         />
