@@ -10,7 +10,6 @@ import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
 import { MockProviders, ThemeProviderMock } from 'tests/mocks'
 
 import { ClientDetailedDossier } from '../ClientDetailedDossier'
-import { Order } from 'entities/order/model/orderSlice'
 
 jest.mock('../DossierIdArea/DossierIdArea', () => ({
   DossierIdArea: () => <div data-testid="DossierIdArea" />,
@@ -53,7 +52,7 @@ describe('ClientDetailedDossierTest', () => {
             refetch: jest.fn(),
           } as any),
       )
-      mockedUseAppSelector.mockImplementation(() => ({ application: fullApplicationData.application }))
+      mockedUseAppSelector.mockImplementation(() => ({ application: fullApplicationData }))
       mockedUseGovProgramScans.mockImplementation(
         () =>
           ({
@@ -79,41 +78,6 @@ describe('ClientDetailedDossierTest', () => {
 
     it('Отображается область ActionArea', () => {
       expect(screen.getByTestId('ActionArea')).toBeInTheDocument()
-    })
-  })
-
-  describe('Если appType !== CARLOANAPPLICATIONDC', () => {
-    beforeEach(() => {
-      mockedUseGetFullApplicationQuery.mockImplementation(
-        () =>
-          ({
-            data: {
-              ...fullApplicationData,
-              application: {
-                ...fullApplicationData,
-                appType: '',
-              },
-            },
-            refetch: jest.fn(),
-          } as any),
-      )
-      mockedUseAppSelector.mockImplementation(() => ({
-        application: { ...fullApplicationData.application, appType: '' },
-      }))
-      mockedUseGovProgramScans.mockImplementation(
-        () =>
-          ({
-            currentGovProgramScans: [],
-            isNecessaryRequest: false,
-            isPending: false,
-            isSuccess: false,
-          } as any),
-      )
-      render(<ClientDetailedDossier />, { wrapper: createWrapper })
-    })
-
-    it('Не отображается область DocumentsArea', () => {
-      expect(screen.queryByTestId('DocumentsArea')).not.toBeInTheDocument()
     })
   })
 })

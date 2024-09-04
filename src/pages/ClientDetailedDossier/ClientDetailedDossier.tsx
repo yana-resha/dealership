@@ -10,6 +10,7 @@ import compact from 'lodash/compact'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { ApplicationProvider } from 'entities/applications/ApplicationProvider'
 import { updateOrder } from 'entities/order'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useGetFullApplicationQuery } from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
@@ -28,8 +29,6 @@ import { EditRequisitesArea } from './EditRequisitesArea/EditRequisitesArea'
 import { GovProgramDocumentsArea } from './GovProgramDocumentsArea/GovProgramDocumentsArea'
 import { useGovProgramScans } from './GovProgramDocumentsArea/hooks/useGovProgramScans'
 import { InformationArea } from './InformationArea/InformationArea'
-import { ApplicationProvider } from 'entities/applications/ApplicationProvider'
-import { ApplicationSource } from 'entities/applications/application.utils'
 
 export function ClientDetailedDossier() {
   const classes = useStyles()
@@ -100,14 +99,11 @@ export function ClientDetailedDossier() {
       isGovProgramDocumentsNecessaryRequest,
       isGovProgramDocumentsPending,
       pskPrc: application?.loanData?.pskPrc,
-      appType: application?.appType,
     }),
     [
-      application?.appType,
       application?.emailId,
       application?.loanCar?.autoPrice,
       application?.loanCar?.brand,
-      application?.loanCar?.isCarNew,
       application?.loanCar?.model,
       application?.loanData?.additionalOptions,
       application?.loanData?.amount,
@@ -208,15 +204,13 @@ export function ClientDetailedDossier() {
                   <Box className={classes.dossierContainer}>
                     <InformationArea {...appInfo} />
 
-                    {application.appType === ApplicationSource.CAR_LOAN_APPLICATION_DC && (
-                      <DocumentsArea
-                        status={
-                          application.status || application.status === StatusCode.INITIAL
-                            ? application.status
-                            : StatusCode.ERROR
-                        }
-                      />
-                    )}
+                    <DocumentsArea
+                      status={
+                        application.status || application.status === StatusCode.INITIAL
+                          ? application.status
+                          : StatusCode.ERROR
+                      }
+                    />
 
                     {isShowGovProgramDocuments && (
                       <GovProgramDocumentsArea

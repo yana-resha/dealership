@@ -25,7 +25,6 @@ import { clientFormValidationSchema } from './config/clientFormValidation'
 import { FormContainer } from './FormContainer'
 import { useConfirmationForm } from './hooks/useConfirmationForm'
 import { useInitialValues } from './hooks/useInitialValues'
-import { ApplicationSource } from 'entities/applications/application.utils'
 
 export function ClientForm() {
   const classes = useStyles()
@@ -78,7 +77,7 @@ export function ClientForm() {
       const applicationForScoring = {
         application: {
           ...newApplication,
-          appType: ApplicationSource.CAR_LOAN_APPLICATION_DC,
+          appType: 'CARLOANAPPLICATIONDC',
         },
       }
 

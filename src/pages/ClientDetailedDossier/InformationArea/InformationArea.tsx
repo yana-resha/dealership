@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { Button } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom'
 
 import { ReactComponent as DownloadIcon } from 'assets/icons/download.svg'
 import { ReactComponent as MailIcon } from 'assets/icons/mail.svg'
-import { ApplicationSource, getStatus, PreparedStatus } from 'entities/applications/application.utils'
+import { getStatus, PreparedStatus } from 'entities/applications/application.utils'
 import { useSendEmailDecisionMutation } from 'shared/api/requests/emailAppDc.api'
 import {
   useDownloadDocumentMutation,
@@ -42,7 +42,6 @@ const ApplicationStatusCodesMap: Partial<Record<StatusCode, ApplicationStatusCod
 }
 
 type Props = {
-  appType: string | undefined
   statusCode: StatusCode
   errorDescription: string | undefined
   vendorCode: string | undefined
@@ -90,7 +89,6 @@ export function InformationArea({
   isGovProgramDocumentsNecessaryRequest,
   isGovProgramDocumentsPending,
   pskPrc,
-  appType,
 }: Props) {
   const classes = useStyles()
   const { applicationId = '' } = useParams()
@@ -174,7 +172,7 @@ export function InformationArea({
     ].includes(status)
 
   const isShowScheduleBtn =
-    ([
+    [
       PreparedStatus.initial,
       PreparedStatus.processed,
       PreparedStatus.finallyApproved,
@@ -183,10 +181,9 @@ export function InformationArea({
       PreparedStatus.authorized,
       PreparedStatus.financed,
     ].includes(status) ||
-      // иначе это заявка из уко на пост залог, по ней нет возможности сформировать график
-      // https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1050969954
-      (status === PreparedStatus.approved && !!scans.length)) &&
-    appType === ApplicationSource.CAR_LOAN_APPLICATION_DC
+    // иначе это заявка из уко на пост залог, по ней нет возможности сформировать график
+    // https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1050969954
+    (status === PreparedStatus.approved && !!scans.length)
 
   const isDisableScheduleBtn =
     [
@@ -314,48 +311,33 @@ export function InformationArea({
             isGovProgramDocumentsPending={isGovProgramDocumentsPending}
           />
 
-          {appType === ApplicationSource.CAR_LOAN_APPLICATION_DC && (
-            <Box className={classes.infoTextContainer} gridColumn="span 7">
-              <InfoText label="ДЦ">
-                {vendorCode && <SberTypography component="span">{vendorCode}&nbsp;</SberTypography>}
-                {vendorInfo}
-              </InfoText>
-            </Box>
-          )}
-
-          {appType === ApplicationSource.CAR_LOAN_APPLICATION_DC && (
-            <Box className={classes.infoTextContainer} gridColumn="span 2">
-              <InfoText label="Марка / модель">
-                {carBrand} {carModel}
-              </InfoText>
-              <SberTypography sberautoVariant="body3" component="p">
-                {isCarNew === true ? 'Новая' : 'Б/У'}
-              </SberTypography>
-            </Box>
-          )}
+          <Box className={classes.infoTextContainer} gridColumn="span 7">
+            <InfoText label="ДЦ">
+              {vendorCode && <SberTypography component="span">{vendorCode}&nbsp;</SberTypography>}
+              {vendorInfo}
+            </InfoText>
+          </Box>
+          <Box className={classes.infoTextContainer} gridColumn="span 2">
+            <InfoText label="Марка / модель">
+              {carBrand} {carModel}
+            </InfoText>
+            <SberTypography sberautoVariant="body3" component="p">
+              {isCarNew === true ? 'Новая' : 'Б/У'}
+            </SberTypography>
+          </Box>
           <InfoText label="Стоимость авто">{formatMoney(autoPrice)}</InfoText>
           <InfoText label="Сумма кредита">{formatMoney(creditAmount)}</InfoText>
           <InfoText label="Платеж">{formatMoney(monthlyPayment)}</InfoText>
-          {appType === ApplicationSource.CAR_LOAN_APPLICATION_DC && (
-            <InfoText label="ПВ">{formatMoney(downPayment)}</InfoText>
-          )}
+          <InfoText label="ПВ">{formatMoney(downPayment)}</InfoText>
           <InfoText label="Переплата">{formatMoney(overpayment)}</InfoText>
-          {appType === ApplicationSource.CAR_LOAN_APPLICATION_DC && (
-            <Box className={classes.infoTextContainer} gridColumn="span 2">
-              <InfoText label="Кредитный продукт">{productName}</InfoText>
-            </Box>
-          )}
-
+          <Box className={classes.infoTextContainer} gridColumn="span 2">
+            <InfoText label="Кредитный продукт">{productName}</InfoText>
+          </Box>
           <InfoText label="Сумма продуктов">{formatMoney(productSum)}</InfoText>
           <InfoText label="Срок кредита">{formatTerm(term)}</InfoText>
           <InfoText label="% ставка">
             {checkIsNumber(rate) ? Math.round((rate as number) * 100) / 100 : ''}%
           </InfoText>
-          {appType !== ApplicationSource.CAR_LOAN_APPLICATION_DC && (
-            <Box className={classes.infoTextContainer} gridColumn="span 2">
-              <InfoText label="Кредитный продукт">{productName}</InfoText>
-            </Box>
-          )}
 
           {isShowScheduleBtn && isHasFeeScheduleInScans && (
             <FeeScheduleBtn
@@ -369,13 +351,9 @@ export function InformationArea({
         </Box>
       </AreaContainer>
 
-      {appType === ApplicationSource.CAR_LOAN_APPLICATION_DC && (
-        <>
-          <AdditionalOptionList title="Дополнительное оборудование" options={additionalEquipment} />
-          <AdditionalOptionList title="Дополнительные услуги дилера" options={dealerServices} />
-          <AdditionalOptionList title="Дополнительные услуги банка" options={bankServices} />
-        </>
-      )}
+      <AdditionalOptionList title="Дополнительное оборудование" options={additionalEquipment} />
+      <AdditionalOptionList title="Дополнительные услуги дилера" options={dealerServices} />
+      <AdditionalOptionList title="Дополнительные услуги банка" options={bankServices} />
     </>
   )
 }
