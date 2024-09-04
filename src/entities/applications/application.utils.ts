@@ -25,10 +25,6 @@ export enum AnketaType {
   Full = 2,
 }
 
-export enum ApplicationSource {
-  CAR_LOAN_APPLICATION_DC = 'CARLOANAPPLICATIONDC',
-}
-
 export const getStatus = (status: StatusCode) => {
   switch (status) {
     case StatusCode.INITIAL:
