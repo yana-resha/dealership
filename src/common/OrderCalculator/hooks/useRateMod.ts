@@ -93,13 +93,16 @@ export function useRateMod({
     [allRateMods],
   )
 
-  const isShouldShowDiscountNotification = useMemo(
-    () => allRateMods.some(rateMod => rateMod.tariffs.some(tariffs => tariffs.rateDelta)),
-    [allRateMods],
-  )
-
   // Если продукт выбран, то берем его rateMod, если есть.
   const currentRateMod = useMemo(() => currentProduct?.conditions[0].rateMod, [currentProduct?.conditions])
+
+  const isShouldShowDiscountNotification = useMemo(
+    () =>
+      currentProduct
+        ? !!currentRateMod
+        : allRateMods.some(rateMod => rateMod.tariffs.some(tariffs => tariffs.rateDelta)),
+    [allRateMods, currentProduct, currentRateMod],
+  )
 
   const requiredServiceRateMod = useMemo(
     () => (currentRateMod?.requiredService ? currentRateMod : null),
