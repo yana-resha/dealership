@@ -24,14 +24,13 @@ import {
   savePointOfSaleToCookies,
 } from './ChoosePoint.utils'
 
-type Props = { value?: Vendor; isHeader?: boolean; onSuccessEditing?: () => void }
+type Props = { isHeader?: boolean; onSuccessEditing?: () => void }
 
-export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
+export const ChoosePoint = ({ isHeader, onSuccessEditing }: Props) => {
   const classes = useStyles()
   const navigate = useNavigate()
-
   const { data, error, isLoading } = useGetVendorsListQuery()
-  const [chosenOption, setChosenOption] = useState<Vendor | null>(value ?? null)
+  const [chosenOption, setChosenOption] = useState<Vendor | null>(null)
   const prevChosenOption = usePrevious(chosenOption)
   const [validationError, setValidationError] = useState<boolean>(false)
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
@@ -81,7 +80,6 @@ export const ChoosePoint = ({ value, isHeader, onSuccessEditing }: Props) => {
   )
 
   const getOptionLabel = useCallback((option: Vendor) => retrieveLabelForPointOfSale(option), [])
-
   const renderInput = useCallback(
     (params: AutocompleteRenderInputParams) => (
       <TextField
