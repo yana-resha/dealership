@@ -62,3 +62,7 @@ export const getStatus = (status: StatusCode) => {
       return PreparedStatus.error
   }
 }
+
+export enum ApplicationSource {
+  CAR_LOAN_APPLICATION_DC = 'CARLOANAPPLICATIONDC',
+}

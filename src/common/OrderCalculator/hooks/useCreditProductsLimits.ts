@@ -8,6 +8,8 @@ import { formatMoney, formatNumber } from 'shared/lib/utils'
 import { initialValueMap } from '../config'
 import { BriefOrderCalculatorFields, FormFieldNameMap } from '../types'
 import { useSelectCreditProductList } from './useSelectCreditProductList'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
+import { ApplicationSource } from 'entities/applications/application.utils'
 
 type Params = {
   minInitialPaymentPercent: number
@@ -37,6 +39,7 @@ export function useCreditProductsLimits({
   const { creditProduct, isGovernmentProgram, isDfoProgram, commonError } = values
 
   const { creditProductListData } = useSelectCreditProductList()
+  const applicationType = useAppSelector(state => state.order.order?.orderData?.application?.appType)
 
   const { creditProducts, isValidCreditProduct } = useMemo(
     () =>
@@ -112,11 +115,14 @@ export function useCreditProductsLimits({
       creditProduct
     ) {
       setFieldValue(FormFieldNameMap.creditProduct, initialValueMap.creditProduct)
-      setFieldValue(FormFieldNameMap.commonError, {
-        ...commonError,
-        isCurrentCreditProductNotFoundInList: true,
-      })
-      setShouldValidate(true)
+      // Показываем валидацию только если тип заявки CARLOANAPPLICATIONDC
+      if (applicationType === ApplicationSource.CAR_LOAN_APPLICATION_DC) {
+        setFieldValue(FormFieldNameMap.commonError, {
+          ...commonError,
+          isCurrentCreditProductNotFoundInList: true,
+        })
+        setShouldValidate(true)
+      }
     }
   }, [
     commonError,
@@ -127,6 +133,7 @@ export function useCreditProductsLimits({
     isGetCarsSuccess,
     isValidCreditProduct,
     setFieldValue,
+    applicationType,
   ])
 
   useEffect(() => {
