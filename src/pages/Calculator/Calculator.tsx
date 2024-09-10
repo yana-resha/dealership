@@ -8,6 +8,7 @@ import { OrderCalculator } from 'common/OrderCalculator'
 import { clearOrder } from 'entities/order'
 import { appRoutePaths } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
+import { Page } from 'shared/ui/Page'
 
 import { useStyles } from './Calculator.styles'
 
@@ -37,9 +38,9 @@ export function Calculator() {
   }, [dispatch])
 
   return (
-    <div className={classes.page} data-testid="calculator">
+    <Page dataTestId="calculator">
       <Typography className={classes.pageTitle}>Параметры кредита</Typography>
       {isLoading ? <CircularProgressWheel size="extraLarge" /> : <OrderCalculator nextStep={nextStep} />}
-    </div>
+    </Page>
   )
 }

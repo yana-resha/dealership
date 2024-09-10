@@ -1,13 +1,10 @@
 import { FindApplication } from 'common/findApplication/findApplications'
-
-import { useStyles } from './Dealership.styles'
+import { Page } from 'shared/ui/Page'
 
 export function Dealership() {
-  const classes = useStyles()
-
   return (
-    <div className={classes.page} data-testid="dealershipPage">
+    <Page dataTestId="dealershipPage">
       <FindApplication />
-    </div>
+    </Page>
   )
 }

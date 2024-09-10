@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { useGetCatalogQuery } from 'shared/api/requests/fileStorageDc.api'
 import { appRoutes } from 'shared/navigation/routerPath'
+import { Page } from 'shared/ui/Page'
 import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import { useStyles } from './Catalog.styles'
@@ -50,7 +51,7 @@ export function Catalog() {
   )
 
   return (
-    <div className={styles.page} data-testid="catalog">
+    <Page dataTestId="catalog">
       <Box className={styles.loaderContainer}>
         <CatalogHeader currentFolderId={currentFolderId} onBack={handleBack} />
 
@@ -69,6 +70,6 @@ export function Catalog() {
           foundedFileName={foundedFileName}
         />
       </Box>
-    </div>
+    </Page>
   )
 }

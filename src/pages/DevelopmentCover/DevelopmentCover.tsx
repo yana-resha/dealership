@@ -1,14 +1,11 @@
 import { Button, Paper, Typography } from '@mui/material'
 
 import { ReactComponent as DevelopmentIcon } from 'assets/icons/development.svg'
-
-import { useStyles } from './DevelopmentCover.styles'
+import { Page } from 'shared/ui/Page'
 
 export function DevelopmentCover() {
-  const classes = useStyles()
-
   return (
-    <Paper className={classes.page} data-testid="developmentCover">
+    <Page dataTestId="developmentCover">
       <DevelopmentIcon style={{ width: 240, height: 240 }} />
 
       <Typography variant="h6" style={{ color: 'black' }}>
@@ -21,6 +18,6 @@ export function DevelopmentCover() {
       <Button variant="contained" href="/" style={{ marginTop: 16 }}>
         Вернуться на главную
       </Button>
-    </Paper>
+    </Page>
   )
 }

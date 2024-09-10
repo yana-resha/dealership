@@ -9,6 +9,7 @@ import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { appRoutes } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
+import { Page } from 'shared/ui/Page'
 import SberTypography from 'shared/ui/SberTypography'
 
 import { useStyles } from './DetailedEmail.styles'
@@ -33,7 +34,7 @@ export function DetailedEmail() {
   }, [navigate])
 
   return (
-    <div className={classes.page} data-testid="dealershipclient.DetailedEmail">
+    <Page dataTestId="dealershipclient.DetailedEmail">
       {isLoading && (
         <Box className={classes.circular}>
           <CircularProgressWheel size="large" />
@@ -75,6 +76,6 @@ export function DetailedEmail() {
           />
         </Box>
       )}
-    </div>
+    </Page>
   )
 }
