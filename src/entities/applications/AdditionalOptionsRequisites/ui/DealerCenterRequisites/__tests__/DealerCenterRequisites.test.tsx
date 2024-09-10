@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
+import { FieldLabels } from 'shared/constants/fieldLabels'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
@@ -78,26 +79,26 @@ describe('DealerCenterRequisitesTest', () => {
     //Тесты отключены, пока выключен ручной ввод
 
     // it('Отображается switch "Ввести вручную"', () => {
-    //   expect(screen.getByText('Ввести вручную')).toBeInTheDocument()
+    //   expect(screen.getByText(FieldLabels.MANUAL_ENTRY)).toBeInTheDocument()
     // })
 
     // it('Поле Кор. счет отображается, если включен ручной ввод', async () => {
     //   expect(screen.queryByTestId('correspondentAccount')).not.toBeInTheDocument()
-    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   userEvent.click(screen.getByText(FieldLabels.MANUAL_ENTRY))
     //   expect(await screen.findByTestId('correspondentAccount')).toBeInTheDocument()
     // })
 
     // it('Radio для выбора налога отображаются, если включен ручной ввод', async () => {
     //   expect(screen.queryByText('С НДС')).not.toBeInTheDocument()
     //   expect(screen.queryByText('Без НДС')).not.toBeInTheDocument()
-    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   userEvent.click(screen.getByText(FieldLabels.MANUAL_ENTRY))
     //   expect(await screen.findByText('С НДС')).toBeInTheDocument()
     //   expect(await screen.findByText('Без НДС')).toBeInTheDocument()
     // })
 
     // it('Поле "Налог" отображается, если включен ручной ввод', async () => {
     //   expect(screen.queryByTestId('taxation')).not.toBeInTheDocument()
-    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   userEvent.click(screen.getByText(FieldLabels.MANUAL_ENTRY))
     //   expect(await screen.findByTestId('taxation')).toBeInTheDocument()
     // })
 
@@ -111,7 +112,7 @@ describe('DealerCenterRequisitesTest', () => {
       render(<DealerCenterRequisites isRequisiteEditable={false} />, {
         wrapper: createWrapper,
       })
-      // userEvent.click(screen.getByText('Ввести вручную'))
+      // userEvent.click(screen.getByText(FieldLabels.MANUAL_ENTRY))
       userEvent.click(screen.getByTestId('submit'))
     })
 

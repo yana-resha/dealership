@@ -9,6 +9,7 @@ import {
   FullInitialAdditionalEquipments,
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
+import { FieldLabels } from 'shared/constants/fieldLabels'
 import {
   maskBankAccountNumber,
   maskBankIdentificationCode,
@@ -231,7 +232,7 @@ export function AdditionalEquipmentRequisites({
           <Box gridColumn="span 3" width="auto" minWidth="min-content">
             <SwitchInput
               value={isCustomFields}
-              label="Ввести вручную"
+              label={FieldLabels.MANUAL_ENTRY}
               onChange={handleManualEntryChange}
               centered
               disabled

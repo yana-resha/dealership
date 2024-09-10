@@ -7,6 +7,7 @@ import { Form, Formik } from 'formik'
 
 import { FullInitialAdditionalService } from 'common/OrderCalculator/types'
 import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
+import { FieldLabels } from 'shared/constants/fieldLabels'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
 import { MockedSelectInput } from 'shared/ui/SelectInput/__mocks__/SelectInput.mock'
 import { MockedSwitchInput } from 'shared/ui/SwitchInput/__mocks__/SwitchInput.mock'
@@ -123,7 +124,7 @@ describe('DealerServicesRequisitesTest', () => {
     //Тесты отключены, пока выключен ручной ввод
 
     // it('Отображается switch "Ввести вручную"', () => {
-    //   expect(screen.getByText('Ввести вручную')).toBeInTheDocument()
+    //   expect(screen.getByText(FieldLabels.MANUAL_ENTRY)).toBeInTheDocument()
     // })
     //
     // it('Отображается поле "БИК"', () => {
@@ -133,7 +134,7 @@ describe('DealerServicesRequisitesTest', () => {
     // it('Поле "Кор. счет" отображается, если включен ручной ввод', async () => {
     //   expect(screen.queryByTestId('dealerAdditionalServices[0]
     //   .correspondentAccount')).not.toBeInTheDocument()
-    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   userEvent.click(screen.getByText(FieldLabels.MANUAL_ENTRY))
     //   expect(
     //     await screen.findByTestId('dealerAdditionalServices[0].correspondentAccount'),
     //   ).toBeInTheDocument()
@@ -142,14 +143,14 @@ describe('DealerServicesRequisitesTest', () => {
     // it('Radio для выбора налога отображаются, если включен ручной ввод', async () => {
     //   expect(screen.queryByText('С НДС')).not.toBeInTheDocument()
     //   expect(screen.queryByText('Без НДС')).not.toBeInTheDocument()
-    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   userEvent.click(screen.getByText(FieldLabels.MANUAL_ENTRY))
     //   expect(await screen.findByText('С НДС')).toBeInTheDocument()
     //   expect(await screen.findByText('Без НДС')).toBeInTheDocument()
     // })
     //
     // it('Поле "Налог" отображается, если включен ручной ввод', async () => {
     //   expect(screen.queryByTestId('dealerAdditionalServices[0].taxation')).not.toBeInTheDocument()
-    //   userEvent.click(screen.getByText('Ввести вручную'))
+    //   userEvent.click(screen.getByText(FieldLabels.MANUAL_ENTRY))
     //   expect(await screen.findByTestId('dealerAdditionalServices[0].taxation')).toBeInTheDocument()
     // })
 

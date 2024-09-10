@@ -7,6 +7,7 @@ import { Timeout } from 'react-number-format/types/types'
 
 import { selectCurrentGovernmentProgram } from 'entities/order'
 import { DADATA_OPTIONS_LIMIT, useGetFmsUnitSuggestions } from 'shared/api/requests/dadata.api'
+import { FieldLabels } from 'shared/constants/fieldLabels'
 import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { usePrevious } from 'shared/hooks/usePrevious'
 import {
@@ -282,7 +283,7 @@ export function PassportArea() {
 
       <SwitchInputFormik
         name="regNotKladr"
-        label="Не КЛАДР"
+        label={FieldLabels.MANUAL_ENTRY}
         gridColumn="span 4"
         centered
         afterChange={handleKladrChange}
@@ -328,7 +329,7 @@ export function PassportArea() {
       {!regAddrIsLivingAddr && (
         <SwitchInputFormik
           name="livingNotKladr"
-          label="Не КЛАДР"
+          label={FieldLabels.MANUAL_ENTRY}
           gridColumn="span 4"
           centered
           afterChange={handleKladrChange}

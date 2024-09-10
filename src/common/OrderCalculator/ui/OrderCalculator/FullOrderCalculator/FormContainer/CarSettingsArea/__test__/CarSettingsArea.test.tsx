@@ -8,6 +8,7 @@ import { act } from 'react-dom/test-utils'
 
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import * as useCarYearsModule from 'common/OrderCalculator/hooks/useCarYears'
+import { FieldLabels } from 'shared/constants/fieldLabels'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -237,7 +238,7 @@ describe('CarSettingsArea', () => {
     //Тесты выключены, пока отключен ручной ввод
 
     // it('Поле БИК - принимает только числа', async () => {
-    //   await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
+    //   await act(() => userEvent.click(screen.getAllByText(FieldLabels.MANUAL_ENTRY)[0]))
     //   expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(16)
     //   const bankIdentificationCodeField = document.getElementById('bankIdentificationCode')!
     //   await act(() => userEvent.type(bankIdentificationCodeField, 'Test'))
@@ -245,7 +246,7 @@ describe('CarSettingsArea', () => {
     // })
     //
     // it('Поле БИК - ожидает ввода 9 цифр', async () => {
-    //   await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
+    //   await act(() => userEvent.click(screen.getAllByText(FieldLabels.MANUAL_ENTRY)[0]))
     //   const bankIdentificationCodeField = document.getElementById('bankIdentificationCode')!
     //   await act(() => userEvent.type(bankIdentificationCodeField, '12341234'))
     //   expect(await screen.findByText('Введите данные полностью')).toBeInTheDocument()
@@ -254,7 +255,7 @@ describe('CarSettingsArea', () => {
     // })
     //
     // it('Поле Расчетный счет - принимает только числа', async () => {
-    //   await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
+    //   await act(() => userEvent.click(screen.getAllByText(FieldLabels.MANUAL_ENTRY)[0]))
     //   expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(16)
     //   const bankAccountNumberField = document.getElementById('bankAccountNumber')!
     //   await act(() => userEvent.type(bankAccountNumberField, 'Test'))
@@ -262,7 +263,7 @@ describe('CarSettingsArea', () => {
     // })
     //
     // it('Поле Расчетный счет - ожидает ввода 20 цифр', async () => {
-    //   await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
+    //   await act(() => userEvent.click(screen.getAllByText(FieldLabels.MANUAL_ENTRY)[0]))
     //   const bankAccountNumberField = document.getElementById('bankAccountNumber')!
     //   await act(() => userEvent.type(bankAccountNumberField, '1234123412341234123'))
     //   expect(await screen.findByText('Введите данные полностью')).toBeInTheDocument()
@@ -271,7 +272,7 @@ describe('CarSettingsArea', () => {
     // }, 10000)
     //
     // it('Поле Корреспондентский счет - принимает только числа', async () => {
-    //   await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
+    //   await act(() => userEvent.click(screen.getAllByText(FieldLabels.MANUAL_ENTRY)[0]))
     //   expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(16)
     //   const correspondentAccountField = document.getElementById('correspondentAccount')!
     //   await act(() => userEvent.type(correspondentAccountField, 'Test'))
@@ -279,7 +280,7 @@ describe('CarSettingsArea', () => {
     // }, 10000)
     //
     // it('Поле Корреспондентский счет - ожидает ввода 20 цифр', async () => {
-    //   await act(() => userEvent.click(screen.getAllByText('Ввести вручную')[0]))
+    //   await act(() => userEvent.click(screen.getAllByText(FieldLabels.MANUAL_ENTRY)[0]))
     //   const correspondentAccountField = document.getElementById('correspondentAccount')!
     //   await act(() => userEvent.type(correspondentAccountField, '1234123412341234123'))
     //   expect(await screen.findByText('Введите данные полностью')).toBeInTheDocument()
