@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react'
 import { render, screen } from '@testing-library/react'
 import { MockStore } from 'redux-mock-store'
 
+import { Order } from 'entities/order/model/orderSlice'
 import * as useGovProgramScansModule from 'pages/ClientDetailedDossier/GovProgramDocumentsArea/hooks/useGovProgramScans'
 import * as useGetFullApplicationQueryModule from 'pages/ClientDetailedDossier/hooks/useGetFullApplicationQuery'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
