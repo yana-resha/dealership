@@ -26,7 +26,6 @@ export const BodyRow = ({ row, onClick }: Props) => {
   const classes = useStyles()
   const autoPrice = useAppSelector(state => state.order.order?.orderData?.application?.loanCar?.autoPrice)
   const dcAppId = useAppSelector(state => state.order.order?.orderData?.application?.dcAppId)
-
   const { mutateAsync: getPreliminaryPaymentScheduleFormMutate } =
     useGetPreliminaryPaymentScheduleFormMutation()
 
@@ -73,45 +72,42 @@ export const BodyRow = ({ row, onClick }: Props) => {
         >
           <>
             {cell.name === HeaderCellKey.INCOME_FLAG && cell.type === TableCellType.ICON && <ButtonsCell />}
-
             {cell.name === HeaderCellKey.ATTACHMENT && cell.type === TableCellType.ICON && (
               <Downloader
                 onDownloadFile={async () => await handleAttachmentClick(row)}
                 icon={<ScheduleIcon />}
               />
             )}
-
             {cell.name === HeaderCellKey.DOWNPAYMENT && !!cell.additionalValue && (
               <>
                 <span className={classes.oldValue}>{cell.value}</span>{' '}
                 <span className={classes.newValue}>{cell.additionalValue}</span>
               </>
             )}
-
             {cell.name === HeaderCellKey.CURRENT_RATE && !!cell.additionalValue && (
               <>
                 <span className={classes.oldValue}>{cell.additionalValue}</span>{' '}
                 <span className={classes.newValue}>{cell.value}</span>
               </>
             )}
-
             {cell.name === HeaderCellKey.CURRENT_RATE && !cell.additionalValue && cell.isAdditionalIcon && (
               <Box className={classes.additionalIconContainer}>
-                <span>{cell.value}</span>
-                <CustomTooltip
-                  arrow
-                  title={
-                    <span onClick={handleInfoClick}>
-                      Вы можете снизить базовую ставку, подключив дополнительную услугу банка
-                    </span>
-                  }
-                  placement="right"
-                >
-                  <InfoIcon onClick={handleInfoClick} />
-                </CustomTooltip>
+                <Box className={classes.additionalContentContainer}>
+                  <span>{cell.value}</span>
+                  <CustomTooltip
+                    arrow
+                    title={
+                      <span onClick={handleInfoClick}>
+                        Вы можете снизить базовую ставку, подключив дополнительную услугу банка
+                      </span>
+                    }
+                    placement="right"
+                  >
+                    <InfoIcon className={classes.infoIcon} onClick={handleInfoClick} />
+                  </CustomTooltip>
+                </Box>
               </Box>
             )}
-
             {cell.type !== TableCellType.ICON &&
               !cell.additionalValue &&
               !cell.isAdditionalIcon &&

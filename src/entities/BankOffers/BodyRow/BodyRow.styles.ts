@@ -45,6 +45,15 @@ export default makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: theme.spacing(1),
+  },
+
+  additionalContentContainer: {
+    position: 'relative',
+  },
+
+  infoIcon: {
+    position: 'absolute',
+    left: 'calc(100% + 8px)',
+    top: '0',
   },
 }))
