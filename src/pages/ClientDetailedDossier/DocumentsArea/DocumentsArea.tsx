@@ -47,13 +47,6 @@ export function DocumentsArea({ status }: Props) {
     PreparedStatus.authorized,
     PreparedStatus.financed,
   ].includes(preparedStatus)
-  const isRemoveDisabled = [
-    PreparedStatus.formation,
-    PreparedStatus.signed,
-    PreparedStatus.authorized,
-    PreparedStatus.financed,
-    PreparedStatus.issueError,
-  ].includes(preparedStatus)
 
   const uploadQuestionnaire = useCallback(
     (file: FileInfo['file'], documentName: string, status: FileInfo['status']) => {
@@ -114,7 +107,7 @@ export function DocumentsArea({ status }: Props) {
           motivateMessage="Загрузить анкету"
           onUploadDocument={uploadQuestionnaire}
           onRemoveDocument={removeQuestionnaire}
-          isRemoveDisabled={isRemoveDisabled}
+          isRemoveDisabled
           isShowLabel={!isShowDownloadLoanAgreement}
         />
 
