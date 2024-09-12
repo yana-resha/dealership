@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Box, Typography } from '@mui/material'
+import { Box, Collapse, Typography } from '@mui/material'
 import {
   AddressGetOrganizationSuggestions,
   SuggestionGetAddressSuggestions,
@@ -9,6 +9,7 @@ import {
 import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
 import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
+import cx from 'classnames'
 
 import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
 import { FieldLabels } from 'shared/constants/fieldLabels'
@@ -186,94 +187,99 @@ export function JobArea() {
     /* marginTop: '-20px' у родителя и  paddingTop: 20 у первого потомка необходимы,
     чтобы увеличить размер потомка, не увеличивая размер контейнера. Это необходимо,
     чтобы при автоскроле заголовок (первый контейнер) не уперался в верхнюю часть окна*/
-    <Box className={classes.gridContainer} style={{ marginTop: '-20px' }}>
-      <Box gridColumn="1 / -1" minWidth="min-content" ref={jobAreaTitleRef} style={{ paddingTop: 20 }}>
-        <Typography className={classes.areaLabel}>Работа</Typography>
+    <Box>
+      <Box className={classes.gridContainer} style={{ marginTop: '-20px' }}>
+        <Box gridColumn="1 / -1" minWidth="min-content" ref={jobAreaTitleRef} style={{ paddingTop: 20 }}>
+          <Typography className={classes.areaLabel}>Работа</Typography>
+        </Box>
+
+        <SelectInputFormik
+          name="occupation"
+          label="Должность/Вид занятости"
+          placeholder="-"
+          options={OCCUPATION_VALUES}
+          gridColumn="span 8"
+        />
+        <Box gridColumn="span 4">
+          <Collapse in={!jobDisabled}>
+            <DateInputFormik name="employmentDate" label="Дата устройства на работу" disabled={jobDisabled} />
+          </Collapse>
+        </Box>
       </Box>
+      <Collapse in={!jobDisabled}>
+        <Box className={cx(classes.gridContainer, classes.collapsableGridContainer)}>
+          <AutocompleteInputFormik
+            name="employerName"
+            label="Наименование организации"
+            placeholder="-"
+            options={employerNameSuggestions}
+            isCustomValueAllowed
+            mask={maskNoRestrictions}
+            gridColumn="span 12"
+            disabled={jobDisabled}
+            onSelectOption={handleEmployerNameSelect}
+            onChange={handleEmployerNameChange}
+          />
+          <Box gridColumn="span 4" />
 
-      <SelectInputFormik
-        name="occupation"
-        label="Должность/Вид занятости"
-        placeholder="-"
-        options={OCCUPATION_VALUES}
-        gridColumn="span 8"
-      />
-      <DateInputFormik
-        name="employmentDate"
-        label="Дата устройства на работу"
-        gridColumn="span 4"
-        disabled={jobDisabled}
-      />
-      <AutocompleteInputFormik
-        name="employerName"
-        label="Наименование организации"
-        placeholder="-"
-        options={employerNameSuggestions}
-        isCustomValueAllowed
-        mask={maskNoRestrictions}
-        gridColumn="span 12"
-        disabled={jobDisabled}
-        onSelectOption={handleEmployerNameSelect}
-        onChange={handleEmployerNameChange}
-      />
-      <Box gridColumn="span 4" />
+          <MaskedInputFormik
+            name="employerInn"
+            label="ИНН организации"
+            placeholder="-"
+            mask={maskInn}
+            gridColumn="span 5"
+            disabled={jobDisabled}
+          />
+          <MaskedInputFormik
+            name="employerPhone"
+            label="Телефон"
+            placeholder="-"
+            mask={maskCommonPhoneNumber}
+            gridColumn="span 5"
+            disabled={jobDisabled}
+          />
 
-      <MaskedInputFormik
-        name="employerInn"
-        label="ИНН организации"
-        placeholder="-"
-        mask={maskInn}
-        gridColumn="span 5"
-        disabled={jobDisabled}
-      />
-      <MaskedInputFormik
-        name="employerPhone"
-        label="Телефон"
-        placeholder="-"
-        mask={maskCommonPhoneNumber}
-        gridColumn="span 5"
-        disabled={jobDisabled}
-      />
+          {emplNotKladr ? (
+            <MaskedInputFormik
+              name="employerAddressString"
+              label="Адрес работодателя (КЛАДР)"
+              placeholder="-"
+              mask={maskNoRestrictions}
+              gridColumn="span 12"
+              disabled={jobDisabled}
+              InputProps={{ readOnly: true }}
+            />
+          ) : (
+            <AutocompleteDaDataAddressFormik
+              nameOfString="employerAddressString"
+              nameOfObject="employerAddress"
+              label="Адрес работодателя (КЛАДР)"
+              placeholder="-"
+              gridColumn="span 12"
+              disabled={jobDisabled}
+              forceValue={addressSuggestion as SuggestionGetAddressSuggestions}
+              prepareAddress={prepareAddress}
+            />
+          )}
 
-      {emplNotKladr ? (
-        <MaskedInputFormik
-          name="employerAddressString"
-          label="Адрес работодателя (КЛАДР)"
-          placeholder="-"
-          mask={maskNoRestrictions}
-          gridColumn="span 12"
-          disabled={jobDisabled}
-          InputProps={{ readOnly: true }}
-        />
-      ) : (
-        <AutocompleteDaDataAddressFormik
-          nameOfString="employerAddressString"
-          nameOfObject="employerAddress"
-          label="Адрес работодателя (КЛАДР)"
-          placeholder="-"
-          gridColumn="span 12"
-          disabled={jobDisabled}
-          forceValue={addressSuggestion as SuggestionGetAddressSuggestions}
-          prepareAddress={prepareAddress}
-        />
-      )}
-
-      <SwitchInputFormik
-        name="emplNotKladr"
-        label={FieldLabels.MANUAL_ENTRY}
-        gridColumn="span 4"
-        centered
-        disabled={jobDisabled}
-        afterChange={handleKladrChange}
-      />
-      <AddressDialog
-        addressName="employerAddress"
-        address={employerAddress}
-        label="Адрес работодателя (КЛАДР)"
-        isVisible={isEmplAddressDialogVisible}
-        setIsVisible={setIsEmplAddressDialogVisible}
-        onCloseDialog={() => onCloseAddressDialog(employerAddressString)}
-      />
+          <SwitchInputFormik
+            name="emplNotKladr"
+            label={FieldLabels.MANUAL_ENTRY}
+            gridColumn="span 4"
+            centered
+            disabled={jobDisabled}
+            afterChange={handleKladrChange}
+          />
+          <AddressDialog
+            addressName="employerAddress"
+            address={employerAddress}
+            label="Адрес работодателя (КЛАДР)"
+            isVisible={isEmplAddressDialogVisible}
+            setIsVisible={setIsEmplAddressDialogVisible}
+            onCloseDialog={() => onCloseAddressDialog(employerAddressString)}
+          />
+        </Box>
+      </Collapse>
     </Box>
   )
 }
