@@ -159,7 +159,7 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
             title="Дополнительное оборудование"
             additionalServices={additionalEquipments}
             name={ServicesGroupName.additionalEquipments}
-            productLabel="Вид оборудования"
+            productLabel="Тип доп оборудования"
           />
           <AdditionalServices
             title="Дополнительные услуги дилера"
