@@ -27,7 +27,7 @@ export function NoMatchesModal({ isVisible, onClose }: Props) {
           Совпадения не найдены
         </SberTypography>
         <SberTypography sberautoVariant="body3" component="p" className={styles.text}>
-          Проверьте правильность заполнения данных
+          Проверьте корректность заполнения данных
         </SberTypography>
         <Button variant="contained" autoFocus fullWidth className={styles.confirmBtn} onClick={onClose}>
           Хорошо, спасибо

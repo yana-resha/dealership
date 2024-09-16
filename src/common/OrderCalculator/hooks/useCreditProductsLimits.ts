@@ -2,14 +2,14 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useFormikContext } from 'formik'
 
+import { ApplicationSource } from 'entities/applications/application.utils'
 import { RequiredProduct } from 'entities/order/model/orderSlice'
+import { useAppSelector } from 'shared/hooks/store/useAppSelector'
 import { formatMoney, formatNumber } from 'shared/lib/utils'
 
 import { initialValueMap } from '../config'
 import { BriefOrderCalculatorFields, FormFieldNameMap } from '../types'
 import { useSelectCreditProductList } from './useSelectCreditProductList'
-import { useAppSelector } from 'shared/hooks/store/useAppSelector'
-import { ApplicationSource } from 'entities/applications/application.utils'
 
 type Params = {
   minInitialPaymentPercent: number
