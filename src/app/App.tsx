@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
+import { ErrorBoundary } from 'react-error-boundary'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { Provider as StoreProvider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
@@ -7,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { store } from 'app/store'
 import { AuthProvider } from 'common/auth'
 import { TabBlocker } from 'entities/tabManagement'
+import { TechnicalError } from 'pages/TechnicalError/TechnicalError'
 import { useInitialTablePagesClearing } from 'shared/tableCurrentPage'
 
 import { Router } from './Router'
@@ -24,13 +26,15 @@ export function App() {
       <StoreProvider store={store}>
         <ThemeProvider theme={theme}>
           <SnackbarProvider hideIconVariant dense>
-            <TabBlocker>
-              <BrowserRouter basename="/">
-                <AuthProvider>
-                  <Router />
-                </AuthProvider>
-              </BrowserRouter>
-            </TabBlocker>
+            <ErrorBoundary fallback={<TechnicalError />}>
+              <TabBlocker>
+                <BrowserRouter basename="/">
+                  <AuthProvider>
+                    <Router />
+                  </AuthProvider>
+                </BrowserRouter>
+              </TabBlocker>
+            </ErrorBoundary>
           </SnackbarProvider>
         </ThemeProvider>
       </StoreProvider>
