@@ -50,7 +50,6 @@ export default makeStyles<Theme, StyleProps>(theme => ({
 
   tab: {
     minWidth: '100%!important',
-
     '&.MuiTab-root': {
       textTransform: 'none',
     },
@@ -76,8 +75,35 @@ export default makeStyles<Theme, StyleProps>(theme => ({
     },
   },
 
-  tabLabel: {
+  hiddenLabelContainer: {
+    overflow: 'hidden',
     display: ({ isCollapsed }) => (isCollapsed ? 'none' : 'block'),
+  },
+
+  visibleLabel: {
+    display: 'block',
+    animationName: '$show',
+    animationDuration: '1.2s',
+  },
+
+  '@keyframes show': {
+    '0%': {
+      display: 'none',
+      width: 0,
+      transform: 'translateX(-100%) scaleX(0)',
+    },
+
+    '20%': {
+      display: 'block',
+      width: 0,
+      transform: 'translateX(-100%) scaleX(0)',
+    },
+
+    '100%': {
+      display: 'block',
+      width: 'fit-content',
+      transform: 'translateX(0%) scaleX(1)',
+    },
   },
 
   logoutItem: {

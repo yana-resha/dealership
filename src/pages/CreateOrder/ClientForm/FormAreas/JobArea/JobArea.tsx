@@ -7,9 +7,9 @@ import {
   SuggestionGetOrganizationSuggestions,
 } from '@sberauto/dadata-proto/public'
 import { OccupationType } from '@sberauto/loanapplifecycledc-proto/public'
+import cx from 'classnames'
 import { useFormikContext } from 'formik'
 import throttle from 'lodash/throttle'
-import cx from 'classnames'
 
 import { useGetOrganizationSuggestions } from 'shared/api/requests/dadata.api'
 import { FieldLabels } from 'shared/constants/fieldLabels'
