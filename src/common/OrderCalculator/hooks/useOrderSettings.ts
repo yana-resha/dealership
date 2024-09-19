@@ -126,6 +126,7 @@ export function useOrderSettings(nextStep: () => void) {
         overpayment: bankOffer.overpayment,
         pskPrc: bankOffer.pskPrc,
         govprogramDiscount: bankOffer?.discountGovprogram,
+        prodSubsidy: creditProduct?.prodSubsidy,
       }
 
       dispatch(updateFillingProgress({ isFilledLoanData: true }))
