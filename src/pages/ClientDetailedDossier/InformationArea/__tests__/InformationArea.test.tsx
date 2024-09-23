@@ -10,6 +10,7 @@ import {
 import { render, screen } from '@testing-library/react'
 import { UseMutationResult } from 'react-query'
 
+import { ApplicationSource } from 'entities/applications/application.utils'
 import { CustomFetchError } from 'shared/api/client'
 import * as emailAppDcModule from 'shared/api/requests/emailAppDc.api'
 import * as loanAppLifeCycleDcModule from 'shared/api/requests/loanAppLifeCycleDc'

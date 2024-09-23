@@ -295,7 +295,6 @@ export const clientFormValidationSchema = Yup.object().shape({
           (value: string | undefined) => value === undefined || value.trim().length == 11,
         ),
     }),
-  email: setRequiredIfSave(Yup.string()).email('Введите корректный Email'),
   averageIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   additionalIncome: Yup.string().max(13, 'Значение слишком большое'),
   incomeProofUploadValidator: Yup.string().test(
@@ -423,3 +422,9 @@ export const clientFormValidationSchema = Yup.object().shape({
       then: schema => schema.required(QUESTIONNAIRE_FILE_IS_REQUIRED),
     }),
 })
+
+export const enrichedclientFormValidationSchema = clientFormValidationSchema.concat(
+  Yup.object().shape({
+    email: setRequiredIfSave(Yup.string()).email('Введите корректный Email'),
+  }),
+)

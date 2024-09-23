@@ -11,11 +11,15 @@ import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.m
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
-import { clientFormValidationSchema } from '../../../config/clientFormValidation'
+import { enrichedclientFormValidationSchema } from '../../../config/clientFormValidation'
 import { CommunicationArea } from '../CommunicationArea'
 
 jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({
   MaskedInput: MockedMaskedInput,
+}))
+
+jest.mock('react-router-dom', () => ({
+  useLocation: () => ({ state: { isFullCalculator: true } }),
 }))
 
 const formFields = ['mobileNumber', 'additionalNumber', 'email']
@@ -38,7 +42,7 @@ const createWrapper = ({ children }: PropsWithChildren) => (
   <ThemeProviderMock>
     <Formik
       initialValues={mockedCommunicationFields}
-      validationSchema={clientFormValidationSchema}
+      validationSchema={enrichedclientFormValidationSchema}
       onSubmit={() => {}}
     >
       <Form>

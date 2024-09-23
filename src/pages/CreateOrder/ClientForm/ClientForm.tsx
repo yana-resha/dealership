@@ -9,6 +9,7 @@ import { Formik, FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import { ApplicationSource } from 'entities/applications/application.utils'
 import { clearOrder, setAppId } from 'entities/order'
 import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'
 import {
@@ -21,7 +22,7 @@ import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularP
 import { CreateOrderPageState } from '../CreateOrder'
 import { useStyles } from './ClientForm.styles'
 import { ClientData, SubmitAction } from './ClientForm.types'
-import { clientFormValidationSchema } from './config/clientFormValidation'
+import { clientFormValidationSchema, enrichedclientFormValidationSchema } from './config/clientFormValidation'
 import { FormContainer } from './FormContainer'
 import { useConfirmationForm } from './hooks/useConfirmationForm'
 import { useInitialValues } from './hooks/useInitialValues'
@@ -33,6 +34,7 @@ export function ClientForm() {
 
   const location = useLocation()
   const state = location.state as CreateOrderPageState
+  const { isFullCalculator = false } = state || {}
   const saveDraftDisabled = state && state.saveDraftDisabled !== undefined ? state.saveDraftDisabled : false
   const formRef = useRef<FormikProps<ClientData>>(null)
 
@@ -201,6 +203,8 @@ export function ClientForm() {
         : isDraftLoading
       : false
 
+  const validationSchema = isFullCalculator ? enrichedclientFormValidationSchema : clientFormValidationSchema
+
   return (
     <Box className={classes.formContainer}>
       {isShouldShowLoading ? (
@@ -211,7 +215,7 @@ export function ClientForm() {
         <>
           <Formik
             initialValues={initialValues}
-            validationSchema={clientFormValidationSchema}
+            validationSchema={validationSchema}
             onSubmit={getSubmitAction}
             innerRef={formRef}
           >
