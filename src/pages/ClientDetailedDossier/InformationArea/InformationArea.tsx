@@ -167,8 +167,9 @@ export function InformationArea({
     [
       PreparedStatus.formation,
       PreparedStatus.signed,
-      PreparedStatus.authorized,
+      PreparedStatus.signing,
       PreparedStatus.financed,
+      PreparedStatus.dcFinanced,
     ].includes(status)
 
   const isShowScheduleBtn =
@@ -178,8 +179,9 @@ export function InformationArea({
       PreparedStatus.finallyApproved,
       PreparedStatus.formation,
       PreparedStatus.signed,
-      PreparedStatus.authorized,
+      PreparedStatus.signing,
       PreparedStatus.financed,
+      PreparedStatus.dcFinanced,
     ].includes(status) ||
     // иначе это заявка из уко на пост залог, по ней нет возможности сформировать график
     // https://wiki.x.sberauto.com/pages/viewpage.action?pageId=1050969954
@@ -189,8 +191,9 @@ export function InformationArea({
     [
       PreparedStatus.formation,
       PreparedStatus.signed,
-      PreparedStatus.authorized,
+      PreparedStatus.signing,
       PreparedStatus.financed,
+      PreparedStatus.dcFinanced,
     ].includes(status) && !isHasFeeScheduleInScans
 
   const handleSendEmailBtnClick = useCallback(() => {

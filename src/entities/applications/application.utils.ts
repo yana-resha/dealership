@@ -10,13 +10,15 @@ export enum PreparedStatus {
   canceledDeal = 'Истек срок одобрения',
   canceled = 'Отменен',
   signed = 'КД подписан',
-  authorized = 'Ожидание финансирования',
-  financed = 'Кредит выдан',
+  signing = 'Ожидание финансирования',
+  financed = 'Клиент профинансирован',
   error = 'Ошибка',
   issueError = 'Ошибка финансирования',
   clientRejected = 'Отказ по клиенту',
-  signing = 'Ожидание финансирования',
-  signError = 'Ошибка финансирования',
+  waitingConfirmation = 'Ожидает СМС подтверждения',
+  lackConfirmation = 'Отказ СМС подтверждения',
+  dcFinanced = 'Кредит выдан',
+  smsFailed = 'Ошибка СМС подтверждения',
 }
 
 export enum AnketaType {
@@ -25,44 +27,32 @@ export enum AnketaType {
   Full = 2,
 }
 
-export const getStatus = (status: StatusCode) => {
-  switch (status) {
-    case StatusCode.INITIAL:
-      return PreparedStatus.initial
-    case StatusCode.PROCESSED:
-      return PreparedStatus.processed
-    case StatusCode.APPROVED:
-      return PreparedStatus.approved
-    case StatusCode.NEED_REFORMATION:
-    case StatusCode.FINALLY_APPROVED:
-      return PreparedStatus.finallyApproved
-    case StatusCode.FORMATION:
-      return PreparedStatus.formation
-    case StatusCode.REJECTED:
-      return PreparedStatus.rejected
-    case StatusCode.CANCELED_DEAL:
-      return PreparedStatus.canceledDeal
-    case StatusCode.CANCELED:
-      return PreparedStatus.canceled
-    case StatusCode.SIGNED:
-      return PreparedStatus.signed
-    case StatusCode.ISSUED:
-      return PreparedStatus.financed
-    case StatusCode.AUTHORIZED:
-      return PreparedStatus.authorized
-    case StatusCode.ISSUE_ERROR:
-      return PreparedStatus.issueError
-    case StatusCode.CLIENT_REJECTED:
-      return PreparedStatus.clientRejected
-    case StatusCode.SIGNING:
-      return PreparedStatus.signing
-    case StatusCode.SIGN_ERROR:
-      return PreparedStatus.signError
-    default:
-      return PreparedStatus.error
-  }
-}
+const StatusMap = new Map([
+  [StatusCode.INITIAL, PreparedStatus.initial],
+  [StatusCode.INITIAL, PreparedStatus.initial],
+  [StatusCode.PROCESSED, PreparedStatus.processed],
+  [StatusCode.APPROVED, PreparedStatus.approved],
+  [StatusCode.NEED_REFORMATION, PreparedStatus.finallyApproved],
+  [StatusCode.FINALLY_APPROVED, PreparedStatus.finallyApproved],
+  [StatusCode.FORMATION, PreparedStatus.formation],
+  [StatusCode.REJECTED, PreparedStatus.rejected],
+  [StatusCode.CANCELED_DEAL, PreparedStatus.canceledDeal],
+  [StatusCode.CANCELED, PreparedStatus.canceled],
+  [StatusCode.SIGNED, PreparedStatus.signed],
+  [StatusCode.ISSUED, PreparedStatus.financed],
+  [StatusCode.AUTHORIZED, PreparedStatus.signing],
+  [StatusCode.ISSUE_ERROR, PreparedStatus.issueError],
+  [StatusCode.CLIENT_REJECTED, PreparedStatus.clientRejected],
+  [StatusCode.SIGNING, PreparedStatus.signing],
+  [StatusCode.SIGN_ERROR, PreparedStatus.issueError],
+  [StatusCode.ERROR, PreparedStatus.error],
+  [StatusCode.WAITING_CONFIRMATION, PreparedStatus.waitingConfirmation],
+  [StatusCode.LACK_CONFIRMATION, PreparedStatus.lackConfirmation],
+  [StatusCode.DC_FINANCED, PreparedStatus.dcFinanced],
+  [StatusCode.SMS_FAILED, PreparedStatus.smsFailed],
+])
 
 export enum ApplicationSource {
   CAR_LOAN_APPLICATION_DC = 'CARLOANAPPLICATIONDC',
 }
+export const getStatus = (status: StatusCode) => StatusMap.get(status) ?? PreparedStatus.error

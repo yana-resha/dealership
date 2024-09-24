@@ -44,8 +44,9 @@ export function DocumentsArea({ status }: Props) {
   const preparedStatus = getStatus(status)
   const isShowDownloadLoanAgreement = [
     PreparedStatus.signed,
-    PreparedStatus.authorized,
+    PreparedStatus.signing,
     PreparedStatus.financed,
+    PreparedStatus.dcFinanced,
   ].includes(preparedStatus)
 
   const uploadQuestionnaire = useCallback(
