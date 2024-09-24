@@ -251,7 +251,10 @@ export function ActionArea({
     ((preparedStatus === PreparedStatus.rejected || preparedStatus === PreparedStatus.clientRejected) &&
       ((moratoryEndDate && new Date() > new Date(moratoryEndDate)) ||
         source !== Source.DC ||
-        !!targetDcAppId))
+        !!targetDcAppId)) ||
+    (preparedStatus === PreparedStatus.lackConfirmation &&
+      moratoryEndDate &&
+      new Date() > new Date(moratoryEndDate))
 
   const shownBlock = useMemo(() => {
     if (preparedStatus == PreparedStatus.initial) {
@@ -333,7 +336,11 @@ export function ActionArea({
         </Box>
       )
     }
-    if (isShouldShowRecreateButton || preparedStatus == PreparedStatus.financed) {
+    if (
+      isShouldShowRecreateButton ||
+      preparedStatus == PreparedStatus.financed ||
+      preparedStatus === PreparedStatus.dcFinanced
+    ) {
       return (
         <Box className={classes.actionButtons}>
           {targetDcAppId ? (
@@ -357,7 +364,9 @@ export function ActionArea({
         </Box>
       )
     }
-    if ([PreparedStatus.issueError, PreparedStatus.signError].includes(preparedStatus)) {
+    if (
+      [PreparedStatus.issueError, PreparedStatus.signing, PreparedStatus.smsFailed].includes(preparedStatus)
+    ) {
       return (
         <Box className={classes.actionButtons}>
           <Button

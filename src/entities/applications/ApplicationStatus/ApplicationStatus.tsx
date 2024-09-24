@@ -16,12 +16,14 @@ export const statusListItems: Record<string, string> = {
   [PreparedStatus.canceledDeal]: theme.palette.status.canceled,
   [PreparedStatus.canceled]: theme.palette.status.canceled,
   [PreparedStatus.signed]: theme.palette.status.approved,
-  [PreparedStatus.authorized]: theme.palette.status.processed,
+  [PreparedStatus.signing]: theme.palette.status.processed,
   [PreparedStatus.financed]: theme.palette.status.approved,
   [PreparedStatus.error]: theme.palette.status.error,
   [PreparedStatus.issueError]: theme.palette.status.error,
-  [PreparedStatus.signing]: theme.palette.status.processed,
-  [PreparedStatus.signError]: theme.palette.status.error,
+  [PreparedStatus.waitingConfirmation]: theme.palette.status.processed,
+  [PreparedStatus.lackConfirmation]: theme.palette.status.error,
+  [PreparedStatus.dcFinanced]: theme.palette.status.approved,
+  [PreparedStatus.smsFailed]: theme.palette.status.error,
 }
 
 type Props = {

@@ -47,8 +47,8 @@ describe('ApplicationStatus', () => {
       expect(screen.getByText('Отменен')).toBeInTheDocument()
       expect(screen.getByText('Отменен')).toHaveStyle('background-color: rgb(211, 211, 211)')
     })
-    it('authorized', () => {
-      render(<ApplicationStatus status={StatusCode.AUTHORIZED} />)
+    it('signing', () => {
+      render(<ApplicationStatus status={StatusCode.SIGNING} />)
 
       expect(screen.getByText('Ожидание финансирования')).toBeInTheDocument()
       expect(screen.getByText('Ожидание финансирования')).toHaveStyle('background-color: rgb(255, 151, 30)')
@@ -68,8 +68,8 @@ describe('ApplicationStatus', () => {
     it('financed', () => {
       render(<ApplicationStatus status={StatusCode.ISSUED} />)
 
-      expect(screen.getByText('Кредит выдан')).toBeInTheDocument()
-      expect(screen.getByText('Кредит выдан')).toHaveStyle('background-color: rgb(23, 161, 49)')
+      expect(screen.getByText('Клиент профинансирован')).toBeInTheDocument()
+      expect(screen.getByText('Клиент профинансирован')).toHaveStyle('background-color: rgb(23, 161, 49)')
     })
     it('formation', () => {
       render(<ApplicationStatus status={StatusCode.FORMATION} />)
@@ -82,6 +82,36 @@ describe('ApplicationStatus', () => {
 
       expect(screen.getByText('КД подписан')).toBeInTheDocument()
       expect(screen.getByText('КД подписан')).toHaveStyle('background-color:  rgb(23, 161, 49)')
+    })
+
+    it('issueError', () => {
+      render(<ApplicationStatus status={StatusCode.ISSUE_ERROR} />)
+
+      expect(screen.getByText('Ошибка финансирования')).toBeInTheDocument()
+      expect(screen.getByText('Ошибка финансирования')).toHaveStyle('background-color:  rgb(211, 47, 47)')
+    })
+
+    it('waitingConfirmation', () => {
+      render(<ApplicationStatus status={StatusCode.WAITING_CONFIRMATION} />)
+
+      expect(screen.getByText('Ожидает СМС подтверждения')).toBeInTheDocument()
+      expect(screen.getByText('Ожидает СМС подтверждения')).toHaveStyle(
+        'background-color:  rgb(255, 151, 30)',
+      )
+    })
+
+    it('lackConfirmation', () => {
+      render(<ApplicationStatus status={StatusCode.LACK_CONFIRMATION} />)
+
+      expect(screen.getByText('Отказ СМС подтверждения')).toBeInTheDocument()
+      expect(screen.getByText('Отказ СМС подтверждения')).toHaveStyle('background-color:  rgb(211, 47, 47)')
+    })
+
+    it('dcFinanced', () => {
+      render(<ApplicationStatus status={StatusCode.DC_FINANCED} />)
+
+      expect(screen.getByText('Кредит выдан')).toBeInTheDocument()
+      expect(screen.getByText('Кредит выдан')).toHaveStyle('background-color:  rgb(23, 161, 49)')
     })
   })
 

@@ -62,7 +62,7 @@ const config = [
   },
   {
     filter: [StatusCode.AUTHORIZED],
-    textValue: PreparedStatus.authorized,
+    textValue: PreparedStatus.signing,
   },
   {
     filter: [StatusCode.FINALLY_APPROVED],
