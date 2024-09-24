@@ -67,7 +67,14 @@ export function IncomesArea() {
         mask={maskOnlyDigitsWithSeparator}
         gridColumn="span 4"
       />
-      <Box gridColumn="span 8">
+      <MaskedInputFormik
+        name="familyIncome"
+        label="Доход семьи без дохода заявит."
+        placeholder="-"
+        mask={maskOnlyDigitsWithSeparator}
+        gridColumn="span 4"
+      />
+      <Box gridColumn="span 4">
         <CustomTooltip arrow title={<span>Подтверждение среднемесячного дохода</span>}>
           <Box className={classes.incomeConfirmationContainer}>
             <SwitchInputFormik
@@ -99,20 +106,6 @@ export function IncomesArea() {
         </Box>
       )}
 
-      <MaskedInputFormik
-        name="familyIncome"
-        label="Доход семьи без дохода заявит."
-        placeholder="-"
-        mask={maskOnlyDigitsWithSeparator}
-        gridColumn="span 4"
-      />
-      <MaskedInputFormik
-        name="expenses"
-        label="Общие расходы"
-        placeholder="-"
-        mask={maskOnlyDigitsWithSeparator}
-        gridColumn="span 4"
-      />
       <SwitchInputFormik
         name="relatedToPublic"
         label="Клиент принадлежит к категории публичных лиц"

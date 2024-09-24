@@ -58,7 +58,6 @@ export const configInitialValues: ClientData = {
   averageIncome: '',
   additionalIncome: '',
   familyIncome: '',
-  expenses: '',
   relatedToPublic: false,
 
   // Справки о доходах

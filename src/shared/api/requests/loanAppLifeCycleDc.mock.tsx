@@ -140,7 +140,6 @@ export const fullApplicationData: GetFullApplicationResponse = {
         basicIncome: 1000.45,
         addIncome: 1000.47,
         familyIncome: 44000.82,
-        expenses: 12005.2,
       },
     },
     employees: {

@@ -45,7 +45,6 @@ export const EXPECTED_DATA: ClientData = {
   employerName: 'ДрайвКликБанк',
   employerPhone: '79033800013',
   employmentDate: new Date('2021-09-08T07:44:00.355Z'),
-  expenses: '12005.2',
   familyIncome: '44000.82',
   incomeConfirmation: true,
   isIncomeProofUploaderTouched: false,
@@ -171,7 +170,6 @@ export const EXPECTED_EMPTY_DATA = {
   averageIncome: '',
   additionalIncome: '',
   familyIncome: '',
-  expenses: '',
   relatedToPublic: false,
 
   // Справки о доходах
