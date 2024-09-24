@@ -2230,10 +2230,10 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
-"@sberauto/emailappdc-proto@1.0.0":
-  version "1.0.0"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/emailappdc-proto/-/emailappdc-proto-1.0.0.tgz#cacaa94f348857eea4e20cb5381a34705b132d82"
-  integrity sha512-HrASMv3xjLggI6k7etUyI1trhQBuDtuvsh8aGkdhwfyCo7Q1/zR4dE0u3XhZZp6/sWwpHLvnxp1ASIRKlFqBkw==
+"@sberauto/emailappdc-proto@1.0.1":
+  version "1.0.1"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/emailappdc-proto/-/emailappdc-proto-1.0.1.tgz#a7e488da1354bcb2921d5e42203a31c4660cdc33"
+  integrity sha512-N0DSzHrS0igyY1lzNIgPH2JOp86msaWHEz+xYZkRm08OQFNVuouen8eWBLm6R7b2Y0qVZoQQRSSR0fOHDA+QCQ==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
