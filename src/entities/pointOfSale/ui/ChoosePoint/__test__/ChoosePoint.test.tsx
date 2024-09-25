@@ -138,9 +138,9 @@ describe('ChoosePoint', () => {
     it('Записи отображаются в корректном формате', async () => {
       userEvent.click(screen.getByPlaceholderText('ТТ или адрес'))
       const options = await screen.findAllByRole('option')
-      expect(options[0]).toHaveTextContent('Сармат 2002852 Ханты-Мансийск Зябликова 4')
-      expect(options[1]).toHaveTextContent('ХимкиАвто 4003390 Саратов Симонова 2')
-      expect(options[2]).toHaveTextContent('СайгакФорд 3444920 Москва Курдюка 4')
+      expect(options[0]).toHaveTextContent('СайгакФорд 3444920 Москва Курдюка 4')
+      expect(options[1]).toHaveTextContent('Сармат 2002852 Ханты-Мансийск Зябликова 4')
+      expect(options[2]).toHaveTextContent('ХимкиАвто 4003390 Саратов Симонова 2')
     })
   })
 
@@ -159,8 +159,8 @@ describe('ChoosePoint', () => {
       userEvent.click(textField)
       userEvent.type(textField, 'Са')
       const options = await screen.findAllByRole('option')
-      expect(options[0]).toHaveTextContent('Сармат 2002852 Ханты-Мансийск Зябликова 4')
-      expect(options[1]).toHaveTextContent('СайгакФорд 3444920 Москва Курдюка 4')
+      expect(options[0]).toHaveTextContent('СайгакФорд 3444920 Москва Курдюка 4')
+      expect(options[1]).toHaveTextContent('Сармат 2002852 Ханты-Мансийск Зябликова 4')
       expect(options[2]).toHaveTextContent('ХимкиАвто 4003390 Саратов Симонова 2')
     })
 

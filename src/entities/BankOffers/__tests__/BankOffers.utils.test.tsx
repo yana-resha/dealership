@@ -7,9 +7,9 @@ describe('BankOffers.utils', () => {
   describe('sortBankOffersByString', () => {
     it('Работает сортировка по строкам', () => {
       expect(sortBankOffersByString(mockedCalculatedProducts, 'productName', SortOrder.ASC)).toMatchObject([
-        mockedCalculatedProducts[1],
         mockedCalculatedProducts[3],
         mockedCalculatedProducts[4],
+        mockedCalculatedProducts[1],
         mockedCalculatedProducts[5],
         mockedCalculatedProducts[2],
         mockedCalculatedProducts[0],
@@ -18,9 +18,9 @@ describe('BankOffers.utils', () => {
     it('Работает обратная сортировка по строкам', () => {
       expect(sortBankOffersByString(mockedCalculatedProducts, 'productName', SortOrder.DESC)).toMatchObject(
         [
-          mockedCalculatedProducts[1],
           mockedCalculatedProducts[3],
           mockedCalculatedProducts[4],
+          mockedCalculatedProducts[1],
           mockedCalculatedProducts[5],
           mockedCalculatedProducts[2],
           mockedCalculatedProducts[0],

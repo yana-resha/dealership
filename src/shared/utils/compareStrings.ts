@@ -7,8 +7,8 @@ export const compareStrings = (a: string, b: string) => {
   // Разбиваем строку на фрагменты из одних цифр и остальных символов
   // Проходимся по фрагментам сравнивая фрагменты от a и b одинакового индекса.
   for (let i = 0, l = Math.min(aSplit.length, bSplit.length); i < l; i++) {
-    const aSubStr = aSplit[i].toLowerCase()
-    const bSubStr = bSplit[i].toLowerCase()
+    const aSubStr = aSplit[i].toLowerCase().replace(/[^a-zA-Z0-9_а-яА-ЯёЁ\s]+/gi, '')
+    const bSubStr = bSplit[i].toLowerCase().replace(/[^a-zA-Z0-9_а-яА-ЯёЁ\s]+/gi, '')
     if (aSubStr === bSubStr) {
       continue
     }
