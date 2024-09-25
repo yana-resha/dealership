@@ -15,6 +15,7 @@ import { clearTableSessions } from 'shared/tableCurrentPage/utils'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 import { ModalDialog } from 'shared/ui/ModalDialog/ModalDialog'
 import SberTypography from 'shared/ui/SberTypography'
+import { compareStrings } from 'shared/utils/compareStrings'
 
 import { useGetVendorsListQuery } from './ChoosePoint.api'
 import useStyles from './ChoosePoint.styles'
@@ -26,10 +27,12 @@ import {
 
 type Props = { isHeader?: boolean; onSuccessEditing?: () => void }
 
+const EMPTY_ARR: any[] = []
+
 export const ChoosePoint = ({ isHeader, onSuccessEditing }: Props) => {
   const classes = useStyles()
   const navigate = useNavigate()
-  const { data, error, isLoading } = useGetVendorsListQuery()
+  const { data = EMPTY_ARR, error, isLoading } = useGetVendorsListQuery()
   const [chosenOption, setChosenOption] = useState<Vendor | null>(null)
   const prevChosenOption = usePrevious(chosenOption)
   const [validationError, setValidationError] = useState<boolean>(false)
@@ -80,6 +83,10 @@ export const ChoosePoint = ({ isHeader, onSuccessEditing }: Props) => {
   )
 
   const getOptionLabel = useCallback((option: Vendor) => retrieveLabelForPointOfSale(option), [])
+  const sortedData = useMemo(
+    () => data.sort((a, b) => compareStrings(getOptionLabel(a), getOptionLabel(b))),
+    [data, getOptionLabel],
+  )
   const renderInput = useCallback(
     (params: AutocompleteRenderInputParams) => (
       <TextField
@@ -149,7 +156,7 @@ export const ChoosePoint = ({ isHeader, onSuccessEditing }: Props) => {
           value={chosenOption}
           isOptionEqualToValue={calculateIsOptionEqualToValue}
           loadingText="Загрузка..."
-          options={data ?? []}
+          options={sortedData}
           getOptionLabel={getOptionLabel}
           filterOptions={pointsOfSaleFilter}
           onChange={handleAutocompleteOptionChange}

@@ -10,4 +10,9 @@ describe('compareStrings', () => {
   it('Сортировка работает корректно', () => {
     expect(MOCKED_CAR_BRANDS.sort(compareStrings)).toEqual(EXPECTED_SORTED_CAR_BRANDS)
   })
+  it('Сортировка игнорирует спец. символы', () => {
+    const data = ['"Комфорт Плюс": без Каско', 'Комфорт Плaс: без Каско']
+    const expected = ['Комфорт Плaс: без Каско', '"Комфорт Плюс": без Каско']
+    expect(data.sort(compareStrings)).toEqual(expected)
+  })
 })
