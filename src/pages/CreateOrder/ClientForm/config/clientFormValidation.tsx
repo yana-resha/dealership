@@ -16,6 +16,18 @@ import { getCurrentWorkExperience } from '../utils/getCurrentWorkExperience'
 export const JOB_DISABLED_OCCUPATIONS = [OccupationType.UNEMPLOYED, OccupationType.PENSIONER]
 export const QUESTIONNAIRE_FILE_IS_REQUIRED = 'Необходимо загрузить анкету'
 const DFO_ADDRESS_CODES = ['03', '14', '75', '41', '25', '27', '28', '49', '65', '79', '87']
+const INDIVIDUAL_PERSONS = [
+  OccupationType.PRIVATE_PRACTICE,
+  OccupationType.INDIVIDUAL_ENTREPRENEUR,
+  OccupationType.AGENT_ON_COMMISSION_CONTRACT,
+  OccupationType.SELF_EMPLOYED,
+]
+
+const LEGAL_OR_INDIVIDUAL_PERSONS = [
+  OccupationType.WORKING_ON_A_TEMPORARY_CONTRACT,
+  OccupationType.WORKING_ON_A_PERMANENT_CONTRACT,
+  OccupationType.CONTRACTOR_UNDER_CIVIL_LAW_CONTRACT,
+]
 
 function validatePassportDate(value: Date | null | undefined, context: Yup.TestContext<AnyObject>) {
   const birthDate = (context.options as InternalOptions)?.from?.[0].value.birthDate as Date | null
@@ -63,21 +75,14 @@ function validateEmplyeeInn(value: string | undefined, context: Yup.TestContext<
     return true
   }
 
-  const isIndividualInn = [
-    OccupationType.PRIVATE_PRACTICE,
-    OccupationType.INDIVIDUAL_ENTREPRENEUR,
-    OccupationType.AGENT_ON_COMMISSION_CONTRACT,
-    OccupationType.CONTRACTOR_UNDER_CIVIL_LAW_CONTRACT,
-    OccupationType.SELF_EMPLOYED,
-  ].some(value => value === occupation)
-
-  if (isIndividualInn && value?.length !== 12) {
+  if (INDIVIDUAL_PERSONS.includes(occupation) && value?.length !== 12) {
     return context.createError({
       message: 'Длина ИНН должна составлять 12 цифр',
     })
-  } else if (!isIndividualInn && value?.length !== 10) {
+  }
+  if (LEGAL_OR_INDIVIDUAL_PERSONS.includes(occupation) && value?.length !== 10 && value?.length !== 12) {
     return context.createError({
-      message: 'Длина ИНН должна составлять 10 цифр',
+      message: 'Длина ИНН должна составлять 10 или 12 цифр',
     })
   }
 
@@ -391,11 +396,12 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
       otherwise: schema => setRequiredIfSave(schema),
     }),
-  employerInn: Yup.string().when('occupation', {
-    is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-    otherwise: schema => setRequiredIfSave(schema),
-  }),
-  // .test('wrongInn', '', validateEmplyeeInn),
+  employerInn: Yup.string()
+    .when('occupation', {
+      is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
+      otherwise: schema => setRequiredIfSave(schema),
+    })
+    .test('wrongInn', '', validateEmplyeeInn),
   employerPhone: Yup.string()
     .test('additionalNumberIsDuplicate', 'Такой номер уже есть', (value: string | undefined, context) => {
       const { mobileNumber, additionalNumber } = (context.options as InternalOptions)?.from?.[0].value || {}
