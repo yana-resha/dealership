@@ -192,7 +192,6 @@ describe('useCreditProductValidations', () => {
       )
       const { values } = result.current
       expect(values.validationParams).toEqual({
-        isNecessaryCasco: false,
         maxInitialPayment: 90,
         maxInitialPaymentPercent: 90,
         minInitialPayment: 0,
@@ -209,7 +208,6 @@ describe('useCreditProductValidations', () => {
     )
     const { values } = result.current
     expect(values.validationParams).toEqual({
-      isNecessaryCasco: false,
       maxInitialPayment: 80,
       maxInitialPaymentPercent: 80,
       minInitialPayment: 20,

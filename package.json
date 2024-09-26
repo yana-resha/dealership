@@ -20,7 +20,7 @@
     "@sberauto/authdc-proto": "1.6.0",
     "@sberauto/authsberteamid-proto": "1.0.0",
     "@sberauto/dadata-proto": "1.2.1",
-    "@sberauto/dictionarydc-proto": "1.7.1",
+    "@sberauto/dictionarydc-proto": "1.8.0",
     "@sberauto/emailappdc-proto": "1.0.0",
     "@sberauto/filestoragedc-proto": "0.2.6",
     "@sberauto/loanapplifecycledc-proto": "1.15.3",

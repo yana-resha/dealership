@@ -23,6 +23,8 @@ import {
   setRequiredIfInCredit,
 } from './FormContainer/BankDetails/bankDetailsFormValidation.utils'
 
+const WMI_LENGTH = 3
+
 function checkForCarCreationDate(value: Date | null | undefined, context: Yup.TestContext) {
   const carYear = context.parent[FormFieldNameMap.carYear] as string | undefined
   if (!value || !carYear) {
@@ -30,6 +32,15 @@ function checkForCarCreationDate(value: Date | null | undefined, context: Yup.Te
   }
 
   return parseInt(carYear, 10) <= value.getFullYear()
+}
+
+function checkWIN(value: string | undefined, context: Yup.TestContext) {
+  const WMIs = context.parent[FormFieldNameMap.validationParams].WMIs as string[] | undefined
+  if (!WMIs || !WMIs.length || !value || value.length < WMI_LENGTH) {
+    return true
+  }
+
+  return WMIs.includes(value.slice(0, WMI_LENGTH))
 }
 
 export const fullOrderFormValidationSchema = Yup.object().shape({
@@ -49,7 +60,13 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     .test('', 'Дата выдачи ПТС не может превышать дату выпуска автомобиля', checkForCarCreationDate),
 
   [FormFieldNameMap.carIdType]: Yup.string().nullable().required(FieldMessages.required),
-  [FormFieldNameMap.carId]: Yup.string().required(FieldMessages.required).min(17, FieldMessages.vinError),
+  [FormFieldNameMap.carId]: Yup.string()
+    .required(FieldMessages.required)
+    .min(17, FieldMessages.vinError)
+    .when([FormFieldNameMap.IS_GOVERNMENT_PROGRAM, FormFieldNameMap.IS_DFO_PROGRAM], {
+      is: (isGovernmentProgram: boolean, isDfoProgram: boolean) => isGovernmentProgram || isDfoProgram,
+      then: schema => schema.test('isWrongWIN', 'Данный WIN не участвует в ГП', checkWIN),
+    }),
   [FormFieldNameMap.salesContractId]: Yup.string().required(FieldMessages.required),
   [FormFieldNameMap.salesContractDate]: Yup.date()
     .nullable()

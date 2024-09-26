@@ -2222,10 +2222,10 @@
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"
 
-"@sberauto/dictionarydc-proto@1.7.1":
-  version "1.7.1"
-  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dictionarydc-proto/-/dictionarydc-proto-1.7.1.tgz#e0defcaa4451d65c26c0329026ba9f72ac7eb4e7"
-  integrity sha512-J0+lA4bQRJyC7LUAo+2cQ/cFcblJ5SoAXSsevJlgloDe78qDZkYJasydglFEUAnt2R+w3v3Dnzl3+AAynkCesg==
+"@sberauto/dictionarydc-proto@1.8.0":
+  version "1.8.0"
+  resolved "https://nexus.x.sberauto.com/repository/npm/@sberauto/dictionarydc-proto/-/dictionarydc-proto-1.8.0.tgz#b33226941a912593a96b285a9079af34c6f91689"
+  integrity sha512-iWyJqydYbc7NE4hlg5v8mxRrL+DI/B2IPI2tW1NDxXGsV0ME8vRftE/Eyu2I612dPiMCN7oz1FQiIupTLQ7mNw==
   dependencies:
     camelcase-keys "^6.2.2"
     snakecase-keys "^3.2.1"

@@ -56,14 +56,11 @@ export function useCreditProductsValidations({
   minInitialPaymentPercent,
   maxInitialPaymentPercent,
 }: Params) {
-  const [validationParamsField, , { setValue: setValidationParams }] = useField<ValidationParams>(
-    FormFieldNameMap.validationParams,
-  )
   const [commonErrorsField, , { setValue: setCommonErrors }] = useField<CommonError>(
     FormFieldNameMap.commonError,
   )
-  const { values, setFieldTouched } = useFormikContext<BriefOrderCalculatorFields>()
-  const { bankAdditionalServices, dealerAdditionalServices, additionalEquipments } = values
+  const { values, setFieldValue, setFieldTouched } = useFormikContext<BriefOrderCalculatorFields>()
+  const { bankAdditionalServices, dealerAdditionalServices, additionalEquipments, validationParams } = values
   const carCost = parseFloat(values.carCost)
 
   /*
@@ -74,27 +71,26 @@ export function useCreditProductsValidations({
   */
   useEffect(() => {
     if (
-      validationParamsField.value.maxInitialPayment !== maxInitialPayment ||
-      validationParamsField.value.maxInitialPaymentPercent !== maxInitialPaymentPercent ||
-      validationParamsField.value.minInitialPayment !== minInitialPayment ||
-      validationParamsField.value.minInitialPaymentPercent !== minInitialPaymentPercent
+      validationParams.maxInitialPayment !== maxInitialPayment ||
+      validationParams.maxInitialPaymentPercent !== maxInitialPaymentPercent ||
+      validationParams.minInitialPayment !== minInitialPayment ||
+      validationParams.minInitialPaymentPercent !== minInitialPaymentPercent
     ) {
-      setValidationParams({
-        ...validationParamsField.value,
+      setFieldValue(FormFieldNameMap.validationParams, {
+        ...validationParams,
         maxInitialPayment,
         maxInitialPaymentPercent,
         minInitialPayment,
         minInitialPaymentPercent,
       })
     }
-    // Исключили setValidationParams что бы избежать случайного перерендера
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     maxInitialPayment,
     maxInitialPaymentPercent,
     minInitialPayment,
     minInitialPaymentPercent,
-    validationParamsField.value,
+    setFieldValue,
+    validationParams,
   ])
 
   const additionalEquipmentsCost = getServicesTotalCost(additionalEquipments)
@@ -180,16 +176,16 @@ export function useCreditProductsValidations({
   оно служит для передачи внешних данных (isNecessaryCasco...) в схему валидации.
   В данном эффекте это и производится, если значение изменилось
   */
-  useEffect(() => {
-    if (validationParamsField.value.isNecessaryCasco !== isNecessaryCasco) {
-      setValidationParams({
-        ...validationParamsField.value,
-        isNecessaryCasco: isNecessaryCasco,
-      })
-    }
-    // Исключили setValidationParams что бы избежать случайного перерендера
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNecessaryCasco, validationParamsField.value])
+  // useEffect(() => {
+  //   if (validationParamsField.value.isNecessaryCasco !== isNecessaryCasco) {
+  //     setValidationParams({
+  //       ...validationParamsField.value,
+  //       isNecessaryCasco: isNecessaryCasco,
+  //     })
+  //   }
+  //   // Исключили setValidationParams что бы избежать случайного перерендера
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isNecessaryCasco, validationParamsField.value])
 
   const isHasCasco = dealerAdditionalServices.some(e => e.productType === CASCO_OPTION_ID)
 
