@@ -103,4 +103,8 @@ export default makeStyles(theme => ({
       border: 'none',
     },
   },
+
+  statusCell: {
+    width: 'fit-content',
+  },
 }))

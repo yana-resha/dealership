@@ -4,9 +4,12 @@ import { PreparedTableData } from './ApplicationTable.types'
 
 type CellsChildren = { name: string; value: string | number | boolean | StatusCode }[]
 
+const HIDDEN_FIELDS = ['id', 'applicationUpdateDate']
+
 export const getCellsChildren = (row: PreparedTableData) =>
   Object.entries(row).reduce<CellsChildren>((acc, [key, value]) => {
-    if (key === 'id') {
+    //отфильтровываем поля, которые не хотим видеть в таблице
+    if (HIDDEN_FIELDS.includes(key)) {
       return acc
     }
 

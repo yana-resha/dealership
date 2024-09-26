@@ -8,4 +8,5 @@ export type PreparedTableData = {
   source: string
   decisionTerm: number | '-'
   status: StatusCode
+  applicationUpdateDate: string
 }

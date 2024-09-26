@@ -35,6 +35,7 @@ export const makeApplicationTableData = (data: Application[]): PreparedTableData
       source,
       status,
       decisionTerm,
+      applicationUpdateDate,
     } = application
 
     return {
@@ -45,5 +46,6 @@ export const makeApplicationTableData = (data: Application[]): PreparedTableData
       source: sourceMap[(source || '').toLowerCase() as keyof typeof sourceMap] || source || '',
       decisionTerm: typeof decisionTerm === 'number' && decisionTerm >= 0 ? decisionTerm : '-',
       status: status ?? StatusCode.ERROR,
+      applicationUpdateDate: applicationUpdateDate || '',
     }
   })
