@@ -1,5 +1,3 @@
-import { useCallback, useEffect } from 'react'
-
 import {
   Box,
   Skeleton,
@@ -20,7 +18,7 @@ import { getTablePage, INITIAL_TABLE_PAGE, TableType } from 'shared/tableCurrent
 import { CustomTooltip } from 'shared/ui/CustomTooltip'
 import SberTypography from 'shared/ui/SberTypography'
 import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
-import { convertedDateToString } from 'shared/utils/dateTransform'
+import { convertDateTimeToLocal, convertedDateToString } from 'shared/utils/dateTransform'
 
 import { ApplicationStatus } from '../ApplicationStatus/ApplicationStatus'
 import {
@@ -140,7 +138,21 @@ export const ApplicationTable = ({
                 align="left"
                 className={cx(classes.bodyCell, { [classes.alignedCell]: alignedCellIdx.includes(i) })}
               >
-                {cell.name === 'status' && <ApplicationStatus status={cell.value as StatusCode} />}
+                {cell.name === 'status' && (
+                  <CustomTooltip
+                    arrow
+                    title={convertedDateToString(
+                      convertDateTimeToLocal(row.applicationUpdateDate as string),
+                      'dd.LL.yyyy HH:mm',
+                    )}
+                    placement="top"
+                    disableHoverListener={!row.applicationUpdateDate}
+                  >
+                    <Box className={classes.statusCell}>
+                      <ApplicationStatus status={cell.value as StatusCode} />
+                    </Box>
+                  </CustomTooltip>
+                )}
                 {cell.name === 'applicationCreatedDate' &&
                   !!cell.value &&
                   convertedDateToString(new Date(cell.value as string), 'dd.LL.yyyy')}

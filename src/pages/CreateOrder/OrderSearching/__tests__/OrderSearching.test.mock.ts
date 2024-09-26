@@ -273,5 +273,6 @@ export const applicationTabledataMock: PreparedTableData[] = [
     source: 'Сбол',
     status: StatusCode.INITIAL,
     vendorCode: '2003023272',
+    applicationUpdateDate: '22.02.2023',
   },
 ]
