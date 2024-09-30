@@ -217,7 +217,7 @@ export const maskPercent = (value: string) => {
 
 export const maskVin = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
-    mask: /^[A-Z0-9\s]{1,17}$/,
+    mask: /^[0-9A-HJ-NPR-Z]{1,17}$/,
     prepare: (str: string) => str.toUpperCase(),
   })
   masked.resolve(`${value}`)
