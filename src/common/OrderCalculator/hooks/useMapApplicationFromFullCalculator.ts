@@ -31,19 +31,28 @@ import { NonNullableAdditionalOption, useGetVendorOptionsQuery } from './useGetV
 enum BankOptionCodeDocNumberMap {
   ZVP = '008SE054',
   MLT = '077SE680',
-  PND = '077SE776',
-  PNDPR = '077SE677',
+  PND = '077SE677',
+  PND_ALT = '077SE776',
+  SBZ = '001SH001',
 }
 
-const getBankOptionDocNumber = (optionCode: string | undefined, dcAppId: string | undefined) => {
+const OPTION_CODE_PND = 'PND'
+
+const getBankOptionDocNumber = (
+  optionCode: string | undefined,
+  dcAppId: string | undefined,
+  isAltValue: boolean,
+) => {
   if (!optionCode) {
     return ''
   }
+  const suffix = (dcAppId || '').slice(0, 18)
 
-  return (
-    BankOptionCodeDocNumberMap[optionCode as keyof typeof BankOptionCodeDocNumberMap] +
-    (dcAppId || '').slice(0, 18)
-  )
+  if (optionCode === OPTION_CODE_PND && isAltValue) {
+    return BankOptionCodeDocNumberMap.PND_ALT + suffix
+  }
+
+  return BankOptionCodeDocNumberMap[optionCode as keyof typeof BankOptionCodeDocNumberMap] + suffix
 }
 
 type MapCommonValueParams = {
@@ -120,6 +129,7 @@ const mapCommonValues = ({
 
 export function useMapApplicationFromFullCalculator() {
   const dcAppId = useAppSelector(state => state.order.order?.orderData?.application?.dcAppId)
+  const productsMap = useAppSelector(state => state.order.order?.productsMap || {})
   const dispatch = useDispatch()
 
   const { vendorCode, vendorName } = getPointOfSaleFromCookies()
@@ -130,6 +140,7 @@ export function useMapApplicationFromFullCalculator() {
     (values: FullOrderCalculatorFields) => {
       const {
         carCost,
+        creditProduct,
         initialPayment,
         additionalEquipments,
         dealerAdditionalServices,
@@ -205,11 +216,15 @@ export function useMapApplicationFromFullCalculator() {
 
       const bankAdditionalServicesForApplication = bankAdditionalServices.reduce(
         (acc: AdditionalOptionsFrontdc[], option) => {
-          const { productType, tariff, loanTerm, provider, providerName } = option
+          const { productType, tariff: tariffId, loanTerm, provider, providerName } = option
           const vendorOption = vendorOptions?.additionalOptionsMap[productType ?? '']
-          const currentTariff = vendorOption?.tariffs?.find(t => t.tariffId === tariff)
+          const currentTariff = vendorOption?.tariffs?.find(t => t.tariffId === tariffId)
           const optionCode = vendorOption?.optionCode
           const tariffCode = currentTariff?.tariffCode
+          const rateDelta = productsMap[creditProduct || '']?.conditions[0]?.rateMod?.tariffs?.find(
+            tariff => tariff.tariffId === tariffId,
+          )?.rateDelta
+
           const commonValues = mapCommonValues({
             option,
             additionalOptionsMap: vendorOptions?.additionalOptionsMap,
@@ -221,13 +236,13 @@ export function useMapApplicationFromFullCalculator() {
           })
           const additionalOption: AdditionalOptionsFrontdc = {
             ...commonValues,
-            tariffId: tariff ?? undefined,
+            tariffId: tariffId ?? undefined,
             tariff: currentTariff?.tariff,
             tariffCode,
             insuredAmount: getBankOptionInsuredAmount(tariffCode, carCost, initialPayment),
             docType: 2, // Для услуг OptionType.BANK, всегда 2 (из аналитики)
             // Для услуг OptionType.BANK, фронт заполняет сам, по шаблону
-            docNumber: getBankOptionDocNumber(optionCode, dcAppId),
+            docNumber: getBankOptionDocNumber(optionCode, dcAppId, !rateDelta),
             code: optionCode,
           }
 
@@ -246,7 +261,7 @@ export function useMapApplicationFromFullCalculator() {
         ...bankAdditionalServicesForApplication,
       ]
     },
-    [dcAppId, vendorCode, vendorName, vendorOptions?.additionalOptionsMap],
+    [dcAppId, productsMap, vendorCode, vendorName, vendorOptions?.additionalOptionsMap],
   )
 
   const remapApplicationValuesForFullCalculator = useCallback(
