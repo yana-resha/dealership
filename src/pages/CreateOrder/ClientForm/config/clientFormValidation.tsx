@@ -314,7 +314,6 @@ export const clientFormValidationSchema = Yup.object().shape({
         familyStatus === MaritalStatus.MARRIED || familyStatus === MaritalStatus.CIVILMARRIAGE,
       then: schema => setRequiredIfSave(schema),
     }),
-  expenses: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
   relatedToPublic: setRequiredIfSave(Yup.boolean()),
   secondDocumentType: setRequiredIfSave(Yup.number().nullable()),
   secondDocumentNumber: setRequiredIfSave(

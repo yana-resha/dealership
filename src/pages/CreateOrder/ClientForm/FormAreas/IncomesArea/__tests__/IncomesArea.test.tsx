@@ -34,14 +34,13 @@ interface WrapperProps extends PropsWithChildren {
   store?: MockStore
 }
 
-const formFields = ['averageIncome', 'familyIncome', 'expenses', 'relatedToPublic']
+const formFields = ['averageIncome', 'familyIncome', 'relatedToPublic']
 
 const mockedIncomeAreaFields = {
   averageIncome: '',
   additionalIncome: '',
   incomeConfirmation: false,
   familyIncome: '',
-  expenses: '',
   relatedToPublic: null,
   submitAction: SubmitAction.Save,
   familyStatus: MaritalStatus.MARRIED,

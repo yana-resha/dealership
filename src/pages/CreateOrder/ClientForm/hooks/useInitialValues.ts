@@ -232,7 +232,6 @@ export function useInitialValues() {
         numOfChildren,
         additionalIncome,
         familyIncome,
-        expenses,
         incomeConfirmation,
         ndfl2File,
         ndfl3File,
@@ -334,7 +333,6 @@ export function useInitialValues() {
               ? stringToNumber(additionalIncome) || 0
               : stringToNumber(additionalIncome),
           familyIncome: stringToNumber(familyIncome),
-          expenses: stringToNumber(expenses),
         },
         employment: {
           occupation: occupation ?? undefined,
@@ -460,7 +458,6 @@ export function useInitialValues() {
           bankStatementFile: makeDocumentTypeFile(DocumentType.CERTIFICATE_FREE_FORM),
 
           familyIncome: `${applicant?.income?.familyIncome ?? initialValues.familyIncome}`,
-          expenses: `${applicant?.income?.expenses ?? initialValues.expenses}`,
           relatedToPublic: applicant?.publicPerson ?? initialValues.relatedToPublic,
           secondDocumentType: secondDocument.type ?? initialValues.secondDocumentType,
           secondDocumentNumber:
