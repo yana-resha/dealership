@@ -14,6 +14,7 @@ import { disableConsole } from 'tests/utils'
 
 import { fullOrderFormValidationSchema } from '../../../fullOrderFormValidation.utils'
 import { CarSettingsArea } from '../CarSettingsArea'
+import { FieldMessages } from 'shared/constants/fieldMessages'
 
 const currentDate = new Date()
 const currentYear = currentDate.getFullYear()
@@ -229,9 +230,9 @@ describe('CarSettingsArea', () => {
       await act(() => userEvent.type(carIdField, '12'))
       // TODO DCB-1720 Разблокировать после исправления проблемы
       // expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(13)
-      expect(await screen.findByText('Введите данные полностью')).toBeInTheDocument()
+      expect(await screen.findByText(FieldMessages.vinError)).toBeInTheDocument()
       await act(() => userEvent.type(carIdField, 'TEST12312312312'))
-      expect(screen.queryByText('Введите данные полностью')).not.toBeInTheDocument()
+      expect(screen.queryByText(FieldMessages.vinError)).not.toBeInTheDocument()
     })
 
     // TODO DCB-1410 DealerCenterRequisites вынести в отдельные тесты

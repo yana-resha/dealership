@@ -3,4 +3,5 @@ export enum FieldMessages {
   enterFullData = 'Введите данные полностью',
   moreThanZero = 'Значение должно быть больше 0',
   WRONG_REGION = 'Данный регион не участвует в госпрограмме ДФО',
+  vinError = 'Обнаружена ошибка в номере VIN, скорректируйте',
 }

@@ -49,9 +49,7 @@ export const fullOrderFormValidationSchema = Yup.object().shape({
     .test('', 'Дата выдачи ПТС не может превышать дату выпуска автомобиля', checkForCarCreationDate),
 
   [FormFieldNameMap.carIdType]: Yup.string().nullable().required(FieldMessages.required),
-  [FormFieldNameMap.carId]: Yup.string()
-    .required(FieldMessages.required)
-    .min(17, FieldMessages.enterFullData),
+  [FormFieldNameMap.carId]: Yup.string().required(FieldMessages.required).min(17, FieldMessages.vinError),
   [FormFieldNameMap.salesContractId]: Yup.string().required(FieldMessages.required),
   [FormFieldNameMap.salesContractDate]: Yup.date()
     .nullable()
