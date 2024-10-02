@@ -68,6 +68,11 @@ export function useCarBrands() {
     [carBrand, carsInfo.brandMap, isDfoProgram, isGovernmentProgram],
   )
 
+  const currentCarBrandMWIs = useMemo(
+    () => carsInfo.brandMap[carBrand || '']?.wmi,
+    [carBrand, carsInfo.brandMap],
+  )
+
   useEffect(() => {
     if (carBrand && isCarLoaded && !carBrands.includes(carBrand)) {
       setFieldValue(FormFieldNameMap.carBrand, initialValueMap.carBrand)
@@ -87,5 +92,6 @@ export function useCarBrands() {
     isCarsLoading: isLoading,
     isCarLoaded,
     isCarError,
+    currentCarBrandMWIs,
   }
 }

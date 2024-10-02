@@ -157,6 +157,7 @@ export interface ValidationParams {
   minInitialPayment?: number
   minInitialPaymentPercent?: number
   isNecessaryCasco?: boolean
+  WMIs?: string[]
 }
 
 export interface BriefOrderCalculatorFields {

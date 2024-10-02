@@ -45,10 +45,20 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
   const styles = useStyles()
 
   const { values, setFieldValue } = useFormikContext<FullOrderCalculatorFields>()
-  const { isGovernmentProgram, isDfoProgram, carPassportType } = values
+  const { isGovernmentProgram, isDfoProgram, carPassportType, validationParams } = values
+
+  const {
+    carBrands,
+    carModels,
+    isDisabledCarModel,
+    isCarsLoading,
+    isCarLoaded,
+    isCarError,
+    currentCarBrandMWIs,
+  } = useCarBrands()
+
   const prevCarPassportType = usePrevious(carPassportType)
 
-  const { carBrands, carModels, isDisabledCarModel, isCarsLoading, isCarLoaded, isCarError } = useCarBrands()
   const { carYears } = useCarYears()
   const { handleBtnClick } = useCarSettings(onFilled)
 
@@ -63,6 +73,13 @@ export function CarSettingsArea({ onFilled, visibleFooter, isLoading }: Props) {
       setFieldValue(FormFieldNameMap.carPassportId, fullInitialValueMap[FormFieldNameMap.carPassportId])
     }
   }, [carPassportType, prevCarPassportType, setFieldValue])
+
+  // Заполняем WMIs при смене carBrand, или в первый раз (когда пришли авто)
+  useEffect(() => {
+    if (isCarLoaded && validationParams.WMIs !== currentCarBrandMWIs) {
+      setFieldValue(FormFieldNameMap.validationParams, { ...validationParams, WMIs: currentCarBrandMWIs })
+    }
+  }, [currentCarBrandMWIs, isCarLoaded, setFieldValue, validationParams])
 
   return (
     <CollapsibleFormAreaContainer title="Автомобиль">
