@@ -79,7 +79,7 @@ export function ClientForm() {
       const applicationForScoring = {
         application: {
           ...newApplication,
-          appType: 'CARLOANAPPLICATIONDC',
+          appType: ApplicationSource.CAR_LOAN_APPLICATION_DC,
         },
       }
 

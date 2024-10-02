@@ -9,12 +9,12 @@ import { act } from 'react-dom/test-utils'
 import { fullInitialValueMap } from 'common/OrderCalculator/config'
 import * as useCarYearsModule from 'common/OrderCalculator/hooks/useCarYears'
 import { FieldLabels } from 'shared/constants/fieldLabels'
+import { FieldMessages } from 'shared/constants/fieldMessages'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
 import { fullOrderFormValidationSchema } from '../../../fullOrderFormValidation.utils'
 import { CarSettingsArea } from '../CarSettingsArea'
-import { FieldMessages } from 'shared/constants/fieldMessages'
 
 const currentDate = new Date()
 const currentYear = currentDate.getFullYear()
