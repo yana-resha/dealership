@@ -57,6 +57,32 @@ export const maskDigitsOnly = (value: string, unmasked?: boolean) => {
   return unmasked ? masked.unmaskedValue : masked.value
 }
 
+export const maskDigitsOrName = (value: string, unmasked?: boolean) => {
+  const masked = IMask.createMask({
+    mask: [
+      {
+        mask: /^[0-9]+$/,
+      },
+      {
+        mask: /^[а-яА-ЯёЁ '-.,IV)(]*$/,
+        // Если вводится первый символ, делаем его прописным.
+        prepare: (appended: string, masked: { value: string }) => {
+          if (!masked.value.length) {
+            return appended.toUpperCase()
+          } else if (appended === 'I' || appended === 'V') {
+            return appended
+          }
+
+          return appended.toLowerCase()
+        },
+      },
+    ],
+  })
+  masked.resolve(`${value}`)
+
+  return unmasked ? masked.unmaskedValue : masked.value
+}
+
 export const maskDivisionCode = (value: string, unmasked?: boolean) => {
   const masked = IMask.createMask({
     mask: '000-000',

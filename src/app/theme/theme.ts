@@ -199,6 +199,7 @@ export const theme = createTheme({
       disabled: alpha(BLACK, 0.26),
     },
     colors: {
+      grayNormal: GRAY_NORMAL,
       blueGray: '#ECF1FA',
       white: WHITE,
     },
@@ -224,6 +225,7 @@ declare module '@mui/material/styles' {
       warning: React.CSSProperties['color']
     }
     colors: {
+      grayNormal: React.CSSProperties['color']
       blueGray: React.CSSProperties['color']
       white: React.CSSProperties['color']
     }
@@ -257,6 +259,7 @@ declare module '@mui/material/styles' {
     canceled: string
     error: string
     warning: string
+    grayNormal: string
   }
 
   interface SimplePaletteColorOptions {

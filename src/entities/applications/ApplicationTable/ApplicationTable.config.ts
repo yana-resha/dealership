@@ -1,8 +1,7 @@
 export enum ApplicationHeaders {
   AppId = 'Номер заявки',
-  Data = 'Дата',
+  Date = 'Дата',
   ClientName = 'ФИО Клиента',
-  DcNumber = 'Номер ДЦ',
   Source = 'Источник',
   PermitTerm = 'Срок действия решения',
   Status = 'Статус',
@@ -10,13 +9,16 @@ export enum ApplicationHeaders {
 
 export const APPLICATION_HEADERS = [
   ApplicationHeaders.AppId,
-  ApplicationHeaders.Data,
+  ApplicationHeaders.Date,
   ApplicationHeaders.ClientName,
-  ApplicationHeaders.DcNumber,
   ApplicationHeaders.Source,
   ApplicationHeaders.PermitTerm,
   ApplicationHeaders.Status,
 ]
+
+export const HEADERS_WITH_TOOLTIP = [ApplicationHeaders.Date, ApplicationHeaders.PermitTerm]
+
+export const HEADERS_WITH_FILTER = [ApplicationHeaders.Date, ApplicationHeaders.Status]
 
 export const ALIGNED_CELL = [ApplicationHeaders.Source, ApplicationHeaders.PermitTerm]
 export const alignedCellIdx = APPLICATION_HEADERS.map((header, i) =>
