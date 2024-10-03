@@ -16,15 +16,19 @@ import { useRowsPagination } from 'shared/hooks/useRowsPagination'
 import { useRowsPerPage } from 'shared/hooks/useRowsPerPage'
 import { getTablePage, INITIAL_TABLE_PAGE, TableType } from 'shared/tableCurrentPage'
 import { CustomTooltip } from 'shared/ui/CustomTooltip'
+import { DateFilter } from 'shared/ui/DateFilter'
 import SberTypography from 'shared/ui/SberTypography'
 import { TablePaginationActions } from 'shared/ui/TablePaginationActions'
 import { convertDateTimeToLocal, convertedDateToString } from 'shared/utils/dateTransform'
 
 import { ApplicationStatus } from '../ApplicationStatus/ApplicationStatus'
+import { StatusesFilter } from '../StatusesFilter/StatusesFilter'
 import {
   ALIGNED_CELL,
   APPLICATION_HEADERS,
   ApplicationHeaders,
+  HEADERS_WITH_FILTER,
+  HEADERS_WITH_TOOLTIP,
   alignedCellIdx,
 } from './ApplicationTable.config'
 import useStyles from './ApplicationTable.styles'
@@ -91,10 +95,8 @@ export const ApplicationTable = ({
               <CustomTooltip
                 key={header}
                 arrow
-                title={header == ApplicationHeaders.Data ? 'Дата создания заявки' : header}
-                disableHoverListener={
-                  header !== ApplicationHeaders.PermitTerm && header !== ApplicationHeaders.Data
-                }
+                title={header === ApplicationHeaders.Date ? 'Дата создания заявки' : header}
+                disableHoverListener={!HEADERS_WITH_TOOLTIP.includes(header)}
                 placement="top"
                 classes={{
                   tooltip: classes.tooltip,
@@ -102,10 +104,12 @@ export const ApplicationTable = ({
               >
                 <Box
                   className={cx(classes.headerCellInner, {
-                    [classes.smallHeaderCellInner]: header === ApplicationHeaders.Data,
+                    [classes.headerCellContainerForFilter]: HEADERS_WITH_FILTER.includes(header),
                   })}
                 >
-                  {header}
+                  {header === ApplicationHeaders.Date && <DateFilter />}
+                  {header === ApplicationHeaders.Status && <StatusesFilter />}
+                  {!HEADERS_WITH_FILTER.includes(header) && header}
                 </Box>
               </CustomTooltip>
             </TableCell>
@@ -153,9 +157,11 @@ export const ApplicationTable = ({
                     </Box>
                   </CustomTooltip>
                 )}
-                {cell.name === 'applicationCreatedDate' &&
-                  !!cell.value &&
-                  convertedDateToString(new Date(cell.value as string), 'dd.LL.yyyy')}
+                {cell.name === 'applicationCreatedDate' && !!cell.value && (
+                  <Box className={classes.dateCell}>
+                    {convertedDateToString(new Date(cell.value as string), 'dd.LL.yyyy')}
+                  </Box>
+                )}
                 {cell.name !== 'status' && cell.name !== 'applicationCreatedDate' && cell.value}
               </TableCell>
             ))}

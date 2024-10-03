@@ -1,39 +1,31 @@
 import { useCallback, useState } from 'react'
 
-import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 
-import { ApplicationFilters } from 'entities/applications/ApplicationFilters/ApplicationFilters'
-import { FindApplicationsReq } from 'entities/applications/ApplicationFilters/ApplicationFilters.types'
+import { ApplicationSearch } from 'entities/applications/ApplicationSearch/ApplicationSearch'
+import { FindApplicationsReq } from 'entities/applications/ApplicationSearch/ApplicationSearch.types'
 import { ApplicationTable } from 'entities/applications/ApplicationTable/ApplicationTable'
+import { FilterInfo } from 'entities/applications/FiltersInfo/FiltersInfo'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { appRoutes } from 'shared/navigation/routerPath'
 
+import { useApplicationFilters } from '../hooks/useApplicationFilters'
 import { useFindApplicationsQuery } from '../hooks/useFindApplicationsQuery'
-import { useStyles } from './FindApplication.styles'
 
 export const FindApplication = () => {
-  const classes = useStyles()
   const navigate = useNavigate()
   const { vendorCode } = getPointOfSaleFromCookies()
 
-  const [request, setRequest] = useState<FindApplicationsReq>({
-    passportSeries: '',
-    passportNumber: '',
-    applicationNumber: '',
-    applicationUpdateDate: '',
-    onlyUserApplicationsFlag: false,
-    firstName: '',
-    middleName: '',
-    lastName: '',
-  })
+  const [request, setRequest] = useState<FindApplicationsReq>({})
 
   const { data, isLoading, isFetched } = useFindApplicationsQuery(
     { vendorCode, ...request },
     { retry: false },
   )
 
-  const onSubmit = useCallback((values: FindApplicationsReq) => setRequest({ ...values }), [])
+  const { isEnabled, filteredData } = useApplicationFilters(data)
+
+  const onSubmit = useCallback((values: FindApplicationsReq) => setRequest(values), [])
 
   const getDetailedDossier = (applicationId: string) => {
     navigate(appRoutes.order(applicationId))
@@ -41,10 +33,10 @@ export const FindApplication = () => {
 
   return (
     <>
-      <ApplicationFilters onSubmitClick={onSubmit} />
-      <Box className={classes.divider} />
+      <ApplicationSearch onSubmitClick={onSubmit} />
+      {isEnabled && <FilterInfo />}
       <ApplicationTable
-        data={data || []}
+        data={filteredData || []}
         isLoading={isLoading}
         isFetched={isFetched}
         onClickRow={getDetailedDossier}

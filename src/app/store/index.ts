@@ -5,6 +5,7 @@ import storage from 'redux-persist/lib/storage'
 import storageSession from 'redux-persist/lib/storage/session'
 import { initMessageListener } from 'redux-state-sync'
 
+import { filterSlice } from 'entities/filters'
 import { orderSlice } from 'entities/order'
 import { userSlice } from 'entities/user'
 
@@ -18,6 +19,10 @@ const rootReducer = combineReducers({
   [orderSlice.name]: persistReducer(
     persistDefaultConfig(orderSlice.name, storageSession),
     orderSlice.reducer,
+  ),
+  [filterSlice.name]: persistReducer(
+    persistDefaultConfig(filterSlice.name, storageSession),
+    filterSlice.reducer,
   ),
 })
 

@@ -29,7 +29,6 @@ export enum AnketaType {
 
 const StatusMap = new Map([
   [StatusCode.INITIAL, PreparedStatus.initial],
-  [StatusCode.INITIAL, PreparedStatus.initial],
   [StatusCode.PROCESSED, PreparedStatus.processed],
   [StatusCode.APPROVED, PreparedStatus.approved],
   [StatusCode.NEED_REFORMATION, PreparedStatus.finallyApproved],
@@ -56,3 +55,8 @@ export enum ApplicationSource {
   CAR_LOAN_APPLICATION_DC = 'CARLOANAPPLICATIONDC',
 }
 export const getStatus = (status: StatusCode) => StatusMap.get(status) ?? PreparedStatus.error
+
+export const getStatusCodeByPrepared = (preparedStatus: PreparedStatus) =>
+  Array.from(StatusMap.entries())
+    .filter(([k, v]) => v === preparedStatus)
+    .map(([k, v]) => k)

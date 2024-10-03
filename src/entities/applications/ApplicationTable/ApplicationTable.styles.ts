@@ -107,4 +107,24 @@ export default makeStyles(theme => ({
   statusCell: {
     width: 'fit-content',
   },
+  dateCell: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  headerCellContainerForFilter: {
+    borderRadius: 4 * theme.shape.borderRadius,
+    color: theme.palette.text.primary,
+    position: 'relative',
+    '& svg': {
+      fill: theme.palette.text.primary,
+    },
+    '&:hover': {
+      cursor: 'pointer',
+      background: theme.palette.background.paper,
+      color: theme.palette.primary.main,
+      '& svg': {
+        fill: theme.palette.primary.main,
+      },
+    },
+  },
 }))

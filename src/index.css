@@ -17,14 +17,12 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 @font-face {
   font-family: 'SBSansText';
-  src: local('SBSansText'),
-    url('./assets/fonts/SBSansTextLightWeb/SBSansText-Light.woff2') format('woff2'),
+  src: local('SBSansText'), url('./assets/fonts/SBSansTextLightWeb/SBSansText-Light.woff2') format('woff2'),
     url('./assets/fonts/SBSansTextLightWeb/SBSansText-Light.woff') format('woff');
   font-weight: 100;
   font-style: normal;
@@ -33,8 +31,7 @@ code {
 
 @font-face {
   font-family: 'SBSansText';
-  src: local('SBSansText'),
-    url('./assets/fonts/SBSansTextLightWeb/SBSansText-Light.woff2') format('woff2'),
+  src: local('SBSansText'), url('./assets/fonts/SBSansTextLightWeb/SBSansText-Light.woff2') format('woff2'),
     url('./assets/fonts/SBSansTextLightWeb/SBSansText-Light.woff') format('woff');
   font-weight: 200;
   font-style: normal;
@@ -61,8 +58,7 @@ code {
 
 @font-face {
   font-family: 'SBSansText';
-  src: local('SBSansText'),
-    url('./assets/fonts/SBSansTextBoldWeb/SBSansText-Bold.woff2') format('woff2'),
+  src: local('SBSansText'), url('./assets/fonts/SBSansTextBoldWeb/SBSansText-Bold.woff2') format('woff2'),
     url('./assets/fonts/SBSansTextBoldWeb/SBSansText-Bold.woff') format('woff');
   font-weight: bold;
   font-style: normal;
