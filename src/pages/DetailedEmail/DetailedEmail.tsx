@@ -65,6 +65,7 @@ export function DetailedEmail() {
             onBackButton={onBackButton}
             topic={currentEmail.topic}
             from={currentEmail.from}
+            messageId={currentEmail.messageId}
             receivedAt={currentEmail.receivedAt}
           />
           <EmailBodyArea body={currentEmail.body} />

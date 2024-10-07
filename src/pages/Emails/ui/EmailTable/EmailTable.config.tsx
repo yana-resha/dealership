@@ -1,5 +1,4 @@
 export enum EmailTableHeader {
-  ID = 'ID',
   VIEWED_STATUS = 'Не прочитано',
   SENDER = 'Отправитель',
   TOPIC = 'Тема',
@@ -10,7 +9,6 @@ export enum EmailTableHeader {
 
 export const EMAIL_TABLE_HEADERS = [
   EmailTableHeader.VIEWED_STATUS,
-  EmailTableHeader.ID,
   EmailTableHeader.SENDER,
   EmailTableHeader.TOPIC,
   EmailTableHeader.DATE,

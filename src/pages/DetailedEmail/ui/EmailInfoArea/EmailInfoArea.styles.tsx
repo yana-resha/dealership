@@ -16,6 +16,7 @@ export const useStyles = makeStyles(theme => ({
   infoContainer: {
     display: 'flex',
     flexDirection: 'column',
+    width: '100%',
   },
 
   emailTopic: {
@@ -30,6 +31,7 @@ export const useStyles = makeStyles(theme => ({
   emailInfo: {
     display: 'flex',
     gap: theme.spacing(1),
+    width: '100%',
   },
 
   from: {
@@ -37,6 +39,15 @@ export const useStyles = makeStyles(theme => ({
       alignSelf: 'flex-start',
       fontSize: '24px',
       fontWeight: '400',
+    },
+  },
+
+  messageId: {
+    alignSelf: 'center',
+    marginLeft: 'auto',
+    '&.MuiTypography-root': {
+      fontSize: '18px',
+      fontWeight: '200',
     },
   },
 

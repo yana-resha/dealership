@@ -11,10 +11,17 @@ type Props = {
   topic: string | undefined
   from: string | undefined
   receivedAt: string | undefined
+  messageId: string | undefined
   onBackButton: () => void
 }
 
-export function EmailInfoArea({ topic = '', from = '', receivedAt = '', onBackButton }: Props) {
+export function EmailInfoArea({
+  topic = '',
+  from = '',
+  receivedAt = '',
+  messageId = '',
+  onBackButton,
+}: Props) {
   const classes = useStyles()
 
   return (
@@ -31,6 +38,7 @@ export function EmailInfoArea({ topic = '', from = '', receivedAt = '', onBackBu
               {convertedDateToString(new Date(receivedAt), 'dd.LL.yyyy HH:mm')}
             </Typography>
           )}
+          {messageId && <Typography className={classes.messageId}>{messageId}</Typography>}
         </Box>
       </Box>
     </Box>
