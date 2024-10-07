@@ -41,11 +41,26 @@ export function NavigationMenu({ isCollapsed }: Props) {
       >
         <Button onClick={() => handleTabClick(item)} className={classes.logoutBtn}>
           {!!item.icon && item.icon({ isSelected: false })}
-          <span className={classes.label}>{item.label}</span>
+          <span className={classes.hiddenLabelContainer}>
+            <span
+              className={cx(classes.label, {
+                [classes.visibleLabel]: !isCollapsed,
+              })}
+            >
+              {item.label}
+            </span>
+          </span>
         </Button>
       </CustomTooltip>
     ),
-    [classes.label, classes.logoutBtn, handleTabClick, isCollapsed],
+    [
+      classes.hiddenLabelContainer,
+      classes.label,
+      classes.logoutBtn,
+      classes.visibleLabel,
+      handleTabClick,
+      isCollapsed,
+    ],
   )
 
   const renderItem = useCallback(
@@ -66,7 +81,17 @@ export function NavigationMenu({ isCollapsed }: Props) {
         >
           <Tab
             {...tabProps}
-            label={<span className={classes.tabLabel}>{item.label}</span>}
+            label={
+              <span className={classes.hiddenLabelContainer}>
+                <span
+                  className={cx({
+                    [classes.visibleLabel]: !isCollapsed,
+                  })}
+                >
+                  {item.label}
+                </span>
+              </span>
+            }
             icon={icon}
             className={cx(classes.tab, {
               [classes.largeTab]: !isCollapsed,
@@ -79,7 +104,8 @@ export function NavigationMenu({ isCollapsed }: Props) {
     [
       location.pathname,
       isCollapsed,
-      classes.tabLabel,
+      classes.hiddenLabelContainer,
+      classes.visibleLabel,
       classes.tab,
       classes.largeTab,
       handleTabClick,

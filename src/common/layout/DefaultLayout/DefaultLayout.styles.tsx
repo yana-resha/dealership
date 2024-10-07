@@ -45,7 +45,6 @@ export const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     overflow: 'auto',
     minWidth: 'min-content',
-
     animationName: '$main',
     animationDuration: '1.5s',
   },

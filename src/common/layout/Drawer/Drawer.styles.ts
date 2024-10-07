@@ -14,6 +14,7 @@ export const useStyles = makeStyles<Theme, StyleProps>(theme => ({
     position: 'relative',
     zIndex: theme.zIndex.drawer + 1,
     height: '100%',
+    transition: 'width 1s',
     width: ({ isCollapsed }) => (isCollapsed ? SHORT_DRAWER_WIDTH : MAX_DRAWER_WIDTH),
 
     [theme.breakpoints.down('xl')]: {
@@ -32,36 +33,65 @@ export const useStyles = makeStyles<Theme, StyleProps>(theme => ({
     },
 
     animationName: '$navigationMenu',
-    animationDuration: '1.5s',
+    animationDuration: '1s',
   },
 
   '@keyframes navigationMenu': {
     from: {
-      marginLeft: '-100%',
       opacity: 0,
+      position: 'relative',
+      left: '-10%',
     },
     to: {
-      marginLeft: 0,
       opacity: 1,
+      position: 'relative',
+      left: 0,
+    },
+  },
+
+  '@keyframes show': {
+    '0%': {
+      display: 'none',
+      width: 0,
+      transform: 'translateX(-100%) scaleX(0)',
+    },
+
+    '20%': {
+      display: 'block',
+      width: 0,
+      transform: 'translateX(-100%) scaleX(0)',
+    },
+
+    '100%': {
+      display: 'block',
+      width: 'fit-content',
+      transform: 'translateX(0%) scaleX(1)',
     },
   },
 
   logo: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1),
     color: 'inherit',
+    gap: theme.spacing(1),
     textDecoration: 'none',
     margin: '0 auto',
     marginTop: theme.spacing(4),
-
+    transition: 'gap 1500ms',
     [theme.breakpoints.up('lg')]: {
       marginLeft: ({ isCollapsed }) => (isCollapsed ? '' : theme.spacing(3)),
     },
   },
 
-  logoTitle: {
+  logoTitleContainer: {
+    overflow: 'hidden',
     display: ({ isCollapsed }) => (isCollapsed ? 'none' : 'block'),
+  },
+
+  visibleLogoTitle: {
+    display: 'block',
+    animationName: '$show',
+    animationDuration: '1.2s',
   },
 
   switchMenuBtn: {
