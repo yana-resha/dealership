@@ -33,7 +33,6 @@ export function EmailRow({ row, onRowClick }: Props) {
           </Box>
         )}
       </TableCell>
-      <TableCell className={classes.bodyCell}>{row.messageId}</TableCell>
       <TableCell className={classes.bodyCell}>{row.from}</TableCell>
       <TableCell className={classes.bodyCell}>{row.topic}</TableCell>
       <TableCell className={classes.bodyCell}>
