@@ -15,6 +15,7 @@ export function useAdditionalServicesGroupe(
 ) {
   const [field, , { setValue: setServices }] =
     useField<(OrderCalculatorAdditionalService | OrderCalculatorBankAdditionalService)[]>(name)
+
   const { submitCount } = useFormikContext()
   const prevSubmitCount = usePrevious(submitCount)
 

@@ -5,7 +5,7 @@ import { useField, useFormikContext } from 'formik'
 
 import { ReactComponent as OrderCreateIcon } from 'assets/icons/orderCreate.svg'
 import {
-  FullInitialAdditionalEquipments,
+  FullInitialAdditionalEquipment,
   FullInitialAdditionalService,
   OrderCalculatorAdditionalService,
   OrderCalculatorBankAdditionalService,
@@ -21,7 +21,7 @@ type AdditionalService =
   | OrderCalculatorAdditionalService
   | OrderCalculatorBankAdditionalService
   | FullInitialAdditionalService
-  | FullInitialAdditionalEquipments
+  | FullInitialAdditionalEquipment
 type Props = {
   title: string
   name: string

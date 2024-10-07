@@ -4,7 +4,7 @@ import {
   OrderCalculatorAdditionalService,
   CommonError,
   FormFieldNameMap,
-  FullInitialAdditionalEquipments,
+  FullInitialAdditionalEquipment,
   FullInitialAdditionalService,
   FullOrderCalculatorFields,
   InitialBankDetailsValue,
@@ -95,7 +95,7 @@ export const INITIAL_BANK_DETAILS_VALUE: InitialBankDetailsValue = {
   [FormFieldNameMap.taxation]: undefined,
 }
 
-export const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipments = {
+export const FULL_INITIAL_ADDITIONAL_EQUIPMENTS: FullInitialAdditionalEquipment = {
   ...INITIAL_ADDITIONAL_SERVICE,
   ...INITIAL_ADDITIONAL_SERVICE_DOC_INFO,
   ...INITIAL_BANK_DETAILS_VALUE,

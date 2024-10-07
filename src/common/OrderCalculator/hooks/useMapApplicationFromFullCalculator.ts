@@ -19,7 +19,7 @@ import { stringToNumber } from 'shared/utils/stringToNumber'
 
 import {
   FullOrderCalculatorFields,
-  FullInitialAdditionalEquipments,
+  FullInitialAdditionalEquipment,
   FullInitialAdditionalService,
   FullInitialBankAdditionalService,
 } from '../types'
@@ -56,7 +56,7 @@ const getBankOptionDocNumber = (
 }
 
 type MapCommonValueParams = {
-  option: FullInitialAdditionalEquipments | FullInitialAdditionalService | FullInitialBankAdditionalService
+  option: FullInitialAdditionalEquipment | FullInitialAdditionalService | FullInitialBankAdditionalService
   additionalOptionsMap: Record<string, NonNullableAdditionalOption> | undefined
   bankOptionType: OptionType
   isCredit: boolean

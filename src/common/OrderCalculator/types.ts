@@ -102,7 +102,7 @@ export interface InitialBankDetailsValue {
   [FormFieldNameMap.taxation]?: string
 }
 
-export interface FullInitialAdditionalEquipments
+export interface FullInitialAdditionalEquipment
   extends OrderCalculatorAdditionalService,
     OrderCalculatorAdditionalServiceDocInfo,
     InitialBankDetailsValue {
@@ -204,7 +204,7 @@ export interface FullOrderCalculatorFields
   [FormFieldNameMap.loanAmount]: string
   [FormFieldNameMap.taxValue]?: number
   [FormFieldNameMap.taxPercent]?: number
-  [ServicesGroupName.additionalEquipments]: FullInitialAdditionalEquipments[]
+  [ServicesGroupName.additionalEquipments]: FullInitialAdditionalEquipment[]
   [ServicesGroupName.dealerAdditionalServices]: FullInitialAdditionalService[]
   [ServicesGroupName.bankAdditionalServices]: FullInitialBankAdditionalService[]
 }

@@ -1,19 +1,20 @@
-import { forwardRef, useMemo } from 'react'
+import { forwardRef } from 'react'
 
 import { Box } from '@mui/material'
-import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
-import { FULL_INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
-import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/constants'
 import {
-  BankAdditionalOption,
-  useGetVendorOptionsQuery,
-} from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+  FULL_INITIAL_ADDITIONAL_EQUIPMENTS,
+  FULL_INITIAL_ADDITIONAL_SERVICE,
+  FULL_INITIAL_BANK_ADDITIONAL_SERVICE,
+  INITIAL_BANK_ADDITIONAL_SERVICE,
+} from 'common/OrderCalculator/config'
+import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/constants'
+import { useAdditionalServices } from 'common/OrderCalculator/hooks/useAdditionalServices'
+import { useGetVendorOptionsQuery } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useRateMod } from 'common/OrderCalculator/hooks/useRateMod'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { CommonOrderSettings } from 'common/OrderCalculator/ui/CommonOrderSettings/CommonOrderSettings'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
-import { checkIsNumber } from 'shared/lib/helpers'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
@@ -81,53 +82,20 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
     initialBankAdditionalService: FULL_INITIAL_BANK_ADDITIONAL_SERVICE,
   })
 
-  const additionalEquipments = useMemo(
-    () =>
-      vendorOptions?.additionalOptions
-        ?.filter(option => option.optionType === OptionType.EQUIPMENT)
-        .map(option => ({
-          value: option.optionId,
-          label: option.optionName,
-        })) || [],
-    [vendorOptions?.additionalOptions],
-  )
-  const dealerAdditionalServices = useMemo(
-    () =>
-      vendorOptions?.additionalOptions
-        ?.filter(option => option.optionType === OptionType.DEALER)
-        .map(option => ({
-          value: option.optionId,
-          label: option.optionName,
-        })) || [],
-    [vendorOptions?.additionalOptions],
-  )
-
-  const bankAdditionalServices = useMemo(
-    () =>
-      (vendorOptions?.additionalOptions?.filter(option => {
-        const isBankOption = option.optionType === OptionType.BANK
-
-        // Если clientAge отсутствует, то банковские опции недоступны
-        if (!checkIsNumber(clientAge)) {
-          return false
-        }
-
-        const isValidClientAge = option.tariffs?.some(tariff => {
-          const { minClientAge, maxClientAge } = tariff
-          if (!checkIsNumber(minClientAge) || !checkIsNumber(maxClientAge)) {
-            return false
-          }
-
-          return (
-            (clientAge as number) >= (minClientAge as number) &&
-            (clientAge as number) <= (maxClientAge as number)
-          )
-        })
-
-        return isBankOption && isValidClientAge
-      }) as BankAdditionalOption[]) || [],
-    [clientAge, vendorOptions?.additionalOptions],
-  )
+  const {
+    isShowAdditionalServices,
+    bankAdditionalServiceOptions,
+    dealerAdditionalServiceOptions,
+    additionalEquipmentOptions,
+  } = useAdditionalServices({
+    isLoadedCreditProducts,
+    vendorOptions,
+    clientAge,
+    currentRateMod,
+    initialDealerAdditionalService: FULL_INITIAL_ADDITIONAL_SERVICE,
+    initialAdditionalEquipment: FULL_INITIAL_ADDITIONAL_EQUIPMENTS,
+    initialBankAdditionalService: INITIAL_BANK_ADDITIONAL_SERVICE,
+  })
 
   const isSectionLoading = isLimitsLoading || isVendorOptionsLoading
   const isSectionLoaded = !isSectionLoading && isLimitsSuccess && isVendorOptionsSuccess
@@ -164,19 +132,24 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
             isGetCarsSuccess={isGetCarsSuccess}
           />
 
-          <AdditionalEquipment options={{ productType: additionalEquipments, loanTerms }} />
-          <AdditionalServices
-            options={{ productType: dealerAdditionalServices, loanTerms }}
-            isNecessaryCasco={isNecessaryCasco}
-            isLoadedCreditProducts={isLoadedCreditProducts}
-          />
-          <AdditionalBankService
-            additionalServices={bankAdditionalServices}
-            clientAge={clientAge}
-            currentRateMod={currentRateMod}
-            isShouldShowInfoIcon={isShouldShowDiscountNotification}
-            maxRateModsMap={maxRateModsMap}
-          />
+          {isShowAdditionalServices && (
+            <>
+              <AdditionalEquipment options={{ productType: additionalEquipmentOptions, loanTerms }} />
+              <AdditionalServices
+                options={{ productType: dealerAdditionalServiceOptions, loanTerms }}
+                isNecessaryCasco={isNecessaryCasco}
+                isLoadedCreditProducts={isLoadedCreditProducts}
+              />
+              <AdditionalBankService
+                additionalServices={bankAdditionalServiceOptions}
+                clientAge={clientAge}
+                currentRateMod={currentRateMod}
+                isShouldShowInfoIcon={isShouldShowDiscountNotification}
+                maxRateModsMap={maxRateModsMap}
+              />
+            </>
+          )}
+
           {!!commonErrors.length && (
             <Box className={classes.errorList}>
               {commonErrors.map(e => (

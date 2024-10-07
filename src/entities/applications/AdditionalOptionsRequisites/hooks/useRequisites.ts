@@ -4,7 +4,7 @@ import { useFormikContext } from 'formik'
 
 import { INITIAL_BANK_DETAILS_VALUE } from 'common/OrderCalculator/config'
 import {
-  FullInitialAdditionalEquipments,
+  FullInitialAdditionalEquipment,
   FullInitialAdditionalService,
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
@@ -13,7 +13,7 @@ import { PreparedBroker, PreparedVendor, RequiredRequisite } from './useRequisit
 
 type Params = {
   namePrefix: string
-  values: FullOrderCalculatorFields | FullInitialAdditionalEquipments | FullInitialAdditionalService
+  values: FullOrderCalculatorFields | FullInitialAdditionalEquipment | FullInitialAdditionalService
   currentBroker: PreparedBroker | PreparedVendor | undefined
   currentBank: RequiredRequisite | undefined
   isCustomFields: boolean

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { Box, Divider } from '@mui/material'
 import { FieldArray, useField } from 'formik'
@@ -6,6 +6,7 @@ import { FieldArray, useField } from 'formik'
 import { FULL_INITIAL_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
+import { NonNullableAdditionalOption } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { DealerServicesRequisites } from 'entities/applications/AdditionalOptionsRequisites/ui'
@@ -14,7 +15,7 @@ import useStyles from './AdditionalServices.styles'
 
 type Props = {
   options: {
-    productType: { value: string; label: string }[]
+    productType: NonNullableAdditionalOption[]
     loanTerms: { value: number }[]
   }
   isNecessaryCasco?: boolean
@@ -41,6 +42,15 @@ export function AdditionalServices({
     FULL_INITIAL_ADDITIONAL_SERVICE,
   )
 
+  const productOptions = useMemo(
+    () =>
+      options.productType.map(option => ({
+        value: option.optionId,
+        label: option.optionName,
+      })) || [],
+    [options.productType],
+  )
+
   return (
     <AdditionalServicesContainer
       title="Дополнительные услуги дилера"
@@ -64,7 +74,7 @@ export function AdditionalServices({
                   isNecessaryCasco={isNecessaryCasco}
                   isLoadedCreditProducts={isLoadedCreditProducts}
                   isRequisiteEditable={true}
-                  productOptions={options.productType}
+                  productOptions={productOptions}
                   arrayHelpers={arrayHelpers}
                   arrayLength={arr.length}
                   servicesItem={v}

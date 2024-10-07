@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
 
 import { Button, Drawer } from '@mui/material'
+import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
-import cx from 'classnames'
 import { ReactComponent as KeyboardArrowLeft } from 'assets/icons/keyboardArrowLeft.svg'
 import { ReactComponent as SberIcon } from 'assets/icons/sberIcon.svg'
 import { ReactComponent as SberLogoTitle } from 'assets/icons/sberLogoTitle.svg'
