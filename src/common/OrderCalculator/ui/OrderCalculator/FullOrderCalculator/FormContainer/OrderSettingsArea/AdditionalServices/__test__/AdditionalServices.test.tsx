@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react'
 
 import { Button } from '@mui/material'
+import { OptionType } from '@sberauto/dictionarydc-proto/public'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Formik, Form } from 'formik'
@@ -68,7 +69,7 @@ describe('FullAdditionalServices', () => {
       render(
         <AdditionalServices
           options={{
-            productType: [{ value: '15', label: 'КАСКО' }],
+            productType: [{ optionType: OptionType.DEALER, optionName: 'КАСКО', optionId: '15' }],
             loanTerms: [],
           }}
           isNecessaryCasco

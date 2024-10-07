@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MockStore } from 'redux-mock-store'
 
@@ -11,14 +11,9 @@ import * as useGetCreditProductListQueryModule from 'common/OrderCalculator/hook
 import * as useGetVendorOptionsQueryModule from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import * as useInitialValuesModule from 'common/OrderCalculator/hooks/useInitialValues'
 import { prepareCreditProducts } from 'common/OrderCalculator/utils/prepareCreditProductListData'
-import {
-  CAR_BRANDS,
-  creditProductListRsData,
-  mockGetVendorOptionsResponse,
-} from 'shared/api/requests/dictionaryDc.mock'
+import { creditProductListRsData, mockGetVendorOptionsResponse } from 'shared/api/requests/dictionaryDc.mock'
 import { fullApplicationData } from 'shared/api/requests/loanAppLifeCycleDc.mock'
 import * as useAppSelectorModule from 'shared/hooks/store/useAppSelector'
-import { sleep } from 'shared/lib/sleep'
 import { MockProviders } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
@@ -57,132 +52,88 @@ const mockedUseInitialValues = jest.spyOn(useInitialValuesModule, 'useInitialVal
 // TODO Разбить тесты по дочерним компонентам DCB-1410
 describe('OrderCalculator', () => {
   const fn = jest.fn()
-
-  beforeEach(() => {
-    mockedUseGetCreditProductListQuery.mockImplementation(
-      () =>
-        ({
-          data: getCreditProductListData,
-          isError: false,
-          isFetching: false,
-          isLoading: false,
-          isSuccess: true,
-        } as any),
-    )
-    mockedUseGetVendorOptions.mockImplementation(
-      () =>
-        ({
-          data: mockGetVendorOptionsResponse,
-          isError: false,
-          isLoading: false,
-          isSuccess: true,
-        } as any),
-    )
-    mockedUseInitialValues.mockImplementation(
-      () =>
-        ({
-          isShouldShowLoading: false,
-          initialValues: initialValueMap,
-        } as any),
-    )
-    mockedUseCarSection.mockImplementation(
-      () =>
-        ({
-          data: mockedUseGetCarsListQueryData.newCarsInfo,
-          isLoading: false,
-          isSuccess: true,
-        } as any),
-    )
-    mockedUseAppSelector.mockImplementation(() => fullApplicationData.application?.applicant?.birthDate)
-  })
-
-  describe('Форма отображается корректно', () => {
+  describe('Если КП не выбран', () => {
     beforeEach(() => {
-      render(
-        <BriefOrderCalculator
-          isSubmitLoading={false}
-          onSubmit={fn}
-          onChangeForm={fn}
-          creditProductId={undefined}
-          resetCreditProductId={() => {}}
-        />,
-        {
-          wrapper: createWrapper,
-        },
+      mockedUseGetCreditProductListQuery.mockImplementation(
+        () =>
+          ({
+            data: getCreditProductListData,
+            isError: false,
+            isFetching: false,
+            isLoading: false,
+            isSuccess: true,
+          } as any),
       )
+      mockedUseGetVendorOptions.mockImplementation(
+        () =>
+          ({
+            data: mockGetVendorOptionsResponse,
+            isError: false,
+            isLoading: false,
+            isSuccess: true,
+          } as any),
+      )
+      mockedUseInitialValues.mockImplementation(
+        () =>
+          ({
+            isShouldShowLoading: false,
+            initialValues: initialValueMap,
+          } as any),
+      )
+      mockedUseCarSection.mockImplementation(
+        () =>
+          ({
+            data: mockedUseGetCarsListQueryData.newCarsInfo,
+            isLoading: false,
+            isSuccess: true,
+          } as any),
+      )
+      mockedUseAppSelector.mockImplementation(() => fullApplicationData.application?.applicant?.birthDate)
     })
 
-    it('Основные поля присутствуют на форме', () => {
-      for (const fieldName of FORM_FIELDS) {
-        switch (fieldName) {
-          case 'Стоимость':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(4)
-            break
-          case 'Тип продукта':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
-            break
-          case 'Срок':
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(2)
-            break
-          default:
-            expect(screen.getAllByText(`${fieldName}`)).toHaveLength(1)
-            break
+    describe('Форма отображается корректно', () => {
+      beforeEach(() => {
+        render(
+          <BriefOrderCalculator
+            isSubmitLoading={false}
+            onSubmit={fn}
+            onChangeForm={fn}
+            creditProductId={undefined}
+            resetCreditProductId={() => {}}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
+      })
+
+      it('Основные поля присутствуют на форме', () => {
+        for (const fieldName of FORM_FIELDS) {
+          expect(screen.getAllByText(`${fieldName}`)).toHaveLength(1)
         }
-      }
-    })
-  })
-
-  describe('Валидация основных полей формы работает корректно', () => {
-    beforeEach(() => {
-      render(
-        <BriefOrderCalculator
-          isSubmitLoading={false}
-          onSubmit={fn}
-          onChangeForm={fn}
-          creditProductId={undefined}
-          resetCreditProductId={() => {}}
-        />,
-        {
-          wrapper: createWrapper,
-        },
-      )
-      userEvent.click(screen.getByText('Рассчитать'))
+      })
     })
 
-    it('Валидируется верное количество обязательных полей', async () => {
-      expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(6)
-    })
-  })
+    describe('Валидация основных полей формы работает корректно', () => {
+      beforeEach(() => {
+        render(
+          <BriefOrderCalculator
+            isSubmitLoading={false}
+            onSubmit={fn}
+            onChangeForm={fn}
+            creditProductId={undefined}
+            resetCreditProductId={() => {}}
+          />,
+          {
+            wrapper: createWrapper,
+          },
+        )
+        userEvent.click(screen.getByText('Рассчитать'))
+      })
 
-  describe('Дополнительные поля', () => {
-    beforeEach(() => {
-      render(
-        <BriefOrderCalculator
-          isSubmitLoading={false}
-          onSubmit={fn}
-          onChangeForm={fn}
-          creditProductId={undefined}
-          resetCreditProductId={() => {}}
-        />,
-        {
-          wrapper: createWrapper,
-        },
-      )
-    })
-
-    it('Item добавляется и удаляется, но не последний', async () => {
-      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
-
-      await waitFor(() => userEvent.click(screen.getAllByTestId('addingSquareBtn')[0]))
-      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
-      await sleep(100)
-      await waitFor(() => userEvent.click(screen.getAllByTestId('addingSquareBtn')[0]))
-      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
-
-      userEvent.click(screen.getAllByTestId('closeSquareBtn')[0])
-      userEvent.click(screen.getAllByTestId('closeSquareBtn')[0])
-      userEvent.click(screen.getAllByTestId('closeSquareBtn')[0])
-      expect(screen.queryAllByTestId('addingSquareBtn')).toHaveLength(3)
+      it('Валидируется верное количество обязательных полей', async () => {
+        expect(await screen.findAllByText('Поле обязательно для заполнения')).toHaveLength(6)
+      })
     })
   })
 

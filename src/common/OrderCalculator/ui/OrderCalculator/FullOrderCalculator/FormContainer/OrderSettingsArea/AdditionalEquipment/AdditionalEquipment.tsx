@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { Box, Divider } from '@mui/material'
 import { FieldArray, useField } from 'formik'
@@ -6,7 +6,8 @@ import { FieldArray, useField } from 'formik'
 import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
 import { useAdditionalServiceIds } from 'common/OrderCalculator/hooks/useAdditionalServiceIds'
 import { useAdditionalServicesGroupe } from 'common/OrderCalculator/hooks/useAdditionalServicesGroupe'
-import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
+import { NonNullableAdditionalOption } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+import { FullInitialAdditionalEquipment } from 'common/OrderCalculator/types'
 import { AdditionalServicesContainer } from 'common/OrderCalculator/ui/AdditionalServicesContainer/AdditionalServicesContainer'
 import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { AdditionalEquipmentRequisites } from 'entities/applications/AdditionalOptionsRequisites/ui'
@@ -18,19 +19,28 @@ type Props = {
   isError?: boolean
   errorMessage?: string
   options: {
-    productType: { value: string; label: string }[]
+    productType: NonNullableAdditionalOption[]
     loanTerms: { value: number }[]
   }
 }
 
 export function AdditionalEquipment({ disabled = false, options, isError, errorMessage }: Props) {
   const classes = useStyles()
-  const [field] = useField<FullInitialAdditionalEquipments[]>(ServicesGroupName.additionalEquipments)
+  const [field] = useField<FullInitialAdditionalEquipment[]>(ServicesGroupName.additionalEquipments)
 
   const { ids, changeIds } = useAdditionalServiceIds()
   const { isInitialExpanded, isShouldExpanded, resetShouldExpanded } = useAdditionalServicesGroupe(
     ServicesGroupName.additionalEquipments,
     FULL_INITIAL_ADDITIONAL_EQUIPMENTS,
+  )
+
+  const productOptions = useMemo(
+    () =>
+      options.productType.map(option => ({
+        value: option.optionId,
+        label: option.optionName,
+      })) || [],
+    [options.productType],
   )
 
   return (
@@ -54,7 +64,7 @@ export function AdditionalEquipment({ disabled = false, options, isError, errorM
                   index={index}
                   parentName={ServicesGroupName.additionalEquipments}
                   isRequisiteEditable={true}
-                  productOptions={options.productType}
+                  productOptions={productOptions}
                   arrayHelpers={arrayHelpers}
                   arrayLength={arr.length}
                   equipmentItem={v}

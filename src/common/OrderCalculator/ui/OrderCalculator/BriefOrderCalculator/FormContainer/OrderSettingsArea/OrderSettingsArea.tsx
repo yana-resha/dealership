@@ -1,21 +1,17 @@
-import { forwardRef, useMemo } from 'react'
+import { forwardRef } from 'react'
 
 import { Box } from '@mui/material'
-import { OptionType } from '@sberauto/dictionarydc-proto/public'
 
-import { INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
+import { INITIAL_ADDITIONAL_SERVICE, INITIAL_BANK_ADDITIONAL_SERVICE } from 'common/OrderCalculator/config'
 import { DEFAULT_DATA_LOADING_ERROR_MESSAGE } from 'common/OrderCalculator/constants'
-import {
-  BankAdditionalOption,
-  useGetVendorOptionsQuery,
-} from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
+import { useAdditionalServices } from 'common/OrderCalculator/hooks/useAdditionalServices'
+import { useGetVendorOptionsQuery } from 'common/OrderCalculator/hooks/useGetVendorOptionsQuery'
 import { useRateMod } from 'common/OrderCalculator/hooks/useRateMod'
 import { AreaFooter } from 'common/OrderCalculator/ui/AreaFooter/AreaFooter'
 import { CommonOrderSettings } from 'common/OrderCalculator/ui/CommonOrderSettings/CommonOrderSettings'
 import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { getPointOfSaleFromCookies } from 'entities/pointOfSale'
 import { FraudDialog } from 'entities/SpecialMark'
-import { checkIsNumber } from 'shared/lib/helpers'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
 import { CollapsibleFormAreaContainer } from 'shared/ui/CollapsibleFormAreaContainer/CollapsibleFormAreaContainer'
 import SberTypography from 'shared/ui/SberTypography/SberTypography'
@@ -57,6 +53,7 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
     isGetCarsLoading,
     isGetCarsSuccess,
     clientAge,
+    isLoadedCreditProducts,
     isLoading: isLimitsLoading,
     isSuccess: isLimitsSuccess,
   } = useCreditProductsData()
@@ -83,42 +80,20 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
     initialBankAdditionalService: INITIAL_BANK_ADDITIONAL_SERVICE,
   })
 
-  const additionalEquipments = useMemo(
-    () =>
-      vendorOptions?.additionalOptions?.filter(option => option.optionType === OptionType.EQUIPMENT) || [],
-    [vendorOptions?.additionalOptions],
-  )
-  const dealerAdditionalServices = useMemo(
-    () => vendorOptions?.additionalOptions?.filter(option => option.optionType === OptionType.DEALER) || [],
-    [vendorOptions?.additionalOptions],
-  )
-
-  const bankAdditionalServices = useMemo(
-    () =>
-      (vendorOptions?.additionalOptions?.filter(option => {
-        const isBankOption = option.optionType === OptionType.BANK
-
-        // Если clientAge отсутствует, то банковские опции недоступны
-        if (!checkIsNumber(clientAge)) {
-          return false
-        }
-
-        const isValidClientAge = option.tariffs?.some(tariff => {
-          const { minClientAge, maxClientAge } = tariff
-          if (!checkIsNumber(minClientAge) || !checkIsNumber(maxClientAge)) {
-            return false
-          }
-
-          return (
-            (clientAge as number) >= (minClientAge as number) &&
-            (clientAge as number) <= (maxClientAge as number)
-          )
-        })
-
-        return isBankOption && isValidClientAge
-      }) as BankAdditionalOption[]) || [],
-    [clientAge, vendorOptions?.additionalOptions],
-  )
+  const {
+    isShowAdditionalServices,
+    additionalEquipmentOptions,
+    dealerAdditionalServiceOptions,
+    bankAdditionalServiceOptions,
+  } = useAdditionalServices({
+    vendorOptions,
+    clientAge,
+    currentRateMod,
+    isLoadedCreditProducts,
+    initialDealerAdditionalService: INITIAL_ADDITIONAL_SERVICE,
+    initialAdditionalEquipment: INITIAL_ADDITIONAL_SERVICE,
+    initialBankAdditionalService: INITIAL_BANK_ADDITIONAL_SERVICE,
+  })
 
   const isSectionLoading = isLimitsLoading || isVendorOptionsLoading
   const isSectionLoaded = !isSectionLoading && isLimitsSuccess && isVendorOptionsSuccess
@@ -155,29 +130,33 @@ export const OrderSettingsArea = forwardRef(({ disabled, isSubmitLoading, isDisa
             isGetCarsSuccess={isGetCarsSuccess}
           />
 
-          <AdditionalServices
-            title="Дополнительное оборудование"
-            additionalServices={additionalEquipments}
-            name={ServicesGroupName.additionalEquipments}
-            productLabel="Тип доп оборудования"
-          />
-          <AdditionalServices
-            title="Дополнительные услуги дилера"
-            additionalServices={dealerAdditionalServices}
-            name={ServicesGroupName.dealerAdditionalServices}
-            productLabel="Тип продукта"
-            isNecessaryCasco={isNecessaryCasco}
-          />
-          <AdditionalServices
-            title="Дополнительные услуги банка"
-            additionalServices={bankAdditionalServices}
-            name={ServicesGroupName.bankAdditionalServices}
-            productLabel="Тип продукта"
-            clientAge={clientAge}
-            currentRateMod={currentRateMod}
-            isShouldShowInfoIcon={isShouldShowDiscountNotification}
-            maxRateModsMap={maxRateModsMap}
-          />
+          {isShowAdditionalServices && (
+            <>
+              <AdditionalServices
+                title="Дополнительное оборудование"
+                additionalServices={additionalEquipmentOptions}
+                name={ServicesGroupName.additionalEquipments}
+                productLabel="Тип доп оборудования"
+              />
+              <AdditionalServices
+                title="Дополнительные услуги дилера"
+                additionalServices={dealerAdditionalServiceOptions}
+                name={ServicesGroupName.dealerAdditionalServices}
+                productLabel="Тип продукта"
+                isNecessaryCasco={isNecessaryCasco}
+              />
+              <AdditionalServices
+                title="Дополнительные услуги банка"
+                additionalServices={bankAdditionalServiceOptions}
+                name={ServicesGroupName.bankAdditionalServices}
+                productLabel="Тип продукта"
+                clientAge={clientAge}
+                currentRateMod={currentRateMod}
+                isShouldShowInfoIcon={isShouldShowDiscountNotification}
+                maxRateModsMap={maxRateModsMap}
+              />
+            </>
+          )}
 
           {!!commonErrors.length && (
             <Box className={classes.errorList}>

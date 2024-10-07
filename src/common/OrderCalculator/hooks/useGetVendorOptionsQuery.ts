@@ -42,7 +42,6 @@ const prepareAdditionalOptions = (options: AdditionalOption[]) =>
       if (typeof cur.optionType === undefined || !cur.optionName || typeof cur.optionId === undefined) {
         return acc
       }
-
       if (cur.optionType === OptionType.EQUIPMENT || cur.optionType === OptionType.DEALER) {
         acc.push(cur as NonNullableAdditionalOption)
       }
@@ -62,7 +61,6 @@ const prepareAdditionalOptions = (options: AdditionalOption[]) =>
         if (!tariffs?.length) {
           return acc
         }
-
         const bankOption = { ...cur, tariffs } as BankAdditionalOption
         acc.push(bankOption)
       }

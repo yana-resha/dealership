@@ -10,13 +10,19 @@ import {
   GetVendorsListRequest,
   RequiredServiceFlag,
   CalcType,
+  SaleMethod,
 } from '@sberauto/dictionarydc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation } from 'react-query'
 
 import { appConfig } from 'config'
 import { CustomFetchError, Rest } from 'shared/api/client'
-import { prepareCalcType, prepareOptionType, prepareRequiredServiceFlag } from 'shared/lib/helpers'
+import {
+  prepareCalcType,
+  prepareOptionType,
+  prepareRequiredServiceFlag,
+  prepareSaleMethod,
+} from 'shared/lib/helpers'
 
 import { Service, ServiceApi } from '../constants'
 import { ErrorAlias, ErrorCode, getErrorMessage } from '../errors'
@@ -34,6 +40,7 @@ export const getVendorOptionsList = (params: GetVendorOptionsListRequest) =>
     const additionalOptions = response.data.additionalOptions?.map(el => ({
       ...el,
       optionType: prepareOptionType(el.optionType as unknown as keyof typeof OptionType),
+      saleMethod: prepareSaleMethod(el.saleMethod as unknown as keyof typeof SaleMethod),
       tariffs: el.tariffs?.map(tariff => ({
         ...tariff,
         calcType: prepareCalcType(tariff.calcType as unknown as keyof typeof CalcType),

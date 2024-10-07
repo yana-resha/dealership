@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { ArrayHelpers } from 'formik'
 
 import {
-  FullInitialAdditionalEquipments,
+  FullInitialAdditionalEquipment,
   FullInitialAdditionalService,
   OrderCalculatorAdditionalService,
   OrderCalculatorBankAdditionalService,
@@ -23,7 +23,7 @@ type Params = {
   initialValues:
     | OrderCalculatorAdditionalService
     | OrderCalculatorBankAdditionalService
-    | FullInitialAdditionalEquipments
+    | FullInitialAdditionalEquipment
     | FullInitialAdditionalService
 }
 

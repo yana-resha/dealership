@@ -81,8 +81,8 @@ export function useOrderSettings(nextStep: () => void) {
     (bankOffer: CalculatedProduct) => {
       const creditProduct = productsMap?.[`${bankOffer.productId}`]
       const condition = creditProduct?.conditions?.find(c => c.id === bankOffer.conditionId)
-
-      if (bankOffer.requiredServiceFlag === RequiredServiceFlag.REQUIRED) {
+      const currentProductId = orderData?.application?.loanData?.productId
+      if (bankOffer.requiredServiceFlag === RequiredServiceFlag.REQUIRED || !currentProductId) {
         clearBankOfferList()
         setCreditProductId(bankOffer.productId)
 

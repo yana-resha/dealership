@@ -6,7 +6,7 @@ import { ArrayHelpers, useFormikContext } from 'formik'
 import { FULL_INITIAL_ADDITIONAL_EQUIPMENTS } from 'common/OrderCalculator/config'
 import {
   FormFieldNameMap,
-  FullInitialAdditionalEquipments,
+  FullInitialAdditionalEquipment,
   FullOrderCalculatorFields,
 } from 'common/OrderCalculator/types'
 import { FieldLabels } from 'shared/constants/fieldLabels'
@@ -44,7 +44,7 @@ type Props = {
   }[]
   arrayHelpers?: ArrayHelpers
   arrayLength: number
-  equipmentItem: FullInitialAdditionalEquipments
+  equipmentItem: FullInitialAdditionalEquipment
   changeIds?: (idx: number, changingOption: string, minItems?: number) => void
 }
 

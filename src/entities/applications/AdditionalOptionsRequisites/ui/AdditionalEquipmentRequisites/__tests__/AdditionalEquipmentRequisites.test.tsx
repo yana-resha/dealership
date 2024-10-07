@@ -5,7 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 
-import { FullInitialAdditionalEquipments } from 'common/OrderCalculator/types'
+import { FullInitialAdditionalEquipment } from 'common/OrderCalculator/types'
 import { ServicesGroupName } from 'entities/applications/AdditionalOptionsRequisites/configs/additionalOptionsRequisites.config'
 import { FieldLabels } from 'shared/constants/fieldLabels'
 import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.mock'
@@ -27,7 +27,7 @@ jest.mock('shared/ui/SwitchInput/SwitchInput', () => ({
   SwitchInput: MockedSwitchInput,
 }))
 
-const mockedAdditionalEquipmentFields: { additionalEquipments: FullInitialAdditionalEquipments[] } = {
+const mockedAdditionalEquipmentFields: { additionalEquipments: FullInitialAdditionalEquipment[] } = {
   additionalEquipments: [
     {
       productType: null,
