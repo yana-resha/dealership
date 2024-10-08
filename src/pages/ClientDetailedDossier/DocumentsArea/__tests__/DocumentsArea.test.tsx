@@ -130,6 +130,11 @@ describe('DocumentsAreaTest', () => {
         expect(await screen.findByTestId('uploadFile')).toBeInTheDocument()
       })
 
+      it('Отображается анкета для статуса Processed (Ожидает решения)', async () => {
+        render(<DocumentsArea status={StatusCode.FRA} />, { wrapper: createWrapper })
+        expect(await screen.findByTestId('uploadFile')).toBeInTheDocument()
+      })
+
       it('Отображается анкета для статуса Approved (Предварительно одобрено)', async () => {
         render(<DocumentsArea status={StatusCode.APPROVED} />, { wrapper: createWrapper })
         expect(await screen.findByTestId('uploadFile')).toBeInTheDocument()

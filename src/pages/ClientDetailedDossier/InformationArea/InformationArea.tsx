@@ -178,6 +178,7 @@ export function InformationArea({
     ([
       PreparedStatus.initial,
       PreparedStatus.processed,
+      PreparedStatus.additionalCheck,
       PreparedStatus.finallyApproved,
       PreparedStatus.formation,
       PreparedStatus.signed,

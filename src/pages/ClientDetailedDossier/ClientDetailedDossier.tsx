@@ -134,7 +134,8 @@ export function ClientDetailedDossier() {
   const isShowGovProgramDocuments =
     application?.loanData?.govprogramCode &&
     application?.status !== StatusCode.INITIAL &&
-    (application?.status !== StatusCode.PROCESSED || !!currentGovProgramScans.length)
+    ((application?.status !== StatusCode.PROCESSED && application?.status !== StatusCode.FRA) ||
+      !!currentGovProgramScans.length)
 
   const goToTargetApplication = useCallback(
     (targetAppId: string) => {

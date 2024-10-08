@@ -8,6 +8,7 @@ import { getStatus, PreparedStatus } from '../application.utils'
 export const statusListItems: Record<string, string> = {
   [PreparedStatus.initial]: theme.palette.status.initial,
   [PreparedStatus.processed]: theme.palette.status.processed,
+  [PreparedStatus.additionalCheck]: theme.palette.status.processed,
   [PreparedStatus.approved]: theme.palette.status.approved,
   [PreparedStatus.finallyApproved]: theme.palette.status.approved,
   [PreparedStatus.formation]: theme.palette.status.approved,

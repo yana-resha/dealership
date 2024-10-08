@@ -23,7 +23,7 @@
     "@sberauto/emailappdc-proto": "1.0.1",
     "@sberauto/dictionarydc-proto": "1.8.2",
     "@sberauto/filestoragedc-proto": "0.2.6",
-    "@sberauto/loanapplifecycledc-proto": "1.16.1",
+    "@sberauto/loanapplifecycledc-proto": "1.16.2",
     "camelcase-keys": "8.0.2",
     "classnames": "2.3.2",
     "copy-to-clipboard": "3.3.1",
