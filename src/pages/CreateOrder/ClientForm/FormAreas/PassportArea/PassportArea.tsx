@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
@@ -109,6 +109,17 @@ export function PassportArea() {
     [setIsRegAddressDialogVisible, setIsLivingAddressDialogVisible, setFieldValue],
   )
 
+  const handlePrevNameSwitchChange = useCallback(
+    (evt: ChangeEvent<HTMLInputElement>) => {
+      if (!evt.target.checked) {
+        setFieldValue('clientFormerLastName', '')
+        setFieldValue('clientFormerFirstName', '')
+        setFieldValue('clientFormerMiddleName', '')
+      }
+    },
+    [setFieldValue],
+  )
+
   useEffect(
     () => () => {
       if (timerRef.current) {
@@ -131,7 +142,7 @@ export function PassportArea() {
       }
     }
     updateListOfSuggestions(divisionCode)
-  }, [divisionCode])
+  }, [divisionCode, previousDivisionCode, setFieldValue, updateListOfSuggestions])
 
   useEffect(() => {
     const suggestionsForDivisionCode =
@@ -158,7 +169,7 @@ export function PassportArea() {
         setFieldValue('issuedBy', suggestionsForIssuedBy[0])
       }
     }
-  }, [data?.suggestions])
+  }, [data?.suggestions, divisionCode.length, setFieldValue])
 
   return (
     <Box className={classes.gridContainer}>
@@ -175,7 +186,13 @@ export function PassportArea() {
         />
       </Box>
 
-      <SwitchInputFormik name="hasNameChanged" label="Менялось" gridColumn="span 4" centered />
+      <SwitchInputFormik
+        name="hasNameChanged"
+        label="Менялось"
+        gridColumn="span 4"
+        centered
+        onChange={handlePrevNameSwitchChange}
+      />
 
       {hasNameChanged && (
         <>
@@ -286,7 +303,7 @@ export function PassportArea() {
         label={FieldLabels.MANUAL_ENTRY}
         gridColumn="span 4"
         centered
-        afterChange={handleKladrChange}
+        onChange={handleKladrChange}
       />
       <AddressDialog
         addressName="registrationAddress"
@@ -332,7 +349,7 @@ export function PassportArea() {
           label={FieldLabels.MANUAL_ENTRY}
           gridColumn="span 4"
           centered
-          afterChange={handleKladrChange}
+          onChange={handleKladrChange}
         />
       )}
       <AddressDialog

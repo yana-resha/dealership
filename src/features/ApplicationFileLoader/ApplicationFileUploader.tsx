@@ -19,7 +19,7 @@ const RENAMING_TOOLTIP = 'Наименования файла было изме�
 
 type UploaderProps = {
   uploaderConfig: UploaderConfig
-  suggest?: string
+  suggest?: string | React.ReactNode
   loadingMessage?: string
   motivateMessage?: string
   /** Если хотим чтобы форма не только выводила файл, но и могла изменять и выгружать его на бэк.
@@ -93,7 +93,7 @@ const Uploader: React.FC<UploaderProps> = ({
     if (file && status === DocumentUploadStatus.Local && isAllowedUploadToServer) {
       sendFile()
     }
-    // Удален sendFile - вызывал бесконечный ререндер из-за своей зависимости onGetOrderId
+    // Удален sendFile - вызывал бесконечный ререндер из-за своей зависимости getOrderId
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentFile, isAllowedUploadToServer, isShowInput])
 
@@ -139,7 +139,7 @@ const Uploader: React.FC<UploaderProps> = ({
             </SberTypography>
           )}
 
-          {!!suggest && (
+          {!!suggest && typeof suggest === 'string' && (
             <SberTypography
               sberautoVariant="body3"
               component="p"
@@ -149,6 +149,8 @@ const Uploader: React.FC<UploaderProps> = ({
               {suggest}
             </SberTypography>
           )}
+
+          {!!suggest && typeof suggest !== 'string' && <Box data-testid="suggestion">{suggest}</Box>}
 
           {!!documentTypeOptions && (
             <SelectInput

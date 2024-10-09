@@ -118,6 +118,9 @@ export const theme = createTheme({
           lineHeight: '16px',
           letterSpacing: 'normal',
         },
+        startIcon: {
+          marginLeft: 0,
+        },
         text: {
           padding: 0,
         },

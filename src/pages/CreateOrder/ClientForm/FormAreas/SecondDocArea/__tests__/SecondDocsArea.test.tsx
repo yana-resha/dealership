@@ -44,7 +44,7 @@ const mockedSecondDocAreaFields = {
   secondDocumentNumber: '',
   secondDocumentDate: null,
   secondDocumentIssuedBy: '',
-  submitAction: SubmitAction.Save,
+  submitAction: SubmitAction.SAVE,
 }
 
 const ProviderWrapper = ({

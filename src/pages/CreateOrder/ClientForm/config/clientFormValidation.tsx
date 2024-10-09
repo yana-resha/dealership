@@ -99,7 +99,11 @@ function isIncomeProofUploadedCorrectly(value: string | undefined, context: Yup.
   const { occupation, incomeConfirmation, ndfl2File, ndfl3File, bankStatementFile, submitAction } =
     (context.options as InternalOptions)?.from?.[0].value || {}
 
-  if (!incomeConfirmation || submitAction === SubmitAction.Draft) {
+  if (
+    !incomeConfirmation ||
+    submitAction === SubmitAction.DRAFT ||
+    submitAction === SubmitAction.FORM_QUESTIONNAIRE
+  ) {
     return true
   }
 
@@ -173,9 +177,10 @@ function isJobDisabled(
   )
 }
 
-function setRequiredIfSave<T extends Yup.BaseSchema<any, AnyObject, any>>(schema: T, message?: string) {
+function setRequiredIfNotDraft<T extends Yup.BaseSchema<any, AnyObject, any>>(schema: T, message?: string) {
   return schema.when(['submitAction'], {
-    is: (submitAction: string) => submitAction === SubmitAction.Save,
+    is: (submitAction: string) =>
+      submitAction === SubmitAction.SAVE || submitAction === SubmitAction.FORM_QUESTIONNAIRE,
     then: schema => schema.required(message || FieldMessages.required),
   })
 }
@@ -230,17 +235,17 @@ export const clientFormValidationSchema = Yup.object().shape({
   clientFirstName: Yup.string().required(FieldMessages.required),
   clientFormerLastName: Yup.string().when('hasNameChanged', {
     is: true,
-    then: schema => setRequiredIfSave(schema),
+    then: schema => setRequiredIfNotDraft(schema),
   }),
   clientFormerFirstName: Yup.string().when('hasNameChanged', {
     is: true,
-    then: schema => setRequiredIfSave(schema),
+    then: schema => setRequiredIfNotDraft(schema),
   }),
   clientFormerMiddleName: Yup.string().when('hasNameChanged', {
     is: true,
-    then: schema => setRequiredIfSave(schema),
+    then: schema => setRequiredIfNotDraft(schema),
   }),
-  numOfChildren: setRequiredIfSave(
+  numOfChildren: setRequiredIfNotDraft(
     Yup.number()
       .nullable()
       .test('isLessThenMin', (value, context) => {
@@ -254,23 +259,23 @@ export const clientFormValidationSchema = Yup.object().shape({
           : true
       }),
   ),
-  familyStatus: setRequiredIfSave(Yup.number().nullable()),
+  familyStatus: setRequiredIfNotDraft(Yup.number().nullable()),
   passport: Yup.string().required(FieldMessages.required).min(10, 'Введите данные полностью'),
   birthDate: Yup.date()
     .nullable()
     .required(FieldMessages.required)
     .min(getMinBirthDate(), 'Превышен максимальный возраст')
     .max(getMaxBirthDate(), `Минимальный возраст ${MIN_AGE} год`),
-  birthPlace: setRequiredIfSave(Yup.string()),
-  passportDate: setRequiredIfSave(Yup.date().nullable()).test(
+  birthPlace: setRequiredIfNotDraft(Yup.string()),
+  passportDate: setRequiredIfNotDraft(Yup.date().nullable()).test(
     'isLessPassportDate',
     'Паспорт клиента не действителен',
     validatePassportDate,
   ),
-  divisionCode: setRequiredIfSave(Yup.string().nullable()).min(6, 'Введите данные полностью'),
-  sex: setRequiredIfSave(Yup.number().nullable()),
-  issuedBy: setRequiredIfSave(Yup.string().nullable()),
-  registrationAddressString: setRequiredIfSave(
+  divisionCode: setRequiredIfNotDraft(Yup.string().nullable()).min(6, 'Введите данные полностью'),
+  sex: setRequiredIfNotDraft(Yup.number().nullable()),
+  issuedBy: setRequiredIfNotDraft(Yup.string().nullable()),
+  registrationAddressString: setRequiredIfNotDraft(
     Yup.string().test('isWrongRegion', (value, context) => {
       const { regCode } = (context.options as InternalOptions)?.from?.[0].value.registrationAddress || {}
       const { isDfoProgram } = (context.options as InternalOptions)?.from?.[0].value.validationParams || {}
@@ -281,7 +286,7 @@ export const clientFormValidationSchema = Yup.object().shape({
 
   livingAddressString: Yup.string().when('regAddrIsLivingAddr', {
     is: false,
-    then: schema => setRequiredIfSave(schema),
+    then: schema => setRequiredIfNotDraft(schema),
   }),
   mobileNumber: Yup.string().required(FieldMessages.required).min(11, FieldMessages.enterFullData),
   additionalNumber: Yup.string()
@@ -292,7 +297,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     })
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation),
-      then: schema => setRequiredIfSave(schema).min(11, FieldMessages.enterFullData),
+      then: schema => setRequiredIfNotDraft(schema).min(11, FieldMessages.enterFullData),
       otherwise: schema =>
         schema.test(
           'additionalNumber',
@@ -300,7 +305,7 @@ export const clientFormValidationSchema = Yup.object().shape({
           (value: string | undefined) => value === undefined || value.trim().length == 11,
         ),
     }),
-  averageIncome: setRequiredIfSave(Yup.string()).max(13, 'Значение слишком большое'),
+  averageIncome: setRequiredIfNotDraft(Yup.string()).max(13, 'Значение слишком большое'),
   additionalIncome: Yup.string().max(13, 'Значение слишком большое'),
   incomeProofUploadValidator: Yup.string().test(
     'isIncomeProofUploadedCorrectly',
@@ -312,11 +317,11 @@ export const clientFormValidationSchema = Yup.object().shape({
     .when(['familyStatus'], {
       is: (familyStatus: number) =>
         familyStatus === MaritalStatus.MARRIED || familyStatus === MaritalStatus.CIVILMARRIAGE,
-      then: schema => setRequiredIfSave(schema),
+      then: schema => setRequiredIfNotDraft(schema),
     }),
-  relatedToPublic: setRequiredIfSave(Yup.boolean()),
-  secondDocumentType: setRequiredIfSave(Yup.number().nullable()),
-  secondDocumentNumber: setRequiredIfSave(
+  relatedToPublic: setRequiredIfNotDraft(Yup.boolean()),
+  secondDocumentType: setRequiredIfNotDraft(Yup.number().nullable()),
+  secondDocumentNumber: setRequiredIfNotDraft(
     Yup.string()
       .when('secondDocumentType', {
         is: (secondDocumentType: number | null) =>
@@ -352,7 +357,7 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: (secondDocumentType: number | null) =>
         secondDocumentType !== ApplicantDocsType.INN &&
         secondDocumentType !== ApplicantDocsType.PENSIONCERTIFICATE,
-      then: schema => setRequiredIfSave(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
+      then: schema => setRequiredIfNotDraft(schema).min(getMinBirthDate(), 'Дата слишком ранняя'),
     }),
   secondDocumentIssuedBy: Yup.string()
     .nullable()
@@ -360,17 +365,17 @@ export const clientFormValidationSchema = Yup.object().shape({
       is: (secondDocumentType: number | null) =>
         secondDocumentType !== ApplicantDocsType.INN &&
         secondDocumentType !== ApplicantDocsType.PENSIONCERTIFICATE,
-      then: schema => setRequiredIfSave(schema),
+      then: schema => setRequiredIfNotDraft(schema),
     }),
   secondDocumentIssuedCode: Yup.string()
     .nullable()
     .when('secondDocumentType', {
       is: (secondDocumentType: number | null) => secondDocumentType === ApplicantDocsType.DRIVERLICENSE,
-      then: schema => setRequiredIfSave(schema.min(3, FieldMessages.enterFullData)),
+      then: schema => setRequiredIfNotDraft(schema.min(3, FieldMessages.enterFullData)),
     }),
-  occupation: setRequiredIfSave(Yup.number().nullable()).when('isIncomeProofUploaderTouched', {
+  occupation: setRequiredIfNotDraft(Yup.number().nullable()).when('isIncomeProofUploaderTouched', {
     is: (isIncomeProofUploaderTouched: boolean, submitAction: string) =>
-      isIncomeProofUploaderTouched && (submitAction === SubmitAction.Save || !submitAction),
+      isIncomeProofUploaderTouched && (submitAction === SubmitAction.SAVE || !submitAction),
     then: schema => schema.test('isHasNotOccupation', '', value => !!value),
   }),
   employmentDate: Yup.date()
@@ -378,7 +383,7 @@ export const clientFormValidationSchema = Yup.object().shape({
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation),
       otherwise: schema =>
-        setRequiredIfSave(schema)
+        setRequiredIfNotDraft(schema)
           .min(getMinBirthDate(), 'Дата слишком ранняя')
           .test('isMinWorkExperience', 'Стаж работы должен быть более одного месяца', validateEmploymentDate),
     }),
@@ -393,12 +398,12 @@ export const clientFormValidationSchema = Yup.object().shape({
     )
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-      otherwise: schema => setRequiredIfSave(schema),
+      otherwise: schema => setRequiredIfNotDraft(schema),
     }),
   employerInn: Yup.string()
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-      otherwise: schema => setRequiredIfSave(schema),
+      otherwise: schema => setRequiredIfNotDraft(schema),
     })
     .test('wrongInn', '', validateEmplyeeInn),
   employerPhone: Yup.string()
@@ -409,11 +414,11 @@ export const clientFormValidationSchema = Yup.object().shape({
     })
     .when('occupation', {
       is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-      otherwise: schema => setRequiredIfSave(schema).min(11, FieldMessages.enterFullData),
+      otherwise: schema => setRequiredIfNotDraft(schema).min(11, FieldMessages.enterFullData),
     }),
   employerAddressString: Yup.string().when('occupation', {
     is: (occupation: number | null) => isJobDisabled(occupation, [OccupationType.SELF_EMPLOYED]),
-    otherwise: schema => setRequiredIfSave(schema),
+    otherwise: schema => setRequiredIfNotDraft(schema),
   }),
 
   questionnaireFile: Yup.object()
@@ -423,13 +428,13 @@ export const clientFormValidationSchema = Yup.object().shape({
     )
     .when(['submitAction', 'isDifferentVendor'], {
       is: (submitAction: string, isDifferentVendor: boolean) =>
-        submitAction === SubmitAction.Save || isDifferentVendor,
+        submitAction === SubmitAction.SAVE || isDifferentVendor,
       then: schema => schema.required(QUESTIONNAIRE_FILE_IS_REQUIRED),
     }),
 })
 
-export const enrichedclientFormValidationSchema = clientFormValidationSchema.concat(
+export const enrichedClientFormValidationSchema = clientFormValidationSchema.concat(
   Yup.object().shape({
-    email: setRequiredIfSave(Yup.string()).email('Введите корректный Email'),
+    email: setRequiredIfNotDraft(Yup.string()).email('Введите корректный Email'),
   }),
 )

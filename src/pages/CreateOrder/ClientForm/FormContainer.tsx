@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Box, Button } from '@mui/material'
 import { Form, useFormikContext } from 'formik'
 import isEqual from 'lodash/isEqual'
+import { useSnackbar } from 'notistack'
 
 import { useOrderContext } from 'common/OrderCalculator'
 import { ApplicationProvider } from 'entities/applications/ApplicationProvider'
@@ -23,24 +24,25 @@ import { QuestionnaireUploadArea } from './FormAreas/QuestionnaireUploadArea/Que
 import { SecondDocArea } from './FormAreas/SecondDocArea/SecondDocArea'
 
 interface Props {
-  getOrderId: (application: ClientData) => Promise<string | undefined>
+  getOrderId: (orderForm: ClientData) => Promise<string | undefined>
   isSaveDraftBtnLoading: boolean
   isNextBtnLoading: boolean
   saveDraftDisabled: boolean
-  disabledButtons: boolean
+  isDisabledButtons: boolean
   isDifferentVendor: boolean
   isReuploadedQuestionnaire: boolean
   setReuploadedQuestionnaire: React.Dispatch<React.SetStateAction<boolean>>
   isAllowedUploadQuestionnaire: boolean
   onUploadQuestionnaire: (() => void) | undefined
   saveValuesToStore: (values: ClientData) => void
+  isFormQuestionnaireBtnLoading: boolean
 }
 
 export function FormContainer({
   getOrderId,
   isSaveDraftBtnLoading,
   isNextBtnLoading,
-  disabledButtons,
+  isDisabledButtons,
   saveDraftDisabled,
   isDifferentVendor,
   isReuploadedQuestionnaire,
@@ -48,8 +50,11 @@ export function FormContainer({
   isAllowedUploadQuestionnaire,
   onUploadQuestionnaire,
   saveValuesToStore,
+  isFormQuestionnaireBtnLoading,
 }: Props) {
   const classes = useStyles()
+  const { enqueueSnackbar } = useSnackbar()
+
   const { values, handleSubmit, setFieldValue, isValid, validateForm } = useFormikContext<ClientData>()
   useScrollToErrorField()
 
@@ -61,23 +66,23 @@ export function FormContainer({
 
   const handleDraftClick = useCallback(() => {
     setFieldValue('isFormComplete', false)
-    setFieldValue('submitAction', SubmitAction.Draft)
+    setFieldValue('submitAction', SubmitAction.DRAFT)
     setShouldValidate(true)
   }, [setFieldValue])
 
   const handleSaveClick = useCallback(() => {
     setFieldValue('isFormComplete', isValid)
-    setFieldValue('submitAction', SubmitAction.Save)
+    setFieldValue('submitAction', SubmitAction.SAVE)
     setShouldSubmit(true)
   }, [isValid, setFieldValue])
 
-  const handlePrintClick = useCallback(() => {
+  const handleFormQuestionnaire = useCallback(() => {
     setFieldValue('isFormComplete', false)
-    setFieldValue('submitAction', SubmitAction.Print)
+    setFieldValue('submitAction', SubmitAction.FORM_QUESTIONNAIRE)
     setShouldValidate(true)
   }, [setFieldValue])
 
-  const onGetOrderId = useCallback(() => getOrderId(values), [getOrderId, values])
+  const getOrderIdWrapped = useCallback(() => getOrderId(values), [getOrderId, values])
 
   // Передаем информацию о совпадении ДЦ для валидации
   useEffect(() => {
@@ -91,19 +96,29 @@ export function FormContainer({
   // потому подменяем submitAction: SubmitAction.Save на этапе валидации.
   // Если валидация прошла успешно, то присваиваем isFormComplete true
   // Стандартная валидация формы (черновика) не отменяется и будет штатно производиться дальше
+  // Необходимо, чтобы заполнить isFormComplete (и из него anketaType)
   useEffect(() => {
     if (isShouldValidate && prevIsShouldValidate !== isShouldValidate) {
       setShouldValidate(false)
       // Подменяем submitAction: SubmitAction.Save для валидации обязательных полей
-      validateForm({ ...values, submitAction: SubmitAction.Save }).then(error => {
+      validateForm({ ...values, submitAction: SubmitAction.SAVE }).then(error => {
         const isFormComplete = Object.values(error).every(
           v => v !== FieldMessages.required && v !== QUESTIONNAIRE_FILE_IS_REQUIRED,
         )
+        const isFieldsComplete = Object.entries(error).every(
+          ([k, v]) =>
+            v !== FieldMessages.required || k === 'questionnaireFile' || k === 'incomeProofUploadValidator',
+        )
         isFormComplete && setFieldValue('isFormComplete', true)
+        !isFieldsComplete &&
+          enqueueSnackbar('Ошибка. Для формирования анкеты необходимо заполнить все обязательные поля', {
+            variant: 'error',
+          })
+
         setShouldSubmit(true)
       })
     }
-  }, [isShouldValidate, prevIsShouldValidate, setFieldValue, validateForm, values])
+  }, [enqueueSnackbar, isShouldValidate, prevIsShouldValidate, setFieldValue, validateForm, values])
 
   useEffect(() => {
     if (isShouldSubmit) {
@@ -120,7 +135,7 @@ export function FormContainer({
   }, [onChangeForm, prevValues, saveValuesToStore, values])
 
   return (
-    <ApplicationProvider onGetOrderId={onGetOrderId}>
+    <ApplicationProvider getOrderId={getOrderIdWrapped}>
       <Form className={classes.clientForm}>
         <PassportArea />
         <CommunicationArea />
@@ -133,6 +148,10 @@ export function FormContainer({
           setReuploadedQuestionnaire={setReuploadedQuestionnaire}
           isAllowedUploadQuestionnaire={isAllowedUploadQuestionnaire}
           onUploadDocument={onUploadQuestionnaire}
+          isSaveDraftDisabled={saveDraftDisabled}
+          onClickFormBtn={handleFormQuestionnaire}
+          isDisabledFormBtn={isDisabledButtons || isShouldSubmit}
+          isFormLoading={isFormQuestionnaireBtnLoading}
         />
 
         <Box className={classes.buttonsArea}>
@@ -143,29 +162,21 @@ export function FormContainer({
               <Button
                 className={classes.button}
                 variant="outlined"
-                disabled={disabledButtons || isShouldSubmit}
+                disabled={isDisabledButtons || isShouldSubmit}
                 onClick={handleDraftClick}
               >
-                Сохранить черновик
                 {isSaveDraftBtnLoading && <CircularProgressWheel size="small" />}
+                Сохранить черновик
               </Button>
             )}
-            {/* <Button
-              className={classes.button}
-              variant="outlined"
-              disabled={disabledButtons || isShouldSubmit}
-              onClick={handlePrintClick}
-            >
-              Распечатать
-            </Button> */}
             <Button
               className={classes.button}
               variant="contained"
-              disabled={disabledButtons || isShouldSubmit}
+              disabled={isDisabledButtons || isShouldSubmit}
               onClick={handleSaveClick}
             >
-              {saveDraftDisabled ? 'Отправить на решение' : 'Далее'}
               {isNextBtnLoading && <CircularProgressWheel size="small" />}
+              {saveDraftDisabled ? 'Отправить на решение' : 'Далее'}
             </Button>
           </Box>
         </Box>

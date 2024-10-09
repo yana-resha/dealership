@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { Box } from '@mui/material'
 
@@ -11,12 +11,19 @@ type Props = {
   gridColumn?: string
   centered?: boolean
   disabled?: boolean
-  afterChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export const SwitchInputFormik = (props: Props) => {
-  const { name, label, gridColumn, centered, disabled, afterChange } = props
+export const SwitchInputFormik = ({ name, label, gridColumn, centered, disabled, onChange }: Props) => {
   const { value, isError, error, handleChange } = useFormikWrapper(name)
+
+  const handleInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange?.(event)
+      handleChange?.(event.target.checked)
+    },
+    [handleChange, onChange],
+  )
 
   return (
     <Box width="auto" minWidth="min-content" gridColumn={gridColumn}>
@@ -24,10 +31,9 @@ export const SwitchInputFormik = (props: Props) => {
         label={label}
         centered={centered}
         disabled={disabled}
-        afterChange={afterChange}
+        onChange={handleInputChange}
         id={name}
         value={value}
-        onChange={handleChange}
         isError={isError}
         errorMessage={error}
       />

@@ -97,7 +97,7 @@ const mockedPassportAreaFields = {
   livingAddressString: '',
   livingAddress: configAddressInitialValues,
   livingNotKladr: false,
-  submitAction: SubmitAction.Save,
+  submitAction: SubmitAction.SAVE,
   validationParams: {},
 }
 

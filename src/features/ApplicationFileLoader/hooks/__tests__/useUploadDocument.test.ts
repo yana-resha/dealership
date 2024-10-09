@@ -26,7 +26,7 @@ const mockedUseCheckDocumentsList = jest.spyOn(useCheckDocumentsListModule, 'use
 describe('useUploadDocument', () => {
   beforeEach(() => {
     mockedUseApplicationContext.mockImplementation(() => ({
-      onGetOrderId: () => Promise.resolve('1'),
+      getOrderId: () => Promise.resolve('1'),
     }))
     mockedUseCheckDocumentsList.mockImplementation(() => ({
       checkApplicationDocumentsList: () =>
@@ -108,9 +108,9 @@ describe('useUploadDocument', () => {
     expect(mockedOnError).toHaveBeenCalledWith('TWO_NDFL')
   })
 
-  it('Если onGetOrderId не вернет id заявки, обработается ошибка, файл загружаться не будет', async () => {
+  it('Если getOrderId не вернет id заявки, обработается ошибка, файл загружаться не будет', async () => {
     mockedUseApplicationContext.mockImplementation(() => ({
-      onGetOrderId: () => Promise.resolve(''),
+      getOrderId: () => Promise.resolve(''),
     }))
 
     const { result } = renderHook(

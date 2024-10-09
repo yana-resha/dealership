@@ -27,16 +27,18 @@ export const addSuffix = (value: number | string, suffix: string, nowrap: boolea
 
 export const removeSpaces = (str: string) => str.replace(/\s/g, '')
 
-export function downloadBlob(blob: Blob, fileName: string) {
-  const url = window.URL.createObjectURL(blob)
-
-  const link = document.createElement('a')
-  link.href = url
-  link.setAttribute('download', `${fileName}.pdf`)
-
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
+export function downloadBlob(blob: Blob | null | undefined, fileName: string) {
+  if (!blob) {
+    return
+  }
+  const downloadedFile = new File([blob], fileName, { type: blob.type })
+  const downloadURL = URL.createObjectURL(downloadedFile)
+  const simulateLink = document.createElement('a')
+  simulateLink.href = downloadURL
+  simulateLink.download = downloadedFile.name
+  simulateLink.click()
+  simulateLink.remove()
+  URL.revokeObjectURL(downloadURL)
 }
 
 /** С прото проблема, бэк отправляет число, но в прото преобразуется в строку,

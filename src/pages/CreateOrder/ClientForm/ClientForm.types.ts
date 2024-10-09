@@ -30,9 +30,9 @@ export interface Address {
 // Нажатие на любую из кнопок должно запускать валидацию, и дальнейшие различные друг от друга действия.
 // Потому эти типы вообще и нужны
 export enum SubmitAction {
-  Save = 'save',
-  Draft = 'draft',
-  Print = 'print',
+  SAVE = 'save',
+  DRAFT = 'draft',
+  FORM_QUESTIONNAIRE = 'formQuestionnaire',
 }
 
 export type ValidationParams = {

@@ -75,7 +75,7 @@ const mockedJobAreaFields = {
   employerAddressString: '',
   emplNotKladr: false,
   employerInn: '',
-  submitAction: SubmitAction.Save,
+  submitAction: SubmitAction.SAVE,
 }
 
 const createWrapper = ({ children }: PropsWithChildren) => (

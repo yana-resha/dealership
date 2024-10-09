@@ -102,7 +102,7 @@ export const EXPECTED_DATA: ClientData = {
   secondDocumentNumber: '1234123456',
   secondDocumentType: 15,
   sex: 0,
-  submitAction: SubmitAction.Save,
+  submitAction: SubmitAction.SAVE,
   bankStatementFile: null,
   questionnaireFile: null,
   ndfl3File: null,
@@ -194,7 +194,7 @@ export const EXPECTED_EMPTY_DATA = {
   emplNotKladr: false,
   employerInn: '',
   questionnaireFile: null,
-  submitAction: SubmitAction.Save,
+  submitAction: SubmitAction.SAVE,
   isFormComplete: false,
 
   validationParams: {

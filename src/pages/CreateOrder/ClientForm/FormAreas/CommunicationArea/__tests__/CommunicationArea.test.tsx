@@ -11,7 +11,7 @@ import { MockedMaskedInput } from 'shared/ui/MaskedInput/__mocks__/MaskedInput.m
 import { ThemeProviderMock } from 'tests/mocks'
 import { disableConsole } from 'tests/utils'
 
-import { enrichedclientFormValidationSchema } from '../../../config/clientFormValidation'
+import { enrichedClientFormValidationSchema } from '../../../config/clientFormValidation'
 import { CommunicationArea } from '../CommunicationArea'
 
 jest.mock('shared/ui/MaskedInput/MaskedInput', () => ({
@@ -35,14 +35,14 @@ let mockedCommunicationFields: {
   mobileNumber: '',
   additionalNumber: '',
   email: '',
-  submitAction: SubmitAction.Save,
+  submitAction: SubmitAction.SAVE,
 }
 
 const createWrapper = ({ children }: PropsWithChildren) => (
   <ThemeProviderMock>
     <Formik
       initialValues={mockedCommunicationFields}
-      validationSchema={enrichedclientFormValidationSchema}
+      validationSchema={enrichedClientFormValidationSchema}
       onSubmit={() => {}}
     >
       <Form>

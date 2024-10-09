@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { Button } from '@mui/material'
 import { render, screen } from '@testing-library/react'
@@ -15,7 +15,7 @@ import { QuestionnaireUploadArea } from '../QuestionnaireUploadArea'
 
 const mockedQuestionnaireUploadFields = {
   questionnaireFile: null,
-  submitAction: SubmitAction.Save,
+  submitAction: SubmitAction.SAVE,
 }
 
 const queryClient = new QueryClient()
@@ -47,6 +47,10 @@ describe('QuestionnaireUploadAreaTest', () => {
           setReuploadedQuestionnaire={jest.fn()}
           isAllowedUploadQuestionnaire={true}
           onUploadDocument={jest.fn()}
+          isSaveDraftDisabled={false}
+          onClickFormBtn={jest.fn()}
+          isDisabledFormBtn={true}
+          isFormLoading={true}
         />,
         {
           wrapper: createWrapper,
@@ -55,15 +59,24 @@ describe('QuestionnaireUploadAreaTest', () => {
     })
 
     it('Заголовок блока присутствует на форме', () => {
-      expect(screen.getByText('Подписанная анкета')).toBeInTheDocument()
+      expect(screen.getByText('Анкета клиента')).toBeInTheDocument()
     })
 
     it('Инструкция по загрузке анкеты присутствует на форме', () => {
-      expect(screen.getByText(/Загрузите или перетащите сюда анкету/)).toBeInTheDocument()
+      expect(screen.getByText('Загрузите анкету клиента в формате pdf и не более 15 мб.')).toBeInTheDocument()
+      expect(
+        screen.getByText(
+          'Если у Вас нет универсальной анкеты, Вы можете сформировать анкету по форме банка.',
+        ),
+      ).toBeInTheDocument()
     })
 
     it('Кнопка для загрузки анкеты присутствует на форме', () => {
       expect(screen.getByText('Загрузить анкету')).toBeInTheDocument()
+    })
+
+    it('Если isSaveDraftDisabled = false, кнопка для формирования анкеты присутствует в форме', async () => {
+      expect(screen.queryByText('Сформировать анкету')).toBeInTheDocument()
     })
   })
 
@@ -76,6 +89,10 @@ describe('QuestionnaireUploadAreaTest', () => {
           setReuploadedQuestionnaire={jest.fn()}
           isAllowedUploadQuestionnaire={true}
           onUploadDocument={jest.fn()}
+          isSaveDraftDisabled={true}
+          onClickFormBtn={jest.fn()}
+          isDisabledFormBtn={true}
+          isFormLoading={false}
         />,
         {
           wrapper: createWrapper,
@@ -86,6 +103,48 @@ describe('QuestionnaireUploadAreaTest', () => {
 
     it('Загрузка анкеты валидируется', async () => {
       expect(await screen.findByText('Необходимо загрузить анкету')).toBeInTheDocument()
+    })
+  })
+
+  describe('Отображение кнопки Сформировать анкету', () => {
+    it('Если isSaveDraftDisabled = true, кнопка для формирования анкеты отсутствует в форме', () => {
+      render(
+        <QuestionnaireUploadArea
+          isDifferentVendor={false}
+          isReuploadedQuestionnaire={false}
+          setReuploadedQuestionnaire={jest.fn()}
+          isAllowedUploadQuestionnaire={true}
+          onUploadDocument={jest.fn()}
+          isSaveDraftDisabled={true}
+          onClickFormBtn={jest.fn()}
+          isDisabledFormBtn={false}
+          isFormLoading={false}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
+      expect(screen.queryByText('Сформировать анкету')).not.toBeInTheDocument()
+    })
+
+    it('Если isFormLoading = true, отображается лоадер', () => {
+      render(
+        <QuestionnaireUploadArea
+          isDifferentVendor={false}
+          isReuploadedQuestionnaire={false}
+          setReuploadedQuestionnaire={jest.fn()}
+          isAllowedUploadQuestionnaire={true}
+          onUploadDocument={jest.fn()}
+          isSaveDraftDisabled={false}
+          onClickFormBtn={jest.fn()}
+          isDisabledFormBtn={false}
+          isFormLoading={true}
+        />,
+        {
+          wrapper: createWrapper,
+        },
+      )
+      expect(screen.getByTestId('circularProgressWheel')).toBeInTheDocument()
     })
   })
 })

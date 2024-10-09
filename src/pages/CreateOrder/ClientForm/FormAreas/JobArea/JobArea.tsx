@@ -268,7 +268,7 @@ export function JobArea() {
             gridColumn="span 4"
             centered
             disabled={jobDisabled}
-            afterChange={handleKladrChange}
+            onChange={handleKladrChange}
           />
           <AddressDialog
             addressName="employerAddress"
