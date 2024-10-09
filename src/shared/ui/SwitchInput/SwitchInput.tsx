@@ -5,9 +5,16 @@ import { Box, FormHelperText, InputLabel, Switch, useTheme } from '@mui/material
 import useStyles from './SwitchInput.styles'
 import { SwitchInputProps } from './switchInput.types'
 
-export const SwitchInput = (props: SwitchInputProps) => {
-  const { label, value, onChange, isError, errorMessage, id, centered, disabled, afterChange } = props
-
+export const SwitchInput = ({
+  label,
+  value,
+  isError,
+  errorMessage,
+  id,
+  centered,
+  disabled,
+  onChange,
+}: SwitchInputProps) => {
   const classes = useStyles()
   const theme = useTheme()
 
@@ -22,8 +29,7 @@ export const SwitchInput = (props: SwitchInputProps) => {
 
   function handleSwitch(event: React.ChangeEvent<HTMLInputElement>) {
     setFieldValue(event.target.checked)
-    onChange?.(event.target.checked)
-    afterChange?.(event)
+    onChange?.(event)
   }
 
   const configureSwitch = {

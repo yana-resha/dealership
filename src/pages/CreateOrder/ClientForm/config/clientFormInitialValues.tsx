@@ -82,7 +82,7 @@ export const configInitialValues: ClientData = {
   emplNotKladr: false,
   employerInn: '',
   questionnaireFile: null,
-  submitAction: SubmitAction.Save,
+  submitAction: SubmitAction.SAVE,
   isFormComplete: false,
   // Добавлено поле validationParams для того чтобы передать дату создания заявки
   validationParams: {
@@ -174,7 +174,7 @@ export const UPLOADED_DOCUMENTS = {
     documentType: DocumentType.CERTIFICATE_FREE_FORM,
   } as Documents,
   questionnaireFile: {
-    documentLabel: 'Подписанная анкета',
+    documentLabel: 'Анкета клиента',
     documentName: 'questionnaireFile',
     documentType: DocumentType.CONSENT_FORM,
   },

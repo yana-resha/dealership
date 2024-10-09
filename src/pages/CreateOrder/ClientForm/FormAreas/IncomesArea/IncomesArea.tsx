@@ -82,7 +82,7 @@ export function IncomesArea() {
               label="Подтверждение"
               centered
               disabled={incomeProduct}
-              afterChange={handleSwitch}
+              onChange={handleSwitch}
             />
           </Box>
         </CustomTooltip>

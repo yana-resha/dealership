@@ -13,16 +13,18 @@ import { ApplicationSource } from 'entities/applications/application.utils'
 import { clearOrder, setAppId } from 'entities/order'
 import { DcConfirmationModal } from 'pages/ClientDetailedDossier/EditConfirmationModal/DcConfirmationModal'
 import {
+  useGetClientQuestionnaireFormMutation,
   useSaveDraftApplicationMutation,
   useSendApplicationToScore,
 } from 'shared/api/requests/loanAppLifeCycleDc'
+import { downloadBlob } from 'shared/lib/helpers'
 import { appRoutePaths, appRoutes } from 'shared/navigation/routerPath'
 import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel/CircularProgressWheel'
 
 import { CreateOrderPageState } from '../CreateOrder'
 import { useStyles } from './ClientForm.styles'
 import { ClientData, SubmitAction } from './ClientForm.types'
-import { clientFormValidationSchema, enrichedclientFormValidationSchema } from './config/clientFormValidation'
+import { clientFormValidationSchema, enrichedClientFormValidationSchema } from './config/clientFormValidation'
 import { FormContainer } from './FormContainer'
 import { useConfirmationForm } from './hooks/useConfirmationForm'
 import { useInitialValues } from './hooks/useInitialValues'
@@ -64,7 +66,6 @@ export function ClientForm() {
   const { mutateAsync: saveDraftMutate, isLoading: isDraftLoading } = useSaveDraftApplicationMutation(
     (dcAppId: string) => dcAppId && dispatch(setAppId({ dcAppId })),
   )
-
   const { mutate: sendToScoreMutate, isLoading: isSendToScoreLoading } = useSendApplicationToScore({
     onSuccess: () => {
       dispatch(clearOrder())
@@ -72,7 +73,10 @@ export function ClientForm() {
     },
   })
 
-  const handleSubmit = useCallback(
+  const { mutateAsync: getClientQuestionnaireFormMutate, isLoading: isFormQuestionnaireLoading } =
+    useGetClientQuestionnaireFormMutation()
+
+  const sendToScore = useCallback(
     (application: ApplicationFrontdc) => {
       const newApplication = setAnketaType(application, true)
 
@@ -115,26 +119,20 @@ export function ClientForm() {
     [formRef, goToOrderPage, saveDraftMutate, setAnketaType, confirmActionWrapper, updateOrderData],
   )
 
-  const saveDraftAndPrint = useCallback(
+  const saveDraftAndFormQuestionnaire = useCallback(
     (application: ApplicationFrontdc) => {
-      // TODO Доделать когда появится ручка формирования печатной заявки
-      if (dcAppId) {
-        console.log('Print application')
-      } else {
-        const newApplication = setAnketaType(application, formRef.current?.values?.isFormComplete ?? false)
-        if (!application) {
-          return
+      const newApplication = setAnketaType(application, formRef.current?.values?.isFormComplete ?? false)
+
+      confirmActionWrapper(async () => {
+        updateOrderData(newApplication)
+        const saveDraftRes = await saveDraftMutate(newApplication)
+        if (saveDraftRes.dcAppId) {
+          const blob = await getClientQuestionnaireFormMutate({ dcAppId: saveDraftRes.dcAppId })
+          downloadBlob(blob, `${saveDraftRes.dcAppId}_Анкета клиента`)
         }
-        confirmActionWrapper(() => {
-          updateOrderData(newApplication)
-          saveDraftMutate(newApplication).then(() => {
-            console.log('application saved')
-            console.log('Print application')
-          })
-        }, 'Заявка будет сохранена под ДЦ:')
-      }
+      }, 'Заявка будет сохранена под ДЦ:')
     },
-    [dcAppId, formRef, saveDraftMutate, setAnketaType, confirmActionWrapper, updateOrderData],
+    [confirmActionWrapper, getClientQuestionnaireFormMutate, saveDraftMutate, setAnketaType, updateOrderData],
   )
 
   /** Сохраняем заявку чтобы сформировать ID заявки */
@@ -157,7 +155,7 @@ export function ClientForm() {
     [dcAppId, formRef, remapApplicationValues, saveDraftMutate, setAnketaType, updateOrderData],
   )
 
-  const getSubmitAction = useCallback(
+  const handleSubmit = useCallback(
     (values: ClientData) => {
       if (!formRef.current) {
         return
@@ -168,42 +166,46 @@ export function ClientForm() {
       }
 
       switch (formRef.current.values.submitAction) {
-        case SubmitAction.Draft:
+        case SubmitAction.DRAFT:
           saveApplicationDraft(application)
           break
-        case SubmitAction.Save:
+        case SubmitAction.SAVE:
           if (saveDraftDisabled) {
-            handleSubmit(application)
+            sendToScore(application)
           } else {
             saveApplicationDraft(application)
           }
           break
-        case SubmitAction.Print:
-          saveDraftAndPrint(application)
+        case SubmitAction.FORM_QUESTIONNAIRE:
+          saveDraftAndFormQuestionnaire(application)
           break
       }
     },
     [
       formRef,
-      handleSubmit,
+      sendToScore,
       remapApplicationValues,
       saveApplicationDraft,
-      saveDraftAndPrint,
+      saveDraftAndFormQuestionnaire,
       saveDraftDisabled,
     ],
   )
 
-  const isDisabledButtons = isDraftLoading || isSendToScoreLoading
+  const isDisabledButtons = isDraftLoading || isSendToScoreLoading || isFormQuestionnaireLoading
   const isSaveDraftBtnLoading =
-    formRef.current?.values.submitAction === SubmitAction.Draft ? isDraftLoading : false
+    formRef.current?.values.submitAction === SubmitAction.DRAFT ? isDraftLoading : false
   const isNextBtnLoading =
-    formRef.current?.values.submitAction === SubmitAction.Save
+    formRef.current?.values.submitAction === SubmitAction.SAVE
       ? saveDraftDisabled
         ? isSendToScoreLoading
         : isDraftLoading
       : false
+  const isFormQuestionnaireBtnLoading =
+    formRef.current?.values.submitAction === SubmitAction.FORM_QUESTIONNAIRE
+      ? isDraftLoading || isFormQuestionnaireLoading
+      : false
 
-  const validationSchema = isFullCalculator ? enrichedclientFormValidationSchema : clientFormValidationSchema
+  const validationSchema = isFullCalculator ? enrichedClientFormValidationSchema : clientFormValidationSchema
 
   return (
     <Box className={classes.formContainer}>
@@ -216,14 +218,14 @@ export function ClientForm() {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={getSubmitAction}
+            onSubmit={handleSubmit}
             innerRef={formRef}
           >
             <FormContainer
               getOrderId={getOrderId}
               isSaveDraftBtnLoading={isSaveDraftBtnLoading}
               isNextBtnLoading={isNextBtnLoading}
-              disabledButtons={isDisabledButtons}
+              isDisabledButtons={isDisabledButtons}
               saveDraftDisabled={saveDraftDisabled}
               isDifferentVendor={isDifferentVendor}
               isReuploadedQuestionnaire={isReuploadedQuestionnaire}
@@ -231,6 +233,7 @@ export function ClientForm() {
               isAllowedUploadQuestionnaire={isAllowedUploadQuestionnaire}
               onUploadQuestionnaire={handleQuestionnaireUploadRef.current}
               saveValuesToStore={saveValuesToStore}
+              isFormQuestionnaireBtnLoading={isFormQuestionnaireBtnLoading}
             />
           </Formik>
           <DcConfirmationModal

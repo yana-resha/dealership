@@ -172,8 +172,8 @@ export function DealerServicesRequisites({
   })
 
   const handleManualEntryChange = useCallback(
-    (manual: boolean) => {
-      if (manual) {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) {
         clearFieldsForManualEntry()
         setCustomFields(true)
       } else {

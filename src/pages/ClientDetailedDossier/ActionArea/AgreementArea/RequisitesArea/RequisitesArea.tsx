@@ -108,7 +108,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
           <SberTypography sberautoVariant="h6" component="p">
             Кредит
           </SberTypography>
-          <SwitchInput label="Проверено" id="credit" afterChange={handleChange} />
+          <SwitchInput label="Проверено" id="credit" onChange={handleChange} />
         </Box>
         <Box className={classes.requisiteInfo}>
           <InfoText label="Юридическое лицо">{application.vendor?.vendorName || ''}</InfoText>
@@ -129,7 +129,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SberTypography sberautoVariant="h6" component="p">
               Дополнительное оборудование
             </SberTypography>
-            <SwitchInput label="Проверено" id={`${OptionType.EQUIPMENT}`} afterChange={handleChange} />
+            <SwitchInput label="Проверено" id={`${OptionType.EQUIPMENT}`} onChange={handleChange} />
           </Box>
           {additionalEquipment.map(option => (
             <Box key={option.name} className={classes.requisiteElement}>
@@ -146,7 +146,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SberTypography sberautoVariant="h6" component="p">
               Дополнительные услуги дилера
             </SberTypography>
-            <SwitchInput label="Проверено" id={`${OptionType.DEALER}`} afterChange={handleChange} />
+            <SwitchInput label="Проверено" id={`${OptionType.DEALER}`} onChange={handleChange} />
           </Box>
           {dealerServices.map(option => (
             <Box key={option.name} className={classes.requisiteElement}>
@@ -163,7 +163,7 @@ export function RequisitesArea({ application, setFinancingEnabled, changeRequisi
             <SberTypography sberautoVariant="h6" component="p">
               Дополнительные услуги банка
             </SberTypography>
-            <SwitchInput label="Проверено" id={`${OptionType.BANK}`} afterChange={handleChange} />
+            <SwitchInput label="Проверено" id={`${OptionType.BANK}`} onChange={handleChange} />
           </Box>
           {bankServices.map(option => (
             <Box key={option.name} className={classes.requisiteElement}>

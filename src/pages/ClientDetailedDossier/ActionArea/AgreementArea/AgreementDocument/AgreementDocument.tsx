@@ -85,7 +85,7 @@ export function AgreementDocument({
             label="Подписан"
             id={'document_' + index}
             value={docsStatus[index] === 'signed'}
-            afterChange={updateDocumentStatus}
+            onChange={updateDocumentStatus}
             disabled={document.documentType === DocumentType.CREDIT_CONTRACT && isDisabled}
           />
         )}

@@ -20,7 +20,7 @@ type UseUploadDocumentParams = {
 export const useUploadDocument = ({ uploaderConfig, onError, onUploadDocument }: UseUploadDocumentParams) => {
   const { documentName, documentFile, documentType } = uploaderConfig || {}
 
-  const { onGetOrderId } = useApplicationContext()
+  const { getOrderId } = useApplicationContext()
   const { mutateAsync: uploadDocumentMutate } = useUploadDocumentMutation()
   const { checkApplicationDocumentsList } = useCheckDocumentsList()
 
@@ -43,7 +43,7 @@ export const useUploadDocument = ({ uploaderConfig, onError, onUploadDocument }:
 
     onUploadDocument?.(renamedFile, documentName, DocumentUploadStatus.Progress)
     try {
-      const dcAppId = await onGetOrderId?.()
+      const dcAppId = await getOrderId?.()
       if (!dcAppId) {
         throw new Error('dcAppId is empty')
       }
@@ -71,7 +71,7 @@ export const useUploadDocument = ({ uploaderConfig, onError, onUploadDocument }:
     documentName,
     documentType,
     onError,
-    onGetOrderId,
+    getOrderId,
     onUploadDocument,
     uploadDocumentMutate,
   ])

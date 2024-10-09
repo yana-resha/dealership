@@ -1,10 +1,13 @@
 import { useCallback, useEffect } from 'react'
 
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { useField, useFormikContext } from 'formik'
 
+import { ReactComponent as FileIcon } from 'assets/icons/file.svg'
 import { FileInfo, UploaderConfig, Uploader, DocumentUploadStatus } from 'features/ApplicationFileLoader'
 import { DEFAULT_MAX_FILE_SIZE_MB } from 'shared/config/fileLoading.config'
+import { CircularProgressWheel } from 'shared/ui/CircularProgressWheel'
+import SberTypography from 'shared/ui/SberTypography'
 
 import { ClientData } from '../../ClientForm.types'
 import { UPLOADED_DOCUMENTS } from '../../config/clientFormInitialValues'
@@ -18,6 +21,10 @@ interface Props {
   setReuploadedQuestionnaire: React.Dispatch<React.SetStateAction<boolean>>
   isAllowedUploadQuestionnaire: boolean
   onUploadDocument: (() => void) | undefined
+  isSaveDraftDisabled: boolean
+  onClickFormBtn: () => void
+  isDisabledFormBtn: boolean
+  isFormLoading: boolean
 }
 
 export const QuestionnaireUploadArea = ({
@@ -26,9 +33,12 @@ export const QuestionnaireUploadArea = ({
   setReuploadedQuestionnaire,
   isAllowedUploadQuestionnaire,
   onUploadDocument,
+  isSaveDraftDisabled,
+  onClickFormBtn,
+  isDisabledFormBtn,
+  isFormLoading,
 }: Props) => {
   const classes = useStyles()
-
   const [{ value }, meta] = useField<FileInfo | null>(QUESTIONNAIRE_FIELD_NAME)
   const { setFieldValue, setErrors } = useFormikContext<ClientData>()
 
@@ -77,19 +87,52 @@ export const QuestionnaireUploadArea = ({
   }
 
   return (
-    <Box className={classes.uploadAreaContainer}>
-      <Box className={classes.uploadQuestionnaire} gridColumn="span 12">
-        <Uploader
-          uploaderConfig={uploaderConfig}
-          suggest={`Загрузите или перетащите сюда анкету подписанную клиентом в jpg, png, pdf и не более ${DEFAULT_MAX_FILE_SIZE_MB} мб.`}
-          loadingMessage="Анкета загружается"
-          motivateMessage="Загрузить анкету"
-          onUploadDocument={handleDocumentUpload}
-          onRemoveDocument={onDeleteDocument}
-          onError={handleErrorUpload}
-          isAllowedUploadToServer={isAllowedUploadQuestionnaire}
-          isShowLabel
-        />
+    <Box className={classes.areaWrapper}>
+      <Box className={classes.areaContainer} gridColumn="span 12">
+        <SberTypography sberautoVariant="h6" component="p">
+          Анкета клиента
+        </SberTypography>
+
+        <Box className={classes.suggestContainer}>
+          <SberTypography sberautoVariant="body3" component="p">
+            Загрузите анкету клиента в формате pdf и не более {DEFAULT_MAX_FILE_SIZE_MB} мб.
+          </SberTypography>
+          <SberTypography sberautoVariant="body3" component="p">
+            Если у Вас нет универсальной анкеты, Вы можете сформировать анкету по форме банка.
+          </SberTypography>
+        </Box>
+
+        <Box className={classes.btnContainer}>
+          <Box className={classes.uploaderContainer}>
+            <Uploader
+              uploaderConfig={uploaderConfig}
+              loadingMessage="Анкета загружается"
+              onUploadDocument={handleDocumentUpload}
+              onRemoveDocument={onDeleteDocument}
+              motivateMessage="Загрузить анкету"
+              onError={handleErrorUpload}
+              isAllowedUploadToServer={isAllowedUploadQuestionnaire}
+            />
+          </Box>
+          {!isSaveDraftDisabled && (
+            <Button
+              variant="text"
+              data-testid="createCatalogBtn"
+              startIcon={
+                isFormLoading ? (
+                  <CircularProgressWheel size="small" />
+                ) : (
+                  <FileIcon className={classes.btnIcon} />
+                )
+              }
+              className={classes.textBtn}
+              onClick={onClickFormBtn}
+              disabled={isDisabledFormBtn}
+            >
+              Сформировать анкету
+            </Button>
+          )}
+        </Box>
       </Box>
     </Box>
   )

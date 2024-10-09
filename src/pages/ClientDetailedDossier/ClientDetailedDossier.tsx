@@ -145,7 +145,7 @@ export function ClientDetailedDossier() {
     [applicationId, navigate],
   )
 
-  const onGetOrderId = useCallback(async () => applicationId, [applicationId])
+  const getOrderId = useCallback(async () => applicationId, [applicationId])
 
   const onBackButton = useCallback(() => navigate(appRoutePaths.orderList), [navigate])
 
@@ -167,7 +167,7 @@ export function ClientDetailedDossier() {
 
   return (
     <Page dataTestId="clientDetailedDossier">
-      <ApplicationProvider onGetOrderId={onGetOrderId}>
+      <ApplicationProvider getOrderId={getOrderId}>
         <Box className={classes.container}>
           {isLoading && (
             <Box className={classes.circular}>

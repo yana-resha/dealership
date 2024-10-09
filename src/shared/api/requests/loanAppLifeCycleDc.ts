@@ -31,6 +31,7 @@ import {
   DeleteDocumentRequest,
   SendGovProgramDocumentsRequest,
   FormGovProgramStatementRequest,
+  GetClientQuestionnaireFormRequest,
 } from '@sberauto/loanapplifecycledc-proto/public'
 import { useSnackbar } from 'notistack'
 import { useMutation } from 'react-query'
@@ -364,6 +365,11 @@ export const useDeleteDocumentMutation = () => {
 
 export const sendGovProgramDocuments = (data: SendGovProgramDocumentsRequest) =>
   loanAppLifeCycleDcApi.sendGovProgramDocuments({ data })
-
 export const useSendGovProgramDocumentsMutation = () =>
   useMutation('sendGovProgramDocuments', sendGovProgramDocuments)
+
+export const GetClientQuestionnaireForm = (
+  data: GetClientQuestionnaireFormRequest,
+): Promise<Blob | null | undefined> => requestBlob('getClientQuestionnaireForm', data)
+export const useGetClientQuestionnaireFormMutation = () =>
+  useMutation('getClientQuestionnaireForm', GetClientQuestionnaireForm)

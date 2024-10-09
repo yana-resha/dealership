@@ -329,7 +329,7 @@ export function useInitialValues() {
           // свойство addIncome должно быть обязательно number, даже если пользователь не заполнил его,
           // но только в случае отправки заявки, а не сохранения черновика
           addIncome:
-            submitAction === SubmitAction.Save
+            submitAction === SubmitAction.SAVE
               ? stringToNumber(additionalIncome) || 0
               : stringToNumber(additionalIncome),
           familyIncome: stringToNumber(familyIncome),
