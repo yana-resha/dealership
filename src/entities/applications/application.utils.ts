@@ -19,6 +19,7 @@ export enum PreparedStatus {
   lackConfirmation = 'Отказ СМС подтверждения',
   dcFinanced = 'Кредит выдан',
   smsFailed = 'Ошибка СМС подтверждения',
+  additionalCheck = 'Дополнительная проверка',
 }
 
 export enum AnketaType {
@@ -49,6 +50,7 @@ const StatusMap = new Map([
   [StatusCode.LACK_CONFIRMATION, PreparedStatus.lackConfirmation],
   [StatusCode.DC_FINANCED, PreparedStatus.dcFinanced],
   [StatusCode.SMS_FAILED, PreparedStatus.smsFailed],
+  [StatusCode.FRA, PreparedStatus.additionalCheck],
 ])
 
 export enum ApplicationSource {

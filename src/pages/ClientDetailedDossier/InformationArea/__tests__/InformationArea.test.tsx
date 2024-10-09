@@ -247,7 +247,13 @@ describe('InformationAreaTest', () => {
           render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.PROCESSED }} />, {
             wrapper: createWrapper,
           })
+          expect(screen.getByText('График платежей')).toBeInTheDocument()
+        })
 
+        it('График платежей отображается при статусе Processed (Ожидает решение)', () => {
+          render(<InformationArea {...{ ...informationAreaProps, statusCode: StatusCode.FRA }} />, {
+            wrapper: createWrapper,
+          })
           expect(screen.getByText('График платежей')).toBeInTheDocument()
         })
 

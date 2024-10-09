@@ -17,6 +17,12 @@ describe('ApplicationStatus', () => {
       expect(screen.getByText('Ожидает решение')).toBeInTheDocument()
       expect(screen.getByText('Ожидает решение')).toHaveStyle('background-color: rgb(255, 151, 30)')
     })
+    it('additionalCheck', () => {
+      render(<ApplicationStatus status={StatusCode.FRA} />)
+
+      expect(screen.getByText('Дополнительная проверка')).toBeInTheDocument()
+      expect(screen.getByText('Дополнительная проверка')).toHaveStyle('background-color: rgb(255, 151, 30)')
+    })
     it('rejected', () => {
       render(<ApplicationStatus status={StatusCode.REJECTED} />)
 
